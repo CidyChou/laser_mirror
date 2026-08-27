@@ -76,4 +76,5 @@ export interface GameState {
   result: LaserTrace | null;
   activeSwitches: Set<string>;
   activeDoorStates: Record<string, boolean>;
+  comboCount: number;
 }

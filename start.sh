@@ -2,7 +2,7 @@
 set -e
 cd "$(dirname "$0")"
 
-PORT=18347
+PORT=8347
 while lsof -iTCP:${PORT} -sTCP:LISTEN >/dev/null 2>&1; do PORT=$((PORT+1)); done
 
 if ! command -v node >/dev/null 2>&1; then

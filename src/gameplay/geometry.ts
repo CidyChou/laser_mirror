@@ -1,7 +1,5 @@
+import { STAGE_HEIGHT, STAGE_TOP } from '@/config/GameConfig';
 import type { BoardGeometry, LevelDefinition, Point, Port } from './types';
-
-const STAGE_TOP = 205;
-const STAGE_HEIGHT = 900;
 
 export function computeGeometry(level: LevelDefinition): BoardGeometry {
   const maxBoardW = 590;

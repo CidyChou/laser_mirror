@@ -1,44 +1,139 @@
-import { Container, Graphics, Text } from 'pixi.js';
+import { Container, Graphics, Sprite, Text, Texture } from 'pixi.js';
+import { UI_RECTS } from '@/config/GameConfig';
 import type { GameState } from '@/gameplay/types';
 import { Button } from '../ui/Button';
-import { Theme } from '../theme';
+import { FONT_UI, Theme } from '../theme';
 
-export class HudLayer extends Container{
-  private chapter=new Text({text:'',style:{fontFamily:'Arial',fontSize:14,fill:Theme.muted}});
-  private levelValue=new Text({text:'',style:{fontFamily:'Arial',fontSize:25,fontWeight:'700',fill:Theme.text}});
-  private shotsValue=new Text({text:'',style:{fontFamily:'Arial',fontSize:25,fontWeight:'700',fill:Theme.text}});
-  private targetValue=new Text({text:'',style:{fontFamily:'Arial',fontSize:25,fontWeight:'700',fill:Theme.text}});
-  private hint=new Text({text:'',style:{fontFamily:'Arial',fontSize:14,fill:Theme.muted,align:'center',wordWrap:true,wordWrapWidth:640}});
-  readonly fireButton=new Button(640,72,'发射激光','primary');
-  readonly nextButton=new Button(640,64,'下一关','secondary');
-  readonly resetButton=new Button(52,52,'↻','icon');
+export class HudLayer extends Container {
+  readonly settingsButton = new Button(UI_RECTS.settings.w, UI_RECTS.settings.h, '', 'icon');
+  readonly fireButton = new Button(UI_RECTS.fire.w, UI_RECTS.fire.h, '发射', 'fire');
+  private readonly progressBg = new Graphics();
+  private readonly progressFill = new Graphics();
+  private readonly progressLabel = new Text({
+    text: '',
+    style: { fontFamily: FONT_UI, fontSize: 15, fontWeight: '700', fill: Theme.inkSoft },
+  });
+  private readonly hearts = new Graphics();
+  private readonly heartsCount = new Text({
+    text: '',
+    style: { fontFamily: FONT_UI, fontSize: 28, fontWeight: '800', fill: Theme.ink },
+  });
+  private readonly hint = new Text({
+    text: '',
+    style: { fontFamily: FONT_UI, fontSize: 15, fill: Theme.inkSoft, align: 'center', wordWrap: true, wordWrapWidth: 640 },
+  });
+  private gear = new Sprite(Texture.EMPTY);
 
-  constructor(){super();this.build();}
-  private build(){
-    const brandBeam=new Graphics().roundRect(0,0,7,33,5).fill(Theme.beam); brandBeam.position.set(40,34); brandBeam.skew.x=-.20; brandBeam.blendMode='add';
-    const brand=new Text({text:'LASER MIRROR',style:{fontFamily:'Arial',fontSize:27,fontWeight:'900',fill:Theme.text,letterSpacing:2}}); brand.position.set(58,34);
-    this.chapter.position.set(58,68); this.resetButton.position.set(628,32); this.addChild(brandBeam,brand,this.chapter,this.resetButton);
-
-    const labels=['关卡','剩余激光','终点']; const values=[this.levelValue,this.shotsValue,this.targetValue];
-    for(let i=0;i<3;i++){
-      const x=40+i*214;
-      const card=new Graphics()
-        .roundRect(x,105,198,82,15).fill({color:Theme.panel,alpha:.98}).stroke({color:0xffffff,width:1,alpha:.07})
-        .roundRect(x+2,107,194,31,13).fill({color:0xffffff,alpha:.025});
-      const label=new Text({text:labels[i],style:{fontFamily:'Arial',fontSize:14,fill:Theme.muted}}); label.position.set(x+16,119); values[i].position.set(x+16,143); this.addChild(card,label,values[i]);
-    }
-
-    this.fireButton.position.set(40,1120); this.nextButton.position.set(40,1202); this.hint.anchor.set(.5,0); this.hint.position.set(360,1284); this.addChild(this.fireButton,this.nextButton,this.hint);
+  constructor() {
+    super();
+    this.build();
   }
-  sync(state:GameState,total:number){
-    this.chapter.text=`${state.level.chapter} · ${state.level.name}`;
-    this.levelValue.text=`${state.levelIndex+1} / ${total}`;
-    this.shotsValue.text=String(state.shotsLeft);
-    this.targetValue.text=`${state.targets.filter(t=>t.hit).length} / ${state.targets.length}`;
-    this.hint.text=state.level.hint||'镜子可无限旋转 · 确认路线后再试射';
-    this.fireButton.setDisabled(state.firing||state.won||state.shotsLeft<=0);
-    this.fireButton.setActive(state.firing||state.won);
-    this.fireButton.setText(state.firing?'能量发射中…':state.won?'光路接通':state.shotsLeft<=0?'激光已耗尽':`发射激光 · ${state.shotsLeft} 次`);
-    this.nextButton.visible=state.won;
+
+  setGearTexture(texture: Texture) {
+    const ok = texture !== Texture.EMPTY && texture.width > 1;
+    this.gear.texture = texture;
+    this.gear.visible = ok;
+    this.settingsButton.setText(ok ? '' : '设');
   }
+
+  private build() {
+    const settings = UI_RECTS.settings;
+    this.settingsButton.position.set(settings.x, settings.y);
+    this.gear.anchor.set(0.5);
+    this.gear.position.set(settings.w / 2, settings.h / 2 - 3);
+    this.gear.width = 52;
+    this.gear.height = 52;
+    this.gear.tint = Theme.settingsIcon;
+    this.gear.eventMode = 'none';
+    this.settingsButton.addChild(this.gear);
+
+    const progress = UI_RECTS.progress;
+    this.progressBg.position.set(progress.x, progress.y);
+    this.progressFill.position.set(progress.x, progress.y);
+    this.progressLabel.anchor.set(0.5);
+    this.progressLabel.position.set(progress.x + progress.w / 2, progress.y + 22);
+    this.drawProgressChrome();
+
+    const hearts = UI_RECTS.hearts;
+    this.hearts.position.set(hearts.x, hearts.y);
+    this.heartsCount.anchor.set(0, 0.5);
+
+    this.fireButton.position.set(UI_RECTS.fire.x, UI_RECTS.fire.y);
+    this.fireButton.setLabelSize(32);
+    this.hint.anchor.set(0.5, 0);
+    this.hint.position.set(UI_RECTS.hint.x, UI_RECTS.hint.y);
+
+    this.addChild(this.settingsButton, this.progressBg, this.progressFill, this.progressLabel, this.hearts, this.heartsCount, this.fireButton, this.hint);
+  }
+
+  private drawProgressChrome() {
+    const { w, h } = UI_RECTS.progress;
+    this.progressBg.clear()
+      .roundRect(0, 6, w, h - 2, UI_RECTS.progress.h / 2)
+      .fill({ color: Theme.shadow, alpha: 0.34 })
+      .roundRect(0, 5, w, h - 5, h / 2)
+      .fill(0x10161c)
+      .roundRect(0, 0, w, h - 5, h / 2)
+      .fill(Theme.surface)
+      .stroke({ color: Theme.surfaceLine, width: 1.5 });
+  }
+
+  sync(state: GameState) {
+    const hit = state.targets.filter((target) => target.hit).length;
+    const total = Math.max(1, state.targets.length);
+    this.progressLabel.text = `终点  ${hit} / ${total}`;
+    this.drawProgressFill(hit / total);
+    this.drawHearts(state.shotsLeft);
+    this.hint.text = state.level.hint || '镜子可无限旋转 · 确认路线后再发射';
+    this.fireButton.setDisabled(state.firing || state.won || state.shotsLeft <= 0);
+    this.fireButton.setActive(state.firing);
+    this.fireButton.setText('发射');
+  }
+
+  private drawProgressFill(ratio: number) {
+    const { w, h } = UI_RECTS.progress;
+    const inset = 10;
+    const barY = 40;
+    const barH = 18;
+    const barW = w - inset * 2;
+    const fillW = Math.max(0, barW * Math.min(1, Math.max(0, ratio)));
+    this.progressFill.clear()
+      .roundRect(inset, barY, barW, barH, barH / 2)
+      .fill(0x2a3340)
+      .roundRect(inset, barY, Math.max(fillW, fillW > 0 ? barH : 0), barH, barH / 2)
+      .fill(Theme.accent);
+  }
+
+  private drawHearts(left: number) {
+    const { x: cardX, y: cardY, w, h } = UI_RECTS.hearts;
+    const empty = left <= 0;
+    this.hearts.clear()
+      .roundRect(0, 6, w, h - 2, 18)
+      .fill({ color: Theme.shadow, alpha: 0.34 })
+      .roundRect(0, 5, w, h - 5, 18)
+      .fill(0x10161c)
+      .roundRect(0, 0, w, h - 5, 18)
+      .fill(Theme.surface)
+      .stroke({ color: Theme.surfaceLine, width: 1.5 });
+
+    const size = 22;
+    const gap = 8;
+    const faceH = h - 5;
+    this.heartsCount.text = `${Math.max(0, left)}`;
+    this.heartsCount.style.fill = empty ? Theme.inkSoft : Theme.ink;
+    const groupW = size + gap + this.heartsCount.width;
+    const startX = (w - groupW) / 2;
+    drawHeart(this.hearts, startX + size / 2, faceH / 2 + 1, size, empty ? Theme.heartEmpty : Theme.heart);
+    this.heartsCount.position.set(cardX + startX + size + gap, cardY + faceH / 2);
+  }
+}
+
+function drawHeart(g: Graphics, x: number, y: number, size: number, color: number) {
+  const s = size / 2;
+  g.circle(x - s * 0.42, y - s * 0.18, s * 0.52).fill(color);
+  g.circle(x + s * 0.42, y - s * 0.18, s * 0.52).fill(color);
+  g.moveTo(x - s * 0.92, y - s * 0.02)
+    .lineTo(x, y + s * 0.95)
+    .lineTo(x + s * 0.92, y - s * 0.02)
+    .fill(color);
 }

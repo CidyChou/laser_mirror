@@ -1,3 +1,4 @@
+import { comboAudioIndex } from '@/gameplay/combo';
 import type { IPlatform } from '@/platform/IPlatform';
 
 export type SfxName =
@@ -11,7 +12,15 @@ export type SfxName =
   | 'switchOn'
   | 'shotFail'
   | 'victory'
-  | 'uiClick';
+  | 'uiClick'
+  | 'win'
+  | 'lose'
+  | 'combo1'
+  | 'combo2'
+  | 'combo3'
+  | 'combo4'
+  | 'combo5'
+  | 'combo6';
 
 type SoundDef = { file:string; volume:number; pool:number; cooldownMs?:number; rateJitter?:number };
 type Player = any;
@@ -28,7 +37,15 @@ const SOUND_DEFS: Record<SfxName, SoundDef> = {
   switchOn:     { file:'switch_on.mp3', volume:.30, pool:1, cooldownMs:60, rateJitter:.025 },
   shotFail:     { file:'shot_fail.mp3', volume:.30, pool:1, cooldownMs:150 },
   victory:      { file:'victory.mp3', volume:.46, pool:1, cooldownMs:500 },
-  uiClick:      { file:'ui_click.mp3', volume:.24, pool:2, cooldownMs:35, rateJitter:.025 },
+  uiClick:      { file:'button-select.mp3', volume:.62, pool:2, cooldownMs:35, rateJitter:.025 },
+  win:          { file:'level-victory.mp3', volume:.88, pool:1, cooldownMs:500 },
+  lose:         { file:'game-over.mp3', volume:.78, pool:1, cooldownMs:400 },
+  combo1:       { file:'combo-1.mp3', volume:.90, pool:1, cooldownMs:40 },
+  combo2:       { file:'combo-2.mp3', volume:.90, pool:1, cooldownMs:40 },
+  combo3:       { file:'combo-3.mp3', volume:.90, pool:1, cooldownMs:40 },
+  combo4:       { file:'combo-4.mp3', volume:.90, pool:1, cooldownMs:40 },
+  combo5:       { file:'combo-5.mp3', volume:.92, pool:1, cooldownMs:40 },
+  combo6:       { file:'combo-6.mp3', volume:.96, pool:1, cooldownMs:40 },
 };
 
 export class AudioManager {
@@ -57,6 +74,22 @@ export class AudioManager {
 
   setEnabled(enabled:boolean){this.enabled=enabled;}
   setMasterVolume(volume:number){this.masterVolume=Math.max(0,Math.min(1,volume));}
+
+  playCombo(count:number) {
+    const name = `combo${comboAudioIndex(count)}` as SfxName;
+    this.stopCombo();
+    this.play(name);
+  }
+
+  private stopCombo() {
+    for (let i=1;i<=6;i++) {
+      const bank=this.banks.get(`combo${i}` as SfxName);
+      if(!bank) continue;
+      for(const player of bank.players){
+        try{player.pause?.();player.stop?.();if('currentTime' in player) player.currentTime=0;}catch{}
+      }
+    }
+  }
 
   play(name:SfxName, volumeScale=1) {
     if (!this.enabled || this.masterVolume <= 0) return;

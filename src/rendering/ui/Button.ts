@@ -1,51 +1,122 @@
 import { Container, Graphics, Rectangle, Text } from 'pixi.js';
-import { Theme } from '../theme';
+import { UI_TOKENS } from '@/config/GameConfig';
+import { FONT_UI, Theme } from '../theme';
+
+export type ButtonKind = 'primary' | 'secondary' | 'icon' | 'fire' | 'danger';
 
 export class Button extends Container {
-  private shadow=new Graphics();
-  private glow=new Graphics();
-  private bg=new Graphics();
-  private topLight=new Graphics();
-  private indicator=new Graphics();
-  private label=new Text({text:'',style:{fontFamily:'Arial',fontSize:26,fontWeight:'700',fill:Theme.text}});
-  private disabledState=false;
-  private activeState=false;
+  private shadow = new Graphics();
+  private body = new Graphics();
+  private face = new Graphics();
+  private shine = new Graphics();
+  private caption = new Text({ text: '', style: { fontFamily: FONT_UI, fontSize: 26, fontWeight: '800', fill: Theme.ink } });
+  private disabledState = false;
+  private activeState = false;
+  private pressedState = false;
 
-  constructor(public readonly widthPx:number,public readonly heightPx:number,text:string,private readonly kind:'primary'|'secondary'|'icon'='primary'){
+  constructor(
+    public readonly widthPx: number,
+    public readonly heightPx: number,
+    text: string,
+    private readonly kind: ButtonKind = 'primary',
+  ) {
     super();
-    this.glow.blendMode='add'; this.indicator.blendMode='add';
-    this.addChild(this.shadow,this.glow,this.bg,this.topLight,this.indicator,this.label);
-    this.label.anchor.set(.5); this.label.position.set(widthPx/2,heightPx/2);
-    this.eventMode='static'; this.cursor='pointer'; this.hitArea=new Rectangle(0,0,widthPx,heightPx);
-    this.setText(text); this.redraw();
+    this.addChild(this.shadow, this.body, this.face, this.shine, this.caption);
+    this.caption.anchor.set(0.5);
+    this.eventMode = 'static';
+    this.cursor = 'pointer';
+    this.hitArea = new Rectangle(0, 0, widthPx, heightPx);
+    this.on('pointerdown', () => this.setPressed(true));
+    this.on('pointerup', () => this.setPressed(false));
+    this.on('pointerupoutside', () => this.setPressed(false));
+    this.on('pointercancel', () => this.setPressed(false));
+    this.setText(text);
+    this.redraw();
   }
-  setText(text:string){this.label.text=text;}
-  setDisabled(value:boolean){this.disabledState=value;this.eventMode=value?'none':'static';this.cursor=value?'default':'pointer';this.redraw();}
-  setActive(value:boolean){this.activeState=value;this.redraw();}
 
-  private redraw(){
-    this.shadow.clear();this.glow.clear();this.bg.clear();this.topLight.clear();this.indicator.clear();
-    const radius=this.kind==='icon'?14:17;
-    const active=this.activeState&&this.kind==='primary';
-    const disabled=this.disabledState;
-    let fill=0x424b5d;
-    if(this.kind==='secondary') fill=0x3acbff;
-    if(this.kind==='icon') fill=0x202b3d;
-    if(active) fill=0xf04e70;
-    if(disabled&&!active) fill=0x2a3241;
+  setText(text: string) {
+    this.caption.text = text;
+  }
 
-    this.shadow.roundRect(0,5,this.widthPx,this.heightPx,radius).fill({color:0x02050a,alpha:.34});
-    if(active) this.glow.roundRect(-4,-4,this.widthPx+8,this.heightPx+8,radius+4).fill({color:Theme.beam,alpha:.10});
-    this.bg.roundRect(0,0,this.widthPx,this.heightPx,radius).fill(fill).stroke({color:0xffffff,width:1,alpha:.08});
-    this.topLight.roundRect(2,2,this.widthPx-4,Math.max(8,this.heightPx*.34),radius-2).fill({color:0xffffff,alpha:disabled&&!active?.025:.07});
-    this.topLight.moveTo(radius+8,2).lineTo(this.widthPx-radius-8,2).stroke({color:0xffffff,width:1,alpha:.10});
+  setDisabled(value: boolean) {
+    this.disabledState = value;
+    this.eventMode = value ? 'none' : 'static';
+    this.cursor = value ? 'default' : 'pointer';
+    if (value) this.setPressed(false);
+    this.redraw();
+  }
 
-    (this.label.style as any).fill=this.kind==='secondary'?0x08131c:Theme.text;
-    this.label.alpha=disabled&&!active?.50:1;
-    if(this.kind==='primary'){
-      const dotX=this.widthPx*.31;
-      this.indicator.circle(dotX,this.heightPx/2,5).fill({color:active?0xffffff:0xaeb8c9,alpha:disabled&&!active?.28:1});
-      if(active)this.indicator.circle(dotX,this.heightPx/2,12).fill({color:0xffffff,alpha:.10});
+  setActive(value: boolean) {
+    this.activeState = value;
+    this.redraw();
+  }
+
+  setLabelSize(size: number) {
+    this.caption.style.fontSize = size;
+  }
+
+  private setPressed(value: boolean) {
+    if (this.disabledState || this.pressedState === value) return;
+    this.pressedState = value;
+    this.redraw();
+  }
+
+  private redraw() {
+    this.shadow.clear();
+    this.body.clear();
+    this.face.clear();
+    this.shine.clear();
+
+    const radius = this.kind === 'icon' ? UI_TOKENS.radius.md : UI_TOKENS.radius.lg;
+    const pressed = this.pressedState;
+    const disabled = this.disabledState;
+    const depth = pressed
+      ? UI_TOKENS.button.pressedDepth
+      : this.kind === 'icon'
+        ? UI_TOKENS.button.chromeDepth
+        : UI_TOKENS.button.idleDepth;
+    const faceH = this.heightPx - depth;
+
+    let fill = Theme.surface;
+    let edge = Theme.surfaceLine;
+    let label = Theme.ink;
+    if (this.kind === 'primary') {
+      fill = Theme.accent;
+      edge = Theme.accentDark;
+    } else if (this.kind === 'fire') {
+      fill = this.activeState ? Theme.beam : Theme.accent;
+      edge = this.activeState ? Theme.beam2 : Theme.accentDark;
+    } else if (this.kind === 'danger') {
+      fill = 0x5a2a30;
+      edge = Theme.danger;
+    } else if (this.kind === 'icon') {
+      fill = Theme.surface;
+      edge = Theme.surfaceLine;
     }
+    if (disabled && this.kind === 'fire' && !this.activeState) {
+      fill = 0x3a4452;
+      edge = 0x2a3340;
+      label = Theme.inkSoft;
+    } else if (disabled && !this.activeState) {
+      fill = Theme.surfaceMuted;
+      edge = Theme.surfaceLine;
+      label = Theme.inkSoft;
+    }
+
+    this.shadow.roundRect(0, 6, this.widthPx, this.heightPx, radius).fill({ color: Theme.shadow, alpha: 0.38 });
+    this.body.roundRect(0, depth, this.widthPx, faceH, radius).fill(shade(fill, 0.62));
+    this.face.roundRect(0, 0, this.widthPx, faceH, radius).fill(fill).stroke({ color: edge, width: 1.5, alpha: 0.95 });
+    this.shine.roundRect(3, 3, this.widthPx - 6, Math.max(10, faceH * 0.34), radius - 3).fill({ color: 0xffffff, alpha: disabled ? 0.04 : 0.1 });
+
+    this.caption.style.fill = label;
+    this.caption.alpha = disabled ? 0.62 : 1;
+    this.caption.position.set(this.widthPx / 2, faceH / 2 + (pressed ? 1 : 0));
   }
+}
+
+function shade(color: number, factor: number): number {
+  const r = Math.round(((color >> 16) & 255) * factor);
+  const g = Math.round(((color >> 8) & 255) * factor);
+  const b = Math.round((color & 255) * factor);
+  return (r << 16) | (g << 8) | b;
 }
