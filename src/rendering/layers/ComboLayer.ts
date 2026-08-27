@@ -2,6 +2,7 @@ import { Container, Graphics, Text } from 'pixi.js';
 import { COMBO_MOTION, UI_RECTS } from '@/config/GameConfig';
 import { clamp, easeInCubic, easeOutBack, easeOutCubic, lerp } from '@/core/easing';
 import { comboPraiseForCount, comboTierForCount, type ComboTier } from '@/gameplay/combo';
+import type { Quality } from '@/performance/PerformanceManager';
 import { FONT_UI, Theme } from '../theme';
 
 type ComboFx = {
@@ -39,6 +40,9 @@ export class ComboLayer extends Container {
     this.effect = { count, tier, startedAt: now, endsAt: now + COMBO_MOTION.duration };
     this.praise.text = comboPraiseForCount(count);
     this.comboText.text = `COMBO ×${count}`;
+    this.praise.style.fontSize = 18 + tier;
+    this.comboText.style.fontSize = 32 + tier * 3;
+    this.drawBody(tier);
     this.visible = true;
   }
 
@@ -47,7 +51,7 @@ export class ComboLayer extends Container {
     this.visible = false;
   }
 
-  update(now: number): boolean {
+  update(now: number, quality: Quality = 'high'): boolean {
     if (!this.effect) {
       this.visible = false;
       return false;
@@ -56,11 +60,23 @@ export class ComboLayer extends Container {
       this.clear();
       return false;
     }
-    this.draw(this.effect, now);
+    this.draw(this.effect, now, quality);
     return true;
   }
 
-  private draw(effect: ComboFx, now: number) {
+  private drawBody(tier: ComboTier) {
+    const width = 300 + tier * 16;
+    const height = 86 + tier * 4;
+    this.body.clear();
+    this.body.roundRect(-width / 2, -height / 2 + 8, width, height, height / 2).fill(0xb43a4e);
+    this.body.roundRect(-width / 2, -height / 2, width, height, height / 2).fill(Theme.beam).stroke({ color: Theme.coin, width: 5 });
+    this.body.moveTo(-width * 0.34, -height * 0.28).quadraticCurveTo(0, -height * 0.47, width * 0.34, -height * 0.28)
+      .stroke({ color: Theme.beamHot, width: 4, alpha: 0.88 });
+    drawStar(this.body, -width / 2 + 32, 0, 11 + tier * 2, Theme.coin);
+    drawStar(this.body, width / 2 - 32, 0, 11 + tier * 2, Theme.coin);
+  }
+
+  private draw(effect: ComboFx, now: number, quality: Quality) {
     const elapsed = now - effect.startedAt;
     const enter = easeOutBack(clamp(elapsed / COMBO_MOTION.enterDuration, 0, 1), 1.28);
     const exit = easeInCubic(clamp(
@@ -82,12 +98,14 @@ export class ComboLayer extends Container {
     this.rotation = lerp(-0.055, 0, enter);
     this.alpha = alpha;
     this.praise.position.set(0, -18);
-    this.praise.style.fontSize = 18 + effect.tier;
     this.comboText.position.set(0, 16);
-    this.comboText.style.fontSize = 32 + effect.tier * 3;
 
     this.rings.clear();
-    this.body.clear();
+    if (quality === 'low') {
+      this.rings.visible = false;
+      return;
+    }
+    this.rings.visible = true;
     for (let ring = 0; ring < tierMotion.ringCount; ring++) {
       const ringProgress = easeOutCubic(clamp((elapsed - ring * 72) / (440 + ring * 55), 0, 1));
       if (ringProgress <= 0 || ringProgress >= 1) continue;
@@ -95,13 +113,6 @@ export class ComboLayer extends Container {
       this.rings.roundRect(-width / 2 + inset, -height / 2 + inset * 0.35, width - inset * 2, height - inset * 0.7, height / 2)
         .stroke({ color: ring % 2 === 0 ? Theme.coin : Theme.beamHot, width: 5 - ringProgress * 2, alpha: (1 - ringProgress) * 0.82 });
     }
-
-    this.body.roundRect(-width / 2, -height / 2 + 8, width, height, height / 2).fill(0xb43a4e);
-    this.body.roundRect(-width / 2, -height / 2, width, height, height / 2).fill(Theme.beam).stroke({ color: Theme.coin, width: 5 });
-    this.body.moveTo(-width * 0.34, -height * 0.28).quadraticCurveTo(0, -height * 0.47, width * 0.34, -height * 0.28)
-      .stroke({ color: Theme.beamHot, width: 4, alpha: 0.88 });
-    drawStar(this.body, -width / 2 + 32, 0, 11 + effect.tier * 2, Theme.coin);
-    drawStar(this.body, width / 2 - 32, 0, 11 + effect.tier * 2, Theme.coin);
   }
 }
 

@@ -13,6 +13,7 @@
 ## 构建
 
 ```bash
+make wechat
 npm run build:web
 npm run build:wechat
 npm run build:douyin
@@ -20,7 +21,7 @@ npm run build:xhs
 npm run build:all
 ```
 
-小游戏构建产物分别位于 `dist/wechat`、`dist/douyin`、`dist/xhs`。平台 AppID、广告、登录、分享等业务能力统一在 `src/platform/` 接入，不进入玩法层。
+`make wechat` 会把可导入微信开发者工具的小游戏目录写到 `dist/wechat`（`game.js`、`game.json`、资源）。小游戏构建产物分别位于 `dist/wechat`、`dist/douyin`、`dist/xhs`。平台 AppID、广告、登录、分享等业务能力统一在 `src/platform/` 接入，不进入玩法层。
 
 ## 核心原则
 

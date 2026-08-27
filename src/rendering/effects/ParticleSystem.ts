@@ -10,7 +10,7 @@ export class ParticleSystem {
   private readonly texture:any;
   constructor(renderer:Renderer){
     const dot=new Graphics().circle(4,4,4).fill(0xffffff);this.texture=renderer.generateTexture(dot);dot.destroy();
-    this.container=new ParticleContainer({dynamicProperties:{position:true,vertex:true,rotation:false,color:true}});
+    this.container=new ParticleContainer({dynamicProperties:{position:true,vertex:false,rotation:false,color:true}});
   }
   emit(x:number,y:number,color:number,count:number,budget:number,dir?:EmitDir){
     count=Math.min(count,Math.max(0,budget-this.activeParticles.length));

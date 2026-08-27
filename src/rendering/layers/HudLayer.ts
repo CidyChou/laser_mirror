@@ -23,6 +23,10 @@ export class HudLayer extends Container {
     style: { fontFamily: FONT_UI, fontSize: 15, fill: Theme.inkSoft, align: 'center', wordWrap: true, wordWrapWidth: 640 },
   });
   private gear = new Sprite(Texture.EMPTY);
+  private lastHit = -1;
+  private lastTotal = -1;
+  private lastShots = -1;
+  private lastHint = '';
 
   constructor() {
     super();
@@ -81,13 +85,29 @@ export class HudLayer extends Container {
   sync(state: GameState) {
     const hit = state.targets.filter((target) => target.hit).length;
     const total = Math.max(1, state.targets.length);
-    this.progressLabel.text = `终点  ${hit} / ${total}`;
-    this.drawProgressFill(hit / total);
-    this.drawHearts(state.shotsLeft);
-    this.hint.text = state.level.hint || '镜子可无限旋转 · 确认路线后再发射';
+    if (hit !== this.lastHit || total !== this.lastTotal) {
+      this.lastHit = hit;
+      this.lastTotal = total;
+      this.progressLabel.text = `终点  ${hit} / ${total}`;
+      this.drawProgressFill(hit / total);
+    }
+    if (state.shotsLeft !== this.lastShots) {
+      this.lastShots = state.shotsLeft;
+      this.drawHearts(state.shotsLeft);
+    }
+    const hint = state.level.hint || '镜子可无限旋转 · 确认路线后再发射';
+    if (hint !== this.lastHint) {
+      this.lastHint = hint;
+      this.hint.text = hint;
+    }
     this.fireButton.setDisabled(state.firing || state.won || state.shotsLeft <= 0);
     this.fireButton.setActive(state.firing);
     this.fireButton.setText('发射');
+  }
+
+  setHeartsVisible(visible: boolean) {
+    this.hearts.visible = visible;
+    this.heartsCount.visible = visible;
   }
 
   private drawProgressFill(ratio: number) {

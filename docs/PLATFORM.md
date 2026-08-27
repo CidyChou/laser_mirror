@@ -16,7 +16,17 @@ src/platform/
 
 ## 微信
 
-构建：`npm run build:wechat`
+```bash
+make wechat
+```
+
+导出可直接用微信开发者工具打开的小游戏目录：`dist/wechat`。
+
+- `game.js`：Vite IIFE 包
+- `game.json` / `project.config.json`：小游戏工程配置（首次从 `templates/wechat/` 复制，之后保留本地 AppID）
+- `audio/`、`ui/`：运行所需资源
+
+开发者工具已安装且开启服务端口时，命令会尝试自动打开该目录；游客 AppID 不会上传真机预览。也可用 `npm run build:wechat` 只出包、不同步工具。
 
 ## 抖音
 

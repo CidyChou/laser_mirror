@@ -2,6 +2,7 @@ import { Application } from 'pixi.js';
 import { AudioManager } from '@/audio/AudioManager';
 import { GameConfig } from '@/config/GameConfig';
 import { nowMs } from '@/core/clock';
+import { loadCoins, saveCoins, winReward } from '@/economy/wallet';
 import { GameSession } from '@/gameplay/GameSession';
 import { LevelRepository } from '@/levels/LevelRepository';
 import { PerformanceManager } from '@/performance/PerformanceManager';
@@ -18,8 +19,9 @@ export class GameApplication {
   private perf=new PerformanceManager();
   private audio:AudioManager;
   private audioEnabled=true;
+  private coins=0;
   private totalLevels=0;
-  private pendingResult:{kind:'win'|'lose';copy:{title:string;subtitle:string;tip:string;primary:string;secondary?:string};at:number}|null=null;
+  private pendingResult:{kind:'win'|'lose';copy:{title:string;subtitle:string;tip:string;primary:string;secondary?:string;reward?:number};at:number}|null=null;
   private unresize=()=>{};
 
   constructor(private readonly platform:IPlatform){
@@ -27,6 +29,7 @@ export class GameApplication {
     this.totalLevels=repo.levels.length;
     this.session=new GameSession(repo.levels);
     this.audio=new AudioManager(platform);
+    this.coins=loadCoins(platform);
     const saved=this.platform.storage.get(AUDIO_STORAGE_KEY);
     this.audioEnabled=saved!=='0';
     this.audio.setEnabled(this.audioEnabled);
@@ -34,6 +37,8 @@ export class GameApplication {
 
   async start(canvas?:any){
     const v=this.platform.viewport();
+    const touch=typeof navigator!=='undefined'&&(navigator.maxTouchPoints>0||/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent||''));
+    this.perf.seedFromDevice({kind:this.platform.kind,touch});
     const targetCanvas=canvas??this.platform.createCanvas?.();
     await this.app.init({
       width:v.width,height:v.height,canvas:targetCanvas,background:0x0d1218,
@@ -49,6 +54,7 @@ export class GameApplication {
     await loadUiAssets(this.platform.kind);
     this.view.setUiTexture('settings', uiTexture(this.platform.kind, 'settings'));
     this.view.setUiTexture('crown', uiTexture(this.platform.kind, 'crown'));
+    this.view.setUiTexture('coin', uiTexture(this.platform.kind, 'coin'));
 
     this.view.setHandlers({
       rotate:(x,y)=>{
@@ -56,15 +62,15 @@ export class GameApplication {
         const now=nowMs();
         this.session.rotateAt(x,y);
         this.view.mirrorRotateFeedback(x,y,now);
-        this.audio.play('mirrorRotate');
-        this.platform.vibrate('light');
+        if(!this.app.ticker.started) this.renderOnce();
         this.wake();
+        this.audio.play('mirrorRotate');
       },
       fire:()=>{
         if(this.view.result.visible||this.view.settings.visible)return;
         this.session.fire(nowMs());this.wake();
       },
-      reset:()=>{this.pendingResult=null;this.audio.play('uiClick');this.session.reset();this.wake();},
+      reset:()=>{this.collectPendingCoins();this.pendingResult=null;this.audio.play('uiClick');this.session.reset();this.wake();},
       openSettings:()=>{
         if(this.view.result.visible)return;
         this.audio.play('uiClick');
@@ -81,21 +87,28 @@ export class GameApplication {
         this.wake();
       },
       resultPrimary:()=>{
+        this.collectPendingCoins();
         this.pendingResult=null;
         this.audio.play('uiClick');
         if(this.view.result.kindValue==='win') this.session.next();
         else this.session.reset();
         this.wake();
       },
-      resultSecondary:()=>{this.pendingResult=null;this.audio.play('uiClick');this.session.reset();this.wake();},
+      resultSecondary:()=>{this.collectPendingCoins();this.pendingResult=null;this.audio.play('uiClick');this.session.reset();this.wake();},
+      coinSound:()=>this.audio.play('coin'),
     });
 
     this.session.on(event=>{
       const now=nowMs();
       const state=this.session.state;
-      if(event.type==='level'){this.pendingResult=null;this.view.hideOverlays();}
+      if(event.type==='level'){this.collectPendingCoins();this.pendingResult=null;this.view.hideOverlays();}
+      if(event.type==='rotate'){
+        this.view.rotateItem(event.x,event.y,event.s);
+        return;
+      }
       if(event.type==='state'||event.type==='level'){
-        this.view.sync(state);this.renderOnce();
+        this.view.sync(state);
+        if(!this.app.ticker.started) this.renderOnce();
       }
       if(event.type==='impact'){
         this.view.impact(event.impact,now);
@@ -131,12 +144,18 @@ export class GameApplication {
       if(event.type==='victory'){
         this.audio.play('win');
         this.view.victory(now,state);
+        const reward=winReward(state.levelIndex);
         const copy={
           title:'通关成功',
           subtitle:`第 ${state.levelIndex+1} 关已完成`,
           tip: state.comboCount>=2 ? `本次连击 ×${state.comboCount}` : '光路接通',
           primary: state.levelIndex < this.totalLevels - 1 ? '下一关' : '再来一轮',
+          reward,
         };
+        if(reward){
+          this.coins+=reward;
+          saveCoins(this.platform,this.coins);
+        }
         this.pendingResult={kind:'win',copy,at:now+(state.comboCount>=2?900:280)};
         this.platform.vibrate('medium');this.wake();
       }
@@ -161,6 +180,10 @@ export class GameApplication {
       if(this.pendingResult&&now>=this.pendingResult.at){
         const pending=this.pendingResult; this.pendingResult=null;
         this.view.showResult(pending.kind, pending.copy, now);
+        if(pending.kind==='win'){
+          const reward=pending.copy.reward??0;
+          this.view.showWinCoins(now, this.coins-reward, reward);
+        }
       }
       this.view.update(this.session.state,now);
       if(!logicActive&&!this.view.active&&!this.pendingResult){this.app.ticker.stop();this.renderOnce();}
@@ -178,6 +201,10 @@ export class GameApplication {
     this.renderOnce();
   }
 
+  private collectPendingCoins(){
+    if(!this.view) return;
+    this.view.settleCoins();
+  }
   private wake(){if(!this.app.ticker.started)this.app.ticker.start();}
   private renderOnce(){this.app.renderer.render(this.app.stage);}
   destroy(){this.pendingResult=null;this.unresize();this.audio.destroy();this.view?.destroy();this.app.destroy(true);}

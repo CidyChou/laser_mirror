@@ -3,10 +3,10 @@ import { borderPoint, cellCenter } from '@/gameplay/geometry';
 import type { BoardGeometry, GameState, LevelItem, Port } from '@/gameplay/types';
 import { Theme } from '../theme';
 
-type ItemNode={key:string;kind:LevelItem['type'];root:Container;motion:Container;angleCarrier?:Container;face?:Graphics;core?:Graphics;phase:number};
+type ItemNode={key:string;kind:LevelItem['type'];root:Container;motion:Container;angleCarrier?:Container;face?:Graphics;core?:Graphics;phase:number;lastLit?:boolean;lastOpen?:boolean};
 type Kick={start:number};
 type ClickFx={root:Container;ring:Graphics;flash:Graphics;start:number;active:boolean};
-type PortNode={port:Port;emitter:boolean;targetIndex?:number;root:Container;band:Graphics;detail:Container;phase:number};
+type PortNode={port:Port;emitter:boolean;targetIndex?:number;root:Container;band:Graphics;detail:Container;phase:number;lastActive:boolean|null};
 
 export class ObjectLayer extends Container{
   private portLayer=new Container();
@@ -17,7 +17,7 @@ export class ObjectLayer extends Container{
   private kicks=new Map<string,Kick>();
   private clickPool:ClickFx[]=[];
   private rotateHandler:(x:number,y:number)=>void=()=>{};
-  private layoutSignature='';
+  private levelIndex=-1;
 
   constructor(){
     super();this.addChild(this.portLayer,this.itemLayer,this.feedbackLayer);
@@ -30,9 +30,15 @@ export class ObjectLayer extends Container{
   }
   setRotateHandler(fn:(x:number,y:number)=>void){this.rotateHandler=fn;}
 
+  rotateItem(x:number,y:number,s:0|1){
+    const n=this.itemNodes.get(`${x},${y}`);
+    if(!n?.angleCarrier) return;
+    n.angleCarrier.rotation=s===0?Math.PI/4:-Math.PI/4;
+  }
+
   sync(state:GameState,g:BoardGeometry){
-    const signature=JSON.stringify({rows:state.level.rows,cols:state.level.cols,emitter:state.level.emitter,targets:state.level.targets,items:state.level.items.map(i=>({type:i.type,x:i.x,y:i.y,fixed:'fixed'in i?!!i.fixed:false,id:'id'in i?i.id:undefined,pair:'pair'in i?i.pair:undefined,requires:'requires'in i?i.requires:undefined}))});
-    if(signature!==this.layoutSignature){this.layoutSignature=signature;this.rebuild(state,g);}this.refresh(state,g);
+    if(this.levelIndex!==state.levelIndex){this.levelIndex=state.levelIndex;this.rebuild(state,g);}
+    this.refresh(state,g);
   }
   private rebuild(state:GameState,g:BoardGeometry){
     this.portLayer.removeChildren().forEach(c=>c.destroy({children:true}));this.itemLayer.removeChildren().forEach(c=>c.destroy({children:true}));this.itemNodes.clear();this.portNodes=[];
@@ -42,7 +48,13 @@ export class ObjectLayer extends Container{
   }
   private refresh(state:GameState,g:BoardGeometry){
     this.portNodes.forEach(n=>this.refreshPort(n,state,g));
-    state.items.forEach(item=>{const n=this.itemNodes.get(`${item.x},${item.y}`);if(!n)return;n.root.position.copyFrom(cellCenter(g,item.x,item.y));if((item.type==='mirror'||item.type==='splitter')&&n.angleCarrier)n.angleCarrier.rotation=item.s===0?Math.PI/4:-Math.PI/4;if(item.type==='switch')this.drawSwitch(n,state.activeSwitches.has(item.id),g);if(item.type==='door')this.drawDoor(n,!!state.activeDoorStates[item.id],g);});
+    state.items.forEach(item=>{
+      const n=this.itemNodes.get(`${item.x},${item.y}`);if(!n)return;
+      n.root.position.copyFrom(cellCenter(g,item.x,item.y));
+      if((item.type==='mirror'||item.type==='splitter')&&n.angleCarrier)n.angleCarrier.rotation=item.s===0?Math.PI/4:-Math.PI/4;
+      if(item.type==='switch'){const lit=state.activeSwitches.has(item.id);if(n.lastLit!==lit){n.lastLit=lit;this.drawSwitch(n,lit,g);}}
+      if(item.type==='door'){const open=!!state.activeDoorStates[item.id];if(n.lastOpen!==open){n.lastOpen=open;this.drawDoor(n,open,g);}}
+    });
   }
 
   kick(x:number,y:number,now:number){this.kicks.set(`${x},${y}`,{start:now});}
@@ -94,10 +106,10 @@ export class ObjectLayer extends Container{
       const s=g.cell*.76,d=g.cell*.12;const sh=new Graphics().roundRect(-s/2+2,-s/2+d+7,s,s-d,g.cell*.12).fill({color:Theme.shadow,alpha:.42});const q=new Graphics().roundRect(-s/2,-s/2,s,s-d,g.cell*.12).fill(0x43536e).stroke({color:0xffffff,width:1,alpha:.08}).roundRect(-s/2+2,g.cell*.02,s-4,s*.31,g.cell*.08).fill({color:0x26344a,alpha:.45});motion.addChild(sh,q);return{key,kind:item.type,root,motion,phase:0};
     }
     if(item.type==='switch'){
-      const face=new Graphics(),core=new Graphics();motion.addChild(face,core);const n={key,kind:item.type,root,motion,face,core,phase:0};this.drawSwitch(n,state.activeSwitches.has(item.id),g);return n;
+      const face=new Graphics(),core=new Graphics();motion.addChild(face,core);const lit=state.activeSwitches.has(item.id);const n={key,kind:item.type,root,motion,face,core,phase:0,lastLit:lit};this.drawSwitch(n,lit,g);return n;
     }
     if(item.type==='door'){
-      const face=new Graphics();motion.addChild(face);const n={key,kind:item.type,root,motion,face,phase:0};this.drawDoor(n,!!state.activeDoorStates[item.id],g);return n;
+      const face=new Graphics();motion.addChild(face);const open=!!state.activeDoorStates[item.id];const n={key,kind:item.type,root,motion,face,phase:0,lastOpen:open};this.drawDoor(n,open,g);return n;
     }
     const col=item.pair==='P1'?Theme.purple:Theme.cyan;const portal=new Graphics().ellipse(0,0,g.cell*.24,g.cell*.17).stroke({color:col,width:5,alpha:1}).ellipse(0,0,g.cell*.15,g.cell*.10).stroke({color:0xffffff,width:1.5,alpha:.65});portal.blendMode='add';motion.addChild(portal);return{key,kind:item.type,root,motion,phase:0};
   }
@@ -105,14 +117,37 @@ export class ObjectLayer extends Container{
   private drawSwitch(n:ItemNode,lit:boolean,g:BoardGeometry){if(!n.face||!n.core)return;n.face.clear().circle(0,0,g.cell*.20).fill(lit?Theme.green:0x25364d).circle(0,0,g.cell*.27).stroke({color:lit?0xd9fff0:0x68809e,width:3,alpha:1});n.core.clear().circle(0,0,g.cell*.055).fill(lit?0xffffff:0x7f93ad);}
   private drawDoor(n:ItemNode,open:boolean,g:BoardGeometry){if(!n.face)return;n.face.clear();if(open){n.face.roundRect(-g.cell*.34,-g.cell*.34,g.cell*.68,g.cell*.68,10).stroke({color:Theme.cyan,width:3,alpha:.28}).rect(-g.cell*.22,-2,g.cell*.44,4).fill({color:Theme.cyan,alpha:.50});}else{n.face.roundRect(-g.cell*.34,-g.cell*.34,g.cell*.68,g.cell*.68,10).fill(0x78445d).stroke({color:0xff7a9d,width:2,alpha:.70});for(let i=-1;i<=1;i++)n.face.moveTo(i*g.cell*.14,-g.cell*.24).lineTo(i*g.cell*.14,g.cell*.24).stroke({color:0xffcad7,width:3,alpha:.55});}}
 
-  private makePort(port:Port,g:BoardGeometry,emitter:boolean,targetIndex?:number){const root=new Container();root.position.copyFrom(borderPoint(g,port));const band=new Graphics(),detail=new Container();root.addChild(band,detail);return{port,emitter,targetIndex,root,band,detail,phase:0};}
-  private refreshPort(n:PortNode,state:GameState,g:BoardGeometry){
-    n.root.position.copyFrom(borderPoint(g,n.port));const active=!n.emitter&&n.targetIndex!==undefined?!!state.targets[n.targetIndex]?.hit:false;const color=n.emitter?Theme.beam:active?Theme.green:Theme.gold;const long=g.cell*.56,thick=Math.max(10,g.wall*.65);n.band.clear();
-    if(n.port.side==='W'||n.port.side==='E'){const x=n.port.side==='W'?-thick*.45:-thick*.55;n.band.roundRect(x,-long/2,thick,long,6);}
-    else{const y=n.port.side==='N'?-thick*.45:-thick*.55;n.band.roundRect(-long/2,y,long,thick,6);}
-    if(n.emitter)n.band.fill(color);else n.band.stroke({color,width:3,alpha:1});
-    n.detail.removeChildren().forEach(c=>c.destroy({children:true}));
-    const offset=9;let dx=0,dy=0;if(n.port.side==='W')dx=-offset;if(n.port.side==='E')dx=offset;if(n.port.side==='N')dy=-offset;if(n.port.side==='S')dy=offset;
-    if(n.emitter){const ang={W:0,E:Math.PI,N:Math.PI/2,S:-Math.PI/2}[n.port.side];const tri=new Graphics().poly([18,0,-11,-14,-11,14],true).fill(color);tri.rotation=ang;const white=new Graphics().poly([9,0,-1,-6,-1,6],true).fill(0xffffff);white.rotation=ang;tri.blendMode='add';n.detail.position.set(dx,dy);n.detail.addChild(tri,white);}else{n.detail.position.set(dx,dy);const ring=new Graphics().circle(0,0,11).stroke({color,width:4,alpha:1}).circle(0,0,3.5).fill(color);ring.blendMode='add';n.detail.addChild(ring);}
+  private makePort(port:Port,g:BoardGeometry,emitter:boolean,targetIndex?:number){
+    const root=new Container();root.position.copyFrom(borderPoint(g,port));
+    const band=new Graphics(),detail=new Container();
+    const long=g.cell*.56,thick=Math.max(10,g.wall*.65);
+    if(port.side==='W'||port.side==='E'){const x=port.side==='W'?-thick*.45:-thick*.55;band.roundRect(x,-long/2,thick,long,6);}
+    else{const y=port.side==='N'?-thick*.45:-thick*.55;band.roundRect(-long/2,y,long,thick,6);}
+    if(emitter)band.fill(0xffffff);else band.stroke({color:0xffffff,width:3,alpha:1});
+    const offset=9;let dx=0,dy=0;if(port.side==='W')dx=-offset;if(port.side==='E')dx=offset;if(port.side==='N')dy=-offset;if(port.side==='S')dy=offset;
+    detail.position.set(dx,dy);
+    if(emitter){
+      const ang={W:0,E:Math.PI,N:Math.PI/2,S:-Math.PI/2}[port.side];
+      const tri=new Graphics().poly([18,0,-11,-14,-11,14],true).fill(0xffffff);tri.rotation=ang;tri.blendMode='add';
+      const white=new Graphics().poly([9,0,-1,-6,-1,6],true).fill(0xffffff);white.rotation=ang;
+      detail.addChild(tri,white);
+    }else{
+      const ring=new Graphics().circle(0,0,11).stroke({color:0xffffff,width:4,alpha:1}).circle(0,0,3.5).fill(0xffffff);ring.blendMode='add';
+      detail.addChild(ring);
+    }
+    root.addChild(band,detail);
+    return{port,emitter,targetIndex,root,band,detail,phase:0,lastActive:null as boolean|null};
+  }
+  private refreshPort(n:PortNode,state:GameState,_g:BoardGeometry){
+    n.root.position.copyFrom(borderPoint(_g,n.port));
+    const active=!n.emitter&&n.targetIndex!==undefined?!!state.targets[n.targetIndex]?.hit:false;
+    if(n.lastActive===active) return;
+    n.lastActive=active;
+    const color=n.emitter?Theme.beam:active?Theme.green:Theme.gold;
+    n.band.tint=color;
+    const tintable=n.emitter?n.detail.children.slice(0,1):n.detail.children;
+    for(const child of tintable){
+      if('tint' in child) (child as Graphics).tint=color;
+    }
   }
 }

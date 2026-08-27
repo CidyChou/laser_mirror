@@ -35,10 +35,12 @@ export class Button extends Container {
   }
 
   setText(text: string) {
+    if (this.caption.text === text) return;
     this.caption.text = text;
   }
 
   setDisabled(value: boolean) {
+    if (this.disabledState === value) return;
     this.disabledState = value;
     this.eventMode = value ? 'none' : 'static';
     this.cursor = value ? 'default' : 'pointer';
@@ -47,6 +49,7 @@ export class Button extends Container {
   }
 
   setActive(value: boolean) {
+    if (this.activeState === value) return;
     this.activeState = value;
     this.redraw();
   }

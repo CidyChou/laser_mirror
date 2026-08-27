@@ -1,0 +1,7 @@
+{
+  "description": "本地私有配置（可在微信开发者工具中覆盖 AppID）",
+  "projectname": "laser-mirror",
+  "setting": {
+    "compileHotReLoad": true
+  }
+}

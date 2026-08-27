@@ -5,10 +5,13 @@ REMOTE_PORT ?= 8347
 PUBLIC_URL ?= http://106.55.78.71:$(REMOTE_PORT)/
 GAME_HOST ?= 0.0.0.0
 GAME_PORT ?= 8347
+WECHAT_DEVTOOLS_CLI ?= /Applications/wechatwebdevtools.app/Contents/MacOS/cli
+WECHAT_DEVTOOLS_PROJECT ?= $(CURDIR)/dist/wechat
+WECHAT_PREVIEW ?= 1
 
 .DEFAULT_GOAL := help
 
-.PHONY: help install dev build typecheck check clean up_106
+.PHONY: help install dev build wechat wechat-preview typecheck check clean up_106
 
 help: ## 显示全部 Make 命令和说明
 	@echo "Laser Mirror 开发命令"
@@ -28,6 +31,19 @@ dev: ## 启动游戏并允许局域网访问（默认端口 8347）
 
 build: ## 构建 Web 包到 dist/web
 	npm run build:web
+
+wechat: ## 构建微信包、同步开发者工具，并生成 iOS 预览二维码
+	npm run build:wechat
+	WECHAT_DEVTOOLS_CLI="$(WECHAT_DEVTOOLS_CLI)" \
+	WECHAT_DEVTOOLS_PROJECT="$(WECHAT_DEVTOOLS_PROJECT)" \
+	WECHAT_PREVIEW="$(WECHAT_PREVIEW)" \
+	node tools/sync-wechat.mjs
+
+wechat-preview: ## 用当前 dist/wechat 包生成 iOS 预览二维码
+	WECHAT_DEVTOOLS_CLI="$(WECHAT_DEVTOOLS_CLI)" \
+	WECHAT_DEVTOOLS_PROJECT="$(WECHAT_DEVTOOLS_PROJECT)" \
+	WECHAT_PREVIEW=1 \
+	node tools/sync-wechat.mjs
 
 typecheck: ## 检查 TypeScript 类型
 	npm run typecheck

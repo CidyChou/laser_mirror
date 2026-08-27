@@ -20,7 +20,8 @@ export type SfxName =
   | 'combo3'
   | 'combo4'
   | 'combo5'
-  | 'combo6';
+  | 'combo6'
+  | 'coin';
 
 type SoundDef = { file:string; volume:number; pool:number; cooldownMs?:number; rateJitter?:number };
 type Player = any;
@@ -46,12 +47,14 @@ const SOUND_DEFS: Record<SfxName, SoundDef> = {
   combo4:       { file:'combo-4.mp3', volume:.90, pool:1, cooldownMs:40 },
   combo5:       { file:'combo-5.mp3', volume:.92, pool:1, cooldownMs:40 },
   combo6:       { file:'combo-6.mp3', volume:.96, pool:1, cooldownMs:40 },
+  coin:         { file:'coin-pickup.mp3', volume:.73, pool:4, cooldownMs:70, rateJitter:.03 },
 };
 
 export class AudioManager {
   private readonly banks = new Map<SfxName, Bank>();
   private masterVolume = 1;
   private enabled = true;
+  private unlocked = false;
 
   constructor(private readonly platform:IPlatform) {
     for (const [name, def] of Object.entries(SOUND_DEFS) as [SfxName, SoundDef][]) {
@@ -74,6 +77,35 @@ export class AudioManager {
 
   setEnabled(enabled:boolean){this.enabled=enabled;}
   setMasterVolume(volume:number){this.masterVolume=Math.max(0,Math.min(1,volume));}
+
+  private warmLater() {
+    if (this.unlocked) return;
+    this.unlocked = true;
+    const later = typeof setTimeout === 'function' ? (fn: () => void) => setTimeout(fn, 160) : (fn: () => void) => fn();
+    later(() => {
+      const warm: SfxName[] = ['uiClick', 'coin', 'laserCharge', 'laserFire', 'win', 'mirrorHit'];
+      for (const name of warm) {
+        const player = this.banks.get(name)?.players[0];
+        if (!player) continue;
+        try {
+          const volume = player.volume;
+          player.muted = true;
+          player.volume = 0;
+          const restore = () => {
+            try {
+              player.pause?.();
+              if ('currentTime' in player) player.currentTime = 0;
+              player.muted = false;
+              player.volume = volume;
+            } catch {}
+          };
+          const result = player.play?.();
+          if (result?.then) result.then(restore).catch(restore);
+          else restore();
+        } catch {}
+      }
+    });
+  }
 
   playCombo(count:number) {
     const name = `combo${comboAudioIndex(count)}` as SfxName;
@@ -99,9 +131,9 @@ export class AudioManager {
     bank.lastPlayed=now;
     const player=bank.players[bank.cursor++ % bank.players.length];
     try {
-      player.pause?.();
+      if (player.paused === false) player.pause?.();
       player.stop?.();
-      if ('currentTime' in player) player.currentTime=0;
+      if ('currentTime' in player && player.currentTime) player.currentTime=0;
       player.volume=Math.max(0,Math.min(1,def.volume*this.masterVolume*volumeScale));
       if ('playbackRate' in player) {
         const jitter=def.rateJitter ?? 0;
@@ -109,6 +141,7 @@ export class AudioManager {
       }
       const result=player.play?.();
       result?.catch?.(()=>{});
+      this.warmLater();
     } catch {}
   }
 

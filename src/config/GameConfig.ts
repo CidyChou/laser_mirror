@@ -13,6 +13,7 @@ export const UI_RECTS = {
   settings: { x: 32, y: 28, w: 80, h: 80 },
   progress: { x: 230, y: 28, w: 260, h: 80 },
   hearts: { x: 572, y: 28, w: 116, h: 80 },
+  coinCounter: { x: 520, y: 28, w: 168, h: 72 },
   fire: { x: 210, y: 1186, w: 300, h: 92 },
   hint: { x: 360, y: 1292 },
   resultWin: { x: 86, y: 300, w: 548, h: 560 },
@@ -31,6 +32,14 @@ export const COMBO_MOTION = {
     2: { badgeScale: 1.05, ringCount: 2 },
     3: { badgeScale: 1.1, ringCount: 3 },
   },
+} as const;
+
+export const WIN_REWARD_MOTION = {
+  counterRevealDelay: 200,
+  counterRevealDuration: 160,
+  coinFlightStartDelay: 420,
+  coinFlightStagger: 75,
+  coinFlightDuration: 850,
 } as const;
 
 export const GameConfig = {

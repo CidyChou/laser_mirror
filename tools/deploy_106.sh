@@ -19,6 +19,9 @@ required_paths=(
 	"audio/game-over.mp3"
 	"ui/settings-gear.png"
 	"ui/victory-crown.png"
+	"ui/victory-coin.png"
+	"ui/app-icon.png"
+	"audio/coin-pickup.mp3"
 )
 
 if [[ ! -d "$BUILD_DIR" ]]; then

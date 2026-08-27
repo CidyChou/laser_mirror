@@ -8,6 +8,7 @@ import type { GameState, ImpactEvent, LevelDefinition, LevelItem } from './types
 export type GameEvent =
   | { type:'state' }
   | { type:'level' }
+  | { type:'rotate'; x:number; y:number; s:0|1 }
   | { type:'impact'; impact:ImpactEvent }
   | { type:'toast'; text:string }
   | { type:'shot-start' }
@@ -60,7 +61,7 @@ export class GameSession {
     const item = this.state.items.find(i=>i.x===x && i.y===y);
     if (!item || (item.type !== 'mirror' && item.type !== 'splitter') || item.fixed) return;
     item.s = item.s === 0 ? 1 : 0;
-    this.emit({type:'state'});
+    this.emit({type:'rotate', x, y, s:item.s});
   }
 
   fire(now = nowMs()) {
