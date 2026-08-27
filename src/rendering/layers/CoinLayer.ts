@@ -2,6 +2,7 @@ import { Container, Graphics, Sprite, Text, Texture } from 'pixi.js';
 import { UI_RECTS, UI_TOKENS, WIN_REWARD_MOTION } from '@/config/GameConfig';
 import { clamp, easeOutCubic } from '@/core/easing';
 import { Theme, uiText } from '../theme';
+import { drawCoinIcon } from '../ui/icons';
 
 const FLIGHT_POOL = 12;
 const COIN_RADIUS = 18;
@@ -19,6 +20,7 @@ type Flight = {
   soundPlayed: boolean;
   arrived: boolean;
   launched: boolean;
+  spin: number;
 };
 
 export class CoinLayer extends Container {
@@ -117,6 +119,7 @@ export class CoinLayer extends Container {
         soundPlayed: false,
         arrived: false,
         launched: false,
+        spin: Math.random() * Math.PI * 2,
       });
     }
   }
@@ -182,7 +185,7 @@ export class CoinLayer extends Container {
       const x = inverse * inverse * flight.start.x + 2 * inverse * eased * flight.control.x + eased * eased * end.x;
       const y = inverse * inverse * flight.start.y + 2 * inverse * eased * flight.control.y + eased * eased * end.y;
       const radius = 17 + Math.sin(progress * Math.PI) * 5;
-      placeCoin(flight.sprite, flight.fallback, x, y, radius, this.texture);
+      placeCoin(flight.sprite, flight.fallback, x, y, radius, flight.spin + progress * 12, this.texture);
       flight.sprite.alpha = stillVisible ? 1 : 0;
       flight.fallback.alpha = flight.sprite.alpha;
       if (progress >= 1 && !flight.arrived) {
@@ -231,7 +234,7 @@ export class CoinLayer extends Container {
     this.counterIcon.width = this.layout.radius * 2;
     this.counterIcon.height = this.layout.radius * 2;
     this.counterFallback.position.set(this.layout.x, this.layout.y);
-    this.counterFallback.scale.set(this.layout.radius);
+    this.counterFallback.scale.set(this.layout.radius / COIN_RADIUS);
     this.counterValue.position.set(this.layout.textX, this.layout.y);
   }
 
@@ -288,19 +291,18 @@ function applyCoinSprite(sprite: Sprite, fallback: Graphics, texture: Texture) {
 }
 
 function drawCoinFallback(g: Graphics) {
-  g.clear();
-  g.circle(0, 2 / COIN_RADIUS, 1).fill(0xc98213);
-  g.circle(0, -1 / COIN_RADIUS, 1).fill(Theme.coin);
-  g.circle(0, -1 / COIN_RADIUS, 0.62).stroke({ color: 0xfff4ae, width: 0.12, alpha: 0.55 });
+  drawCoinIcon(g, COIN_RADIUS);
 }
 
-function placeCoin(sprite: Sprite, fallback: Graphics, x: number, y: number, radius: number, texture: Texture) {
+function placeCoin(sprite: Sprite, fallback: Graphics, x: number, y: number, radius: number, rotation: number, texture: Texture) {
   const ok = isTextureOk(texture);
   sprite.position.set(x, y);
   sprite.width = radius * 2;
   sprite.height = radius * 2;
+  sprite.rotation = rotation;
   sprite.visible = ok;
   fallback.visible = !ok;
   fallback.position.set(x, y);
-  fallback.scale.set(radius);
+  fallback.scale.set(radius / COIN_RADIUS);
+  fallback.rotation = rotation;
 }

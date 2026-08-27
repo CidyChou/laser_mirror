@@ -2,6 +2,7 @@ import { Container, Graphics, Rectangle, Sprite, Text, Texture } from 'pixi.js';
 import { DESIGN_HEIGHT, DESIGN_WIDTH, UI_RECTS, UI_TOKENS } from '@/config/GameConfig';
 import { clamp, easeOutBack } from '@/core/easing';
 import { Button } from '../ui/Button';
+import { drawCoinIcon, drawCrownIcon } from '../ui/icons';
 import { setUiFontSize, Theme, uiText } from '../theme';
 
 export type ResultKind = 'win' | 'lose';
@@ -29,6 +30,7 @@ export class ResultLayer extends Container {
   private readonly rewardCoin = new Sprite(Texture.EMPTY);
   private readonly rewardCoinFallback = new Graphics();
   private readonly crown = new Sprite(Texture.EMPTY);
+  private readonly crownFallback = new Graphics();
   private kind: ResultKind = 'win';
   private shownAt = 0;
   private entering = false;
@@ -50,10 +52,12 @@ export class ResultLayer extends Container {
     this.crown.anchor.set(0.5);
     this.crown.width = 124;
     this.crown.height = 124;
+    drawCrownIcon(this.crownFallback, 124);
     this.primary.setLabelSize(28);
     this.secondary.setLabelSize(22);
     this.panel.addChild(
       this.panelGfx,
+      this.crownFallback,
       this.crown,
       this.title,
       this.subtitle,
@@ -72,6 +76,7 @@ export class ResultLayer extends Container {
     const ok = texture !== Texture.EMPTY && texture.width > 1;
     this.crown.texture = texture;
     this.crown.visible = this.kind === 'win' && ok;
+    this.crownFallback.visible = this.kind === 'win' && !ok;
   }
 
   setCoinTexture(texture: Texture) {
@@ -105,6 +110,7 @@ export class ResultLayer extends Container {
     this.rewardCoin.visible = showReward && coinOk;
     this.rewardCoinFallback.visible = showReward && !coinOk;
     this.crown.visible = kind === 'win' && this.crown.texture !== Texture.EMPTY && this.crown.texture.width > 1;
+    this.crownFallback.visible = kind === 'win' && !this.crown.visible;
     this.title.style.fill = kind === 'win' ? Theme.ink : Theme.danger;
     setUiFontSize(this.title, kind === 'win' ? 52 : 64);
     this.layout();
@@ -133,6 +139,7 @@ export class ResultLayer extends Container {
     this.panel.position.set(rect.x + rect.w / 2, rect.y + rect.h / 2);
     this.drawPanel(rect.w, rect.h);
     this.crown.position.set(0, -rect.h / 2 + 78);
+    this.crownFallback.position.copyFrom(this.crown.position);
     this.title.position.set(0, this.kind === 'win' ? -rect.h / 2 + 168 : -rect.h / 2 + 132);
     this.subtitle.position.set(0, this.kind === 'win' ? -rect.h / 2 + 218 : -rect.h / 2 + 198);
     this.tip.position.set(0, this.kind === 'win' ? -18 : 18);
@@ -155,8 +162,8 @@ export class ResultLayer extends Container {
     this.rewardCoin.height = coinR * 2;
     this.rewardCoinFallback.clear();
     if (this.rewardCoinFallback.visible) {
-      this.rewardCoinFallback.circle(coinX, y + 2, coinR).fill(0xc98213);
-      this.rewardCoinFallback.circle(coinX, y - 1, coinR).fill(Theme.coin);
+      drawCoinIcon(this.rewardCoinFallback, coinR);
+      this.rewardCoinFallback.position.set(coinX, y);
     }
   }
 

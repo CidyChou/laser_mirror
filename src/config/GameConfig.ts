@@ -35,11 +35,19 @@ export const COMBO_MOTION = {
 } as const;
 
 export const WIN_REWARD_MOTION = {
-  counterRevealDelay: 200,
+  counterRevealDelay: 1600,
   counterRevealDuration: 160,
-  coinFlightStartDelay: 420,
+  coinFlightStartDelay: 1800,
   coinFlightStagger: 75,
   coinFlightDuration: 850,
+} as const;
+
+export const WIN_CONFETTI_MOTION = {
+  duration: 3800,
+  launchInset: 18,
+  launchYRatio: 0.4,
+  staggerWindow: 250,
+  counts: { high: 53, medium: 40, low: 28 },
 } as const;
 
 export const GameConfig = {

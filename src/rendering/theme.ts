@@ -27,6 +27,8 @@ export const Theme = {
   danger: 0xd84f51,
   success: 0x4da43a,
   coin: 0xf0aa22,
+  coinDark: 0xc98213,
+  coinHighlight: 0xfff1a0,
   settingsIcon: 0xd8dde5,
   overlay: 0x050709,
   beam: 0xff5578,

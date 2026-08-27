@@ -171,6 +171,7 @@ export class GameApplication {
           this.coins+=reward;
           saveCoins(this.platform,this.coins);
         }
+        this.view.startWinCoins(now, this.coins-reward, reward);
         this.pendingResult={kind:'win',copy,at:now+(state.comboCount>=2?900:280)};
         this.platform.vibrate('success');this.wake();
       }
@@ -196,10 +197,7 @@ export class GameApplication {
       if(this.pendingResult&&now>=this.pendingResult.at){
         const pending=this.pendingResult; this.pendingResult=null;
         this.view.showResult(pending.kind, pending.copy, now);
-        if(pending.kind==='win'){
-          const reward=pending.copy.reward??0;
-          this.view.showWinCoins(now, this.coins-reward, reward);
-        }
+        if(pending.kind==='win') this.view.revealWinCoins();
       }
       this.view.update(this.session.state,now);
       if(!logicActive&&!this.view.active&&!this.pendingResult){this.app.ticker.stop();this.renderOnce();}

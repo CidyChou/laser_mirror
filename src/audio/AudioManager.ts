@@ -28,7 +28,7 @@ type Player = any;
 type Bank = { players:Player[]; cursor:number; lastPlayed:number };
 
 const SOUND_DEFS: Record<SfxName, SoundDef> = {
-  mirrorRotate: { file:'mirror_rotate.mp3', volume:.32, pool:2, cooldownMs:24, rateJitter:.035 },
+  mirrorRotate: { file:'mirror_rotate.mp3', volume:.70, pool:2, cooldownMs:24 },
   laserCharge:  { file:'laser_charge.mp3', volume:.42, pool:1, cooldownMs:100 },
   laserFire:    { file:'laser_fire.mp3', volume:.52, pool:1, cooldownMs:80, rateJitter:.018 },
   mirrorHit:    { file:'mirror_hit.mp3', volume:.34, pool:2, cooldownMs:34, rateJitter:.04 },
@@ -47,7 +47,7 @@ const SOUND_DEFS: Record<SfxName, SoundDef> = {
   combo4:       { file:'combo-4.mp3', volume:.90, pool:1, cooldownMs:40 },
   combo5:       { file:'combo-5.mp3', volume:.92, pool:1, cooldownMs:40 },
   combo6:       { file:'combo-6.mp3', volume:.96, pool:1, cooldownMs:40 },
-  coin:         { file:'coin-pickup.mp3', volume:.73, pool:4, cooldownMs:70, rateJitter:.03 },
+  coin:         { file:'coin-pickup.mp3', volume:.728, pool:8, cooldownMs:70 },
 };
 
 export class AudioManager {
