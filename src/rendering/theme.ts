@@ -1,4 +1,6 @@
-export const FONT_UI = '"SF Pro Rounded", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif';
+import type { TextStyleOptions } from 'pixi.js';
+
+export const FONT_UI = '"PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", sans-serif';
 
 export const Theme = {
   bg: 0x0d1218,
@@ -40,3 +42,14 @@ export const Theme = {
   heart: 0xe45b64,
   heartEmpty: 0x3a4450,
 };
+
+/** WeChat canvas clips CJK glyphs unless the raster padded and weight is `bold`. */
+export function uiText(style: TextStyleOptions = {}): TextStyleOptions {
+  const fontSize = Number(style.fontSize ?? 24);
+  return {
+    fontFamily: FONT_UI,
+    fontWeight: 'bold',
+    ...style,
+    padding: Math.max(10, Math.round(fontSize * 0.32)),
+  };
+}

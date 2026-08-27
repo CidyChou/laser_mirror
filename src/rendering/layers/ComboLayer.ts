@@ -3,7 +3,7 @@ import { COMBO_MOTION, UI_RECTS } from '@/config/GameConfig';
 import { clamp, easeInCubic, easeOutBack, easeOutCubic, lerp } from '@/core/easing';
 import { comboPraiseForCount, comboTierForCount, type ComboTier } from '@/gameplay/combo';
 import type { Quality } from '@/performance/PerformanceManager';
-import { FONT_UI, Theme } from '../theme';
+import { Theme, uiText } from '../theme';
 
 type ComboFx = {
   count: number;
@@ -17,11 +17,11 @@ export class ComboLayer extends Container {
   private readonly body = new Graphics();
   private readonly praise = new Text({
     text: '',
-    style: { fontFamily: FONT_UI, fontSize: 20, fontWeight: '800', fill: 0xfffaf1 },
+    style: uiText({ fontSize: 20, fill: 0xfffaf1 }),
   });
   private readonly comboText = new Text({
     text: '',
-    style: { fontFamily: FONT_UI, fontSize: 36, fontWeight: '900', fill: 0xfffaf1 },
+    style: uiText({ fontSize: 36, fill: 0xfffaf1 }),
   });
   private effect: ComboFx | null = null;
 

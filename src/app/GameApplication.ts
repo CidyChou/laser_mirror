@@ -40,21 +40,31 @@ export class GameApplication {
     const touch=typeof navigator!=='undefined'&&(navigator.maxTouchPoints>0||/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent||''));
     this.perf.seedFromDevice({kind:this.platform.kind,touch});
     const targetCanvas=canvas??this.platform.createCanvas?.();
+    const mini=this.platform.kind!=='web';
     await this.app.init({
       width:v.width,height:v.height,canvas:targetCanvas,background:0x0d1218,
+      // Prefer WebGL2 where the mini-game runtime exposes it; Pixi falls back
+      // to WebGL1 automatically. Rendering features still target WebGL1.
       preference:GameConfig.renderer.preference,preferWebGLVersion:GameConfig.renderer.preferWebGLVersion,
-      powerPreference:'high-performance',antialias:GameConfig.renderer.antialias,
+      powerPreference:'high-performance',antialias:mini?false:GameConfig.renderer.antialias,
       resolution:Math.min(v.pixelRatio,GameConfig.renderer.maxResolution),autoDensity:this.platform.kind==='web',autoStart:false
     });
 
-    this.platform.attachCanvas(this.app.canvas);
+    this.platform.attachCanvas(this.app.canvas,(this.app.renderer as any).events);
     this.view=new PixiGameView(this.app.renderer,this.perf);
     this.app.stage.addChild(this.view.root);
     this.view.resize(v.width,v.height);
-    await loadUiAssets(this.platform.kind);
-    this.view.setUiTexture('settings', uiTexture(this.platform.kind, 'settings'));
-    this.view.setUiTexture('crown', uiTexture(this.platform.kind, 'crown'));
-    this.view.setUiTexture('coin', uiTexture(this.platform.kind, 'coin'));
+    this.view.sync(this.session.state);
+    this.renderOnce();
+
+    // UI sprites are optional decoration. Never block gameplay or the first
+    // frame on mini-game image callbacks; the vector fallbacks are complete.
+    void loadUiAssets(this.platform.kind).then(()=>{
+      this.view.setUiTexture('settings', uiTexture(this.platform.kind, 'settings'));
+      this.view.setUiTexture('crown', uiTexture(this.platform.kind, 'crown'));
+      this.view.setUiTexture('coin', uiTexture(this.platform.kind, 'coin'));
+      this.renderOnce();
+    });
 
     this.view.setHandlers({
       rotate:(x,y)=>{

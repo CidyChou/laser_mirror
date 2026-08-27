@@ -13,12 +13,12 @@ import { SettingsLayer } from './layers/SettingsLayer';
 import { LaserEffect } from './effects/LaserEffect';
 import { ImpactSystem } from './effects/ImpactSystem';
 import { ParticleSystem } from './effects/ParticleSystem';
-import { FONT_UI, Theme } from './theme';
+import { Theme, uiText } from './theme';
 import type { UiAssetKey } from './ui/assets';
 
 export class PixiGameView{
   readonly root=new Container();
-  private bg=new Graphics();private stageBg=new Graphics();private board=new BoardLayer();private objects=new ObjectLayer();private laser=new LaserEffect();private impacts=new ImpactSystem();private particles:ParticleSystem;private hud=new HudLayer();private combo=new ComboLayer();readonly coins=new CoinLayer();readonly result=new ResultLayer();readonly settings=new SettingsLayer();private toastBg=new Graphics();private toast=new Text({text:'',style:{fontFamily:FONT_UI,fontSize:18,fontWeight:'700',fill:Theme.text}});private toastUntil=0;private victoryUntil=0;private victoryWash=new Graphics();private currentLevel=-1;private lastGeometry:BoardGeometry|null=null;private comboActive=false;private resultActive=false;private coinsActive=false;
+  private bg=new Graphics();private stageBg=new Graphics();private board=new BoardLayer();private objects=new ObjectLayer();private laser=new LaserEffect();private impacts=new ImpactSystem();private particles:ParticleSystem;private hud=new HudLayer();private combo=new ComboLayer();readonly coins=new CoinLayer();readonly result=new ResultLayer();readonly settings=new SettingsLayer();private toastBg=new Graphics();private toast=new Text({text:'',style:uiText({fontSize:18,fill:Theme.text})});private toastUntil=0;private victoryUntil=0;private victoryWash=new Graphics();private currentLevel=-1;private lastGeometry:BoardGeometry|null=null;private comboActive=false;private resultActive=false;private coinsActive=false;
   constructor(renderer:Renderer,private readonly performance:PerformanceManager){this.particles=new ParticleSystem(renderer);this.buildBackground();this.root.addChild(this.bg,this.stageBg,this.board,this.objects,this.laser,this.particles.container,this.impacts,this.victoryWash,this.hud,this.combo,this.toastBg,this.toast,this.result,this.coins,this.settings);this.toast.anchor.set(.5);this.toast.position.set(360,220);this.toast.visible=false;this.toastBg.visible=false;}
   private buildBackground(){
     this.bg.rect(0,0,DESIGN_WIDTH,DESIGN_HEIGHT).fill(Theme.bg);

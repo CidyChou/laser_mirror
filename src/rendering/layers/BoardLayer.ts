@@ -37,6 +37,6 @@ export class BoardLayer extends Container {
     }
 
     this.addChild(shape);
-    this.cacheAsTexture({resolution:1.25,antialias:true});
+    this.cacheAsTexture({resolution:1.25});
   }
 }

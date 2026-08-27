@@ -2,7 +2,7 @@ import { Container, Graphics, Rectangle, Sprite, Text, Texture } from 'pixi.js';
 import { DESIGN_HEIGHT, DESIGN_WIDTH, UI_RECTS, UI_TOKENS } from '@/config/GameConfig';
 import { clamp, easeOutBack } from '@/core/easing';
 import { Button } from '../ui/Button';
-import { FONT_UI, Theme } from '../theme';
+import { Theme, uiText } from '../theme';
 
 export type ResultKind = 'win' | 'lose';
 
@@ -12,19 +12,19 @@ export class ResultLayer extends Container {
   private readonly dim = new Graphics();
   private readonly panel = new Container();
   private readonly panelGfx = new Graphics();
-  private readonly title = new Text({ text: '', style: { fontFamily: FONT_UI, fontSize: 52, fontWeight: '900', fill: Theme.ink } });
-  private readonly subtitle = new Text({ text: '', style: { fontFamily: FONT_UI, fontSize: 22, fontWeight: '700', fill: Theme.inkSoft } });
+  private readonly title = new Text({ text: '', style: uiText({ fontSize: 52, fill: Theme.ink }) });
+  private readonly subtitle = new Text({ text: '', style: uiText({ fontSize: 22, fill: Theme.inkSoft }) });
   private readonly tip = new Text({
     text: '',
-    style: { fontFamily: FONT_UI, fontSize: 18, fontWeight: '600', fill: Theme.ink, align: 'center', wordWrap: true, wordWrapWidth: 420 },
+    style: uiText({ fontSize: 18, fill: Theme.ink, align: 'center', wordWrap: true, wordWrapWidth: 420 }),
   });
   private readonly rewardLabel = new Text({
     text: '获得',
-    style: { fontFamily: FONT_UI, fontSize: 32, fontWeight: '800', fill: Theme.inkSoft },
+    style: uiText({ fontSize: 32, fill: Theme.inkSoft }),
   });
   private readonly rewardValue = new Text({
     text: '+0',
-    style: { fontFamily: FONT_UI, fontSize: 40, fontWeight: '900', fill: Theme.coin },
+    style: uiText({ fontSize: 40, fill: Theme.coin }),
   });
   private readonly rewardCoin = new Sprite(Texture.EMPTY);
   private readonly rewardCoinFallback = new Graphics();

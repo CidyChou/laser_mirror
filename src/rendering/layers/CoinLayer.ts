@@ -1,7 +1,7 @@
 import { Container, Graphics, Sprite, Text, Texture } from 'pixi.js';
 import { UI_RECTS, UI_TOKENS, WIN_REWARD_MOTION } from '@/config/GameConfig';
 import { clamp, easeOutCubic } from '@/core/easing';
-import { FONT_UI, Theme } from '../theme';
+import { Theme, uiText } from '../theme';
 
 const FLIGHT_POOL = 12;
 const COIN_RADIUS = 18;
@@ -29,7 +29,7 @@ export class CoinLayer extends Container {
   private readonly counterFallback = new Graphics();
   private readonly counterValue = new Text({
     text: '0',
-    style: { fontFamily: FONT_UI, fontSize: 26, fontWeight: '900', fill: Theme.ink },
+    style: uiText({ fontSize: 26, fill: Theme.ink }),
   });
   private readonly flightsRoot = new Container();
   private readonly pool: Array<{ sprite: Sprite; fallback: Graphics }> = [];

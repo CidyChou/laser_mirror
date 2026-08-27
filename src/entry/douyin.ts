@@ -1,3 +1,4 @@
+import 'pixi.js/unsafe-eval';
 import { GameApplication } from '@/app/GameApplication';
 import { installMiniGamePixiAdapter } from '@/platform/minigame/MiniGamePixiAdapter';
 import { DouyinPlatform } from '@/platform/douyin/DouyinPlatform';

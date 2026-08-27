@@ -1,7 +1,7 @@
 import { Container, Graphics, Rectangle, Text } from 'pixi.js';
 import { DESIGN_HEIGHT, DESIGN_WIDTH, UI_RECTS, UI_TOKENS } from '@/config/GameConfig';
 import { Button } from '../ui/Button';
-import { FONT_UI, Theme } from '../theme';
+import { Theme, uiText } from '../theme';
 
 export class SettingsLayer extends Container {
   readonly closeButton = new Button(64, 64, '✕', 'icon');
@@ -11,7 +11,7 @@ export class SettingsLayer extends Container {
   private readonly panel = new Graphics();
   private readonly title = new Text({
     text: '设置',
-    style: { fontFamily: FONT_UI, fontSize: 40, fontWeight: '900', fill: Theme.ink },
+    style: uiText({ fontSize: 40, fill: Theme.ink }),
   });
 
   constructor() {

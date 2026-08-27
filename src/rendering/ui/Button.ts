@@ -1,6 +1,6 @@
 import { Container, Graphics, Rectangle, Text } from 'pixi.js';
 import { UI_TOKENS } from '@/config/GameConfig';
-import { FONT_UI, Theme } from '../theme';
+import { Theme, uiText } from '../theme';
 
 export type ButtonKind = 'primary' | 'secondary' | 'icon' | 'fire' | 'danger';
 
@@ -9,7 +9,7 @@ export class Button extends Container {
   private body = new Graphics();
   private face = new Graphics();
   private shine = new Graphics();
-  private caption = new Text({ text: '', style: { fontFamily: FONT_UI, fontSize: 26, fontWeight: '800', fill: Theme.ink } });
+  private caption = new Text({ text: '', style: uiText({ fontSize: 26, fill: Theme.ink }) });
   private disabledState = false;
   private activeState = false;
   private pressedState = false;
@@ -56,6 +56,7 @@ export class Button extends Container {
 
   setLabelSize(size: number) {
     this.caption.style.fontSize = size;
+    this.caption.style.padding = Math.max(10, Math.round(size * 0.32));
   }
 
   private setPressed(value: boolean) {

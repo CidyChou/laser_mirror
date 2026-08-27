@@ -2,7 +2,8 @@ import { Container, Graphics, Sprite, Text, Texture } from 'pixi.js';
 import { UI_RECTS } from '@/config/GameConfig';
 import type { GameState } from '@/gameplay/types';
 import { Button } from '../ui/Button';
-import { FONT_UI, Theme } from '../theme';
+import { drawGearIcon } from '../ui/icons';
+import { Theme, uiText } from '../theme';
 
 export class HudLayer extends Container {
   readonly settingsButton = new Button(UI_RECTS.settings.w, UI_RECTS.settings.h, '', 'icon');
@@ -11,17 +12,18 @@ export class HudLayer extends Container {
   private readonly progressFill = new Graphics();
   private readonly progressLabel = new Text({
     text: '',
-    style: { fontFamily: FONT_UI, fontSize: 15, fontWeight: '700', fill: Theme.inkSoft },
+    style: uiText({ fontSize: 15, fill: Theme.inkSoft }),
   });
   private readonly hearts = new Graphics();
   private readonly heartsCount = new Text({
     text: '',
-    style: { fontFamily: FONT_UI, fontSize: 28, fontWeight: '800', fill: Theme.ink },
+    style: uiText({ fontSize: 28, fill: Theme.ink }),
   });
   private readonly hint = new Text({
     text: '',
-    style: { fontFamily: FONT_UI, fontSize: 15, fill: Theme.inkSoft, align: 'center', wordWrap: true, wordWrapWidth: 640 },
+    style: uiText({ fontSize: 15, fill: Theme.inkSoft, align: 'center', wordWrap: true, wordWrapWidth: 640 }),
   });
+  private readonly gearIcon = new Graphics();
   private gear = new Sprite(Texture.EMPTY);
   private lastHit = -1;
   private lastTotal = -1;
@@ -37,19 +39,24 @@ export class HudLayer extends Container {
     const ok = texture !== Texture.EMPTY && texture.width > 1;
     this.gear.texture = texture;
     this.gear.visible = ok;
-    this.settingsButton.setText(ok ? '' : '设');
+    this.gearIcon.visible = !ok;
   }
 
   private build() {
     const settings = UI_RECTS.settings;
     this.settingsButton.position.set(settings.x, settings.y);
+    this.settingsButton.setText('');
     this.gear.anchor.set(0.5);
     this.gear.position.set(settings.w / 2, settings.h / 2 - 3);
-    this.gear.width = 52;
-    this.gear.height = 52;
+    this.gear.width = 46;
+    this.gear.height = 46;
     this.gear.tint = Theme.settingsIcon;
     this.gear.eventMode = 'none';
-    this.settingsButton.addChild(this.gear);
+    this.gear.visible = false;
+    this.gearIcon.eventMode = 'none';
+    this.gearIcon.position.set(settings.w / 2, settings.h / 2 - 3);
+    drawGearIcon(this.gearIcon, 46);
+    this.settingsButton.addChild(this.gearIcon, this.gear);
 
     const progress = UI_RECTS.progress;
     this.progressBg.position.set(progress.x, progress.y);
