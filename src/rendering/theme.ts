@@ -43,13 +43,22 @@ export const Theme = {
   heartEmpty: 0x3a4450,
 };
 
-/** WeChat canvas clips CJK glyphs unless the raster padded and weight is `bold`. */
+/** WeChat canvas clips CJK glyphs unless the raster is padded and weight is `bold`. */
+export function uiTextPadding(fontSize: number): number {
+  return Math.max(10, Math.round(Number(fontSize) * 0.32));
+}
+
 export function uiText(style: TextStyleOptions = {}): TextStyleOptions {
   const fontSize = Number(style.fontSize ?? 24);
   return {
+    ...style,
     fontFamily: FONT_UI,
     fontWeight: 'bold',
-    ...style,
-    padding: Math.max(10, Math.round(fontSize * 0.32)),
+    padding: uiTextPadding(fontSize),
   };
+}
+
+export function setUiFontSize(target: { style: { fontSize?: number | string; padding?: number } }, size: number) {
+  target.style.fontSize = size;
+  target.style.padding = uiTextPadding(size);
 }

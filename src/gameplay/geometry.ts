@@ -31,3 +31,8 @@ export function borderPoint(g: BoardGeometry, port: Port): Point {
 export function samePort(a: Port, b: Port): boolean {
   return a.side === b.side && a.index === b.index;
 }
+
+/** 6×6 boards sit near cell=100; 3×3 / 4×4 cells are much larger and need a thicker beam. */
+export function beamScale(cell: number): number {
+  return Math.max(0.95, Math.min(2.2, cell / 100));
+}

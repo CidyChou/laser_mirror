@@ -1,6 +1,6 @@
 import { Container, Graphics, Rectangle, Text } from 'pixi.js';
 import { UI_TOKENS } from '@/config/GameConfig';
-import { Theme, uiText } from '../theme';
+import { setUiFontSize, Theme, uiText } from '../theme';
 
 export type ButtonKind = 'primary' | 'secondary' | 'icon' | 'fire' | 'danger';
 
@@ -55,8 +55,7 @@ export class Button extends Container {
   }
 
   setLabelSize(size: number) {
-    this.caption.style.fontSize = size;
-    this.caption.style.padding = Math.max(10, Math.round(size * 0.32));
+    setUiFontSize(this.caption, size);
   }
 
   private setPressed(value: boolean) {

@@ -3,7 +3,7 @@ import { COMBO_MOTION, UI_RECTS } from '@/config/GameConfig';
 import { clamp, easeInCubic, easeOutBack, easeOutCubic, lerp } from '@/core/easing';
 import { comboPraiseForCount, comboTierForCount, type ComboTier } from '@/gameplay/combo';
 import type { Quality } from '@/performance/PerformanceManager';
-import { Theme, uiText } from '../theme';
+import { setUiFontSize, Theme, uiText } from '../theme';
 
 type ComboFx = {
   count: number;
@@ -24,6 +24,7 @@ export class ComboLayer extends Container {
     style: uiText({ fontSize: 36, fill: 0xfffaf1 }),
   });
   private effect: ComboFx | null = null;
+  private topOffset = 0;
 
   constructor() {
     super();
@@ -40,10 +41,14 @@ export class ComboLayer extends Container {
     this.effect = { count, tier, startedAt: now, endsAt: now + COMBO_MOTION.duration };
     this.praise.text = comboPraiseForCount(count);
     this.comboText.text = `COMBO ×${count}`;
-    this.praise.style.fontSize = 18 + tier;
-    this.comboText.style.fontSize = 32 + tier * 3;
+    setUiFontSize(this.praise, 18 + tier);
+    setUiFontSize(this.comboText, 32 + tier * 3);
     this.drawBody(tier);
     this.visible = true;
+  }
+
+  setTopOffset(offset: number) {
+    this.topOffset = offset;
   }
 
   clear() {
@@ -91,7 +96,7 @@ export class ComboLayer extends Container {
     const pulse = 1 + Math.sin(clamp((elapsed - COMBO_MOTION.enterDuration) / 430, 0, 1) * Math.PI) * 0.045 * (1 - exit);
     const scale = lerp(0.56, tierMotion.badgeScale, enter) * pulse * (1 - exit * 0.08);
     const x = UI_RECTS.progress.x + UI_RECTS.progress.w / 2;
-    const y = Math.max(height * scale / 2 + 10, COMBO_MOTION.badgeY - exit * 18);
+    const y = Math.max(height * scale / 2 + 10, COMBO_MOTION.badgeY - exit * 18) + this.topOffset;
 
     this.position.set(x, y);
     this.scale.set(scale);

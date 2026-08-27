@@ -1,8 +1,8 @@
 export const DESIGN_WIDTH = 720;
 export const DESIGN_HEIGHT = 1400;
 
-export const STAGE_TOP = 204;
-export const STAGE_HEIGHT = 924;
+export const STAGE_TOP = 248;
+export const STAGE_HEIGHT = 880;
 
 export const UI_TOKENS = {
   radius: { sm: 12, md: 18, lg: 26, xl: 36 },
@@ -10,10 +10,10 @@ export const UI_TOKENS = {
 } as const;
 
 export const UI_RECTS = {
-  settings: { x: 32, y: 88, w: 80, h: 80 },
-  progress: { x: 230, y: 88, w: 260, h: 80 },
-  hearts: { x: 572, y: 88, w: 116, h: 80 },
-  coinCounter: { x: 520, y: 88, w: 168, h: 72 },
+  settings: { x: 32, y: 104, w: 80, h: 80 },
+  progress: { x: 230, y: 104, w: 260, h: 80 },
+  hearts: { x: 572, y: 104, w: 116, h: 80 },
+  coinCounter: { x: 520, y: 104, w: 168, h: 72 },
   fire: { x: 210, y: 1186, w: 300, h: 92 },
   hint: { x: 360, y: 1292 },
   resultWin: { x: 86, y: 300, w: 548, h: 560 },
@@ -26,7 +26,7 @@ export const COMBO_MOTION = {
   enterDuration: 180,
   burstDuration: 760,
   holdUntil: 900,
-  badgeY: 128,
+  badgeY: 144,
   tiers: {
     1: { badgeScale: 1, ringCount: 1 },
     2: { badgeScale: 1.05, ringCount: 2 },

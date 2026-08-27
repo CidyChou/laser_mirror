@@ -1,5 +1,6 @@
 import { Container, Graphics } from 'pixi.js';
 import { GameConfig } from '@/config/GameConfig';
+import { beamScale } from '@/gameplay/geometry';
 import type { GameState, LaserSegment, LaserTrace } from '@/gameplay/types';
 import type { Quality } from '@/performance/PerformanceManager';
 import { Theme } from '../theme';
@@ -28,6 +29,7 @@ export class LaserEffect extends Container{
   private jointCount=-1;
   private lastQuality:Quality|null=null;
   private frozen=false;
+  private cellScale=1;
 
   constructor(){
     super();
@@ -38,7 +40,13 @@ export class LaserEffect extends Container{
     this.addChild(this.beam,this.joints,this.packets,this.head,this.chargeRoot);
   }
 
-  bind(_state:GameState){}
+  bind(_state:GameState, cell=100){
+    const next=beamScale(cell);
+    if(Math.abs(next-this.cellScale)<=0.02) return;
+    this.cellScale=next;
+    this.boundResult=null;
+    this.frozen=false;
+  }
 
   private axisOf(x1:number,y1:number,x2:number,y2:number){
     return Math.abs(x2-x1)>=Math.abs(y2-y1)?'h':'v';
@@ -85,13 +93,14 @@ export class LaserEffect extends Container{
       root.rotation=Math.atan2(run.y2-run.y1,run.x2-run.x1);
       root.scale.x=0;
       root.visible=false;
+      const s=this.cellScale;
       const wide=new Graphics();
       wide.blendMode='add';
-      wide.moveTo(0,0).lineTo(length,0).stroke({color:Theme.beam2,width:52,alpha:.10,cap:'round'});
-      wide.moveTo(0,0).lineTo(length,0).stroke({color:Theme.beam2,width:30,alpha:.14,cap:'round'});
-      const body=this.strokeLine(12.2,Theme.beam,.88,length);
-      const plasma=this.strokeLine(5.8,0xffcdd9,.94,length);
-      const core=this.strokeLine(2.5,0xfffdfd,.98,length);
+      wide.moveTo(0,0).lineTo(length,0).stroke({color:Theme.beam2,width:52*s,alpha:.10,cap:'round'});
+      wide.moveTo(0,0).lineTo(length,0).stroke({color:Theme.beam2,width:30*s,alpha:.14,cap:'round'});
+      const body=this.strokeLine(12.2*s,Theme.beam,.88,length);
+      const plasma=this.strokeLine(5.8*s,0xffcdd9,.94,length);
+      const core=this.strokeLine(2.5*s,0xfffdfd,.98,length);
       root.addChild(wide,body,plasma,core);
       this.beam.addChild(root);
       this.runVisuals.push({run,length,root,wide,body,plasma,core});
@@ -136,7 +145,9 @@ export class LaserEffect extends Container{
   private updateCharge(origin:LaserSegment,chargeT:number,quality:Quality){
     const dir=this.originDir(origin);
     this.chargeRoot.visible=true;
-    this.chargeRoot.position.set(origin.x1+dir.dx*18,origin.y1+dir.dy*18);
+    const s=this.cellScale;
+    this.chargeRoot.position.set(origin.x1+dir.dx*18*s,origin.y1+dir.dy*18*s);
+    this.chargeRoot.scale.set(s);
     const inhale=chargeT*chargeT;
     this.halo.scale.set(1-inhale*.55);
     this.halo.alpha=.12*(1-chargeT*.25);
@@ -180,10 +191,11 @@ export class LaserEffect extends Container{
     if(points.length===this.jointCount) return;
     this.jointCount=points.length;
     this.joints.clear();
+    const s=this.cellScale;
     for(const [x,y] of points){
-      this.joints.circle(x,y,5.6).fill({color:Theme.beam,alpha:.7});
-      this.joints.circle(x,y,2.8).fill({color:0xffcdd9,alpha:.9});
-      this.joints.circle(x,y,1.3).fill({color:0xffffff,alpha:.96});
+      this.joints.circle(x,y,5.6*s).fill({color:Theme.beam,alpha:.7});
+      this.joints.circle(x,y,2.8*s).fill({color:0xffcdd9,alpha:.9});
+      this.joints.circle(x,y,1.3*s).fill({color:0xffffff,alpha:.96});
     }
   }
 
@@ -197,26 +209,28 @@ export class LaserEffect extends Container{
       if(tVis<=0||v.length<12) return;
       const dx=v.run.x2-v.run.x1,dy=v.run.y2-v.run.y1;
       const nx=-dy/v.length,ny=dx/v.length;
+      const s=this.cellScale;
       for(let k=0;k<count;k++){
         const tt=(now*.0019+si*.21+k*.37)%1;
         if(tt>tVis) continue;
         const ang=now*.015+si+k*2.2+tt*Math.PI*3;
-        const amp=3.6+k*.8;
+        const amp=(3.6+k*.8)*s;
         const x=v.run.x1+dx*tt+nx*Math.sin(ang)*amp;
         const y=v.run.y1+dy*tt+ny*Math.sin(ang)*amp;
-        this.packets.circle(x,y,k===0?2.1:1.35).fill({color:k===0?0xffffff:Theme.beamHot,alpha:k===0?.8:.5});
+        this.packets.circle(x,y,(k===0?2.1:1.35)*s).fill({color:k===0?0xffffff:Theme.beamHot,alpha:k===0?.8:.5});
       }
     });
   }
 
   private drawHead(dist:number,now:number,punch:number,origin:LaserSegment|undefined,launchAge:number){
     this.head.clear();
+    const s=this.cellScale;
     if(origin&&launchAge<240){
       const dir=this.originDir(origin);
-      const mx=origin.x1+dir.dx*16,my=origin.y1+dir.dy*16;
+      const mx=origin.x1+dir.dx*16*s,my=origin.y1+dir.dy*16*s;
       const k=1-launchAge/240,blast=k*k;
-      this.head.circle(mx,my,18+blast*26).fill({color:Theme.beam2,alpha:.18*blast});
-      this.head.circle(mx,my,8+blast*12).fill({color:0xffffff,alpha:.62*blast});
+      this.head.circle(mx,my,(18+blast*26)*s).fill({color:Theme.beam2,alpha:.18*blast});
+      this.head.circle(mx,my,(8+blast*12)*s).fill({color:0xffffff,alpha:.62*blast});
     }
     const partial=this.runVisuals.find(v=>{
       const span=Math.max(.001,v.run.endDist-v.run.startDist);
@@ -229,10 +243,10 @@ export class LaserEffect extends Container{
     const x=partial.run.x1+(partial.run.x2-partial.run.x1)*t;
     const y=partial.run.y1+(partial.run.y2-partial.run.y1)*t;
     const dx=partial.run.x2-partial.run.x1,dy=partial.run.y2-partial.run.y1,len=partial.length;
-    const nx=-dy/len,ny=dx/len,hp=.5+.5*Math.sin(now*.022),shock=12+hp*6+punch*10;
-    this.head.moveTo(x-nx*shock,y-ny*shock).lineTo(x+nx*shock,y+ny*shock).stroke({color:0xffffff,width:2.2+punch*2.2,alpha:.4+hp*.18+punch*.22,cap:'round'});
-    this.head.circle(x,y,12+hp*2.2+punch*7).fill({color:Theme.beam2,alpha:.24+punch*.16});
-    this.head.circle(x,y,5.6+hp+punch*2.6).fill({color:0xffffff,alpha:.96});
+    const nx=-dy/len,ny=dx/len,hp=.5+.5*Math.sin(now*.022),shock=(12+hp*6+punch*10)*s;
+    this.head.moveTo(x-nx*shock,y-ny*shock).lineTo(x+nx*shock,y+ny*shock).stroke({color:0xffffff,width:(2.2+punch*2.2)*s,alpha:.4+hp*.18+punch*.22,cap:'round'});
+    this.head.circle(x,y,(12+hp*2.2+punch*7)*s).fill({color:Theme.beam2,alpha:.24+punch*.16});
+    this.head.circle(x,y,(5.6+hp+punch*2.6)*s).fill({color:0xffffff,alpha:.96});
   }
 
   private hideOverlays(){

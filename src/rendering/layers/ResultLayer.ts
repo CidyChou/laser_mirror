@@ -2,7 +2,7 @@ import { Container, Graphics, Rectangle, Sprite, Text, Texture } from 'pixi.js';
 import { DESIGN_HEIGHT, DESIGN_WIDTH, UI_RECTS, UI_TOKENS } from '@/config/GameConfig';
 import { clamp, easeOutBack } from '@/core/easing';
 import { Button } from '../ui/Button';
-import { Theme, uiText } from '../theme';
+import { setUiFontSize, Theme, uiText } from '../theme';
 
 export type ResultKind = 'win' | 'lose';
 
@@ -106,7 +106,7 @@ export class ResultLayer extends Container {
     this.rewardCoinFallback.visible = showReward && !coinOk;
     this.crown.visible = kind === 'win' && this.crown.texture !== Texture.EMPTY && this.crown.texture.width > 1;
     this.title.style.fill = kind === 'win' ? Theme.ink : Theme.danger;
-    this.title.style.fontSize = kind === 'win' ? 52 : 64;
+    setUiFontSize(this.title, kind === 'win' ? 52 : 64);
     this.layout();
     this.syncMotion(now);
   }

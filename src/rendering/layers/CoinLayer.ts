@@ -42,6 +42,7 @@ export class CoinLayer extends Container {
   private onSound: (() => void) | null = null;
   private getStart: () => { x: number; y: number } = () => ({ x: 360, y: 580 });
   private layout = counterLayout(false);
+  private topOffset = 0;
 
   constructor() {
     super();
@@ -71,6 +72,12 @@ export class CoinLayer extends Container {
 
   setHandlers(handlers: { onSound: () => void }) {
     this.onSound = handlers.onSound;
+  }
+
+  setTopOffset(offset: number) {
+    if (this.topOffset === offset) return;
+    this.topOffset = offset;
+    this.counter.position.set(UI_RECTS.coinCounter.x, UI_RECTS.coinCounter.y + offset);
   }
 
   show(now: number, balance: number) {
@@ -136,7 +143,7 @@ export class CoinLayer extends Container {
   }
 
   iconCenter() {
-    return { x: UI_RECTS.coinCounter.x + this.layout.x, y: UI_RECTS.coinCounter.y + this.layout.y };
+    return { x: UI_RECTS.coinCounter.x + this.layout.x, y: UI_RECTS.coinCounter.y + this.topOffset + this.layout.y };
   }
 
   update(now: number): boolean {

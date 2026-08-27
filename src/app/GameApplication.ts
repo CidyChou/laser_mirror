@@ -53,7 +53,7 @@ export class GameApplication {
     this.platform.attachCanvas(this.app.canvas,(this.app.renderer as any).events);
     this.view=new PixiGameView(this.app.renderer,this.perf);
     this.app.stage.addChild(this.view.root);
-    this.view.resize(v.width,v.height);
+    this.view.resize(v.width,v.height,this.platform.safeTop());
     this.view.sync(this.session.state);
     this.renderOnce();
 
@@ -75,6 +75,7 @@ export class GameApplication {
         if(!this.app.ticker.started) this.renderOnce();
         this.wake();
         this.audio.play('mirrorRotate');
+        this.platform.vibrate('light');
       },
       fire:()=>{
         if(this.view.result.visible||this.view.settings.visible)return;
@@ -131,23 +132,27 @@ export class GameApplication {
           case 'door': this.audio.play('mirrorHit',.55); break;
           case 'wall': this.audio.play('mirrorHit',.42); break;
         }
-        if(event.impact.type==='mirror'||event.impact.type==='splitter')this.platform.vibrate('light');
+        if(event.impact.type==='target')this.platform.vibrate('medium');
+        else if(event.impact.type==='mirror'||event.impact.type==='splitter'||event.impact.type==='portal')this.platform.vibrate('light');
         this.wake();
       }
       if(event.type==='combo'){
         this.view.showCombo(event.count, now);
         this.audio.playCombo(event.count);
+        this.platform.vibrate(event.count>=3?'medium':'light');
         this.wake();
       }
       if(event.type==='toast'){this.view.showToast(event.text,now);this.wake();}
       if(event.type==='shot-start'){
         this.audio.play('laserCharge');
-        this.view.shotStart(state,now);this.wake();
+        this.view.shotStart(state,now);
+        this.platform.vibrate('medium');
+        this.wake();
       }
       if(event.type==='laser-launch'){
         this.audio.play('laserFire');
         this.view.laserLaunch(state,now);
-        this.platform.vibrate('medium');
+        this.platform.vibrate('heavy');
         this.wake();
       }
       if(event.type==='shot-end'&&!event.success) this.audio.play('shotFail');
@@ -167,7 +172,7 @@ export class GameApplication {
           saveCoins(this.platform,this.coins);
         }
         this.pendingResult={kind:'win',copy,at:now+(state.comboCount>=2?900:280)};
-        this.platform.vibrate('medium');this.wake();
+        this.platform.vibrate('success');this.wake();
       }
       if(event.type==='defeat'){
         this.audio.play('lose');
@@ -178,6 +183,7 @@ export class GameApplication {
           primary:'重新挑战',
           secondary:'再试一次',
         }, now);
+        this.platform.vibrate('heavy');
         this.wake();
       }
     });
@@ -201,7 +207,7 @@ export class GameApplication {
 
     this.unresize=this.platform.onResize(next=>{
       this.app.renderer.resize(next.width,next.height);
-      this.view.resize(next.width,next.height);
+      this.view.resize(next.width,next.height,this.platform.safeTop());
       if(this.platform.kind==='web'){
         const c=this.app.canvas as HTMLCanvasElement;
         c.style.width=`${next.width}px`;c.style.height=`${next.height}px`;

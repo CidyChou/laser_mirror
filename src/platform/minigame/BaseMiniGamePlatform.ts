@@ -53,7 +53,29 @@ export class BaseMiniGamePlatform implements IPlatform{
     this.detachInput=()=>{for(const remove of removers)remove();removers.length=0;};
   }
   onResize(handler:(v:ViewportInfo)=>void){const fn=()=>handler(this.viewport());this.api.onWindowResize?.(fn);return()=>this.api.offWindowResize?.(fn)}
-  vibrate(type:'light'|'medium'='light'){if(this.api.vibrateShort)this.api.vibrateShort({type});}
+  safeTop(){
+    try{
+      const menu=this.api.getMenuButtonBoundingClientRect?.();
+      if(menu&&Number.isFinite(menu.bottom)) return Number(menu.bottom)+10;
+      const info=this.api.getSystemInfoSync?.()??{};
+      const status=Number(info.statusBarHeight??info.safeArea?.top??0);
+      if(status>0) return status+48;
+    }catch{}
+    return 0;
+  }
+  vibrate(type:'light'|'medium'|'heavy'|'success'='light'){
+    if(type==='success'){
+      if(this.api.vibrateLong){
+        this.api.vibrateLong();
+        const later=typeof setTimeout==='function'?(fn:()=>void)=>setTimeout(fn,420):(fn:()=>void)=>fn();
+        later(()=>this.api.vibrateLong?.());
+      }else this.api.vibrateShort?.({type:'heavy'});
+      return;
+    }
+    const mapped=type==='light'?'medium':'heavy';
+    if(this.api.vibrateShort) this.api.vibrateShort({type:mapped});
+    else this.api.vibrateLong?.();
+  }
   storage={get:(key:string)=>{try{return this.api.getStorageSync?.(key)??null}catch{return null}},set:(key:string,value:string)=>{try{this.api.setStorageSync?.(key,value)}catch{}}};
 }
 

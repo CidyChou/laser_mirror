@@ -29,6 +29,7 @@ export class HudLayer extends Container {
   private lastTotal = -1;
   private lastShots = -1;
   private lastHint = '';
+  private topOffset = 0;
 
   constructor() {
     super();
@@ -40,6 +41,18 @@ export class HudLayer extends Container {
     this.gear.texture = texture;
     this.gear.visible = ok;
     this.gearIcon.visible = !ok;
+  }
+
+  setTopOffset(offset: number) {
+    if (this.topOffset === offset) return;
+    this.topOffset = offset;
+    const y = (rectY: number) => rectY + offset;
+    this.settingsButton.position.set(UI_RECTS.settings.x, y(UI_RECTS.settings.y));
+    this.progressBg.position.set(UI_RECTS.progress.x, y(UI_RECTS.progress.y));
+    this.progressFill.position.set(UI_RECTS.progress.x, y(UI_RECTS.progress.y));
+    this.progressLabel.position.set(UI_RECTS.progress.x + UI_RECTS.progress.w / 2, y(UI_RECTS.progress.y) + 22);
+    this.hearts.position.set(UI_RECTS.hearts.x, y(UI_RECTS.hearts.y));
+    if (this.lastShots >= 0) this.drawHearts(this.lastShots);
   }
 
   private build() {
@@ -151,7 +164,7 @@ export class HudLayer extends Container {
     const groupW = size + gap + this.heartsCount.width;
     const startX = (w - groupW) / 2;
     drawHeart(this.hearts, startX + size / 2, faceH / 2 + 1, size, empty ? Theme.heartEmpty : Theme.heart);
-    this.heartsCount.position.set(cardX + startX + size + gap, cardY + faceH / 2);
+    this.heartsCount.position.set(cardX + startX + size + gap, cardY + this.topOffset + faceH / 2);
   }
 }
 
