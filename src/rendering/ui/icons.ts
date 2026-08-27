@@ -27,9 +27,9 @@ export function drawGearIcon(g: Graphics, size = 52, color = Theme.settingsIcon)
     );
   }
   g.poly(points).fill(color);
-  g.circle(0, 2, hub).fill(0x10161c);
+  g.circle(0, 2, hub).fill(Theme.surfaceSide);
   g.circle(0, 0, hub).fill(color);
-  g.circle(0, 0, hole).fill(0x10161c);
+  g.circle(0, 0, hole).fill(Theme.surfaceSide);
 }
 
 export function drawCrownIcon(g: Graphics, size = 124) {

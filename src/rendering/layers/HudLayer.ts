@@ -96,7 +96,7 @@ export class HudLayer extends Container {
       .roundRect(0, 6, w, h - 2, UI_RECTS.progress.h / 2)
       .fill({ color: Theme.shadow, alpha: 0.34 })
       .roundRect(0, 5, w, h - 5, h / 2)
-      .fill(0x10161c)
+      .fill(Theme.surfaceSide)
       .roundRect(0, 0, w, h - 5, h / 2)
       .fill(Theme.surface)
       .stroke({ color: Theme.surfaceLine, width: 1.5 });
@@ -139,7 +139,7 @@ export class HudLayer extends Container {
     const fillW = Math.max(0, barW * Math.min(1, Math.max(0, ratio)));
     this.progressFill.clear()
       .roundRect(inset, barY, barW, barH, barH / 2)
-      .fill(0x2a3340)
+      .fill(Theme.surfaceMuted)
       .roundRect(inset, barY, Math.max(fillW, fillW > 0 ? barH : 0), barH, barH / 2)
       .fill(Theme.accent);
   }
@@ -151,7 +151,7 @@ export class HudLayer extends Container {
       .roundRect(0, 6, w, h - 2, 18)
       .fill({ color: Theme.shadow, alpha: 0.34 })
       .roundRect(0, 5, w, h - 5, 18)
-      .fill(0x10161c)
+      .fill(Theme.surfaceSide)
       .roundRect(0, 0, w, h - 5, 18)
       .fill(Theme.surface)
       .stroke({ color: Theme.surfaceLine, width: 1.5 });

@@ -3,7 +3,7 @@ import { GameConfig } from '@/config/GameConfig';
 import { beamScale } from '@/gameplay/geometry';
 import type { GameState, LaserSegment, LaserTrace } from '@/gameplay/types';
 import type { Quality } from '@/performance/PerformanceManager';
-import { Theme } from '../theme';
+import { isLightTheme, Theme } from '../theme';
 
 type Run={x1:number;y1:number;x2:number;y2:number;startDist:number;endDist:number};
 type RunVisual={run:Run;length:number;root:Container;wide:Graphics;body:Graphics;plasma:Graphics;core:Graphics};
@@ -30,12 +30,13 @@ export class LaserEffect extends Container{
   private lastQuality:Quality|null=null;
   private frozen=false;
   private cellScale=1;
+  private readonly energyBlend = isLightTheme() ? 'normal' : 'add';
 
   constructor(){
     super();
-    this.packets.blendMode='add';
-    this.joints.blendMode='add';
-    this.head.blendMode='add';
+    this.packets.blendMode=this.energyBlend;
+    this.joints.blendMode=this.energyBlend;
+    this.head.blendMode=this.energyBlend;
     this.buildCharge();
     this.addChild(this.beam,this.joints,this.packets,this.head,this.chargeRoot);
   }
@@ -75,7 +76,7 @@ export class LaserEffect extends Container{
 
   private strokeLine(width:number,color:number,alpha:number,length:number){
     const g=new Graphics();
-    g.blendMode='add';
+    g.blendMode=this.energyBlend;
     g.moveTo(0,0).lineTo(length,0).stroke({color,width,alpha,cap:'round'});
     return g;
   }
@@ -95,12 +96,12 @@ export class LaserEffect extends Container{
       root.visible=false;
       const s=this.cellScale;
       const wide=new Graphics();
-      wide.blendMode='add';
+      wide.blendMode=this.energyBlend;
       wide.moveTo(0,0).lineTo(length,0).stroke({color:Theme.beam2,width:52*s,alpha:.10,cap:'round'});
       wide.moveTo(0,0).lineTo(length,0).stroke({color:Theme.beam2,width:30*s,alpha:.14,cap:'round'});
       const body=this.strokeLine(12.2*s,Theme.beam,.88,length);
-      const plasma=this.strokeLine(5.8*s,0xffcdd9,.94,length);
-      const core=this.strokeLine(2.5*s,0xfffdfd,.98,length);
+      const plasma=this.strokeLine(5.8*s,Theme.laserPlasma,.94,length);
+      const core=this.strokeLine(2.5*s,Theme.laserCore,.98,length);
       root.addChild(wide,body,plasma,core);
       this.beam.addChild(root);
       this.runVisuals.push({run,length,root,wide,body,plasma,core});
@@ -117,26 +118,26 @@ export class LaserEffect extends Container{
   }
 
   private buildCharge(){
-    this.halo.blendMode='add';
+    this.halo.blendMode=this.energyBlend;
     this.halo.circle(0,0,26).fill({color:Theme.beam2,alpha:1});
-    this.ringA.blendMode='add';
+    this.ringA.blendMode=this.energyBlend;
     this.ringA.circle(0,0,26).stroke({color:Theme.beam,width:3,alpha:1});
-    this.ringB.blendMode='add';
+    this.ringB.blendMode=this.energyBlend;
     this.ringB.circle(0,0,26).stroke({color:Theme.beamHot,width:3,alpha:1});
-    this.sparks.blendMode='add';
+    this.sparks.blendMode=this.energyBlend;
     for(let i=0;i<7;i++){
       const a=i*Math.PI*2/7;
-      const spark=new Graphics().circle(Math.cos(a),Math.sin(a),0.12).fill({color:i%2?0xffffff:Theme.beamHot,alpha:1});
-      spark.blendMode='add';
+      const spark=new Graphics().circle(Math.cos(a),Math.sin(a),0.12).fill({color:i%2?Theme.white:Theme.beamHot,alpha:1});
+      spark.blendMode=this.energyBlend;
       this.sparks.addChild(spark);
     }
-    this.stub.blendMode='add';
-    this.stub.moveTo(0,0).lineTo(1,0).stroke({color:0xffffff,width:4,alpha:.7,cap:'round'});
+    this.stub.blendMode=this.energyBlend;
+    this.stub.moveTo(0,0).lineTo(1,0).stroke({color:Theme.white,width:4,alpha:.7,cap:'round'});
     this.stub.moveTo(0,0).lineTo(1,0).stroke({color:Theme.beam,width:10,alpha:.32,cap:'round'});
-    this.core.blendMode='add';
-    this.core.circle(0,0,1).fill({color:0xffffff,alpha:1});
-    this.pop.blendMode='add';
-    this.pop.circle(0,0,1).fill({color:0xffffff,alpha:1});
+    this.core.blendMode=this.energyBlend;
+    this.core.circle(0,0,1).fill({color:Theme.white,alpha:1});
+    this.pop.blendMode=this.energyBlend;
+    this.pop.circle(0,0,1).fill({color:Theme.white,alpha:1});
     this.chargeRoot.addChild(this.halo,this.ringA,this.ringB,this.sparks,this.stub,this.core,this.pop);
     this.chargeRoot.visible=false;
     this.chargeRoot.eventMode='none';
@@ -194,8 +195,8 @@ export class LaserEffect extends Container{
     const s=this.cellScale;
     for(const [x,y] of points){
       this.joints.circle(x,y,5.6*s).fill({color:Theme.beam,alpha:.7});
-      this.joints.circle(x,y,2.8*s).fill({color:0xffcdd9,alpha:.9});
-      this.joints.circle(x,y,1.3*s).fill({color:0xffffff,alpha:.96});
+      this.joints.circle(x,y,2.8*s).fill({color:Theme.laserPlasma,alpha:.9});
+      this.joints.circle(x,y,1.3*s).fill({color:Theme.white,alpha:.96});
     }
   }
 
@@ -217,7 +218,7 @@ export class LaserEffect extends Container{
         const amp=(3.6+k*.8)*s;
         const x=v.run.x1+dx*tt+nx*Math.sin(ang)*amp;
         const y=v.run.y1+dy*tt+ny*Math.sin(ang)*amp;
-        this.packets.circle(x,y,(k===0?2.1:1.35)*s).fill({color:k===0?0xffffff:Theme.beamHot,alpha:k===0?.8:.5});
+        this.packets.circle(x,y,(k===0?2.1:1.35)*s).fill({color:k===0?Theme.white:Theme.beamHot,alpha:k===0?.8:.5});
       }
     });
   }
@@ -230,7 +231,7 @@ export class LaserEffect extends Container{
       const mx=origin.x1+dir.dx*16*s,my=origin.y1+dir.dy*16*s;
       const k=1-launchAge/240,blast=k*k;
       this.head.circle(mx,my,(18+blast*26)*s).fill({color:Theme.beam2,alpha:.18*blast});
-      this.head.circle(mx,my,(8+blast*12)*s).fill({color:0xffffff,alpha:.62*blast});
+      this.head.circle(mx,my,(8+blast*12)*s).fill({color:Theme.white,alpha:.62*blast});
     }
     const partial=this.runVisuals.find(v=>{
       const span=Math.max(.001,v.run.endDist-v.run.startDist);
@@ -244,9 +245,9 @@ export class LaserEffect extends Container{
     const y=partial.run.y1+(partial.run.y2-partial.run.y1)*t;
     const dx=partial.run.x2-partial.run.x1,dy=partial.run.y2-partial.run.y1,len=partial.length;
     const nx=-dy/len,ny=dx/len,hp=.5+.5*Math.sin(now*.022),shock=(12+hp*6+punch*10)*s;
-    this.head.moveTo(x-nx*shock,y-ny*shock).lineTo(x+nx*shock,y+ny*shock).stroke({color:0xffffff,width:(2.2+punch*2.2)*s,alpha:.4+hp*.18+punch*.22,cap:'round'});
+    this.head.moveTo(x-nx*shock,y-ny*shock).lineTo(x+nx*shock,y+ny*shock).stroke({color:Theme.white,width:(2.2+punch*2.2)*s,alpha:.4+hp*.18+punch*.22,cap:'round'});
     this.head.circle(x,y,(12+hp*2.2+punch*7)*s).fill({color:Theme.beam2,alpha:.24+punch*.16});
-    this.head.circle(x,y,(5.6+hp+punch*2.6)*s).fill({color:0xffffff,alpha:.96});
+    this.head.circle(x,y,(5.6+hp+punch*2.6)*s).fill({color:Theme.white,alpha:.96});
   }
 
   private hideOverlays(){

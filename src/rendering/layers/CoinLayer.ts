@@ -266,7 +266,7 @@ function drawCounterChrome(g: Graphics, highlighted: boolean) {
   g.roundRect(0, 6, w, h - 2, UI_TOKENS.radius.md)
     .fill({ color: Theme.shadow, alpha: highlighted ? 0.5 : 0.34 })
     .roundRect(0, 5, w, h - 5, UI_TOKENS.radius.md)
-    .fill(0x10161c)
+    .fill(Theme.surfaceSide)
     .roundRect(0, 0, w, h - 5, UI_TOKENS.radius.md)
     .fill(highlighted ? Theme.surfaceTop : Theme.surface)
     .stroke({ color: highlighted ? Theme.coin : Theme.surfaceLine, width: 1.5 });

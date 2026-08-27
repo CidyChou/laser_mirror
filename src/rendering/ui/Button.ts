@@ -90,15 +90,15 @@ export class Button extends Container {
       fill = this.activeState ? Theme.beam : Theme.accent;
       edge = this.activeState ? Theme.beam2 : Theme.accentDark;
     } else if (this.kind === 'danger') {
-      fill = 0x5a2a30;
+      fill = Theme.dangerSurface;
       edge = Theme.danger;
     } else if (this.kind === 'icon') {
       fill = Theme.surface;
       edge = Theme.surfaceLine;
     }
     if (disabled && this.kind === 'fire' && !this.activeState) {
-      fill = 0x3a4452;
-      edge = 0x2a3340;
+      fill = Theme.disabledSurface;
+      edge = Theme.disabledEdge;
       label = Theme.inkSoft;
     } else if (disabled && !this.activeState) {
       fill = Theme.surfaceMuted;
@@ -109,7 +109,7 @@ export class Button extends Container {
     this.shadow.roundRect(0, 6, this.widthPx, this.heightPx, radius).fill({ color: Theme.shadow, alpha: 0.38 });
     this.body.roundRect(0, depth, this.widthPx, faceH, radius).fill(shade(fill, 0.62));
     this.face.roundRect(0, 0, this.widthPx, faceH, radius).fill(fill).stroke({ color: edge, width: 1.5, alpha: 0.95 });
-    this.shine.roundRect(3, 3, this.widthPx - 6, Math.max(10, faceH * 0.34), radius - 3).fill({ color: 0xffffff, alpha: disabled ? 0.04 : 0.1 });
+    this.shine.roundRect(3, 3, this.widthPx - 6, Math.max(10, faceH * 0.34), radius - 3).fill({ color: Theme.white, alpha: disabled ? 0.04 : 0.1 });
 
     this.caption.style.fill = label;
     this.caption.alpha = disabled ? 0.62 : 1;

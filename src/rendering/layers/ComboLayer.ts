@@ -17,11 +17,11 @@ export class ComboLayer extends Container {
   private readonly body = new Graphics();
   private readonly praise = new Text({
     text: '',
-    style: uiText({ fontSize: 20, fill: 0xfffaf1 }),
+    style: uiText({ fontSize: 20, fill: Theme.textOnAccent }),
   });
   private readonly comboText = new Text({
     text: '',
-    style: uiText({ fontSize: 36, fill: 0xfffaf1 }),
+    style: uiText({ fontSize: 36, fill: Theme.textOnAccent }),
   });
   private effect: ComboFx | null = null;
   private topOffset = 0;
@@ -73,7 +73,7 @@ export class ComboLayer extends Container {
     const width = 300 + tier * 16;
     const height = 86 + tier * 4;
     this.body.clear();
-    this.body.roundRect(-width / 2, -height / 2 + 8, width, height, height / 2).fill(0xb43a4e);
+    this.body.roundRect(-width / 2, -height / 2 + 8, width, height, height / 2).fill(Theme.comboSide);
     this.body.roundRect(-width / 2, -height / 2, width, height, height / 2).fill(Theme.beam).stroke({ color: Theme.coin, width: 5 });
     this.body.moveTo(-width * 0.34, -height * 0.28).quadraticCurveTo(0, -height * 0.47, width * 0.34, -height * 0.28)
       .stroke({ color: Theme.beamHot, width: 4, alpha: 0.88 });

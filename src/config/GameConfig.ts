@@ -18,7 +18,7 @@ export const UI_RECTS = {
   hint: { x: 360, y: 1292 },
   resultWin: { x: 86, y: 300, w: 548, h: 560 },
   resultLose: { x: 90, y: 318, w: 540, h: 540 },
-  settingsPanel: { x: 70, y: 360, w: 580, h: 420 },
+  settingsPanel: { x: 70, y: 280, w: 580, h: 780 },
 } as const;
 
 export const COMBO_MOTION = {

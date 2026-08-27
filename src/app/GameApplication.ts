@@ -9,8 +9,19 @@ import { PerformanceManager } from '@/performance/PerformanceManager';
 import type { IPlatform } from '@/platform/IPlatform';
 import { PixiGameView } from '@/rendering/PixiGameView';
 import { loadUiAssets, uiTexture } from '@/rendering/ui/assets';
+import {
+  DEFAULT_THEME_ID,
+  Theme,
+  activeThemeId,
+  applyThemeToDocument,
+  normalizeThemeId,
+  setActiveTheme,
+  themeById,
+  type ThemeId,
+} from '@/rendering/theme';
 
 const AUDIO_STORAGE_KEY = 'laser-mirror-audio-enabled';
+const THEME_STORAGE_KEY = 'laser-mirror-theme';
 
 export class GameApplication {
   private app=new Application();
@@ -19,6 +30,7 @@ export class GameApplication {
   private perf=new PerformanceManager();
   private audio:AudioManager;
   private audioEnabled=true;
+  private themeId:ThemeId=DEFAULT_THEME_ID;
   private coins=0;
   private totalLevels=0;
   private pendingResult:{kind:'win'|'lose';copy:{title:string;subtitle:string;tip:string;primary:string;secondary?:string;reward?:number};at:number}|null=null;
@@ -30,6 +42,9 @@ export class GameApplication {
     this.session=new GameSession(repo.levels);
     this.audio=new AudioManager(platform);
     this.coins=loadCoins(platform);
+    this.themeId=normalizeThemeId(this.platform.storage.get(THEME_STORAGE_KEY));
+    const initialTheme=setActiveTheme(this.themeId);
+    if(this.platform.kind==='web')applyThemeToDocument(initialTheme);
     const saved=this.platform.storage.get(AUDIO_STORAGE_KEY);
     this.audioEnabled=saved!=='0';
     this.audio.setEnabled(this.audioEnabled);
@@ -42,7 +57,7 @@ export class GameApplication {
     const targetCanvas=canvas??this.platform.createCanvas?.();
     const mini=this.platform.kind!=='web';
     await this.app.init({
-      width:v.width,height:v.height,canvas:targetCanvas,background:0x0d1218,
+      width:v.width,height:v.height,canvas:targetCanvas,background:Theme.bg,
       // Prefer WebGL2 where the mini-game runtime exposes it; Pixi falls back
       // to WebGL1 automatically. Rendering features still target WebGL1.
       preference:GameConfig.renderer.preference,preferWebGLVersion:GameConfig.renderer.preferWebGLVersion,
@@ -51,62 +66,13 @@ export class GameApplication {
     });
 
     this.platform.attachCanvas(this.app.canvas,(this.app.renderer as any).events);
-    this.view=new PixiGameView(this.app.renderer,this.perf);
-    this.app.stage.addChild(this.view.root);
-    this.view.resize(v.width,v.height,this.platform.safeTop());
-    this.view.sync(this.session.state);
-    this.renderOnce();
+    this.createView();
 
     // UI sprites are optional decoration. Never block gameplay or the first
     // frame on mini-game image callbacks; the vector fallbacks are complete.
     void loadUiAssets(this.platform.kind).then(()=>{
-      this.view.setUiTexture('settings', uiTexture(this.platform.kind, 'settings'));
-      this.view.setUiTexture('crown', uiTexture(this.platform.kind, 'crown'));
-      this.view.setUiTexture('coin', uiTexture(this.platform.kind, 'coin'));
+      this.applyUiTextures();
       this.renderOnce();
-    });
-
-    this.view.setHandlers({
-      rotate:(x,y)=>{
-        if(this.session.state.firing||this.session.state.won||this.view.result.visible||this.view.settings.visible)return;
-        const now=nowMs();
-        this.session.rotateAt(x,y);
-        this.view.mirrorRotateFeedback(x,y,now);
-        if(!this.app.ticker.started) this.renderOnce();
-        this.wake();
-        this.audio.play('mirrorRotate');
-        this.platform.vibrate('light');
-      },
-      fire:()=>{
-        if(this.view.result.visible||this.view.settings.visible)return;
-        this.session.fire(nowMs());this.wake();
-      },
-      reset:()=>{this.collectPendingCoins();this.pendingResult=null;this.audio.play('uiClick');this.session.reset();this.wake();},
-      openSettings:()=>{
-        if(this.view.result.visible)return;
-        this.audio.play('uiClick');
-        this.view.showSettings(this.audioEnabled);
-        this.wake();
-      },
-      closeSettings:()=>{this.audio.play('uiClick');this.view.closeSettings();this.wake();},
-      toggleAudio:()=>{
-        this.audioEnabled=!this.audioEnabled;
-        this.audio.setEnabled(this.audioEnabled);
-        this.platform.storage.set(AUDIO_STORAGE_KEY, this.audioEnabled?'1':'0');
-        this.view.setAudioEnabled(this.audioEnabled);
-        if(this.audioEnabled) this.audio.play('uiClick');
-        this.wake();
-      },
-      resultPrimary:()=>{
-        this.collectPendingCoins();
-        this.pendingResult=null;
-        this.audio.play('uiClick');
-        if(this.view.result.kindValue==='win') this.session.next();
-        else this.session.reset();
-        this.wake();
-      },
-      resultSecondary:()=>{this.collectPendingCoins();this.pendingResult=null;this.audio.play('uiClick');this.session.reset();this.wake();},
-      coinSound:()=>this.audio.play('coin'),
     });
 
     this.session.on(event=>{
@@ -218,6 +184,65 @@ export class GameApplication {
   private collectPendingCoins(){
     if(!this.view) return;
     this.view.settleCoins();
+  }
+  private createView(reopenSettings=false){
+    if(this.view){
+      this.app.stage.removeChild(this.view.root);
+      this.view.destroy();
+    }
+    const viewport=this.platform.viewport();
+    this.view=new PixiGameView(this.app.renderer,this.perf,this.themeId);
+    this.app.stage.addChild(this.view.root);
+    this.view.resize(viewport.width,viewport.height,this.platform.safeTop());
+    this.view.sync(this.session.state);
+    this.applyUiTextures();
+    this.bindViewHandlers();
+    if(reopenSettings)this.view.showSettings(this.audioEnabled,this.themeId);
+    const renderer=this.app.renderer as any;
+    if(renderer.background)renderer.background.color=Theme.bg;
+    if(this.platform.kind==='web')applyThemeToDocument(themeById(this.themeId));
+    this.renderOnce();
+  }
+  private applyUiTextures(){
+    if(!this.view)return;
+    this.view.setUiTexture('settings',uiTexture(this.platform.kind,'settings'));
+    this.view.setUiTexture('crown',uiTexture(this.platform.kind,'crown'));
+    this.view.setUiTexture('coin',uiTexture(this.platform.kind,'coin'));
+  }
+  private bindViewHandlers(){
+    this.view.setHandlers({
+      rotate:(x,y)=>{
+        if(this.session.state.firing||this.session.state.won||this.view.result.visible||this.view.settings.visible)return;
+        const now=nowMs();
+        this.session.rotateAt(x,y);
+        this.view.mirrorRotateFeedback(x,y,now);
+        if(!this.app.ticker.started)this.renderOnce();
+        this.wake();this.audio.play('mirrorRotate');this.platform.vibrate('light');
+      },
+      fire:()=>{if(this.view.result.visible||this.view.settings.visible)return;this.session.fire(nowMs());this.wake();},
+      reset:()=>{this.collectPendingCoins();this.pendingResult=null;this.audio.play('uiClick');this.session.reset();this.wake();},
+      openSettings:()=>{if(this.view.result.visible)return;this.audio.play('uiClick');this.view.showSettings(this.audioEnabled,this.themeId);this.wake();},
+      closeSettings:()=>{this.audio.play('uiClick');this.view.closeSettings();this.wake();},
+      toggleAudio:()=>{
+        this.audioEnabled=!this.audioEnabled;this.audio.setEnabled(this.audioEnabled);
+        this.platform.storage.set(AUDIO_STORAGE_KEY,this.audioEnabled?'1':'0');
+        this.view.setAudioEnabled(this.audioEnabled);
+        if(this.audioEnabled)this.audio.play('uiClick');
+        this.wake();
+      },
+      selectTheme:(id)=>{
+        if(id===this.themeId||id===activeThemeId)return;
+        this.audio.play('uiClick');
+        this.themeId=id;setActiveTheme(id);this.platform.storage.set(THEME_STORAGE_KEY,id);
+        Promise.resolve().then(()=>{this.createView(true);this.wake();});
+      },
+      resultPrimary:()=>{
+        this.collectPendingCoins();this.pendingResult=null;this.audio.play('uiClick');
+        if(this.view.result.kindValue==='win')this.session.next();else this.session.reset();this.wake();
+      },
+      resultSecondary:()=>{this.collectPendingCoins();this.pendingResult=null;this.audio.play('uiClick');this.session.reset();this.wake();},
+      coinSound:()=>this.audio.play('coin'),
+    });
   }
   private wake(){if(!this.app.ticker.started)this.app.ticker.start();}
   private renderOnce(){this.app.renderer.render(this.app.stage);}

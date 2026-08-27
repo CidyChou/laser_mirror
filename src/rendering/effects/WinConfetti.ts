@@ -12,7 +12,6 @@ type ConfettiPiece = {
   readonly left: boolean;
 };
 
-const COLORS = [Theme.coin, Theme.danger, Theme.cyan, Theme.success, Theme.purple, Theme.beamHot] as const;
 const MAX_CONFETTI = WIN_CONFETTI_MOTION.counts.high;
 
 export class WinConfetti extends Container {
@@ -23,13 +22,14 @@ export class WinConfetti extends Container {
     super();
     this.eventMode = 'none';
     this.visible = false;
+    const colors = [Theme.coin, Theme.danger, Theme.cyan, Theme.success, Theme.purple, Theme.beamHot] as const;
     for (let index = 0; index < MAX_CONFETTI; index++) {
       const seedA = ((index * 47 + 7) % 101) / 100;
       const seedB = ((index * 31 + 17) % 97) / 96;
       const seedC = ((index * 67 + 23) % 103) / 102;
       const view = new Graphics()
         .rect(-(12 + seedA * 14) / 2, -(7 + seedB * 9) / 2, 12 + seedA * 14, 7 + seedB * 9)
-        .fill(COLORS[index % COLORS.length]);
+        .fill(colors[index % colors.length]);
       view.visible = false;
       this.pieces.push({ view, index, seedA, seedB, seedC, left: index % 2 === 0 });
       this.addChild(view);
