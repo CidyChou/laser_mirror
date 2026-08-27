@@ -1,0 +1,4047 @@
+[
+  {
+    "name": "第一束光",
+    "chapter": "光的方向",
+    "rows": 3,
+    "cols": 3,
+    "emitter": {
+      "side": "W",
+      "index": 1
+    },
+    "targets": [
+      {
+        "side": "N",
+        "index": 1
+      }
+    ],
+    "items": [
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 0
+      }
+    ],
+    "hint": "先旋转镜子规划路线；确认后再发射。每次试射会消耗 1 次激光机会。",
+    "chapterNo": 1,
+    "shots": 5
+  },
+  {
+    "name": "连续反射",
+    "chapter": "光的方向",
+    "rows": 4,
+    "cols": 4,
+    "emitter": {
+      "side": "W",
+      "index": 3
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 0
+      }
+    ],
+    "items": [
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 0
+      }
+    ],
+    "hint": "镜子无限旋转，激光次数有限。尽量在脑中先完成光路。",
+    "chapterNo": 1,
+    "shots": 5
+  },
+  {
+    "name": "镜阵试炼",
+    "chapter": "光的方向",
+    "rows": 6,
+    "cols": 6,
+    "emitter": {
+      "side": "W",
+      "index": 5
+    },
+    "targets": [
+      {
+        "side": "N",
+        "index": 5
+      }
+    ],
+    "items": [
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 2,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 5,
+        "s": 1,
+        "decoy": true
+      }
+    ],
+    "hint": "这一关开始出现更多干扰镜。不要看到镜子就全部去转。",
+    "chapterNo": 1,
+    "shots": 5
+  },
+  {
+    "name": "不要被迷惑",
+    "chapter": "光的方向",
+    "rows": 4,
+    "cols": 4,
+    "emitter": {
+      "side": "W",
+      "index": 3
+    },
+    "targets": [
+      {
+        "side": "S",
+        "index": 3
+      }
+    ],
+    "items": [
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      }
+    ],
+    "hint": "不是每一面镜子都需要旋转。",
+    "chapterNo": 1,
+    "shots": 5
+  },
+  {
+    "name": "固定镜",
+    "chapter": "光的方向",
+    "rows": 5,
+    "cols": 5,
+    "emitter": {
+      "side": "W",
+      "index": 4
+    },
+    "targets": [
+      {
+        "side": "S",
+        "index": 3
+      }
+    ],
+    "items": [
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      }
+    ],
+    "hint": "带锁底座的镜子无法旋转。",
+    "chapterNo": 1,
+    "shots": 5
+  },
+  {
+    "name": "折返训练",
+    "chapter": "光的方向",
+    "rows": 4,
+    "cols": 4,
+    "emitter": {
+      "side": "W",
+      "index": 3
+    },
+    "targets": [
+      {
+        "side": "N",
+        "index": 3
+      }
+    ],
+    "items": [
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      }
+    ],
+    "hint": "先观察整条路线，再决定哪些镜子需要旋转。",
+    "chapterNo": 1,
+    "shots": 4
+  },
+  {
+    "name": "蛇形光路",
+    "chapter": "光的方向",
+    "rows": 5,
+    "cols": 5,
+    "emitter": {
+      "side": "W",
+      "index": 4
+    },
+    "targets": [
+      {
+        "side": "N",
+        "index": 2
+      }
+    ],
+    "items": [
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 3,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      }
+    ],
+    "hint": "",
+    "chapterNo": 1,
+    "shots": 4
+  },
+  {
+    "name": "逆向思考",
+    "chapter": "光的方向",
+    "rows": 5,
+    "cols": 6,
+    "emitter": {
+      "side": "S",
+      "index": 5
+    },
+    "targets": [
+      {
+        "side": "N",
+        "index": 4
+      }
+    ],
+    "items": [
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      }
+    ],
+    "hint": "",
+    "chapterNo": 1,
+    "shots": 4
+  },
+  {
+    "name": "长折线",
+    "chapter": "光的方向",
+    "rows": 6,
+    "cols": 6,
+    "emitter": {
+      "side": "W",
+      "index": 5
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 0
+      }
+    ],
+    "items": [
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 4,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      }
+    ],
+    "hint": "",
+    "chapterNo": 1,
+    "shots": 4
+  },
+  {
+    "name": "镜阵",
+    "chapter": "光的方向",
+    "rows": 6,
+    "cols": 7,
+    "emitter": {
+      "side": "S",
+      "index": 6
+    },
+    "targets": [
+      {
+        "side": "W",
+        "index": 0
+      }
+    ],
+    "items": [
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 1,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 5,
+        "s": 1,
+        "decoy": true
+      }
+    ],
+    "hint": "",
+    "chapterNo": 1,
+    "shots": 4
+  },
+  {
+    "name": "一分为二",
+    "chapter": "分光实验",
+    "rows": 4,
+    "cols": 4,
+    "emitter": {
+      "side": "W",
+      "index": 2
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 2
+      },
+      {
+        "side": "N",
+        "index": 1
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 1,
+        "decoy": true
+      }
+    ],
+    "hint": "菱形分光镜会保留原光束，同时反射出第二束光。",
+    "chapterNo": 2,
+    "shots": 4
+  },
+  {
+    "name": "照亮两边",
+    "chapter": "分光实验",
+    "rows": 5,
+    "cols": 5,
+    "emitter": {
+      "side": "W",
+      "index": 3
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 3
+      },
+      {
+        "side": "E",
+        "index": 1
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      }
+    ],
+    "hint": "",
+    "chapterNo": 2,
+    "shots": 4
+  },
+  {
+    "name": "固定分支",
+    "chapter": "分光实验",
+    "rows": 5,
+    "cols": 5,
+    "emitter": {
+      "side": "W",
+      "index": 4
+    },
+    "targets": [
+      {
+        "side": "N",
+        "index": 4
+      },
+      {
+        "side": "E",
+        "index": 1
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 4,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      }
+    ],
+    "hint": "",
+    "chapterNo": 2,
+    "shots": 4
+  },
+  {
+    "name": "双面折返",
+    "chapter": "分光实验",
+    "rows": 6,
+    "cols": 6,
+    "emitter": {
+      "side": "W",
+      "index": 5
+    },
+    "targets": [
+      {
+        "side": "N",
+        "index": 4
+      },
+      {
+        "side": "E",
+        "index": 1
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 5,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 3,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 3,
+        "s": 0,
+        "decoy": true
+      }
+    ],
+    "hint": "试着让同一面镜子分别接住左右两条分支。",
+    "chapterNo": 2,
+    "shots": 4
+  },
+  {
+    "name": "三路接通",
+    "chapter": "分光实验",
+    "rows": 6,
+    "cols": 6,
+    "emitter": {
+      "side": "W",
+      "index": 5
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 5
+      },
+      {
+        "side": "E",
+        "index": 2
+      },
+      {
+        "side": "E",
+        "index": 1
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      }
+    ],
+    "hint": "",
+    "chapterNo": 2,
+    "shots": 4
+  },
+  {
+    "name": "固定分光阵",
+    "chapter": "分光实验",
+    "rows": 6,
+    "cols": 7,
+    "emitter": {
+      "side": "S",
+      "index": 3
+    },
+    "targets": [
+      {
+        "side": "S",
+        "index": 6
+      },
+      {
+        "side": "E",
+        "index": 0
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 3,
+        "y": 4,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 5,
+        "s": 0,
+        "decoy": true
+      }
+    ],
+    "hint": "",
+    "chapterNo": 2,
+    "shots": 3
+  },
+  {
+    "name": "分光链",
+    "chapter": "分光实验",
+    "rows": 7,
+    "cols": 7,
+    "emitter": {
+      "side": "W",
+      "index": 6
+    },
+    "targets": [
+      {
+        "side": "N",
+        "index": 6
+      },
+      {
+        "side": "N",
+        "index": 1
+      },
+      {
+        "side": "N",
+        "index": 5
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      }
+    ],
+    "hint": "分出的光束还可以再次分光。",
+    "chapterNo": 2,
+    "shots": 3
+  },
+  {
+    "name": "分岔校准",
+    "chapter": "分光实验",
+    "rows": 5,
+    "cols": 5,
+    "emitter": {
+      "side": "W",
+      "index": 4
+    },
+    "targets": [
+      {
+        "side": "N",
+        "index": 4
+      },
+      {
+        "side": "N",
+        "index": 3
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      }
+    ],
+    "hint": "两条光路必须同时成立。",
+    "chapterNo": 2,
+    "shots": 3
+  },
+  {
+    "name": "三束同调",
+    "chapter": "分光实验",
+    "rows": 7,
+    "cols": 7,
+    "emitter": {
+      "side": "W",
+      "index": 6
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 6
+      },
+      {
+        "side": "E",
+        "index": 2
+      },
+      {
+        "side": "W",
+        "index": 1
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      }
+    ],
+    "hint": "同一条主光束可以连续分出多条支路。",
+    "chapterNo": 2,
+    "shots": 3
+  },
+  {
+    "name": "双翼光路",
+    "chapter": "分光实验",
+    "rows": 6,
+    "cols": 6,
+    "emitter": {
+      "side": "W",
+      "index": 3
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 0
+      },
+      {
+        "side": "N",
+        "index": 0
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 2,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      }
+    ],
+    "hint": "",
+    "chapterNo": 2,
+    "shots": 3
+  },
+  {
+    "name": "墙与固定镜",
+    "chapter": "障碍区域",
+    "rows": 6,
+    "cols": 6,
+    "emitter": {
+      "side": "S",
+      "index": 0
+    },
+    "targets": [
+      {
+        "side": "S",
+        "index": 3
+      }
+    ],
+    "items": [
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 4,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 1,
+        "s": 1,
+        "decoy": true
+      }
+    ],
+    "hint": "",
+    "chapterNo": 3,
+    "shots": 3
+  },
+  {
+    "name": "窄路",
+    "chapter": "障碍区域",
+    "rows": 6,
+    "cols": 5,
+    "emitter": {
+      "side": "W",
+      "index": 4
+    },
+    "targets": [
+      {
+        "side": "N",
+        "index": 3
+      }
+    ],
+    "items": [
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 4
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 5,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      }
+    ],
+    "hint": "",
+    "chapterNo": 3,
+    "shots": 3
+  },
+  {
+    "name": "迷宫光路",
+    "chapter": "障碍区域",
+    "rows": 6,
+    "cols": 6,
+    "emitter": {
+      "side": "W",
+      "index": 5
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 1
+      },
+      {
+        "side": "E",
+        "index": 2
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 5,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 4
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 4
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      }
+    ],
+    "hint": "",
+    "chapterNo": 3,
+    "shots": 3
+  },
+  {
+    "name": "分流绕障碍",
+    "chapter": "障碍区域",
+    "rows": 6,
+    "cols": 6,
+    "emitter": {
+      "side": "W",
+      "index": 4
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 1
+      },
+      {
+        "side": "S",
+        "index": 4
+      }
+    ],
+    "items": [
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 4
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 4,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      }
+    ],
+    "hint": "",
+    "chapterNo": 3,
+    "shots": 3
+  },
+  {
+    "name": "绕开墙壁",
+    "chapter": "障碍区域",
+    "rows": 5,
+    "cols": 5,
+    "emitter": {
+      "side": "W",
+      "index": 2
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 2
+      }
+    ],
+    "items": [
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      }
+    ],
+    "hint": "实体墙会吸收激光，必须绕路。",
+    "chapterNo": 3,
+    "shots": 3
+  },
+  {
+    "name": "封锁网络",
+    "chapter": "障碍区域",
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 7
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 7
+      },
+      {
+        "side": "E",
+        "index": 2
+      },
+      {
+        "side": "N",
+        "index": 6
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 5
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 5
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 5
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      }
+    ],
+    "hint": "三条路线互相穿插时，先找出主干再处理支路。",
+    "chapterNo": 3,
+    "shots": 3
+  },
+  {
+    "name": "回廊",
+    "chapter": "障碍区域",
+    "rows": 6,
+    "cols": 6,
+    "emitter": {
+      "side": "W",
+      "index": 5
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 2
+      }
+    ],
+    "items": [
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 1
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 1
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 1
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 5,
+        "s": 1,
+        "decoy": true
+      }
+    ],
+    "hint": "墙体把简单折线变成了真正的路线规划。",
+    "chapterNo": 3,
+    "shots": 3
+  },
+  {
+    "name": "双层封锁",
+    "chapter": "障碍区域",
+    "rows": 7,
+    "cols": 6,
+    "emitter": {
+      "side": "S",
+      "index": 0
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 0
+      }
+    ],
+    "items": [
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 4,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 5
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 6
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 1
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      }
+    ],
+    "hint": "",
+    "chapterNo": 3,
+    "shots": 3
+  },
+  {
+    "name": "分流回廊",
+    "chapter": "障碍区域",
+    "rows": 7,
+    "cols": 7,
+    "emitter": {
+      "side": "W",
+      "index": 6
+    },
+    "targets": [
+      {
+        "side": "N",
+        "index": 4
+      },
+      {
+        "side": "E",
+        "index": 0
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 4
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 4
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 4
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 4
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 1
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 1,
+        "s": 0,
+        "decoy": true
+      }
+    ],
+    "hint": "",
+    "chapterNo": 3,
+    "shots": 3
+  },
+  {
+    "name": "双路迷宫",
+    "chapter": "障碍区域",
+    "rows": 7,
+    "cols": 7,
+    "emitter": {
+      "side": "S",
+      "index": 3
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 4
+      },
+      {
+        "side": "S",
+        "index": 0
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 3,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 5
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 6
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      }
+    ],
+    "hint": "",
+    "chapterNo": 3,
+    "shots": 3
+  },
+  {
+    "name": "点亮机关",
+    "chapter": "能源机关",
+    "rows": 5,
+    "cols": 5,
+    "emitter": {
+      "side": "W",
+      "index": 2
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 2
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 0,
+        "id": "A"
+      },
+      {
+        "type": "door",
+        "x": 3,
+        "y": 2,
+        "id": "D1",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 4,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 4,
+        "s": 1,
+        "decoy": true
+      }
+    ],
+    "hint": "圆形能量节点被照亮时，会打开对应光门。",
+    "chapterNo": 4,
+    "shots": 3
+  },
+  {
+    "name": "保持通电",
+    "chapter": "能源机关",
+    "rows": 5,
+    "cols": 6,
+    "emitter": {
+      "side": "W",
+      "index": 4
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 4
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 4,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 3,
+        "y": 1,
+        "id": "A"
+      },
+      {
+        "type": "door",
+        "x": 3,
+        "y": 4,
+        "id": "D1",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      }
+    ],
+    "hint": "",
+    "chapterNo": 4,
+    "shots": 3
+  },
+  {
+    "name": "双重验证",
+    "chapter": "能源机关",
+    "rows": 6,
+    "cols": 6,
+    "emitter": {
+      "side": "W",
+      "index": 3
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 3
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 0,
+        "id": "A"
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 4,
+        "y": 0,
+        "id": "B"
+      },
+      {
+        "type": "door",
+        "x": 5,
+        "y": 3,
+        "id": "D1",
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 5,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 5,
+        "s": 0,
+        "decoy": true
+      }
+    ],
+    "hint": "",
+    "chapterNo": 4,
+    "shots": 3
+  },
+  {
+    "name": "连锁门",
+    "chapter": "能源机关",
+    "rows": 6,
+    "cols": 7,
+    "emitter": {
+      "side": "W",
+      "index": 3
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 3
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 0,
+        "id": "A"
+      },
+      {
+        "type": "door",
+        "x": 2,
+        "y": 3,
+        "id": "D1",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "splitter",
+        "x": 3,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 3,
+        "y": 0,
+        "id": "B"
+      },
+      {
+        "type": "door",
+        "x": 5,
+        "y": 3,
+        "id": "D2",
+        "requires": [
+          "B"
+        ]
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 5,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      }
+    ],
+    "hint": "",
+    "chapterNo": 4,
+    "shots": 3
+  },
+  {
+    "name": "核心联锁",
+    "chapter": "能源机关",
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 7
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 7
+      },
+      {
+        "side": "E",
+        "index": 2
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 4,
+        "y": 3,
+        "id": "A"
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 4,
+        "y": 5,
+        "id": "B"
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 6,
+        "y": 2,
+        "id": "C"
+      },
+      {
+        "type": "door",
+        "x": 5,
+        "y": 7,
+        "id": "D1",
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "type": "door",
+        "x": 7,
+        "y": 7,
+        "id": "D2",
+        "requires": [
+          "C"
+        ]
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 5
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 5
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 5
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      }
+    ],
+    "hint": "门与节点形成联锁时，主光束和供能支路必须一起规划。",
+    "chapterNo": 4,
+    "shots": 3
+  },
+  {
+    "name": "能源核心",
+    "chapter": "能源机关",
+    "rows": 7,
+    "cols": 7,
+    "emitter": {
+      "side": "W",
+      "index": 5
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 1
+      },
+      {
+        "side": "S",
+        "index": 6
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 1,
+        "id": "A"
+      },
+      {
+        "type": "door",
+        "x": 3,
+        "y": 5,
+        "id": "D1",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "door",
+        "x": 5,
+        "y": 1,
+        "id": "D2",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 6,
+        "s": 1,
+        "decoy": true
+      }
+    ],
+    "hint": "",
+    "chapterNo": 4,
+    "shots": 3
+  },
+  {
+    "name": "旁路供能",
+    "chapter": "能源机关",
+    "rows": 6,
+    "cols": 7,
+    "emitter": {
+      "side": "W",
+      "index": 5
+    },
+    "targets": [
+      {
+        "side": "N",
+        "index": 6
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 4,
+        "y": 2,
+        "id": "A"
+      },
+      {
+        "type": "door",
+        "x": 4,
+        "y": 5,
+        "id": "D1",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 1,
+        "s": 1,
+        "decoy": true
+      }
+    ],
+    "hint": "一条支路负责供能，另一条主路负责抵达终点。",
+    "chapterNo": 4,
+    "shots": 3
+  },
+  {
+    "name": "双节点认证",
+    "chapter": "能源机关",
+    "rows": 7,
+    "cols": 7,
+    "emitter": {
+      "side": "W",
+      "index": 6
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 6
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 2,
+        "id": "A"
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 6,
+        "y": 3,
+        "id": "B"
+      },
+      {
+        "type": "door",
+        "x": 6,
+        "y": 6,
+        "id": "D1",
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 5
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      }
+    ],
+    "hint": "一扇门可能要求多个能量节点同时保持点亮。",
+    "chapterNo": 4,
+    "shots": 3
+  },
+  {
+    "name": "双门回路",
+    "chapter": "能源机关",
+    "rows": 7,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 6
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 6
+      },
+      {
+        "side": "E",
+        "index": 1
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 3,
+        "y": 3,
+        "id": "A"
+      },
+      {
+        "type": "door",
+        "x": 3,
+        "y": 6,
+        "id": "D1",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 4,
+        "y": 3,
+        "id": "B"
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "door",
+        "x": 6,
+        "y": 6,
+        "id": "D2",
+        "requires": [
+          "B"
+        ]
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 5
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 4
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      }
+    ],
+    "hint": "两扇门由不同支路供能，任何一条断开都会影响最终结果。",
+    "chapterNo": 4,
+    "shots": 3
+  },
+  {
+    "name": "三相供能",
+    "chapter": "能源机关",
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 7
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 7
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 3,
+        "y": 4,
+        "id": "A"
+      },
+      {
+        "type": "splitter",
+        "x": 3,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "switch",
+        "x": 0,
+        "y": 2,
+        "id": "B"
+      },
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 7,
+        "y": 5,
+        "id": "C"
+      },
+      {
+        "type": "door",
+        "x": 7,
+        "y": 7,
+        "id": "D1",
+        "requires": [
+          "A",
+          "B",
+          "C"
+        ]
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 4
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      }
+    ],
+    "hint": "三条供能支路需要同时成立。先判断每个分光镜负责哪一路。",
+    "chapterNo": 4,
+    "shots": 3
+  },
+  {
+    "name": "空间跃迁",
+    "chapter": "空间谜题",
+    "rows": 5,
+    "cols": 5,
+    "emitter": {
+      "side": "N",
+      "index": 0
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 4
+      }
+    ],
+    "items": [
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "portal",
+        "x": 1,
+        "y": 2,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 4,
+        "pair": "P1"
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 1,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 3,
+        "s": 1,
+        "decoy": true
+      }
+    ],
+    "hint": "进入同色传送门后，激光会从另一端继续前进。",
+    "chapterNo": 5,
+    "shots": 2
+  },
+  {
+    "name": "跃迁之后",
+    "chapter": "空间谜题",
+    "rows": 5,
+    "cols": 6,
+    "emitter": {
+      "side": "W",
+      "index": 3
+    },
+    "targets": [
+      {
+        "side": "S",
+        "index": 4
+      }
+    ],
+    "items": [
+      {
+        "type": "portal",
+        "x": 1,
+        "y": 3,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 1,
+        "pair": "P1"
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      }
+    ],
+    "hint": "",
+    "chapterNo": 5,
+    "shots": 2
+  },
+  {
+    "name": "穿过封锁",
+    "chapter": "空间谜题",
+    "rows": 6,
+    "cols": 6,
+    "emitter": {
+      "side": "W",
+      "index": 4
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 2
+      }
+    ],
+    "items": [
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 4
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 4
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "portal",
+        "x": 1,
+        "y": 1,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 4,
+        "y": 4,
+        "pair": "P1"
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 5,
+        "s": 1,
+        "decoy": true
+      }
+    ],
+    "hint": "",
+    "chapterNo": 5,
+    "shots": 2
+  },
+  {
+    "name": "分流跃迁",
+    "chapter": "空间谜题",
+    "rows": 6,
+    "cols": 7,
+    "emitter": {
+      "side": "W",
+      "index": 4
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 4
+      },
+      {
+        "side": "E",
+        "index": 1
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "portal",
+        "x": 1,
+        "y": 1,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 4,
+        "y": 3,
+        "pair": "P1"
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 1
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 5,
+        "s": 0,
+        "decoy": true
+      }
+    ],
+    "hint": "",
+    "chapterNo": 5,
+    "shots": 2
+  },
+  {
+    "name": "光之网络",
+    "chapter": "空间谜题",
+    "rows": 7,
+    "cols": 7,
+    "emitter": {
+      "side": "W",
+      "index": 6
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 1
+      },
+      {
+        "side": "N",
+        "index": 1
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 1,
+        "id": "A"
+      },
+      {
+        "type": "door",
+        "x": 3,
+        "y": 6,
+        "id": "D1",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "portal",
+        "x": 4,
+        "y": 6,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 2,
+        "y": 3,
+        "pair": "P1"
+      },
+      {
+        "type": "splitter",
+        "x": 3,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "door",
+        "x": 6,
+        "y": 6,
+        "id": "D2",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      }
+    ],
+    "hint": "最终挑战：分光、机关、传送门会同时参与光路。",
+    "chapterNo": 5,
+    "shots": 2
+  },
+  {
+    "name": "双重跃迁",
+    "chapter": "空间谜题",
+    "rows": 7,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 6
+    },
+    "targets": [
+      {
+        "side": "N",
+        "index": 2
+      }
+    ],
+    "items": [
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "portal",
+        "x": 1,
+        "y": 4,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 5,
+        "y": 5,
+        "pair": "P1"
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 2,
+        "pair": "P2"
+      },
+      {
+        "type": "portal",
+        "x": 7,
+        "y": 4,
+        "pair": "P2"
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 5
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 5
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 1,
+        "s": 0,
+        "decoy": true
+      }
+    ],
+    "hint": "同一束光可以连续穿过不同的传送门。",
+    "chapterNo": 5,
+    "shots": 2
+  },
+  {
+    "name": "跃迁双路",
+    "chapter": "空间谜题",
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 7
+    },
+    "targets": [
+      {
+        "side": "N",
+        "index": 7
+      },
+      {
+        "side": "E",
+        "index": 6
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 7,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 6,
+        "y": 5,
+        "pair": "P1"
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "portal",
+        "x": 4,
+        "y": 4,
+        "pair": "P2"
+      },
+      {
+        "type": "portal",
+        "x": 2,
+        "y": 2,
+        "pair": "P2"
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 1,
+        "s": 0,
+        "decoy": true
+      }
+    ],
+    "hint": "分光后的两条路线可以各自进入不同的空间。",
+    "chapterNo": 5,
+    "shots": 2
+  },
+  {
+    "name": "跃迁供能",
+    "chapter": "空间谜题",
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 7
+    },
+    "targets": [
+      {
+        "side": "N",
+        "index": 7
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 4,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 5,
+        "y": 2,
+        "pair": "P1"
+      },
+      {
+        "type": "switch",
+        "x": 6,
+        "y": 2,
+        "id": "A"
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "portal",
+        "x": 6,
+        "y": 5,
+        "pair": "P2"
+      },
+      {
+        "type": "portal",
+        "x": 2,
+        "y": 1,
+        "pair": "P2"
+      },
+      {
+        "type": "switch",
+        "x": 6,
+        "y": 1,
+        "id": "B"
+      },
+      {
+        "type": "door",
+        "x": 6,
+        "y": 7,
+        "id": "D1",
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 4
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 1,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      }
+    ],
+    "hint": "传送门也可以承担供能支路。先确认节点，再处理主路。",
+    "chapterNo": 5,
+    "shots": 2
+  },
+  {
+    "name": "空间三路",
+    "chapter": "空间谜题",
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 7
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 7
+      },
+      {
+        "side": "E",
+        "index": 2
+      },
+      {
+        "side": "N",
+        "index": 6
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "portal",
+        "x": 1,
+        "y": 4,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 5,
+        "y": 6,
+        "pair": "P1"
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "portal",
+        "x": 2,
+        "y": 5,
+        "pair": "P2"
+      },
+      {
+        "type": "portal",
+        "x": 7,
+        "y": 3,
+        "pair": "P2"
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 4
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 1,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      }
+    ],
+    "hint": "三路同时接通时，先判断哪条是主干、哪两条是分支。",
+    "chapterNo": 5,
+    "shots": 2
+  },
+  {
+    "name": "光域核心",
+    "chapter": "空间谜题",
+    "rows": 9,
+    "cols": 9,
+    "emitter": {
+      "side": "W",
+      "index": 8
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 8
+      },
+      {
+        "side": "N",
+        "index": 8
+      },
+      {
+        "side": "N",
+        "index": 5
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 8,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 5,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 6,
+        "y": 2,
+        "pair": "P1"
+      },
+      {
+        "type": "switch",
+        "x": 7,
+        "y": 2,
+        "id": "A"
+      },
+      {
+        "type": "mirror",
+        "x": 8,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 8,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 4,
+        "y": 6,
+        "id": "B"
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "portal",
+        "x": 2,
+        "y": 4,
+        "pair": "P2"
+      },
+      {
+        "type": "portal",
+        "x": 7,
+        "y": 6,
+        "pair": "P2"
+      },
+      {
+        "type": "door",
+        "x": 6,
+        "y": 6,
+        "id": "D2",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "door",
+        "x": 6,
+        "y": 8,
+        "id": "D1",
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 7
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 7
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 7
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 4
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 4
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 8,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 1,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      }
+    ],
+    "hint": "最终挑战：三路目标、双传送、双机关必须同时维持。",
+    "chapterNo": 5,
+    "shots": 2
+  }
+]

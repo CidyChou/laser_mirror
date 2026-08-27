@@ -1,0 +1,24 @@
+{
+  "name": "laser-mirror-commercial",
+  "private": true,
+  "version": "7.7.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --mode web",
+    "build:web": "vite build --mode web",
+    "build:wechat": "vite build --mode wechat && node scripts/package-platform.mjs wechat",
+    "build:douyin": "vite build --mode douyin && node scripts/package-platform.mjs douyin",
+    "build:xhs": "vite build --mode xhs && node scripts/package-platform.mjs xhs",
+    "build:all": "npm run validate:levels && npm run build:web && npm run build:wechat && npm run build:douyin && npm run build:xhs",
+    "validate:levels": "node scripts/validate-levels.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "pixi.js": "8.19.0"
+  },
+  "devDependencies": {
+    "typescript": "5.8.3",
+    "vite": "8.1.0",
+    "@types/node": "22.15.30"
+  }
+}
