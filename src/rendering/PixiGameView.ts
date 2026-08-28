@@ -1,7 +1,7 @@
 import { Container, Graphics, Text, Texture, type Renderer } from 'pixi.js';
 import { DESIGN_HEIGHT, DESIGN_WIDTH, STAGE_HEIGHT, STAGE_TOP, UI_RECTS } from '@/config/GameConfig';
 import { beamScale, borderPoint, computeGeometry } from '@/gameplay/geometry';
-import type { BoardGeometry, GameState, ImpactEvent } from '@/gameplay/types';
+import type { BoardGeometry, GameState, ImpactEvent, LevelDefinition } from '@/gameplay/types';
 import type { PerformanceManager } from '@/performance/PerformanceManager';
 import { BoardLayer } from './layers/BoardLayer';
 import { ObjectLayer } from './layers/ObjectLayer';
@@ -10,6 +10,7 @@ import { ComboLayer } from './layers/ComboLayer';
 import { CoinLayer } from './layers/CoinLayer';
 import { ResultLayer, type ResultKind } from './layers/ResultLayer';
 import { SettingsLayer } from './layers/SettingsLayer';
+import { LevelSelectLayer } from './layers/LevelSelectLayer';
 import { LaserEffect } from './effects/LaserEffect';
 import { ImpactSystem } from './effects/ImpactSystem';
 import { ParticleSystem } from './effects/ParticleSystem';
@@ -19,8 +20,8 @@ import type { UiAssetKey } from './ui/assets';
 
 export class PixiGameView{
   readonly root=new Container();
-  private bg=new Graphics();private stageBg=new Graphics();private board=new BoardLayer();private objects=new ObjectLayer();private laser=new LaserEffect();private impacts=new ImpactSystem();private particles:ParticleSystem;private confetti=new WinConfetti();private hud=new HudLayer();private combo=new ComboLayer();readonly coins=new CoinLayer();readonly result=new ResultLayer();readonly settings:SettingsLayer;private toastBg=new Graphics();private toast=new Text({text:'',style:uiText({fontSize:18,fill:Theme.text})});private toastUntil=0;private victoryUntil=0;private victoryWash=new Graphics();private currentLevel=-1;private lastGeometry:BoardGeometry|null=null;private comboActive=false;private resultActive=false;private coinsActive=false;private confettiActive=false;private hudOffset=0;
-  constructor(renderer:Renderer,private readonly performance:PerformanceManager,themeId:ThemeId){this.particles=new ParticleSystem(renderer);this.settings=new SettingsLayer(themeId);this.buildBackground();this.root.addChild(this.bg,this.stageBg,this.board,this.objects,this.laser,this.particles.container,this.impacts,this.victoryWash,this.hud,this.combo,this.toastBg,this.toast,this.result,this.confetti,this.coins,this.settings);this.toast.anchor.set(.5);this.toast.position.set(360,220);this.toast.visible=false;this.toastBg.visible=false;}
+  private bg=new Graphics();private stageBg=new Graphics();private board=new BoardLayer();private objects=new ObjectLayer();private laser=new LaserEffect();private impacts=new ImpactSystem();private particles:ParticleSystem;private confetti=new WinConfetti();private hud=new HudLayer();private combo=new ComboLayer();readonly coins=new CoinLayer();readonly result=new ResultLayer();readonly settings:SettingsLayer;readonly levelSelect:LevelSelectLayer;private toastBg=new Graphics();private toast=new Text({text:'',style:uiText({fontSize:18,fill:Theme.text})});private toastUntil=0;private victoryUntil=0;private victoryWash=new Graphics();private currentLevel=-1;private lastGeometry:BoardGeometry|null=null;private comboActive=false;private resultActive=false;private coinsActive=false;private confettiActive=false;private hudOffset=0;
+  constructor(renderer:Renderer,private readonly performance:PerformanceManager,themeId:ThemeId,levels:readonly LevelDefinition[]){this.particles=new ParticleSystem(renderer);this.settings=new SettingsLayer(themeId);this.levelSelect=new LevelSelectLayer(levels);this.buildBackground();this.root.addChild(this.bg,this.stageBg,this.board,this.objects,this.laser,this.particles.container,this.impacts,this.victoryWash,this.hud,this.combo,this.toastBg,this.toast,this.result,this.confetti,this.coins,this.levelSelect,this.settings);this.toast.anchor.set(.5);this.toast.position.set(360,220);this.toast.visible=false;this.toastBg.visible=false;}
   private buildBackground(){
     this.bg.rect(0,0,DESIGN_WIDTH,DESIGN_HEIGHT).fill(Theme.bg);
     // Broad ambient fields create depth without competing with the laser.
@@ -35,14 +36,25 @@ export class PixiGameView{
     this.stageBg.ellipse(360,STAGE_TOP+70,520,220).fill({color:Theme.cyan,alpha:.024});
     this.stageBg.moveTo(164,STAGE_TOP+1).lineTo(556,STAGE_TOP+1).stroke({color:Theme.cyan,width:2,alpha:.12,cap:'round'});
   }
-  setHandlers(h:{rotate:(x:number,y:number)=>void;fire:()=>void;reset:()=>void;openSettings:()=>void;toggleAudio:()=>void;selectTheme:(id:ThemeId)=>void;closeSettings:()=>void;resultPrimary:()=>void;resultSecondary:()=>void;coinSound:()=>void}){
+  setHandlers(h:{rotate:(x:number,y:number)=>void;fire:()=>void;reset:()=>void;openSettings:()=>void;toggleAudio:()=>void;toggleHaptics:()=>void;selectTheme:(id:ThemeId)=>void;closeSettings:()=>void;openLevels:()=>void;closeLevels:()=>void;selectLevel:(index:number)=>void;clearHistory:()=>void;uiChanged:()=>void;resultPrimary:()=>void;resultSecondary:()=>void;coinSound:()=>void}){
     this.objects.setRotateHandler(h.rotate);
     this.hud.fireButton.on('pointertap',h.fire);
     this.hud.settingsButton.on('pointertap',h.openSettings);
+    this.hud.levelButton.on('pointertap',h.openLevels);
     this.settings.closeButton.on('pointertap',h.closeSettings);
+    this.settings.setCloseHandler(h.closeSettings);
+    this.settings.setChangeHandler(h.uiChanged);
     this.settings.audioButton.on('pointertap',h.toggleAudio);
+    this.settings.hapticsButton.on('pointertap',h.toggleHaptics);
     this.settings.setThemeHandler(h.selectTheme);
     this.settings.restartButton.on('pointertap',()=>{h.closeSettings();h.reset();});
+    this.settings.levelSelectButton.on('pointertap',()=>{h.closeSettings();h.openLevels();});
+    this.settings.clearHistoryButton.on('pointertap',()=>this.settings.showClearConfirmation());
+    this.settings.cancelClearButton.on('pointertap',()=>this.settings.hideClearConfirmation());
+    this.settings.confirmClearButton.on('pointertap',h.clearHistory);
+    this.levelSelect.closeButton.on('pointertap',h.closeLevels);
+    this.levelSelect.settingsButton.on('pointertap',h.openSettings);
+    this.levelSelect.setSelectHandler(h.selectLevel);
     this.result.primary.on('pointertap',h.resultPrimary);
     this.result.secondary.on('pointertap',h.resultSecondary);
     this.coins.setHandlers({onSound:h.coinSound});
@@ -57,10 +69,13 @@ export class PixiGameView{
   }
   sync(state:GameState){const g=computeGeometry(state.level);this.lastGeometry=g;if(this.currentLevel!==state.levelIndex){this.currentLevel=state.levelIndex;this.board.rebuild(state.level,g);this.hideOverlays();}this.objects.sync(state,g);this.laser.bind(state,g.cell);this.hud.sync(state);}
   rotateItem(x:number,y:number,s:0|1){this.objects.rotateItem(x,y,s);}
-  hideOverlays(){this.result.hide();this.settings.hide();this.combo.clear();this.confetti.clear();this.coins.hide();this.hud.setHeartsVisible(true);}
-  showSettings(audioEnabled:boolean,themeId:ThemeId){this.settings.show(audioEnabled,themeId);}
+  hideOverlays(){this.result.hide();this.settings.hide();this.levelSelect.hide();this.combo.clear();this.confetti.clear();this.coins.hide();this.hud.setHeartsVisible(true);}
+  showSettings(audioEnabled:boolean,hapticsEnabled:boolean,themeId:ThemeId){this.settings.show(audioEnabled,hapticsEnabled,themeId);}
   setAudioEnabled(enabled:boolean){this.settings.setAudioEnabled(enabled);}
+  setHapticsEnabled(enabled:boolean){this.settings.setHapticsEnabled(enabled);}
   closeSettings(){this.settings.hide();}
+  showLevelSelect(currentIndex:number,completed:ReadonlySet<number>){this.levelSelect.show(currentIndex,completed);}
+  closeLevelSelect(){this.levelSelect.hide();}
   showResult(kind:ResultKind, copy:{title:string;subtitle:string;tip:string;primary:string;secondary?:string;reward?:number}, now:number){this.result.show(kind,copy,now);}
   startWinCoins(now:number, balance:number, reward:number){
     this.coins.show(now, balance);

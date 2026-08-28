@@ -8,8 +8,13 @@ const CARD_H = 150;
 
 export class SettingsLayer extends Container {
   readonly closeButton = new Button(64, 64, '✕', 'icon');
-  readonly audioButton = new Button(500, 72, '声音  开', 'secondary');
-  readonly restartButton = new Button(500, 78, '重新开始本关', 'primary');
+  readonly audioButton = new Button(500, 64, '音效  ·  已开启', 'secondary');
+  readonly hapticsButton = new Button(500, 64, '震动反馈  ·  已开启', 'secondary');
+  readonly levelSelectButton = new Button(500, 68, '选择关卡', 'secondary');
+  readonly restartButton = new Button(500, 68, '重新开始当前关卡', 'primary');
+  readonly clearHistoryButton = new Button(500, 68, '清理历史记录', 'danger');
+  readonly confirmClearButton = new Button(224, 72, '确认清理', 'danger');
+  readonly cancelClearButton = new Button(224, 72, '取消', 'secondary');
   private readonly dim = new Graphics();
   private readonly panel = new Graphics();
   private readonly title = new Text({ text: '设置', style: uiText({ fontSize: 40, fill: Theme.ink }) });
@@ -17,31 +22,62 @@ export class SettingsLayer extends Container {
   private readonly audioLabel = sectionLabel('声音与触感');
   private readonly actionLabel = sectionLabel('本局操作');
   private readonly footer = new Text({
-    text: '主题切换不会影响关卡进度',
+    text: '主题、音效与震动设置会自动保存',
     style: uiText({ fontSize: 14, fill: Theme.inkSoft }),
+  });
+  private readonly confirmLayer = new Container();
+  private readonly confirmDim = new Graphics();
+  private readonly confirmPanel = new Graphics();
+  private readonly confirmTitle = new Text({ text: '清理历史记录？', style: uiText({ fontSize: 34, fill: Theme.ink }) });
+  private readonly confirmCopy = new Text({
+    text: '将清空关卡进度、金币和爱心\n主题、音效与震动设置会保留',
+    style: uiText({ fontSize: 19, fill: Theme.inkSoft, align: 'center', lineHeight: 32 }),
   });
   private readonly themeCards = THEMES.map((theme) => new ThemeCard(theme));
   private themeHandler: (id: ThemeId) => void = () => {};
+  private closeHandler: () => void = () => {};
+  private changeHandler: () => void = () => {};
 
   constructor(themeId: ThemeId) {
     super();
     this.visible = false;
     this.eventMode = 'static';
     this.hitArea = new Rectangle(0, 0, DESIGN_WIDTH, DESIGN_HEIGHT);
+    this.dim.eventMode = 'static';
+    this.panel.eventMode = 'static';
+    this.dim.on('pointertap', () => this.closeHandler());
     this.title.anchor.set(0.5);
     this.footer.anchor.set(0.5);
     this.closeButton.setLabelSize(26);
     this.audioButton.setLabelSize(22);
+    this.hapticsButton.setLabelSize(22);
+    this.levelSelectButton.setLabelSize(22);
     this.restartButton.setLabelSize(24);
+    this.clearHistoryButton.setLabelSize(22);
+    this.confirmClearButton.setLabelSize(23);
+    this.cancelClearButton.setLabelSize(23);
     for (const card of this.themeCards) {
       card.on('pointertap', () => this.themeHandler(card.theme.id));
     }
     this.addChild(
       this.dim, this.panel, this.title, this.closeButton,
       this.appearanceLabel, ...this.themeCards,
-      this.audioLabel, this.audioButton,
-      this.actionLabel, this.restartButton, this.footer,
+      this.audioLabel, this.audioButton, this.hapticsButton,
+      this.actionLabel, this.levelSelectButton, this.restartButton, this.clearHistoryButton, this.footer,
     );
+    this.confirmLayer.visible = false;
+    this.confirmLayer.eventMode = 'static';
+    this.confirmLayer.hitArea = new Rectangle(0, 0, DESIGN_WIDTH, DESIGN_HEIGHT);
+    this.confirmDim.eventMode = 'static';
+    this.confirmPanel.eventMode = 'static';
+    this.confirmDim.on('pointertap', () => this.hideClearConfirmation());
+    this.confirmTitle.anchor.set(0.5);
+    this.confirmCopy.anchor.set(0.5);
+    this.confirmLayer.addChild(
+      this.confirmDim, this.confirmPanel, this.confirmTitle, this.confirmCopy,
+      this.cancelClearButton, this.confirmClearButton,
+    );
+    this.addChild(this.confirmLayer);
     this.setThemeId(themeId);
     this.layout();
   }
@@ -50,22 +86,47 @@ export class SettingsLayer extends Container {
     this.themeHandler = handler;
   }
 
-  show(audioEnabled: boolean, themeId: ThemeId) {
+  setCloseHandler(handler: () => void) {
+    this.closeHandler = handler;
+  }
+
+  setChangeHandler(handler: () => void) {
+    this.changeHandler = handler;
+  }
+
+  show(audioEnabled: boolean, hapticsEnabled: boolean, themeId: ThemeId) {
     this.visible = true;
     this.setAudioEnabled(audioEnabled);
+    this.setHapticsEnabled(hapticsEnabled);
     this.setThemeId(themeId);
   }
 
   hide() {
     this.visible = false;
+    this.hideClearConfirmation();
   }
 
   setAudioEnabled(enabled: boolean) {
-    this.audioButton.setText(enabled ? '声音与震动  ·  已开启' : '声音与震动  ·  已关闭');
+    this.audioButton.setText(enabled ? '音效  ·  已开启' : '音效  ·  已关闭');
+  }
+
+  setHapticsEnabled(enabled: boolean) {
+    this.hapticsButton.setText(enabled ? '震动反馈  ·  已开启' : '震动反馈  ·  已关闭');
   }
 
   setThemeId(themeId: ThemeId) {
     for (const card of this.themeCards) card.setSelected(card.theme.id === themeId);
+  }
+
+  showClearConfirmation() {
+    this.confirmLayer.visible = true;
+    this.changeHandler();
+  }
+
+  hideClearConfirmation() {
+    if (!this.confirmLayer.visible) return;
+    this.confirmLayer.visible = false;
+    this.changeHandler();
   }
 
   private layout() {
@@ -78,13 +139,28 @@ export class SettingsLayer extends Container {
       .stroke({ color: Theme.surfaceLine, width: 2 });
     this.title.position.set(DESIGN_WIDTH / 2, rect.y + 58);
     this.closeButton.position.set(rect.x + rect.w - 84, rect.y + 22);
-    this.appearanceLabel.position.set(rect.x + 40, rect.y + 122);
-    this.themeCards.forEach((card, index) => card.position.set(rect.x + 40 + index * (CARD_W + 16), rect.y + 154));
-    this.audioLabel.position.set(rect.x + 40, rect.y + 352);
-    this.audioButton.position.set(rect.x + 40, rect.y + 388);
-    this.actionLabel.position.set(rect.x + 40, rect.y + 506);
-    this.restartButton.position.set(rect.x + 40, rect.y + 542);
-    this.footer.position.set(DESIGN_WIDTH / 2, rect.y + 710);
+    this.appearanceLabel.position.set(rect.x + 40, rect.y + 112);
+    this.themeCards.forEach((card, index) => card.position.set(rect.x + 40 + index * (CARD_W + 16), rect.y + 144));
+    this.audioLabel.position.set(rect.x + 40, rect.y + 330);
+    this.audioButton.position.set(rect.x + 40, rect.y + 360);
+    this.hapticsButton.position.set(rect.x + 40, rect.y + 436);
+    this.actionLabel.position.set(rect.x + 40, rect.y + 536);
+    this.levelSelectButton.position.set(rect.x + 40, rect.y + 566);
+    this.restartButton.position.set(rect.x + 40, rect.y + 646);
+    this.clearHistoryButton.position.set(rect.x + 40, rect.y + 726);
+    this.footer.position.set(DESIGN_WIDTH / 2, rect.y + 884);
+
+    const confirm = { x: 100, y: 490, w: 520, h: 330 };
+    this.confirmDim.rect(0, 0, DESIGN_WIDTH, DESIGN_HEIGHT).fill({ color: Theme.overlay, alpha: 0.82 });
+    this.confirmPanel.roundRect(confirm.x + 6, confirm.y + 10, confirm.w, confirm.h, UI_TOKENS.radius.xl)
+      .fill({ color: Theme.shadow, alpha: 0.46 })
+      .roundRect(confirm.x, confirm.y, confirm.w, confirm.h, UI_TOKENS.radius.xl)
+      .fill(Theme.surface)
+      .stroke({ color: Theme.danger, width: 2 });
+    this.confirmTitle.position.set(DESIGN_WIDTH / 2, confirm.y + 68);
+    this.confirmCopy.position.set(DESIGN_WIDTH / 2, confirm.y + 142);
+    this.cancelClearButton.position.set(confirm.x + 24, confirm.y + 230);
+    this.confirmClearButton.position.set(confirm.x + confirm.w - 248, confirm.y + 230);
   }
 }
 

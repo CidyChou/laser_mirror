@@ -18,7 +18,7 @@ export const UI_RECTS = {
   hint: { x: 360, y: 1292 },
   resultWin: { x: 86, y: 300, w: 548, h: 560 },
   resultLose: { x: 90, y: 318, w: 540, h: 540 },
-  settingsPanel: { x: 70, y: 280, w: 580, h: 780 },
+  settingsPanel: { x: 70, y: 210, w: 580, h: 960 },
 } as const;
 
 export const COMBO_MOTION = {
@@ -52,7 +52,14 @@ export const WIN_CONFETTI_MOTION = {
 
 export const GameConfig = {
   renderer: {
-    maxResolution: 2,
+    // Modern iPhones expose a 3x Retina canvas. Keep that native density when
+    // the framebuffer stays inside the mobile GPU budget instead of letting
+    // the OS upscale a 2x image to 3x.
+    maxResolution: 3,
+    minAdaptiveResolution: 1.5,
+    maxBackBufferPixels: 3_300_000,
+    lowQualityResolutionScale: 0.8,
+    staticCacheResolution: 2,
     preference: 'webgl' as const,
     preferWebGLVersion: 2 as 1 | 2,
     antialias: true,

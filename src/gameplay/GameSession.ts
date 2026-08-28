@@ -29,31 +29,39 @@ export class GameSession {
   private finishAt = 0;
   state: GameState;
 
-  constructor(private readonly levels: LevelDefinition[]) {
-    this.state = this.createState(0);
+  constructor(private readonly levels: readonly LevelDefinition[], initialHearts = 3, initialLevelIndex = 0) {
+    const safe = Math.max(0, Math.min(levels.length - 1, Math.floor(initialLevelIndex)));
+    this.state = this.createState(safe, initialHearts);
   }
 
   on(listener: Listener): () => void { this.listeners.add(listener); return () => this.listeners.delete(listener); }
   private emit(event: GameEvent) { this.listeners.forEach(listener => listener(event)); }
 
-  private createState(index: number): GameState {
+  private createState(index: number, hearts: number): GameState {
     const level = this.levels[index];
     const items = level.items.map(item => ({...item})) as LevelItem[];
     return {
       levelIndex:index, level, items, targets:level.targets.map(t=>({...t,hit:false})),
-      shotsLeft:level.shots, firing:false, won:false, shotStart:0, beamDistance:0,
+      hearts:Math.max(0, Math.floor(hearts)), firing:false, won:false, shotStart:0, beamDistance:0,
       result:null, activeSwitches:new Set(), activeDoorStates:{}, comboCount:0,
     };
   }
 
   load(index: number) {
     const safe = Math.max(0, Math.min(this.levels.length - 1, index));
-    this.state = this.createState(safe); this.triggered.clear(); this.comboEmitted.clear(); this.launchTriggered=false; this.finishAt=0; this.emit({type:'level'}); this.emit({type:'state'});
+    const hearts = this.state.hearts;
+    this.state = this.createState(safe, hearts); this.triggered.clear(); this.comboEmitted.clear(); this.launchTriggered=false; this.finishAt=0; this.emit({type:'level'}); this.emit({type:'state'});
   }
   reset() { this.load(this.state.levelIndex); }
   next() {
     if (this.state.levelIndex < this.levels.length - 1) this.load(this.state.levelIndex + 1);
     else { this.load(0); this.emit({type:'toast',text:'50 关全部完成'}); }
+  }
+
+  restoreHearts(count = 3) {
+    if (this.state.firing) return;
+    this.state.hearts = Math.max(0, Math.floor(count));
+    this.emit({type:'state'});
   }
 
   rotateAt(x:number,y:number) {
@@ -67,8 +75,8 @@ export class GameSession {
   fire(now = nowMs()) {
     const s = this.state;
     if (s.firing || s.won) return;
-    if (s.shotsLeft <= 0) { this.emit({type:'toast',text:'激光机会已用完'}); return; }
-    s.shotsLeft--; s.firing = true; s.shotStart = now; s.beamDistance = 0; s.comboCount = 0;
+    if (s.hearts <= 0) { this.emit({type:'toast',text:'爱心不足 · 补充后再发射'}); return; }
+    s.firing = true; s.shotStart = now; s.beamDistance = 0; s.comboCount = 0;
     s.result = this.simulator.simulate(s.level, s.items, computeGeometry(s.level));
     s.targets.forEach(t=>t.hit=false); s.activeSwitches.clear(); s.activeDoorStates={};
     this.triggered.clear(); this.launchTriggered=false; this.comboEmitted.clear(); this.finishAt=0;
@@ -134,8 +142,9 @@ export class GameSession {
       this.emit({type:'victory'});
     } else {
       s.result=null; s.beamDistance=0; s.comboCount=0; s.activeSwitches.clear(); s.activeDoorStates={}; s.targets.forEach(t=>t.hit=false);
-      if (s.shotsLeft <= 0) this.emit({type:'defeat'});
-      else this.emit({type:'toast',text:`没有命中 · 还剩 ${s.shotsLeft} 次`});
+      s.hearts=Math.max(0,s.hearts-1);
+      if (s.hearts <= 0) this.emit({type:'defeat'});
+      else this.emit({type:'toast',text:`没有命中 · 还剩 ${s.hearts} 颗爱心`});
     }
     this.emit({type:'shot-end',success}); this.emit({type:'state'});
   }

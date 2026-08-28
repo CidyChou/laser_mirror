@@ -99,9 +99,9 @@ export class LaserEffect extends Container{
       wide.blendMode=this.energyBlend;
       wide.moveTo(0,0).lineTo(length,0).stroke({color:Theme.beam2,width:52*s,alpha:.10,cap:'round'});
       wide.moveTo(0,0).lineTo(length,0).stroke({color:Theme.beam2,width:30*s,alpha:.14,cap:'round'});
-      const body=this.strokeLine(12.2*s,Theme.beam,.88,length);
-      const plasma=this.strokeLine(5.8*s,Theme.laserPlasma,.94,length);
-      const core=this.strokeLine(2.5*s,Theme.laserCore,.98,length);
+      const body=this.strokeLine(13.4*s,Theme.beam,.92,length);
+      const plasma=this.strokeLine(4.6*s,Theme.laserPlasma,.9,length);
+      const core=this.strokeLine(1.6*s,Theme.laserCore,.96,length);
       root.addChild(wide,body,plasma,core);
       this.beam.addChild(root);
       this.runVisuals.push({run,length,root,wide,body,plasma,core});
@@ -195,8 +195,8 @@ export class LaserEffect extends Container{
     const s=this.cellScale;
     for(const [x,y] of points){
       this.joints.circle(x,y,5.6*s).fill({color:Theme.beam,alpha:.7});
-      this.joints.circle(x,y,2.8*s).fill({color:Theme.laserPlasma,alpha:.9});
-      this.joints.circle(x,y,1.3*s).fill({color:Theme.white,alpha:.96});
+      this.joints.circle(x,y,2.5*s).fill({color:Theme.laserPlasma,alpha:.86});
+      this.joints.circle(x,y,.85*s).fill({color:Theme.white,alpha:.94});
     }
   }
 
@@ -245,9 +245,9 @@ export class LaserEffect extends Container{
     const y=partial.run.y1+(partial.run.y2-partial.run.y1)*t;
     const dx=partial.run.x2-partial.run.x1,dy=partial.run.y2-partial.run.y1,len=partial.length;
     const nx=-dy/len,ny=dx/len,hp=.5+.5*Math.sin(now*.022),shock=(12+hp*6+punch*10)*s;
-    this.head.moveTo(x-nx*shock,y-ny*shock).lineTo(x+nx*shock,y+ny*shock).stroke({color:Theme.white,width:(2.2+punch*2.2)*s,alpha:.4+hp*.18+punch*.22,cap:'round'});
+    this.head.moveTo(x-nx*shock,y-ny*shock).lineTo(x+nx*shock,y+ny*shock).stroke({color:Theme.laserPlasma,width:(1.6+punch*1.5)*s,alpha:.38+hp*.16+punch*.18,cap:'round'});
     this.head.circle(x,y,(12+hp*2.2+punch*7)*s).fill({color:Theme.beam2,alpha:.24+punch*.16});
-    this.head.circle(x,y,(5.6+hp+punch*2.6)*s).fill({color:Theme.white,alpha:.96});
+    this.head.circle(x,y,(4.3+hp*.8+punch*2)*s).fill({color:Theme.laserPlasma,alpha:.92});
   }
 
   private hideOverlays(){

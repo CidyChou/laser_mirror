@@ -1,4 +1,5 @@
 import { Container, Graphics } from 'pixi.js';
+import { GameConfig } from '@/config/GameConfig';
 import type { BoardGeometry, LevelDefinition } from '@/gameplay/types';
 import { Theme } from '../theme';
 
@@ -37,6 +38,9 @@ export class BoardLayer extends Container {
     }
 
     this.addChild(shape);
-    this.cacheAsTexture({resolution:1.25});
+    this.cacheAsTexture({
+      resolution:GameConfig.renderer.staticCacheResolution,
+      antialias:true,
+    });
   }
 }

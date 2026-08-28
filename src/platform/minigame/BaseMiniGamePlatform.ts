@@ -2,7 +2,7 @@ import type { IPlatform, PlatformKind, ViewportInfo } from '../IPlatform';
 export class BaseMiniGamePlatform implements IPlatform{
   private detachInput=()=>{};
   constructor(readonly kind:PlatformKind,protected readonly api:any){}
-  viewport():ViewportInfo{const s=this.api.getSystemInfoSync?.()??{};return{width:s.windowWidth??s.screenWidth??720,height:s.windowHeight??s.screenHeight??1100,pixelRatio:Math.min(s.pixelRatio??2,2)}}
+  viewport():ViewportInfo{const s=this.api.getSystemInfoSync?.()??{};return{width:s.windowWidth??s.screenWidth??720,height:s.windowHeight??s.screenHeight??1100,pixelRatio:Math.max(1,s.pixelRatio??2)}}
   createCanvas(){
     const canvas=this.api.createCanvas?.() ?? (globalThis as any).canvas ?? this.api.createOffscreenCanvas?.({type:'2d',width:this.viewport().width,height:this.viewport().height});
     if(!canvas)return canvas;

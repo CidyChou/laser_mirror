@@ -68,7 +68,7 @@ export interface GameState {
   level: LevelDefinition;
   items: LevelItem[];
   targets: Target[];
-  shotsLeft: number;
+  hearts: number;
   firing: boolean;
   won: boolean;
   shotStart: number;

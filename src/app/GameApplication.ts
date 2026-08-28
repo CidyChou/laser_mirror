@@ -3,11 +3,22 @@ import { AudioManager } from '@/audio/AudioManager';
 import { GameConfig } from '@/config/GameConfig';
 import { nowMs } from '@/core/clock';
 import { loadCoins, saveCoins, winReward } from '@/economy/wallet';
+import { loadHearts, MAX_HEARTS, saveHearts } from '@/economy/hearts';
 import { GameSession } from '@/gameplay/GameSession';
+import type { LevelDefinition } from '@/gameplay/types';
 import { LevelRepository } from '@/levels/LevelRepository';
 import { PerformanceManager } from '@/performance/PerformanceManager';
 import type { IPlatform } from '@/platform/IPlatform';
 import { PixiGameView } from '@/rendering/PixiGameView';
+import {
+  clearLevelProgress,
+  firstIncompleteLevel,
+  isLevelUnlocked,
+  loadCompletedLevels,
+  loadCurrentLevel,
+  saveCompletedLevels,
+  saveCurrentLevel,
+} from '@/progression/levelProgress';
 import { loadUiAssets, uiTexture } from '@/rendering/ui/assets';
 import {
   DEFAULT_THEME_ID,
@@ -21,6 +32,7 @@ import {
 } from '@/rendering/theme';
 
 const AUDIO_STORAGE_KEY = 'laser-mirror-audio-enabled';
+const HAPTICS_STORAGE_KEY = 'laser-mirror-haptics-enabled';
 const THEME_STORAGE_KEY = 'laser-mirror-theme';
 
 export class GameApplication {
@@ -30,7 +42,10 @@ export class GameApplication {
   private perf=new PerformanceManager();
   private audio:AudioManager;
   private audioEnabled=true;
+  private hapticsEnabled=true;
   private themeId:ThemeId=DEFAULT_THEME_ID;
+  private readonly levels:readonly LevelDefinition[];
+  private completedLevels=new Set<number>();
   private coins=0;
   private totalLevels=0;
   private pendingResult:{kind:'win'|'lose';copy:{title:string;subtitle:string;tip:string;primary:string;secondary?:string;reward?:number};at:number}|null=null;
@@ -38,8 +53,11 @@ export class GameApplication {
 
   constructor(private readonly platform:IPlatform){
     const repo=new LevelRepository();
-    this.totalLevels=repo.levels.length;
-    this.session=new GameSession(repo.levels);
+    this.levels=repo.levels;
+    this.totalLevels=this.levels.length;
+    this.completedLevels=loadCompletedLevels(platform,this.totalLevels);
+    const initialLevel=loadCurrentLevel(platform,this.totalLevels,this.completedLevels);
+    this.session=new GameSession(this.levels,loadHearts(platform),initialLevel);
     this.audio=new AudioManager(platform);
     this.coins=loadCoins(platform);
     this.themeId=normalizeThemeId(this.platform.storage.get(THEME_STORAGE_KEY));
@@ -47,26 +65,26 @@ export class GameApplication {
     if(this.platform.kind==='web')applyThemeToDocument(initialTheme);
     const saved=this.platform.storage.get(AUDIO_STORAGE_KEY);
     this.audioEnabled=saved!=='0';
+    this.hapticsEnabled=this.platform.storage.get(HAPTICS_STORAGE_KEY)!=='0';
     this.audio.setEnabled(this.audioEnabled);
   }
 
   async start(canvas?:any){
     const v=this.platform.viewport();
     const touch=typeof navigator!=='undefined'&&(navigator.maxTouchPoints>0||/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent||''));
-    this.perf.seedFromDevice({kind:this.platform.kind,touch});
+    this.perf.seedFromDevice({kind:this.platform.kind,touch,viewport:v});
     const targetCanvas=canvas??this.platform.createCanvas?.();
-    const mini=this.platform.kind!=='web';
     await this.app.init({
       width:v.width,height:v.height,canvas:targetCanvas,background:Theme.bg,
       // Prefer WebGL2 where the mini-game runtime exposes it; Pixi falls back
       // to WebGL1 automatically. Rendering features still target WebGL1.
       preference:GameConfig.renderer.preference,preferWebGLVersion:GameConfig.renderer.preferWebGLVersion,
-      powerPreference:'high-performance',antialias:mini?false:GameConfig.renderer.antialias,
-      resolution:Math.min(v.pixelRatio,GameConfig.renderer.maxResolution),autoDensity:this.platform.kind==='web',autoStart:false
+      powerPreference:'high-performance',antialias:GameConfig.renderer.antialias,
+      resolution:this.perf.renderResolution,autoDensity:this.platform.kind==='web',autoStart:false
     });
 
     this.platform.attachCanvas(this.app.canvas,(this.app.renderer as any).events);
-    this.createView();
+    this.createView(false,true);
 
     // UI sprites are optional decoration. Never block gameplay or the first
     // frame on mini-game image callbacks; the vector fallbacks are complete.
@@ -78,7 +96,10 @@ export class GameApplication {
     this.session.on(event=>{
       const now=nowMs();
       const state=this.session.state;
-      if(event.type==='level'){this.collectPendingCoins();this.pendingResult=null;this.view.hideOverlays();}
+      if(event.type==='level'){
+        this.collectPendingCoins();this.pendingResult=null;this.view.hideOverlays();
+        saveCurrentLevel(this.platform,state.levelIndex);
+      }
       if(event.type==='rotate'){
         this.view.rotateItem(event.x,event.y,event.s);
         return;
@@ -98,31 +119,38 @@ export class GameApplication {
           case 'door': this.audio.play('mirrorHit',.55); break;
           case 'wall': this.audio.play('mirrorHit',.42); break;
         }
-        if(event.impact.type==='target')this.platform.vibrate('medium');
-        else if(event.impact.type==='mirror'||event.impact.type==='splitter'||event.impact.type==='portal')this.platform.vibrate('light');
+        if(event.impact.type==='target')this.vibrate('medium');
+        else if(event.impact.type==='mirror'||event.impact.type==='splitter'||event.impact.type==='portal')this.vibrate('light');
         this.wake();
       }
       if(event.type==='combo'){
         this.view.showCombo(event.count, now);
         this.audio.playCombo(event.count);
-        this.platform.vibrate(event.count>=3?'medium':'light');
+        this.vibrate(event.count>=3?'medium':'light');
         this.wake();
       }
       if(event.type==='toast'){this.view.showToast(event.text,now);this.wake();}
       if(event.type==='shot-start'){
         this.audio.play('laserCharge');
         this.view.shotStart(state,now);
-        this.platform.vibrate('medium');
+        this.vibrate('medium');
         this.wake();
       }
       if(event.type==='laser-launch'){
         this.audio.play('laserFire');
         this.view.laserLaunch(state,now);
-        this.platform.vibrate('heavy');
+        this.vibrate('heavy');
         this.wake();
       }
-      if(event.type==='shot-end'&&!event.success) this.audio.play('shotFail');
+      if(event.type==='shot-end'&&!event.success){
+        saveHearts(this.platform,state.hearts);
+        this.audio.play('shotFail');
+      }
       if(event.type==='victory'){
+        const newlyCompleted=!this.completedLevels.has(state.levelIndex);
+        this.completedLevels.add(state.levelIndex);
+        saveCompletedLevels(this.platform,this.completedLevels);
+        if(newlyCompleted)saveCurrentLevel(this.platform,firstIncompleteLevel(this.totalLevels,this.completedLevels));
         this.audio.play('win');
         this.view.victory(now,state);
         const reward=winReward(state.levelIndex);
@@ -139,18 +167,12 @@ export class GameApplication {
         }
         this.view.startWinCoins(now, this.coins-reward, reward);
         this.pendingResult={kind:'win',copy,at:now+(state.comboCount>=2?900:280)};
-        this.platform.vibrate('success');this.wake();
+        this.vibrate('success');this.wake();
       }
       if(event.type==='defeat'){
         this.audio.play('lose');
-        this.view.showResult('lose', {
-          title:'挑战失败',
-          subtitle:`关卡 ${state.levelIndex+1}`,
-          tip:'激光次数已经用完。先把镜子路线转对，再发射。',
-          primary:'重新挑战',
-          secondary:'再试一次',
-        }, now);
-        this.platform.vibrate('heavy');
+        this.showHeartRefill(now);
+        this.vibrate('heavy');
         this.wake();
       }
     });
@@ -158,7 +180,11 @@ export class GameApplication {
     this.view.sync(this.session.state);
     this.app.ticker.add((t:any)=>{
       const now=nowMs();
-      this.perf.frame(t.deltaMS);
+      if(this.perf.frame(t.deltaMS)){
+        const viewport=this.platform.viewport();
+        this.app.renderer.resize(viewport.width,viewport.height,this.perf.renderResolution);
+        this.view.resize(viewport.width,viewport.height,this.platform.safeTop());
+      }
       const logicActive=this.session.update(now);
       if(this.pendingResult&&now>=this.pendingResult.at){
         const pending=this.pendingResult; this.pendingResult=null;
@@ -185,19 +211,20 @@ export class GameApplication {
     if(!this.view) return;
     this.view.settleCoins();
   }
-  private createView(reopenSettings=false){
+  private createView(reopenSettings=false,reopenLevels=false){
     if(this.view){
       this.app.stage.removeChild(this.view.root);
       this.view.destroy();
     }
     const viewport=this.platform.viewport();
-    this.view=new PixiGameView(this.app.renderer,this.perf,this.themeId);
+    this.view=new PixiGameView(this.app.renderer,this.perf,this.themeId,this.levels);
     this.app.stage.addChild(this.view.root);
     this.view.resize(viewport.width,viewport.height,this.platform.safeTop());
     this.view.sync(this.session.state);
     this.applyUiTextures();
     this.bindViewHandlers();
-    if(reopenSettings)this.view.showSettings(this.audioEnabled,this.themeId);
+    if(reopenLevels)this.view.showLevelSelect(this.session.state.levelIndex,this.completedLevels);
+    if(reopenSettings)this.view.showSettings(this.audioEnabled,this.hapticsEnabled,this.themeId);
     const renderer=this.app.renderer as any;
     if(renderer.background)renderer.background.color=Theme.bg;
     if(this.platform.kind==='web')applyThemeToDocument(themeById(this.themeId));
@@ -212,16 +239,20 @@ export class GameApplication {
   private bindViewHandlers(){
     this.view.setHandlers({
       rotate:(x,y)=>{
-        if(this.session.state.firing||this.session.state.won||this.view.result.visible||this.view.settings.visible)return;
+        if(this.session.state.firing||this.session.state.won||this.view.result.visible||this.view.settings.visible||this.view.levelSelect.visible)return;
         const now=nowMs();
         this.session.rotateAt(x,y);
         this.view.mirrorRotateFeedback(x,y,now);
         if(!this.app.ticker.started)this.renderOnce();
-        this.wake();this.audio.play('mirrorRotate');this.platform.vibrate('light');
+        this.wake();this.audio.play('mirrorRotate');this.vibrate('light');
       },
-      fire:()=>{if(this.view.result.visible||this.view.settings.visible)return;this.session.fire(nowMs());this.wake();},
+      fire:()=>{
+        if(this.view.result.visible||this.view.settings.visible||this.view.levelSelect.visible)return;
+        if(this.session.state.hearts<=0){this.audio.play('uiClick');this.showHeartRefill(nowMs());this.wake();return;}
+        this.session.fire(nowMs());this.wake();
+      },
       reset:()=>{this.collectPendingCoins();this.pendingResult=null;this.audio.play('uiClick');this.session.reset();this.wake();},
-      openSettings:()=>{if(this.view.result.visible)return;this.audio.play('uiClick');this.view.showSettings(this.audioEnabled,this.themeId);this.wake();},
+      openSettings:()=>{if(this.view.result.visible)return;this.audio.play('uiClick');this.view.showSettings(this.audioEnabled,this.hapticsEnabled,this.themeId);this.wake();},
       closeSettings:()=>{this.audio.play('uiClick');this.view.closeSettings();this.wake();},
       toggleAudio:()=>{
         this.audioEnabled=!this.audioEnabled;this.audio.setEnabled(this.audioEnabled);
@@ -230,19 +261,69 @@ export class GameApplication {
         if(this.audioEnabled)this.audio.play('uiClick');
         this.wake();
       },
+      toggleHaptics:()=>{
+        this.hapticsEnabled=!this.hapticsEnabled;
+        this.platform.storage.set(HAPTICS_STORAGE_KEY,this.hapticsEnabled?'1':'0');
+        this.view.setHapticsEnabled(this.hapticsEnabled);
+        if(this.hapticsEnabled)this.vibrate('light');
+        this.wake();
+      },
       selectTheme:(id)=>{
         if(id===this.themeId||id===activeThemeId)return;
         this.audio.play('uiClick');
+        const reopenLevels=this.view.levelSelect.visible;
         this.themeId=id;setActiveTheme(id);this.platform.storage.set(THEME_STORAGE_KEY,id);
-        Promise.resolve().then(()=>{this.createView(true);this.wake();});
+        Promise.resolve().then(()=>{this.createView(true,reopenLevels);this.wake();});
       },
+      openLevels:()=>{
+        if(this.session.state.firing||this.view.result.visible)return;
+        this.audio.play('uiClick');
+        this.view.showLevelSelect(this.session.state.levelIndex,this.completedLevels);
+        this.wake();
+      },
+      closeLevels:()=>{this.audio.play('uiClick');this.view.closeLevelSelect();this.wake();},
+      selectLevel:(index)=>{
+        if(!isLevelUnlocked(index,this.totalLevels,this.completedLevels))return;
+        this.collectPendingCoins();this.pendingResult=null;this.audio.play('uiClick');
+        this.session.load(index);this.wake();
+      },
+      clearHistory:()=>this.clearHistory(),
+      uiChanged:()=>this.wake(),
       resultPrimary:()=>{
         this.collectPendingCoins();this.pendingResult=null;this.audio.play('uiClick');
-        if(this.view.result.kindValue==='win')this.session.next();else this.session.reset();this.wake();
+        if(this.view.result.kindValue==='win')this.session.next();
+        else if(this.session.state.hearts<=0){
+          this.session.restoreHearts(MAX_HEARTS);
+          saveHearts(this.platform,this.session.state.hearts);
+          this.session.reset();
+          this.view.showToast('广告功能暂未接入 · 已补充 3 颗爱心',nowMs());
+        }else this.session.reset();
+        this.wake();
       },
       resultSecondary:()=>{this.collectPendingCoins();this.pendingResult=null;this.audio.play('uiClick');this.session.reset();this.wake();},
       coinSound:()=>this.audio.play('coin'),
     });
+  }
+  private clearHistory(){
+    this.audio.play('uiClick');
+    this.completedLevels.clear();
+    clearLevelProgress(this.platform);
+    this.coins=0;saveCoins(this.platform,0);
+    this.session.restoreHearts(MAX_HEARTS);saveHearts(this.platform,MAX_HEARTS);
+    this.session.load(0);
+    this.view.showLevelSelect(0,this.completedLevels);
+    this.vibrate('medium');this.wake();
+  }
+  private showHeartRefill(now:number){
+    this.view.showResult('lose',{
+      title:'爱心用完',
+      subtitle:'恢复 3 颗爱心',
+      tip:'观看广告即可继续挑战\n广告功能暂未接入，本次可直接领取',
+      primary:'领取 3 颗爱心',
+    },now);
+  }
+  private vibrate(type:'light'|'medium'|'heavy'|'success'){
+    if(this.hapticsEnabled)this.platform.vibrate(type);
   }
   private wake(){if(!this.app.ticker.started)this.app.ticker.start();}
   private renderOnce(){this.app.renderer.render(this.app.stage);}
