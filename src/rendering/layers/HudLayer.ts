@@ -1,19 +1,14 @@
-import { Container, Graphics, Rectangle, Sprite, Text, Texture } from 'pixi.js';
+import { Container, Graphics, Text, Texture } from 'pixi.js';
 import { UI_RECTS } from '@/config/GameConfig';
 import type { GameState } from '@/gameplay/types';
 import { Button } from '../ui/Button';
-import { drawGearIcon } from '../ui/icons';
+import { SettingsButton } from '../ui/SettingsButton';
 import { Theme, uiText } from '../theme';
 
 export class HudLayer extends Container {
-  readonly settingsButton = new Button(UI_RECTS.settings.w, UI_RECTS.settings.h, '', 'icon');
-  readonly levelButton = new Container();
+  readonly settingsButton = new SettingsButton(UI_RECTS.settings.w, UI_RECTS.settings.h);
+  readonly levelButton = new Button(UI_RECTS.progress.w, UI_RECTS.progress.h, '', 'secondary');
   readonly fireButton = new Button(UI_RECTS.fire.w, UI_RECTS.fire.h, '发射', 'fire');
-  private readonly levelCard = new Graphics();
-  private readonly levelLabel = new Text({
-    text: '',
-    style: uiText({ fontSize: 36, fill: Theme.ink }),
-  });
   private readonly hearts = new Graphics();
   private readonly heartsCount = new Text({
     text: '',
@@ -23,8 +18,6 @@ export class HudLayer extends Container {
     text: '',
     style: uiText({ fontSize: 15, fill: Theme.inkSoft, align: 'center', wordWrap: true, wordWrapWidth: 640 }),
   });
-  private readonly gearIcon = new Graphics();
-  private gear = new Sprite(Texture.EMPTY);
   private lastLevel = -1;
   private lastHearts = -1;
   private lastHint = '';
@@ -36,10 +29,7 @@ export class HudLayer extends Container {
   }
 
   setGearTexture(texture: Texture) {
-    const ok = texture !== Texture.EMPTY && texture.width > 1;
-    this.gear.texture = texture;
-    this.gear.visible = ok;
-    this.gearIcon.visible = !ok;
+    this.settingsButton.setTexture(texture);
   }
 
   setTopOffset(offset: number) {
@@ -55,28 +45,11 @@ export class HudLayer extends Container {
   private build() {
     const settings = UI_RECTS.settings;
     this.settingsButton.position.set(settings.x, settings.y);
-    this.settingsButton.setText('');
-    this.gear.anchor.set(0.5);
-    this.gear.position.set(settings.w / 2, settings.h / 2 - 3);
-    this.gear.width = 46;
-    this.gear.height = 46;
-    this.gear.tint = Theme.settingsIcon;
-    this.gear.eventMode = 'none';
-    this.gear.visible = false;
-    this.gearIcon.eventMode = 'none';
-    this.gearIcon.position.set(settings.w / 2, settings.h / 2 - 3);
-    drawGearIcon(this.gearIcon, 46);
-    this.settingsButton.addChild(this.gearIcon, this.gear);
 
     const progress = UI_RECTS.progress;
     this.levelButton.position.set(progress.x, progress.y);
-    this.levelButton.eventMode = 'static';
-    this.levelButton.cursor = 'pointer';
-    this.levelButton.hitArea = new Rectangle(0, 0, progress.w, progress.h);
-    this.levelLabel.anchor.set(0.5);
-    this.levelLabel.position.set(progress.w / 2, (progress.h - 5) / 2);
-    this.drawLevelCard();
-    this.levelButton.addChild(this.levelCard, this.levelLabel);
+    this.levelButton.setLabelSize(36);
+    this.levelButton.setLabelOffsetY(-4);
 
     const hearts = UI_RECTS.hearts;
     this.hearts.position.set(hearts.x, hearts.y);
@@ -90,22 +63,10 @@ export class HudLayer extends Container {
     this.addChild(this.settingsButton, this.levelButton, this.hearts, this.heartsCount, this.fireButton, this.hint);
   }
 
-  private drawLevelCard() {
-    const { w, h } = UI_RECTS.progress;
-    this.levelCard.clear()
-      .roundRect(0, 6, w, h - 2, UI_RECTS.progress.h / 2)
-      .fill({ color: Theme.shadow, alpha: 0.34 })
-      .roundRect(0, 5, w, h - 5, h / 2)
-      .fill(Theme.surfaceSide)
-      .roundRect(0, 0, w, h - 5, h / 2)
-      .fill(Theme.surface)
-      .stroke({ color: Theme.surfaceLine, width: 1.5 });
-  }
-
   sync(state: GameState) {
     if (state.levelIndex !== this.lastLevel) {
       this.lastLevel = state.levelIndex;
-      this.levelLabel.text = `第 ${state.levelIndex + 1} 关`;
+      this.levelButton.setText(`第 ${state.levelIndex + 1} 关`);
     }
     if (state.hearts !== this.lastHearts) {
       this.lastHearts = state.hearts;

@@ -3870,7 +3870,7 @@
     "name": "光域核心",
     "chapter": "空间谜题",
     "rows": 9,
-    "cols": 9,
+    "cols": 8,
     "emitter": {
       "side": "W",
       "index": 8
@@ -3882,83 +3882,83 @@
       },
       {
         "side": "N",
-        "index": 8
+        "index": 7
       },
       {
         "side": "N",
-        "index": 5
+        "index": 4
       }
     ],
     "items": [
       {
         "type": "splitter",
-        "x": 1,
+        "x": 0,
         "y": 8,
         "s": 0
       },
       {
         "type": "mirror",
-        "x": 1,
+        "x": 0,
         "y": 5,
         "s": 0
       },
       {
         "type": "portal",
-        "x": 3,
+        "x": 2,
         "y": 5,
         "pair": "P1"
       },
       {
         "type": "portal",
-        "x": 6,
+        "x": 5,
         "y": 2,
         "pair": "P1"
       },
       {
         "type": "switch",
-        "x": 7,
+        "x": 6,
         "y": 2,
         "id": "A"
       },
       {
         "type": "mirror",
-        "x": 8,
+        "x": 7,
         "y": 2,
         "s": 0
       },
       {
         "type": "splitter",
-        "x": 4,
+        "x": 3,
         "y": 8,
         "s": 0
       },
       {
         "type": "switch",
-        "x": 4,
+        "x": 3,
         "y": 6,
         "id": "B"
       },
       {
         "type": "mirror",
-        "x": 4,
+        "x": 3,
         "y": 4,
         "s": 1
       },
       {
         "type": "portal",
-        "x": 2,
+        "x": 1,
         "y": 4,
         "pair": "P2"
       },
       {
         "type": "portal",
-        "x": 7,
+        "x": 6,
         "y": 6,
         "pair": "P2"
       },
       {
         "type": "door",
-        "x": 6,
+        "x": 5,
         "y": 6,
         "id": "D2",
         "requires": [
@@ -3967,13 +3967,13 @@
       },
       {
         "type": "mirror",
-        "x": 5,
+        "x": 4,
         "y": 6,
         "s": 1
       },
       {
         "type": "door",
-        "x": 6,
+        "x": 5,
         "y": 8,
         "id": "D1",
         "requires": [
@@ -3983,18 +3983,23 @@
       },
       {
         "type": "wall",
+        "x": 1,
+        "y": 7
+      },
+      {
+        "type": "wall",
         "x": 2,
         "y": 7
       },
       {
         "type": "wall",
-        "x": 3,
+        "x": 4,
         "y": 7
       },
       {
         "type": "wall",
         "x": 5,
-        "y": 7
+        "y": 4
       },
       {
         "type": "wall",
@@ -4002,39 +4007,20 @@
         "y": 4
       },
       {
-        "type": "wall",
-        "x": 7,
-        "y": 4
-      },
-      {
         "type": "mirror",
-        "x": 3,
+        "x": 2,
         "y": 2,
         "s": 0
       },
       {
         "type": "mirror",
-        "x": 8,
+        "x": 7,
         "y": 7,
         "s": 0
       },
       {
         "type": "mirror",
         "x": 0,
-        "y": 0,
-        "s": 1,
-        "decoy": true
-      },
-      {
-        "type": "mirror",
-        "x": 0,
-        "y": 1,
-        "s": 1,
-        "decoy": true
-      },
-      {
-        "type": "mirror",
-        "x": 1,
         "y": 0,
         "s": 1,
         "decoy": true

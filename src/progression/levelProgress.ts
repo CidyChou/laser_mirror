@@ -2,6 +2,15 @@ import type { IPlatform } from '@/platform/IPlatform';
 
 export const COMPLETED_LEVELS_STORAGE_KEY = 'laser-mirror-completed-levels';
 export const CURRENT_LEVEL_STORAGE_KEY = 'laser-mirror-current-level';
+export const ALL_LEVELS_UNLOCKED_STORAGE_KEY = 'laser-mirror-all-levels-unlocked';
+
+export function loadAllLevelsUnlocked(platform: IPlatform): boolean {
+  return platform.storage.get(ALL_LEVELS_UNLOCKED_STORAGE_KEY) === '1';
+}
+
+export function saveAllLevelsUnlocked(platform: IPlatform, unlocked: boolean) {
+  platform.storage.set(ALL_LEVELS_UNLOCKED_STORAGE_KEY, unlocked ? '1' : '0');
+}
 
 export function loadCompletedLevels(platform: IPlatform, totalLevels: number): Set<number> {
   try {
@@ -29,15 +38,26 @@ export function firstIncompleteLevel(totalLevels: number, completed: ReadonlySet
   return Math.max(0, totalLevels - 1);
 }
 
-export function isLevelUnlocked(index: number, totalLevels: number, completed: ReadonlySet<number>): boolean {
+export function isLevelUnlocked(
+  index: number,
+  totalLevels: number,
+  completed: ReadonlySet<number>,
+  allLevelsUnlocked = false,
+): boolean {
   if (index < 0 || index >= totalLevels) return false;
+  if (allLevelsUnlocked) return true;
   return completed.has(index) || index === firstIncompleteLevel(totalLevels, completed);
 }
 
-export function loadCurrentLevel(platform: IPlatform, totalLevels: number, completed: ReadonlySet<number>): number {
+export function loadCurrentLevel(
+  platform: IPlatform,
+  totalLevels: number,
+  completed: ReadonlySet<number>,
+  allLevelsUnlocked = false,
+): number {
   const raw = platform.storage.get(CURRENT_LEVEL_STORAGE_KEY);
   const saved = raw === null ? firstIncompleteLevel(totalLevels, completed) : Number(raw);
-  return Number.isInteger(saved) && isLevelUnlocked(saved, totalLevels, completed)
+  return Number.isInteger(saved) && isLevelUnlocked(saved, totalLevels, completed, allLevelsUnlocked)
     ? saved
     : firstIncompleteLevel(totalLevels, completed);
 }

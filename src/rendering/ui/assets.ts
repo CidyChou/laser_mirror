@@ -11,8 +11,8 @@ export type UiAssetKey = keyof typeof FILES;
 
 const nativeTextures = new Map<UiAssetKey, Texture>();
 
-function src(kind: PlatformKind, file: string): string {
-  return `${kind === 'web' ? './' : ''}${file}`;
+function src(_kind: PlatformKind, file: string): string {
+  return file;
 }
 
 export async function loadUiAssets(kind: PlatformKind): Promise<void> {
@@ -35,7 +35,9 @@ export async function loadUiAssets(kind: PlatformKind): Promise<void> {
 
 export function uiTexture(kind: PlatformKind, key: UiAssetKey): Texture {
   if (kind !== 'web') return nativeTextures.get(key) ?? Texture.EMPTY;
-  const texture = Assets.get(src(kind, FILES[key]));
+  const assetKey = src(kind, FILES[key]);
+  if (!Assets.cache.has(assetKey)) return Texture.EMPTY;
+  const texture = Assets.cache.get(assetKey);
   return texture instanceof Texture ? texture : Texture.EMPTY;
 }
 

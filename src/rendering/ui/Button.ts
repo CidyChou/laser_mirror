@@ -8,11 +8,11 @@ export class Button extends Container {
   private shadow = new Graphics();
   private body = new Graphics();
   private face = new Graphics();
-  private shine = new Graphics();
   private caption = new Text({ text: '', style: uiText({ fontSize: 26, fill: Theme.ink }) });
   private disabledState = false;
   private activeState = false;
   private pressedState = false;
+  private labelOffsetY = 0;
 
   constructor(
     public readonly widthPx: number,
@@ -21,7 +21,7 @@ export class Button extends Container {
     private readonly kind: ButtonKind = 'primary',
   ) {
     super();
-    this.addChild(this.shadow, this.body, this.face, this.shine, this.caption);
+    this.addChild(this.shadow, this.body, this.face, this.caption);
     this.caption.anchor.set(0.5);
     this.eventMode = 'static';
     this.cursor = 'pointer';
@@ -58,6 +58,12 @@ export class Button extends Container {
     setUiFontSize(this.caption, size);
   }
 
+  setLabelOffsetY(offset: number) {
+    if (this.labelOffsetY === offset) return;
+    this.labelOffsetY = offset;
+    this.redraw();
+  }
+
   private setPressed(value: boolean) {
     if (this.disabledState || this.pressedState === value) return;
     this.pressedState = value;
@@ -68,7 +74,6 @@ export class Button extends Container {
     this.shadow.clear();
     this.body.clear();
     this.face.clear();
-    this.shine.clear();
 
     const radius = this.kind === 'icon' ? UI_TOKENS.radius.md : UI_TOKENS.radius.lg;
     const pressed = this.pressedState;
@@ -106,14 +111,16 @@ export class Button extends Container {
       label = Theme.inkSoft;
     }
 
-    this.shadow.roundRect(0, 6, this.widthPx, this.heightPx, radius).fill({ color: Theme.shadow, alpha: 0.38 });
-    this.body.roundRect(0, depth, this.widthPx, faceH, radius).fill(shade(fill, 0.62));
+    // A restrained 2.5D lip and soft contact shadow. The previous full-width
+    // top highlight made every control look glossy and visually noisy.
+    this.shadow.roundRect(1, 7, this.widthPx - 2, this.heightPx - 2, radius)
+      .fill({ color: Theme.shadow, alpha: disabled ? 0.16 : 0.26 });
+    this.body.roundRect(0, depth, this.widthPx, faceH, radius).fill(shade(fill, 0.76));
     this.face.roundRect(0, 0, this.widthPx, faceH, radius).fill(fill).stroke({ color: edge, width: 1.5, alpha: 0.95 });
-    this.shine.roundRect(3, 3, this.widthPx - 6, Math.max(10, faceH * 0.34), radius - 3).fill({ color: Theme.white, alpha: disabled ? 0.04 : 0.1 });
 
     this.caption.style.fill = label;
     this.caption.alpha = disabled ? 0.62 : 1;
-    this.caption.position.set(this.widthPx / 2, faceH / 2 + (pressed ? 1 : 0));
+    this.caption.position.set(this.widthPx / 2, faceH / 2 + (pressed ? 1 : 0) + this.labelOffsetY);
   }
 }
 

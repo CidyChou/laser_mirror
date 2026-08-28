@@ -36,7 +36,7 @@ export class PixiGameView{
     this.stageBg.ellipse(360,STAGE_TOP+70,520,220).fill({color:Theme.cyan,alpha:.024});
     this.stageBg.moveTo(164,STAGE_TOP+1).lineTo(556,STAGE_TOP+1).stroke({color:Theme.cyan,width:2,alpha:.12,cap:'round'});
   }
-  setHandlers(h:{rotate:(x:number,y:number)=>void;fire:()=>void;reset:()=>void;openSettings:()=>void;toggleAudio:()=>void;toggleHaptics:()=>void;selectTheme:(id:ThemeId)=>void;closeSettings:()=>void;openLevels:()=>void;closeLevels:()=>void;selectLevel:(index:number)=>void;clearHistory:()=>void;uiChanged:()=>void;resultPrimary:()=>void;resultSecondary:()=>void;coinSound:()=>void}){
+  setHandlers(h:{rotate:(x:number,y:number)=>void;fire:()=>void;reset:()=>void;openSettings:()=>void;toggleAudio:()=>void;toggleHaptics:()=>void;selectTheme:(id:ThemeId)=>void;closeSettings:()=>void;openLevels:()=>void;selectLevel:(index:number)=>void;unlockAllLevels:()=>void;clearHistory:()=>void;uiChanged:()=>void;resultPrimary:()=>void;resultSecondary:()=>void;coinSound:()=>void}){
     this.objects.setRotateHandler(h.rotate);
     this.hud.fireButton.on('pointertap',h.fire);
     this.hud.settingsButton.on('pointertap',h.openSettings);
@@ -52,15 +52,19 @@ export class PixiGameView{
     this.settings.clearHistoryButton.on('pointertap',()=>this.settings.showClearConfirmation());
     this.settings.cancelClearButton.on('pointertap',()=>this.settings.hideClearConfirmation());
     this.settings.confirmClearButton.on('pointertap',h.clearHistory);
-    this.levelSelect.closeButton.on('pointertap',h.closeLevels);
     this.levelSelect.settingsButton.on('pointertap',h.openSettings);
     this.levelSelect.setSelectHandler(h.selectLevel);
+    this.levelSelect.setUnlockAllHandler(h.unlockAllLevels);
+    this.levelSelect.on('scrollchange',h.uiChanged);
     this.result.primary.on('pointertap',h.resultPrimary);
     this.result.secondary.on('pointertap',h.resultSecondary);
     this.coins.setHandlers({onSound:h.coinSound});
   }
   setUiTexture(key:UiAssetKey, texture:Texture){
-    if(key==='settings') this.hud.setGearTexture(texture);
+    if(key==='settings'){
+      this.hud.setGearTexture(texture);
+      this.levelSelect.setGearTexture(texture);
+    }
     if(key==='crown') this.result.setCrownTexture(texture);
     if(key==='coin'){
       this.result.setCoinTexture(texture);
@@ -74,8 +78,7 @@ export class PixiGameView{
   setAudioEnabled(enabled:boolean){this.settings.setAudioEnabled(enabled);}
   setHapticsEnabled(enabled:boolean){this.settings.setHapticsEnabled(enabled);}
   closeSettings(){this.settings.hide();}
-  showLevelSelect(currentIndex:number,completed:ReadonlySet<number>){this.levelSelect.show(currentIndex,completed);}
-  closeLevelSelect(){this.levelSelect.hide();}
+  showLevelSelect(currentIndex:number,completed:ReadonlySet<number>,allLevelsUnlocked=false){this.levelSelect.show(currentIndex,completed,allLevelsUnlocked);}
   showResult(kind:ResultKind, copy:{title:string;subtitle:string;tip:string;primary:string;secondary?:string;reward?:number}, now:number){this.result.show(kind,copy,now);}
   startWinCoins(now:number, balance:number, reward:number){
     this.coins.show(now, balance);
@@ -102,10 +105,11 @@ export class PixiGameView{
     const extra=Math.max(0,Math.ceil(designSafe-UI_RECTS.settings.y+18));
     this.hudOffset=extra;
     this.hud.setTopOffset(extra);
+    this.levelSelect.setTopOffset(extra);
     this.coins.setTopOffset(extra);
     this.combo.setTopOffset(extra);
     this.toast.position.set(360,220+extra);
   }
-  get active(){return this.laser.active||this.impacts.active||this.particles.active||this.objects.active||this.toastUntil>0||this.victoryUntil>0||this.comboActive||this.resultActive||this.confettiActive||this.coinsActive;}
+  get active(){return this.laser.active||this.impacts.active||this.particles.active||this.objects.active||this.levelSelect.active||this.toastUntil>0||this.victoryUntil>0||this.comboActive||this.resultActive||this.confettiActive||this.coinsActive;}
   destroy(){this.particles.destroy();this.root.destroy({children:true});}
 }

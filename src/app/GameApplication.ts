@@ -3,7 +3,7 @@ import { AudioManager } from '@/audio/AudioManager';
 import { GameConfig } from '@/config/GameConfig';
 import { nowMs } from '@/core/clock';
 import { loadCoins, saveCoins, winReward } from '@/economy/wallet';
-import { loadHearts, MAX_HEARTS, saveHearts } from '@/economy/hearts';
+import { AD_HEART_REWARD, loadHearts, MAX_HEARTS, saveHearts } from '@/economy/hearts';
 import { GameSession } from '@/gameplay/GameSession';
 import type { LevelDefinition } from '@/gameplay/types';
 import { LevelRepository } from '@/levels/LevelRepository';
@@ -14,8 +14,10 @@ import {
   clearLevelProgress,
   firstIncompleteLevel,
   isLevelUnlocked,
+  loadAllLevelsUnlocked,
   loadCompletedLevels,
   loadCurrentLevel,
+  saveAllLevelsUnlocked,
   saveCompletedLevels,
   saveCurrentLevel,
 } from '@/progression/levelProgress';
@@ -46,6 +48,7 @@ export class GameApplication {
   private themeId:ThemeId=DEFAULT_THEME_ID;
   private readonly levels:readonly LevelDefinition[];
   private completedLevels=new Set<number>();
+  private allLevelsUnlocked=false;
   private coins=0;
   private totalLevels=0;
   private pendingResult:{kind:'win'|'lose';copy:{title:string;subtitle:string;tip:string;primary:string;secondary?:string;reward?:number};at:number}|null=null;
@@ -56,7 +59,8 @@ export class GameApplication {
     this.levels=repo.levels;
     this.totalLevels=this.levels.length;
     this.completedLevels=loadCompletedLevels(platform,this.totalLevels);
-    const initialLevel=loadCurrentLevel(platform,this.totalLevels,this.completedLevels);
+    this.allLevelsUnlocked=loadAllLevelsUnlocked(platform);
+    const initialLevel=loadCurrentLevel(platform,this.totalLevels,this.completedLevels,this.allLevelsUnlocked);
     this.session=new GameSession(this.levels,loadHearts(platform),initialLevel);
     this.audio=new AudioManager(platform);
     this.coins=loadCoins(platform);
@@ -223,7 +227,7 @@ export class GameApplication {
     this.view.sync(this.session.state);
     this.applyUiTextures();
     this.bindViewHandlers();
-    if(reopenLevels)this.view.showLevelSelect(this.session.state.levelIndex,this.completedLevels);
+    if(reopenLevels)this.view.showLevelSelect(this.session.state.levelIndex,this.completedLevels,this.allLevelsUnlocked);
     if(reopenSettings)this.view.showSettings(this.audioEnabled,this.hapticsEnabled,this.themeId);
     const renderer=this.app.renderer as any;
     if(renderer.background)renderer.background.color=Theme.bg;
@@ -278,25 +282,25 @@ export class GameApplication {
       openLevels:()=>{
         if(this.session.state.firing||this.view.result.visible)return;
         this.audio.play('uiClick');
-        this.view.showLevelSelect(this.session.state.levelIndex,this.completedLevels);
+        this.view.showLevelSelect(this.session.state.levelIndex,this.completedLevels,this.allLevelsUnlocked);
         this.wake();
       },
-      closeLevels:()=>{this.audio.play('uiClick');this.view.closeLevelSelect();this.wake();},
       selectLevel:(index)=>{
-        if(!isLevelUnlocked(index,this.totalLevels,this.completedLevels))return;
+        if(!isLevelUnlocked(index,this.totalLevels,this.completedLevels,this.allLevelsUnlocked))return;
         this.collectPendingCoins();this.pendingResult=null;this.audio.play('uiClick');
         this.session.load(index);this.wake();
       },
+      unlockAllLevels:()=>this.unlockAllLevels(),
       clearHistory:()=>this.clearHistory(),
       uiChanged:()=>this.wake(),
       resultPrimary:()=>{
         this.collectPendingCoins();this.pendingResult=null;this.audio.play('uiClick');
         if(this.view.result.kindValue==='win')this.session.next();
         else if(this.session.state.hearts<=0){
-          this.session.restoreHearts(MAX_HEARTS);
+          this.session.restoreHearts(Math.min(MAX_HEARTS,this.session.state.hearts+AD_HEART_REWARD));
           saveHearts(this.platform,this.session.state.hearts);
           this.session.reset();
-          this.view.showToast('广告功能暂未接入 · 已补充 3 颗爱心',nowMs());
+          this.view.showToast(`广告功能暂未接入 · 已增加 ${AD_HEART_REWARD} 颗爱心`,nowMs());
         }else this.session.reset();
         this.wake();
       },
@@ -311,15 +315,25 @@ export class GameApplication {
     this.coins=0;saveCoins(this.platform,0);
     this.session.restoreHearts(MAX_HEARTS);saveHearts(this.platform,MAX_HEARTS);
     this.session.load(0);
-    this.view.showLevelSelect(0,this.completedLevels);
+    this.view.showLevelSelect(0,this.completedLevels,this.allLevelsUnlocked);
     this.vibrate('medium');this.wake();
+  }
+  private unlockAllLevels(){
+    if(!this.allLevelsUnlocked){
+      this.allLevelsUnlocked=true;
+      saveAllLevelsUnlocked(this.platform,true);
+      this.audio.play('uiClick');
+      this.vibrate('success');
+    }
+    this.view.showLevelSelect(this.session.state.levelIndex,this.completedLevels,true);
+    this.wake();
   }
   private showHeartRefill(now:number){
     this.view.showResult('lose',{
       title:'爱心用完',
-      subtitle:'恢复 3 颗爱心',
+      subtitle:`增加 ${AD_HEART_REWARD} 颗爱心`,
       tip:'观看广告即可继续挑战\n广告功能暂未接入，本次可直接领取',
-      primary:'领取 3 颗爱心',
+      primary:`领取 ${AD_HEART_REWARD} 颗爱心`,
     },now);
   }
   private vibrate(type:'light'|'medium'|'heavy'|'success'){
