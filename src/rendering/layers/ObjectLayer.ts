@@ -1,12 +1,12 @@
 import { Container, Graphics, Rectangle } from 'pixi.js';
 import { borderPoint, cellCenter } from '@/gameplay/geometry';
 import type { BoardGeometry, GameState, LevelItem, Port } from '@/gameplay/types';
-import { Theme } from '../theme';
+import { isLightTheme, Theme } from '../theme';
 
 type ItemNode={key:string;kind:LevelItem['type'];root:Container;motion:Container;angleCarrier?:Container;face?:Graphics;core?:Graphics;phase:number;lastLit?:boolean;lastOpen?:boolean};
 type Kick={start:number};
 type ClickFx={root:Container;ring:Graphics;flash:Graphics;start:number;active:boolean};
-type PortNode={port:Port;emitter:boolean;targetIndex?:number;root:Container;band:Graphics;detail:Container;phase:number;lastActive:boolean|null};
+type PortNode={port:Port;emitter:boolean;targetIndex?:number;root:Container;halo:Graphics;band:Graphics;plasma:Graphics;core:Graphics;detail:Container;toneParts:Graphics[];hotParts:Graphics[];phase:number;active:boolean;lastActive:boolean|null};
 
 export class ObjectLayer extends Container{
   private portLayer=new Container();
@@ -18,6 +18,7 @@ export class ObjectLayer extends Container{
   private clickPool:ClickFx[]=[];
   private rotateHandler:(x:number,y:number)=>void=()=>{};
   private levelIndex=-1;
+  private readonly energyBlend=isLightTheme()?'normal':'add';
 
   constructor(){
     super();this.addChild(this.portLayer,this.itemLayer,this.feedbackLayer);
@@ -60,6 +61,16 @@ export class ObjectLayer extends Container{
   kick(x:number,y:number,now:number){this.kicks.set(`${x},${y}`,{start:now});}
   rotateFeedback(x:number,y:number,now:number,g:BoardGeometry){const c=cellCenter(g,x,y),fx=this.clickPool.find(v=>!v.active)??this.clickPool[0];fx.active=true;fx.start=now;fx.root.visible=true;fx.root.position.set(c.x,c.y);fx.root.scale.set(.7);fx.root.alpha=1;fx.ring.scale.set(.75);fx.flash.rotation=0;}
   update(now:number){
+    for(const port of this.portNodes){
+      const breath=.5+.5*Math.sin(now*.00315+port.phase);
+      const haloBase=port.emitter?.085:port.active?.13:.045;
+      const haloRange=port.emitter?.075:port.active?.085:.045;
+      port.halo.alpha=haloBase+breath*haloRange;
+      port.halo.scale.set(1+breath*(port.active?.035:.022));
+      port.plasma.alpha=(port.emitter?.68:port.active?.76:.54)+breath*.16;
+      port.core.alpha=(port.emitter?.82:port.active?.90:.62)+breath*.10;
+      port.detail.scale.set(1+breath*(port.active?.035:.018));
+    }
     for(const [key,k] of [...this.kicks]){const n=this.itemNodes.get(key);if(!n){this.kicks.delete(key);continue;}const t=(now-k.start)/280;if(t>=1){n.motion.scale.set(1);n.motion.position.set(0,0);n.motion.rotation=0;this.kicks.delete(key);continue;}const hit=Math.sin(t*Math.PI)*Math.exp(-t*1.55);n.motion.scale.set(1+hit*.12);n.motion.position.set(0,-hit*6);n.motion.rotation=hit*.028*Math.sin(now*.08);}
     for(const fx of this.clickPool){if(!fx.active)continue;const t=(now-fx.start)/300;if(t>=1){fx.active=false;fx.root.visible=false;continue;}const ease=1-Math.pow(1-t,3);fx.root.scale.set(.7+ease*.65);fx.root.alpha=1-t;fx.ring.scale.set(.75+ease*.85);fx.flash.rotation=t*.22;fx.flash.alpha=(1-t)*.62;}
   }
@@ -144,41 +155,67 @@ export class ObjectLayer extends Container{
 
   private makePort(port:Port,g:BoardGeometry,emitter:boolean,targetIndex?:number){
     const root=new Container();root.position.copyFrom(borderPoint(g,port));
-    const band=new Graphics(),detail=new Container();
-    const long=g.cell;
-    const thick=Math.max(5.5,g.cell*.07);
+    const halo=new Graphics(),band=new Graphics(),plasma=new Graphics(),core=new Graphics(),detail=new Container();
+    const toneParts:Graphics[]=[];const hotParts:Graphics[]=[];
+    const long=g.cell*.92;
+    const thick=Math.max(6,g.cell*.0825);
     const radius=thick*.48;
-    if(port.side==='W'||port.side==='E')band.roundRect(-thick/2,-long/2,thick,long,radius);
-    else band.roundRect(-long/2,-thick/2,long,thick,radius);
-    if(emitter)band.fill(Theme.white);
-    else band.stroke({color:Theme.white,width:Math.max(2,thick*.3),alpha:1});
+    const vertical=port.side==='W'||port.side==='E';
+    if(vertical){
+      halo.roundRect(-thick*1.35,-long*.53,thick*2.7,long*1.06,thick*1.2);
+      band.roundRect(-thick/2,-long/2,thick,long,radius);
+      plasma.roundRect(-thick*.25,-long*.46,thick*.5,long*.92,thick*.24);
+      core.roundRect(-Math.max(.9,thick*.075),-long*.36,Math.max(1.8,thick*.15),long*.72,thick*.08);
+    }else{
+      halo.roundRect(-long*.53,-thick*1.35,long*1.06,thick*2.7,thick*1.2);
+      band.roundRect(-long/2,-thick/2,long,thick,radius);
+      plasma.roundRect(-long*.46,-thick*.25,long*.92,thick*.5,thick*.24);
+      core.roundRect(-long*.36,-Math.max(.9,thick*.075),long*.72,Math.max(1.8,thick*.15),thick*.08);
+    }
+    halo.fill({color:Theme.white,alpha:1});halo.blendMode=this.energyBlend;
+    halo.alpha=emitter?.12:.06;
+    if(emitter)band.fill({color:Theme.white,alpha:.94});
+    else band.stroke({color:Theme.white,width:Math.max(2,thick*.28),alpha:.88});
+    plasma.fill({color:Theme.white,alpha:1});plasma.blendMode=this.energyBlend;
+    plasma.alpha=emitter?.76:.62;
+    core.fill({color:Theme.white,alpha:1});core.blendMode=this.energyBlend;
+    core.alpha=emitter?.90:.72;
     const offset=thick*.95+g.cell*.025;let dx=0,dy=0;if(port.side==='W')dx=-offset;if(port.side==='E')dx=offset;if(port.side==='N')dy=-offset;if(port.side==='S')dy=offset;
     detail.position.set(dx,dy);
     if(emitter){
       const ang={W:0,E:Math.PI,N:Math.PI/2,S:-Math.PI/2}[port.side];
       const tip=g.cell*.16,base=-g.cell*.09,halfH=g.cell*.115;
-      const tri=new Graphics().poly([tip,0,base,-halfH,base,halfH],true).fill(Theme.white);tri.rotation=ang;tri.blendMode='add';
-      const white=new Graphics().poly([g.cell*.08,0,-g.cell*.01,-g.cell*.05,-g.cell*.01,g.cell*.05],true).fill(Theme.white);white.rotation=ang;
-      detail.addChild(tri,white);
+      const marker=new Container();marker.rotation=ang;
+      const markerHalo=new Graphics().poly([tip*1.25,0,base*1.15,-halfH*1.25,base*1.15,halfH*1.25],true).fill({color:Theme.white,alpha:.14});markerHalo.blendMode=this.energyBlend;
+      const markerBody=new Graphics().poly([tip,0,base,-halfH,base,halfH],true).fill({color:Theme.white,alpha:.96});markerBody.blendMode=this.energyBlend;
+      const markerPlasma=new Graphics().poly([tip*.68,0,base*.18,-halfH*.48,base*.18,halfH*.48],true).fill({color:Theme.white,alpha:.92});markerPlasma.blendMode=this.energyBlend;
+      const markerCore=new Graphics().moveTo(base*.05,0).lineTo(tip*.54,0).stroke({color:Theme.white,width:Math.max(1.5,g.cell*.022),alpha:.96,cap:'round'});markerCore.blendMode=this.energyBlend;
+      marker.addChild(markerHalo,markerBody,markerPlasma,markerCore);detail.addChild(marker);
+      toneParts.push(markerHalo,markerBody);hotParts.push(markerPlasma);
     }else{
-      const ring=new Graphics().circle(0,0,g.cell*.105)
-        .stroke({color:Theme.white,width:Math.max(2.5,g.cell*.035),alpha:1})
-        .circle(0,0,g.cell*.032).fill(Theme.white);ring.blendMode='add';
-      detail.addChild(ring);
+      const receiverHalo=new Graphics().circle(0,0,g.cell*.16).fill({color:Theme.white,alpha:.12});receiverHalo.blendMode=this.energyBlend;
+      const receiverBody=new Graphics().circle(0,0,g.cell*.108).stroke({color:Theme.white,width:Math.max(2.5,g.cell*.035),alpha:.94});receiverBody.blendMode=this.energyBlend;
+      const receiverPlasma=new Graphics().circle(0,0,g.cell*.068).stroke({color:Theme.white,width:Math.max(1.6,g.cell*.018),alpha:.78});receiverPlasma.blendMode=this.energyBlend;
+      const receiverCore=new Graphics().circle(0,0,g.cell*.027).fill({color:Theme.white,alpha:1});receiverCore.blendMode=this.energyBlend;
+      detail.addChild(receiverHalo,receiverBody,receiverPlasma,receiverCore);
+      toneParts.push(receiverHalo,receiverBody);hotParts.push(receiverPlasma);
     }
-    root.addChild(band,detail);
-    return{port,emitter,targetIndex,root,band,detail,phase:0,lastActive:null as boolean|null};
+    root.addChild(halo,band,plasma,core,detail);
+    const phase=(targetIndex??0)*1.37+({W:.2,E:1.1,N:2.05,S:2.8}[port.side]);
+    return{port,emitter,targetIndex,root,halo,band,plasma,core,detail,toneParts,hotParts,phase,active:false,lastActive:null as boolean|null};
   }
   private refreshPort(n:PortNode,state:GameState,_g:BoardGeometry){
     n.root.position.copyFrom(borderPoint(_g,n.port));
     const active=!n.emitter&&n.targetIndex!==undefined?!!state.targets[n.targetIndex]?.hit:false;
+    n.active=active;
     if(n.lastActive===active) return;
     n.lastActive=active;
     const color=n.emitter?Theme.beam:active?Theme.green:Theme.gold;
+    const hot=n.emitter?Theme.beamHot:active?Theme.switchOnRing:Theme.coinHighlight;
+    n.halo.tint=color;
     n.band.tint=color;
-    const tintable=n.emitter?n.detail.children.slice(0,1):n.detail.children;
-    for(const child of tintable){
-      if('tint' in child) (child as Graphics).tint=color;
-    }
+    n.plasma.tint=hot;
+    for(const part of n.toneParts)part.tint=color;
+    for(const part of n.hotParts)part.tint=hot;
   }
 }

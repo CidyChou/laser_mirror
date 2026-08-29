@@ -59,8 +59,9 @@ export class GameApplication {
     this.levels=repo.levels;
     this.totalLevels=this.levels.length;
     this.completedLevels=loadCompletedLevels(platform,this.totalLevels);
-    this.allLevelsUnlocked=loadAllLevelsUnlocked(platform);
-    const initialLevel=loadCurrentLevel(platform,this.totalLevels,this.completedLevels,this.allLevelsUnlocked);
+    this.allLevelsUnlocked=false;
+    if(loadAllLevelsUnlocked(platform))saveAllLevelsUnlocked(platform,false);
+    const initialLevel=loadCurrentLevel(platform,this.totalLevels,this.completedLevels,false);
     this.session=new GameSession(this.levels,loadHearts(platform),initialLevel);
     this.audio=new AudioManager(platform);
     this.coins=loadCoins(platform);
@@ -78,11 +79,13 @@ export class GameApplication {
     const touch=typeof navigator!=='undefined'&&(navigator.maxTouchPoints>0||/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent||''));
     this.perf.seedFromDevice({kind:this.platform.kind,touch,viewport:v});
     const targetCanvas=canvas??this.platform.createCanvas?.();
+    const preferWebGLVersion=typeof location!=='undefined'&&/[?&]webgl=1(?:&|$)/.test(location.search)
+      ?1:GameConfig.renderer.preferWebGLVersion;
     await this.app.init({
       width:v.width,height:v.height,canvas:targetCanvas,background:Theme.bg,
       // Prefer WebGL2 where the mini-game runtime exposes it; Pixi falls back
       // to WebGL1 automatically. Rendering features still target WebGL1.
-      preference:GameConfig.renderer.preference,preferWebGLVersion:GameConfig.renderer.preferWebGLVersion,
+      preference:GameConfig.renderer.preference,preferWebGLVersion,
       powerPreference:'high-performance',antialias:GameConfig.renderer.antialias,
       resolution:this.perf.renderResolution,autoDensity:this.platform.kind==='web',autoStart:false
     });
@@ -184,12 +187,14 @@ export class GameApplication {
     this.view.sync(this.session.state);
     this.app.ticker.add((t:any)=>{
       const now=nowMs();
-      if(this.perf.frame(t.deltaMS)){
+      const logicActive=this.session.update(now);
+      // A quality change is queued while a beam is travelling, then committed
+      // between shots so the laser never changes character halfway through.
+      if(this.perf.frame(t.deltaMS,!this.session.state.firing)){
         const viewport=this.platform.viewport();
         this.app.renderer.resize(viewport.width,viewport.height,this.perf.renderResolution);
         this.view.resize(viewport.width,viewport.height,this.platform.safeTop());
       }
-      const logicActive=this.session.update(now);
       if(this.pendingResult&&now>=this.pendingResult.at){
         const pending=this.pendingResult; this.pendingResult=null;
         this.view.showResult(pending.kind, pending.copy, now);
@@ -319,13 +324,10 @@ export class GameApplication {
     this.vibrate('medium');this.wake();
   }
   private unlockAllLevels(){
-    if(!this.allLevelsUnlocked){
-      this.allLevelsUnlocked=true;
-      saveAllLevelsUnlocked(this.platform,true);
-      this.audio.play('uiClick');
-      this.vibrate('success');
-    }
-    this.view.showLevelSelect(this.session.state.levelIndex,this.completedLevels,true);
+    this.allLevelsUnlocked=!this.allLevelsUnlocked;
+    this.audio.play('uiClick');
+    this.vibrate(this.allLevelsUnlocked?'success':'medium');
+    this.view.showLevelSelect(this.session.state.levelIndex,this.completedLevels,this.allLevelsUnlocked);
     this.wake();
   }
   private showHeartRefill(now:number){

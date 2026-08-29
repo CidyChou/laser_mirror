@@ -51,6 +51,8 @@ export interface ImpactEvent {
   pair?: string;
   targetIndex?: number;
   toX?: number; toY?: number;
+  incomingDir?: Direction;
+  outgoingDirs?: Direction[];
 }
 
 export interface LaserTrace {

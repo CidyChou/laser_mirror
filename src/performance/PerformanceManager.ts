@@ -9,41 +9,65 @@ export class PerformanceManager {
   private samples: number[] = [];
   private cooldown = 0;
   private baseResolution = 1;
-  private resolutionDegraded = false;
+  private pendingQuality: Quality | null = null;
 
   seedFromDevice(opts: { kind: PlatformKind; touch: boolean; viewport: ViewportInfo }) {
-    const mobile = opts.kind !== 'web' || opts.touch;
-    if (mobile) this.quality = 'medium';
+    // The beam's full visual identity is inexpensive in the new single-mesh
+    // path, so mobile starts at high and adapts from measured frame time.
+    this.quality = 'high';
+    this.pendingQuality = null;
+    this.samples = [];
     this.baseResolution = fitResolutionToBudget(opts.viewport);
     this.renderResolution = this.baseResolution;
   }
 
-  frame(deltaMs: number): boolean {
+  frame(deltaMs: number, allowQualityChange = true): boolean {
     if (!Number.isFinite(deltaMs) || deltaMs <= 0) return false;
     this.samples.push(deltaMs);
     if (this.samples.length > 90) this.samples.shift();
-    if (this.cooldown > 0) { this.cooldown--; return false; }
-    if (this.samples.length < 45) return false;
-    const avg = this.samples.reduce((a, b) => a + b, 0) / this.samples.length;
-    const fps = 1000 / avg;
-    if (fps < 38 && this.quality === 'high') { this.quality = 'medium'; this.cooldown = 180; }
-    else if (fps < 32 && this.quality === 'medium') {
-      this.quality = 'low';
-      this.cooldown = 180;
-      if (!this.resolutionDegraded) {
-        this.resolutionDegraded = true;
-        const next = quantizeResolution(Math.max(
-          GameConfig.renderer.minAdaptiveResolution,
-          this.baseResolution * GameConfig.renderer.lowQualityResolutionScale,
-        ));
-        if (next < this.renderResolution) {
-          this.renderResolution = next;
-          return true;
-        }
-      }
+
+    if (this.pendingQuality && allowQualityChange) {
+      return this.applyQuality(this.pendingQuality);
     }
-    else if (fps > 57 && this.quality === 'low') { this.quality = 'medium'; this.cooldown = 300; }
-    return false;
+    if (this.cooldown > 0) { this.cooldown--; return false; }
+    if (this.samples.length < 60) return false;
+
+    const avg = this.samples.reduce((sum, value) => sum + value, 0) / this.samples.length;
+    const ordered = [...this.samples].sort((a, b) => a - b);
+    const p95 = ordered[Math.floor((ordered.length - 1) * 0.95)];
+    const fps = 1000 / avg;
+    let recommended: Quality | null = null;
+
+    if (this.quality === 'high' && (fps < 52 || p95 > 24)) recommended = 'medium';
+    else if (this.quality === 'medium' && (fps < 40 || p95 > 30)) recommended = 'low';
+    else if (this.quality === 'low' && fps > 54 && p95 < 22) recommended = 'medium';
+    else if (this.quality === 'medium' && fps > 58 && p95 < 19.5) recommended = 'high';
+
+    if (!recommended) return false;
+    if (!allowQualityChange) {
+      this.pendingQuality = recommended;
+      return false;
+    }
+    return this.applyQuality(recommended);
+  }
+
+  private applyQuality(next: Quality): boolean {
+    this.pendingQuality = null;
+    if (next === this.quality) return false;
+    const upgrading = qualityRank(next) > qualityRank(this.quality);
+    this.quality = next;
+    this.cooldown = upgrading ? 300 : 180;
+    this.samples = [];
+
+    const target = next === 'low'
+      ? Math.min(this.baseResolution, quantizeResolution(Math.max(
+        GameConfig.renderer.minAdaptiveResolution,
+        this.baseResolution * GameConfig.renderer.lowQualityResolutionScale,
+      )))
+      : this.baseResolution;
+    if (target === this.renderResolution) return false;
+    this.renderResolution = target;
+    return true;
   }
 
   get particleBudget(): number {
@@ -51,6 +75,10 @@ export class PerformanceManager {
     if (this.quality === 'medium') return GameConfig.performance.mediumParticleBudget;
     return GameConfig.performance.lowParticleBudget;
   }
+}
+
+function qualityRank(quality: Quality) {
+  return quality === 'high' ? 2 : quality === 'medium' ? 1 : 0;
 }
 
 function fitResolutionToBudget(viewport: ViewportInfo): number {

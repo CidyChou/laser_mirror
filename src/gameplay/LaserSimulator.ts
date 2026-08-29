@@ -87,7 +87,7 @@ export class LaserSimulator {
           segments.push({ x1:px, y1:py, x2:out.x, y2:out.y, startDist:travel, endDist:travel+len, branch });
           travel += len; maxTravel = Math.max(maxTravel, travel); exits.push(port);
           level.targets.forEach((target, targetIndex) => {
-            if (samePort(port, target)) impacts.push({ type:'target', targetIndex, px:out.x, py:out.y, at:travel });
+            if (samePort(port, target)) impacts.push({ type:'target', targetIndex, px:out.x, py:out.y, at:travel, incomingDir:dir });
           });
           break;
         }
@@ -99,17 +99,20 @@ export class LaserSimulator {
         const item = byCell.get(`${x},${y}`);
         if (!item) continue;
 
-        if (item.type === 'wall') { impacts.push({type:'wall', x,y,px,py,at:travel}); break; }
-        if (item.type === 'door' && !doorStates[item.id]) { impacts.push({type:'door',x,y,px,py,at:travel,id:item.id}); break; }
-        if (item.type === 'switch') { switches.add(item.id); impacts.push({type:'switch',x,y,px,py,at:travel,id:item.id}); continue; }
+        if (item.type === 'wall') { impacts.push({type:'wall', x,y,px,py,at:travel,incomingDir:dir}); break; }
+        if (item.type === 'door' && !doorStates[item.id]) { impacts.push({type:'door',x,y,px,py,at:travel,id:item.id,incomingDir:dir}); break; }
+        if (item.type === 'switch') { switches.add(item.id); impacts.push({type:'switch',x,y,px,py,at:travel,id:item.id,incomingDir:dir,outgoingDirs:[dir]}); continue; }
         if (item.type === 'mirror') {
-          impacts.push({type:'mirror',x,y,px,py,at:travel}); dir = reflect(dir, item.s);
+          const incomingDir=dir;
+          dir=reflect(dir,item.s);
+          impacts.push({type:'mirror',x,y,px,py,at:travel,incomingDir,outgoingDirs:[dir]});
           travel += GameConfig.laser.mirrorPauseDistance; maxTravel = Math.max(maxTravel, travel); continue;
         }
         if (item.type === 'splitter') {
-          impacts.push({type:'splitter',x,y,px,py,at:travel});
+          const reflected=reflect(dir,item.s);
+          impacts.push({type:'splitter',x,y,px,py,at:travel,incomingDir:dir,outgoingDirs:[dir,reflected]});
           const resume = travel + GameConfig.laser.mirrorPauseDistance;
-          queue.push({x,y,dir:reflect(dir,item.s),px,py,travel:resume,branch:branchSeq++});
+          queue.push({x,y,dir:reflected,px,py,travel:resume,branch:branchSeq++});
           travel = resume; maxTravel = Math.max(maxTravel, travel); continue;
         }
         if (item.type === 'portal') {
@@ -117,7 +120,7 @@ export class LaserSimulator {
           if (pair.length === 2) {
             const other = pair[0] === item ? pair[1] : pair[0];
             const oc = cellCenter(g, other.x, other.y);
-            impacts.push({type:'portal',x,y,px,py,at:travel,pair:item.pair,toX:oc.x,toY:oc.y});
+            impacts.push({type:'portal',x,y,px,py,at:travel,pair:item.pair,toX:oc.x,toY:oc.y,incomingDir:dir,outgoingDirs:[dir]});
             travel += GameConfig.laser.portalPauseDistance; maxTravel = Math.max(maxTravel, travel);
             x = other.x; y = other.y; px = oc.x; py = oc.y;
           }
