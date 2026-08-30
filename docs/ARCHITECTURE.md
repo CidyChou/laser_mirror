@@ -25,4 +25,6 @@ GameApplication
 
 ## 长期扩展
 
-后续新增颜色激光、Combo、皮肤、每日挑战、关卡编辑器时优先新增独立系统，不向 `GameSession` 堆渲染代码。
+关卡编辑器是独立的 Vite 开发服务（`make gm` / `tools/gm`），不进入 `GameSession` 或正式包。它复用 `LaserSimulator` 做光路预览，导出时写回 `src/levels/levels.json`。
+
+后续新增颜色激光、Combo、皮肤、每日挑战时优先新增独立系统，不向 `GameSession` 堆渲染代码。

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Laser Mirror GM</title>
+  <link rel="stylesheet" href="/src/styles.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="top">
+      <div class="brand">
+        <span class="mark"></span>
+        <div>
+          <strong>LASER GM</strong>
+          <em>关卡设计台</em>
+        </div>
+      </div>
+      <div class="top-status">
+        <span id="dirty-pill" class="pill">同步中</span>
+        <span id="level-chip" class="chip">—</span>
+      </div>
+      <div class="top-actions">
+        <button type="button" id="btn-reload" class="ghost">从项目载入</button>
+        <button type="button" id="btn-export" class="primary">导出到项目</button>
+      </div>
+    </header>
+
+    <aside class="list-pane">
+      <div class="pane-head">
+        <div>
+          <span class="pane-title">关卡顺序</span>
+          <span id="level-count" class="muted">0</span>
+        </div>
+        <div class="icon-row">
+          <button type="button" id="btn-new" title="新建关卡">＋</button>
+          <button type="button" id="btn-dup" title="复制当前关卡">⧉</button>
+          <button type="button" id="btn-del" title="删除当前关卡">✕</button>
+        </div>
+      </div>
+      <input id="level-filter" type="search" placeholder="搜索名称 / 章节" />
+      <p id="filter-hint" class="hint hidden">筛选中，无法拖拽排序</p>
+      <ol id="level-list"></ol>
+    </aside>
+
+    <section class="board-pane">
+      <div class="tools" id="tools"></div>
+      <div id="board-wrap" tabindex="0">
+        <canvas id="board"></canvas>
+      </div>
+      <footer class="board-foot">
+        <label class="check">
+          <input type="checkbox" id="preview-toggle" checked />
+          预览当前摆放的光路
+        </label>
+        <span class="keys">V 选择 · X 擦除 · R 旋转 · Delete 删除 · ⌘Z 撤销 · ⌘S 导出 · 拖拽关卡可改顺序</span>
+      </footer>
+    </section>
+
+    <aside class="prop-pane">
+      <div id="inspector"></div>
+    </aside>
+  </div>
+
+  <div id="toasts"></div>
+  <dialog id="dialog">
+    <form method="dialog">
+      <p id="dialog-msg"></p>
+      <menu>
+        <button value="cancel" class="ghost">取消</button>
+        <button id="dialog-ok" value="ok" class="primary">确定</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

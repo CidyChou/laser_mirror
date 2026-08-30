@@ -12,7 +12,15 @@
 - `fixed`: 镜子不可旋转
 - `decoy`: 仅用于关卡设计标记，逻辑上仍是正常镜子
 
-新增关卡后执行：
+用 GM 后台可视化编辑关卡：
+
+```bash
+make gm
+```
+
+首次打开会载入现有全部关卡。棋盘支持拖拽摆放、旋转、增删物体；左侧列表可拖拽调整关卡顺序。草稿保存在 `tools/gm/data/`，点 **导出到项目** 才写入 `src/levels/levels.json`。
+
+新增或导出后执行：
 
 ```bash
 npm run validate:levels

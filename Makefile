@@ -11,7 +11,10 @@ WECHAT_PREVIEW ?= 1
 
 .DEFAULT_GOAL := help
 
-.PHONY: help install dev build wechat wechat-preview typecheck check clean up_106
+GM_HOST ?= 0.0.0.0
+GM_PORT ?= 8350
+
+.PHONY: help install dev build wechat wechat-preview typecheck check clean up_106 gm
 
 help: ## 显示全部 Make 命令和说明
 	@echo "Laser Mirror 开发命令"
@@ -20,6 +23,16 @@ help: ## 显示全部 Make 命令和说明
 
 install: ## 安装依赖
 	npm ci
+
+gm: ## 启动关卡设计 GM 后台（默认端口 8350）
+	@echo ""
+	@echo "Laser Mirror GM — 关卡设计台"
+	@echo "  端口: $(GM_PORT)  绑定: $(GM_HOST)"
+	@echo "  http://127.0.0.1:$(GM_PORT)/"
+	@echo "  首次打开会载入项目中现有的 50 关"
+	@echo "  点「导出到项目」写入 src/levels/levels.json"
+	@echo ""
+	npx vite --config tools/gm/vite.config.ts --host "$(GM_HOST)" --port "$(GM_PORT)" --strictPort --open
 
 dev: ## 启动游戏并允许局域网访问（默认端口 8347）
 	@echo ""
