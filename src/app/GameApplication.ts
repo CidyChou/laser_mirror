@@ -53,6 +53,9 @@ export class GameApplication {
   private totalLevels=0;
   private pendingResult:{kind:'win'|'lose';copy:{title:string;subtitle:string;tip:string;primary:string;secondary?:string;reward?:number};at:number}|null=null;
   private unresize=()=>{};
+  private lastVibrateAt=-Infinity;
+  private firePulseAt=0;
+  private fireWatchdog:ReturnType<typeof setInterval>|0=0;
 
   constructor(private readonly platform:IPlatform){
     const repo=new LevelRepository();
@@ -149,9 +152,12 @@ export class GameApplication {
         this.vibrate('heavy');
         this.wake();
       }
-      if(event.type==='shot-end'&&!event.success){
-        saveHearts(this.platform,state.hearts);
-        this.audio.play('shotFail');
+      if(event.type==='shot-end'){
+        this.clearFireWatchdog();
+        if(!event.success && !event.aborted){
+          saveHearts(this.platform,state.hearts);
+          this.audio.play('shotFail');
+        }
       }
       if(event.type==='victory'){
         const newlyCompleted=!this.completedLevels.has(state.levelIndex);
@@ -186,22 +192,30 @@ export class GameApplication {
 
     this.view.sync(this.session.state);
     this.app.ticker.add((t:any)=>{
-      const now=nowMs();
-      const logicActive=this.session.update(now);
-      // A quality change is queued while a beam is travelling, then committed
-      // between shots so the laser never changes character halfway through.
-      if(this.perf.frame(t.deltaMS,!this.session.state.firing)){
-        const viewport=this.platform.viewport();
-        this.app.renderer.resize(viewport.width,viewport.height,this.perf.renderResolution);
-        this.view.resize(viewport.width,viewport.height,this.platform.safeTop());
+      try{
+        const now=nowMs();
+        if(this.session.state.firing) this.firePulseAt=Date.now();
+        const logicActive=this.session.update(now);
+        // A quality change is queued while a beam is travelling, then committed
+        // between shots so the laser never changes character halfway through.
+        if(this.perf.frame(t.deltaMS,!this.session.state.firing)){
+          const viewport=this.platform.viewport();
+          this.app.renderer.resize(viewport.width,viewport.height,this.perf.renderResolution);
+          this.view.resize(viewport.width,viewport.height,this.platform.safeTop());
+        }
+        if(this.pendingResult&&now>=this.pendingResult.at){
+          const pending=this.pendingResult; this.pendingResult=null;
+          this.view.showResult(pending.kind, pending.copy, now);
+          if(pending.kind==='win') this.view.revealWinCoins();
+        }
+        this.view.update(this.session.state,now);
+        if(!logicActive&&!this.view.active&&!this.pendingResult){this.app.ticker.stop();this.renderOnce();}
+      }catch(error){
+        // Pixi does not schedule the next rAF if a ticker listener throws, which
+        // freezes the whole mini-game with firing still true.
+        console.warn('[game] frame failed', error);
+        this.recoverStuckShot();
       }
-      if(this.pendingResult&&now>=this.pendingResult.at){
-        const pending=this.pendingResult; this.pendingResult=null;
-        this.view.showResult(pending.kind, pending.copy, now);
-        if(pending.kind==='win') this.view.revealWinCoins();
-      }
-      this.view.update(this.session.state,now);
-      if(!logicActive&&!this.view.active&&!this.pendingResult){this.app.ticker.stop();this.renderOnce();}
     });
 
     this.unresize=this.platform.onResize(next=>{
@@ -226,7 +240,8 @@ export class GameApplication {
       this.view.destroy();
     }
     const viewport=this.platform.viewport();
-    this.view=new PixiGameView(this.app.renderer,this.perf,this.themeId,this.levels);
+    // Mini-game GPUs have hung on the custom laser mesh at fire; Graphics fallback is the same visual path as ?beam=fallback.
+    this.view=new PixiGameView(this.app.renderer,this.perf,this.themeId,this.levels,this.platform.kind==='web');
     this.app.stage.addChild(this.view.root);
     this.view.resize(viewport.width,viewport.height,this.platform.safeTop());
     this.view.sync(this.session.state);
@@ -258,7 +273,13 @@ export class GameApplication {
       fire:()=>{
         if(this.view.result.visible||this.view.settings.visible||this.view.levelSelect.visible)return;
         if(this.session.state.hearts<=0){this.audio.play('uiClick');this.showHeartRefill(nowMs());this.wake();return;}
-        this.session.fire(nowMs());this.wake();
+        try{this.session.fire();}
+        catch(error){
+          console.warn('[game] fire failed', error);
+          this.session.abortFire();
+        }
+        if(this.session.state.firing) this.armFireWatchdog();
+        this.wake();
       },
       reset:()=>{this.collectPendingCoins();this.pendingResult=null;this.audio.play('uiClick');this.session.reset();this.wake();},
       openSettings:()=>{if(this.view.result.visible)return;this.audio.play('uiClick');this.view.showSettings(this.audioEnabled,this.hapticsEnabled,this.themeId);this.wake();},
@@ -339,9 +360,51 @@ export class GameApplication {
     },now);
   }
   private vibrate(type:'light'|'medium'|'heavy'|'success'){
-    if(this.hapticsEnabled)this.platform.vibrate(type);
+    if(!this.hapticsEnabled)return;
+    const now=nowMs();
+    const gap=type==='light'?90:type==='success'?120:70;
+    if(now-this.lastVibrateAt<gap)return;
+    this.lastVibrateAt=now;
+    try{this.platform.vibrate(type);}catch{}
   }
-  private wake(){if(!this.app.ticker.started)this.app.ticker.start();}
-  private renderOnce(){this.app.renderer.render(this.app.stage);}
-  destroy(){this.pendingResult=null;this.unresize();this.audio.destroy();this.view?.destroy();this.app.destroy(true);}
+  private armFireWatchdog(){
+    this.firePulseAt=Date.now();
+    if(this.fireWatchdog)return;
+    this.fireWatchdog=setInterval(()=>{
+      if(!this.session.state.firing){this.clearFireWatchdog();return;}
+      if(Date.now()-this.firePulseAt<2500)return;
+      this.recoverStuckShot();
+    },1000);
+  }
+  private clearFireWatchdog(){
+    if(!this.fireWatchdog)return;
+    clearInterval(this.fireWatchdog);
+    this.fireWatchdog=0;
+  }
+  private recoverStuckShot(){
+    const wasFiring=this.session.state.firing;
+    try{if(wasFiring)this.session.abortFire();}catch{}
+    this.clearFireWatchdog();
+    if(wasFiring){
+      try{this.view.showToast('发射中断',nowMs());}catch{}
+    }
+    this.wake();
+    this.renderOnce();
+  }
+  private wake(){
+    const ticker=this.app.ticker as any;
+    if(!ticker.started){
+      ticker.start();
+      return;
+    }
+    // A thrown tick leaves `started` true but cancels the next animation frame.
+    if(ticker._requestId==null){
+      ticker.lastTime=nowMs();
+      ticker._requestIfNeeded?.();
+    }
+  }
+  private renderOnce(){
+    try{this.app.renderer.render(this.app.stage);}catch(error){console.warn('[game] render failed',error);}
+  }
+  destroy(){this.pendingResult=null;this.clearFireWatchdog();this.unresize();this.audio.destroy();this.view?.destroy();this.app.destroy(true);}
 }

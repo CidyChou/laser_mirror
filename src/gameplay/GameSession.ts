@@ -1,5 +1,4 @@
 import { GameConfig } from '@/config/GameConfig';
-import { nowMs } from '@/core/clock';
 import { computeGeometry } from './geometry';
 import { LaserSimulator } from './LaserSimulator';
 import { COMBO_VISIBLE_FROM, MAX_COMBO_COUNT } from './combo';
@@ -13,7 +12,7 @@ export type GameEvent =
   | { type:'toast'; text:string }
   | { type:'shot-start' }
   | { type:'laser-launch' }
-  | { type:'shot-end'; success:boolean }
+  | { type:'shot-end'; success:boolean; aborted?:boolean }
   | { type:'victory' }
   | { type:'defeat' }
   | { type:'combo'; count:number };
@@ -27,6 +26,8 @@ export class GameSession {
   private launchTriggered = false;
   private comboEmitted = new Set<number>();
   private finishAt = 0;
+  private shotClockArmed = false;
+  private simNow = 0;
   state: GameState;
 
   constructor(private readonly levels: readonly LevelDefinition[], initialHearts = 3, initialLevelIndex = 0) {
@@ -35,7 +36,12 @@ export class GameSession {
   }
 
   on(listener: Listener): () => void { this.listeners.add(listener); return () => this.listeners.delete(listener); }
-  private emit(event: GameEvent) { this.listeners.forEach(listener => listener(event)); }
+  private emit(event: GameEvent) {
+    for (const listener of this.listeners) {
+      try { listener(event); }
+      catch (error) { console.warn('[session] listener failed', error); }
+    }
+  }
 
   private createState(index: number, hearts: number): GameState {
     const level = this.levels[index];
@@ -50,7 +56,7 @@ export class GameSession {
   load(index: number) {
     const safe = Math.max(0, Math.min(this.levels.length - 1, index));
     const hearts = this.state.hearts;
-    this.state = this.createState(safe, hearts); this.triggered.clear(); this.comboEmitted.clear(); this.launchTriggered=false; this.finishAt=0; this.emit({type:'level'}); this.emit({type:'state'});
+    this.state = this.createState(safe, hearts); this.triggered.clear(); this.comboEmitted.clear(); this.launchTriggered=false; this.finishAt=0; this.shotClockArmed=false; this.simNow=0; this.emit({type:'level'}); this.emit({type:'state'});
   }
   reset() { this.load(this.state.levelIndex); }
   next() {
@@ -72,45 +78,113 @@ export class GameSession {
     this.emit({type:'rotate', x, y, s:item.s});
   }
 
-  fire(now = nowMs()) {
+  fire() {
     const s = this.state;
     if (s.firing || s.won) return;
     if (s.hearts <= 0) { this.emit({type:'toast',text:'爱心不足 · 补充后再发射'}); return; }
-    s.firing = true; s.shotStart = now; s.beamDistance = 0; s.comboCount = 0;
-    s.result = this.simulator.simulate(s.level, s.items, computeGeometry(s.level));
+
+    let result;
+    try {
+      result = this.simulator.simulate(s.level, s.items, computeGeometry(s.level));
+    } catch (error) {
+      console.warn('[session] simulate failed', error);
+      this.emit({type:'toast',text:'光路计算失败'});
+      return;
+    }
+    if (!result || !Number.isFinite(result.maxTravel)) {
+      this.emit({type:'toast',text:'光路计算失败'});
+      return;
+    }
+
+    s.firing = true;
+    s.shotStart = 0;
+    s.beamDistance = 0;
+    s.comboCount = 0;
+    s.result = result;
     s.targets.forEach(t=>t.hit=false); s.activeSwitches.clear(); s.activeDoorStates={};
     this.triggered.clear(); this.launchTriggered=false; this.comboEmitted.clear(); this.finishAt=0;
+    this.shotClockArmed=false; this.simNow=0;
     this.emit({type:'shot-start'}); this.emit({type:'state'});
+  }
+
+  /** Drop a stuck shot without spending a heart. */
+  abortFire() {
+    const s = this.state;
+    if (!s.firing) return;
+    s.firing = false;
+    s.result = null;
+    s.beamDistance = 0;
+    s.comboCount = 0;
+    s.activeSwitches.clear();
+    s.activeDoorStates = {};
+    s.targets.forEach(t => t.hit = false);
+    this.triggered.clear();
+    this.launchTriggered = false;
+    this.comboEmitted.clear();
+    this.finishAt = 0;
+    this.shotClockArmed = false;
+    this.simNow = 0;
+    this.emit({type:'shot-end', success:false, aborted:true});
+    this.emit({type:'state'});
   }
 
   update(now: number): boolean {
     const s = this.state;
     if (!s.firing || !s.result) return false;
-    const elapsed = now - s.shotStart;
+    if (!Number.isFinite(now)) return true;
+
+    // Bind the shot clock on the first ticker frame so a stale `performance.now()`
+    // in the tap handler cannot skip charge and dump every impact in one frame.
+    if (!this.shotClockArmed) {
+      this.shotClockArmed = true;
+      s.shotStart = now;
+      this.simNow = now;
+      return true;
+    }
+
+    const dt = now - this.simNow;
+    if (dt > CLOCK_JUMP_MS) this.simNow += CLOCK_CATCHUP_MS;
+    else if (dt > 0) this.simNow = now;
+
+    const elapsed = this.simNow - s.shotStart;
+    if (elapsed > SHOT_TIMEOUT_MS) {
+      const success = s.result.hits.every(Boolean) && s.targets.every(t => t.hit);
+      this.finish(success);
+      return s.firing;
+    }
     if (elapsed < GameConfig.laser.chargeMs) return true;
     if (!this.launchTriggered) { this.launchTriggered=true; this.emit({type:'laser-launch'}); }
 
     const travelSec = (elapsed - GameConfig.laser.chargeMs) / 1000;
     const { startSpeed, acceleration, maxSpeed } = GameConfig.laser;
     const accelTime = Math.min(travelSec, (maxSpeed - startSpeed) / acceleration);
-    s.beamDistance = startSpeed * accelTime + 0.5 * acceleration * accelTime * accelTime + Math.max(0, travelSec - accelTime) * maxSpeed;
+    const distance = startSpeed * accelTime + 0.5 * acceleration * accelTime * accelTime + Math.max(0, travelSec - accelTime) * maxSpeed;
+    s.beamDistance = Number.isFinite(distance) ? distance : s.result.maxTravel;
 
+    let applied = 0;
     for (const impact of s.result.impactEvents) {
       if (impact.at > s.beamDistance) break;
       const key = `${impact.type}:${impact.x ?? ''}:${impact.y ?? ''}:${impact.targetIndex ?? ''}:${Math.round(impact.at)}`;
       if (this.triggered.has(key)) continue;
       this.triggered.add(key); this.applyImpact(impact); this.emit({type:'impact',impact});
+      if (++applied >= IMPACTS_PER_FRAME) break;
     }
 
+    const pendingImpact = s.result.impactEvents.some(impact => {
+      if (impact.at > s.beamDistance) return false;
+      const key = `${impact.type}:${impact.x ?? ''}:${impact.y ?? ''}:${impact.targetIndex ?? ''}:${Math.round(impact.at)}`;
+      return !this.triggered.has(key);
+    });
+
     const success = s.result.hits.every(Boolean) && s.targets.every(t=>t.hit);
-    if (success || s.beamDistance >= s.result.maxTravel) {
+    if (!pendingImpact && (success || s.beamDistance >= s.result.maxTravel)) {
       if (!this.finishAt) {
         const tail = s.comboCount >= COMBO_VISIBLE_FROM
           ? GameConfig.laser.comboHoldMs
           : GameConfig.laser.settleMs;
-        this.finishAt = now + tail;
+        this.finishAt = this.simNow + tail;
       }
-      if (now >= this.finishAt) this.finish(success);
+      if (this.simNow >= this.finishAt) this.finish(success);
     }
     return s.firing;
   }
@@ -136,6 +210,7 @@ export class GameSession {
 
   private finish(success: boolean) {
     const s=this.state; s.firing=false;
+    this.shotClockArmed=false; this.simNow=0; this.finishAt=0;
     if (success) {
       s.won=true;
       if (s.result) { s.activeSwitches=new Set(s.result.switches); s.activeDoorStates={...s.result.doorStates}; }
@@ -149,3 +224,8 @@ export class GameSession {
     this.emit({type:'shot-end',success}); this.emit({type:'state'});
   }
 }
+
+const CLOCK_JUMP_MS = 250;
+const CLOCK_CATCHUP_MS = 48;
+const IMPACTS_PER_FRAME = 12;
+const SHOT_TIMEOUT_MS = 45_000;

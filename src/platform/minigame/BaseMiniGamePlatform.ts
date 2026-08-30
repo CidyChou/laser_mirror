@@ -63,18 +63,24 @@ export class BaseMiniGamePlatform implements IPlatform{
     }catch{}
     return 0;
   }
+  private lastVibrateAt=0;
   vibrate(type:'light'|'medium'|'heavy'|'success'='light'){
-    if(type==='success'){
-      if(this.api.vibrateLong){
-        this.api.vibrateLong();
-        const later=typeof setTimeout==='function'?(fn:()=>void)=>setTimeout(fn,420):(fn:()=>void)=>fn();
-        later(()=>this.api.vibrateLong?.());
-      }else this.api.vibrateShort?.({type:'heavy'});
-      return;
-    }
-    const mapped=type==='light'?'medium':'heavy';
-    if(this.api.vibrateShort) this.api.vibrateShort({type:mapped});
-    else this.api.vibrateLong?.();
+    try{
+      const now=Date.now();
+      if(now-this.lastVibrateAt<80)return;
+      this.lastVibrateAt=now;
+      if(type==='success'){
+        if(this.api.vibrateLong){
+          this.api.vibrateLong();
+          const later=typeof setTimeout==='function'?(fn:()=>void)=>setTimeout(fn,420):(fn:()=>void)=>fn();
+          later(()=>{try{this.api.vibrateLong?.();}catch{}});
+        }else this.api.vibrateShort?.({type:'heavy'});
+        return;
+      }
+      const mapped=type==='light'?'medium':'heavy';
+      if(this.api.vibrateShort) this.api.vibrateShort({type:mapped});
+      else this.api.vibrateLong?.();
+    }catch{}
   }
   storage={get:(key:string)=>{try{return this.api.getStorageSync?.(key)??null}catch{return null}},set:(key:string,value:string)=>{try{this.api.setStorageSync?.(key,value)}catch{}}};
 }

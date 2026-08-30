@@ -7,8 +7,10 @@ export class WebPlatform implements IPlatform{
   onResize(handler:(v:ViewportInfo)=>void){const fn=()=>handler(this.viewport());window.addEventListener('resize',fn);return()=>window.removeEventListener('resize',fn)}
   safeTop(){return 0}
   vibrate(type:'light'|'medium'|'heavy'|'success'='light'){
-    if(type==='success') navigator.vibrate?.([36, 50, 90]);
-    else navigator.vibrate?.(type==='heavy'?42:type==='medium'?28:14);
+    try{
+      if(type==='success') navigator.vibrate?.([36, 50, 90]);
+      else navigator.vibrate?.(type==='heavy'?42:type==='medium'?28:14);
+    }catch{}
   }
   storage={get:(key:string)=>localStorage.getItem(key),set:(key:string,value:string)=>localStorage.setItem(key,value)};
 }

@@ -146,12 +146,13 @@ export class LaserEffect extends Container{
   private animating=false;
   private jointCount=-1;
   private frozen=false;
+  private gpuFailed=false;
   private cellScale=1;
   private readonly energyBlend=isLightTheme()?'normal':'add';
 
-  constructor(renderer:Renderer){
+  constructor(renderer:Renderer, enableGpu=true){
     super();
-    this.gpuShader=this.createGpuShader(renderer);
+    this.gpuShader=enableGpu?this.createGpuShader(renderer):null;
     this.fallbackPackets.blendMode=this.energyBlend;
     this.joints.blendMode=this.energyBlend;
     this.head.blendMode=this.energyBlend;
@@ -278,11 +279,19 @@ export class LaserEffect extends Container{
 
   private rebuild(result:LaserTrace){
     this.clearBeam();
-    this.runs=this.mergeCollinear(result.segments);
+    this.runs=this.mergeCollinear(result.segments).filter(run=>isFiniteRun(run));
     this.jointCount=-1;
     this.frozen=false;
-    if(this.gpuShader)this.buildGpuBeam();
-    else this.buildFallbackBeam();
+    try{
+      if(this.gpuShader&&!this.gpuFailed)this.buildGpuBeam();
+      else this.buildFallbackBeam();
+    }catch(error){
+      console.warn('[laser] rebuild failed; using Graphics fallback.',error);
+      this.gpuFailed=true;
+      this.clearBeam();
+      this.runs=this.mergeCollinear(result.segments).filter(run=>isFiniteRun(run));
+      this.buildFallbackBeam();
+    }
   }
 
   private buildGpuBeam(){
@@ -292,7 +301,8 @@ export class LaserEffect extends Container{
     const indices:number[]=[];
     const halfGlow=24*this.cellScale;
     for(const run of this.runs){
-      const dx=run.x2-run.x1,dy=run.y2-run.y1,length=Math.hypot(dx,dy)||1;
+      const dx=run.x2-run.x1,dy=run.y2-run.y1,length=Math.hypot(dx,dy);
+      if(!Number.isFinite(length)||length<0.5)continue;
       const nx=-dy/length,ny=dx/length;
       const offset=positions.length/2;
       positions.push(
@@ -309,6 +319,7 @@ export class LaserEffect extends Container{
       );
       indices.push(offset,offset+1,offset+2,offset,offset+2,offset+3);
     }
+    if(!positions.length)return;
     const geometry=new Geometry({
       attributes:{
         aPosition:{buffer:new Float32Array(positions),format:'float32x2'},
@@ -546,4 +557,10 @@ export class LaserEffect extends Container{
 
 function colorVec(color:number){
   return new Float32Array([((color>>16)&255)/255,((color>>8)&255)/255,(color&255)/255]);
+}
+
+function isFiniteRun(run:Run){
+  const length=Math.hypot(run.x2-run.x1,run.y2-run.y1);
+  return Number.isFinite(length)&&length>=0.5
+    &&Number.isFinite(run.startDist)&&Number.isFinite(run.endDist);
 }

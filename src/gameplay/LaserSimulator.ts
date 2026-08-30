@@ -36,7 +36,7 @@ export class LaserSimulator {
       for (const item of items) {
         if (item.type === 'door') next[item.id] = item.requires.every(id => pass.switches.has(id));
       }
-      if (JSON.stringify(next) === JSON.stringify(doorStates)) break;
+      if (sameDoorStates(next, doorStates)) break;
       doorStates = next;
       pass = this.simulatePass(level, items, geometry, doorStates);
     }
@@ -67,23 +67,29 @@ export class LaserSimulator {
     queue.push({ ...start, px: p.x, py: p.y, travel: 0, branch: 0 });
 
     const seen = new Set<string>();
+    const openDoors = Object.keys(doorStates).filter(k => doorStates[k]).sort().join('|');
     let maxTravel = 0;
     let branchSeq = 1;
+    let visits = 0;
 
-    while (queue.length) {
+    while (queue.length && visits < MAX_VISITS && segments.length < MAX_SEGMENTS) {
       const seed = queue.shift()!;
+      visits++;
       let { x, y, dir, px, py, travel, branch } = seed;
+      if (!Number.isFinite(px) || !Number.isFinite(py) || !Number.isFinite(travel)) continue;
       for (let step = 0; step < 180; step++) {
-        const openDoors = Object.keys(doorStates).filter(k => doorStates[k]).sort().join('|');
         const stateKey = `${x},${y},${dir},${openDoors}`;
         if (seen.has(stateKey)) break;
         seen.add(stateKey);
 
-        const d = DIRS[dir]; x += d.x; y += d.y;
+        const d = DIRS[dir];
+        if (!d) break;
+        x += d.x; y += d.y;
         if (x < 0 || x >= level.cols || y < 0 || y >= level.rows) {
           const port = exitPort(level, x, y);
           const out = borderPoint(g, port);
           const len = Math.hypot(out.x - px, out.y - py);
+          if (!Number.isFinite(len)) break;
           segments.push({ x1:px, y1:py, x2:out.x, y2:out.y, startDist:travel, endDist:travel+len, branch });
           travel += len; maxTravel = Math.max(maxTravel, travel); exits.push(port);
           level.targets.forEach((target, targetIndex) => {
@@ -94,6 +100,7 @@ export class LaserSimulator {
 
         const c = cellCenter(g, x, y);
         const len = Math.hypot(c.x - px, c.y - py);
+        if (!Number.isFinite(len)) break;
         segments.push({ x1:px, y1:py, x2:c.x, y2:c.y, startDist:travel, endDist:travel+len, branch });
         travel += len; maxTravel = Math.max(maxTravel, travel); px = c.x; py = c.y;
         const item = byCell.get(`${x},${y}`);
@@ -112,7 +119,7 @@ export class LaserSimulator {
           const reflected=reflect(dir,item.s);
           impacts.push({type:'splitter',x,y,px,py,at:travel,incomingDir:dir,outgoingDirs:[dir,reflected]});
           const resume = travel + GameConfig.laser.mirrorPauseDistance;
-          queue.push({x,y,dir:reflected,px,py,travel:resume,branch:branchSeq++});
+          if (queue.length < MAX_QUEUE) queue.push({x,y,dir:reflected,px,py,travel:resume,branch:branchSeq++});
           travel = resume; maxTravel = Math.max(maxTravel, travel); continue;
         }
         if (item.type === 'portal') {
@@ -120,6 +127,7 @@ export class LaserSimulator {
           if (pair.length === 2) {
             const other = pair[0] === item ? pair[1] : pair[0];
             const oc = cellCenter(g, other.x, other.y);
+            if (!Number.isFinite(oc.x) || !Number.isFinite(oc.y)) break;
             impacts.push({type:'portal',x,y,px,py,at:travel,pair:item.pair,toX:oc.x,toY:oc.y,incomingDir:dir,outgoingDirs:[dir]});
             travel += GameConfig.laser.portalPauseDistance; maxTravel = Math.max(maxTravel, travel);
             x = other.x; y = other.y; px = oc.x; py = oc.y;
@@ -134,6 +142,16 @@ export class LaserSimulator {
       const key = `${e.type}:${e.targetIndex ?? ''}:${e.x ?? ''}:${e.y ?? ''}:${Math.round(e.at)}`;
       if (!keys.has(key)) { keys.add(key); deduped.push(e); }
     }
-    return { switches, exits, segments, impactEvents:deduped, maxTravel };
+    return { switches, exits, segments, impactEvents:deduped, maxTravel: Number.isFinite(maxTravel) ? maxTravel : 0 };
   }
+}
+
+const MAX_QUEUE = 256;
+const MAX_VISITS = 512;
+const MAX_SEGMENTS = 1500;
+
+function sameDoorStates(a: Record<string, boolean>, b: Record<string, boolean>) {
+  for (const key in a) if (Boolean(a[key]) !== Boolean(b[key])) return false;
+  for (const key in b) if (Boolean(a[key]) !== Boolean(b[key])) return false;
+  return true;
 }

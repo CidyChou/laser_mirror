@@ -55,6 +55,7 @@ export class ParticleSystem {
   }
 
   emit(x:number,y:number,color:number,count:number,budget:number,dir?:EmitDirection){
+    if(!Number.isFinite(x)||!Number.isFinite(y))return;
     count=Math.min(count,Math.max(0,budget-this.activeParticles.length));
     for(let i=0;i<count;i++){
       const kind=pickKind(dir?.shape??'mixed',i);
