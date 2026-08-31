@@ -1345,101 +1345,6 @@
     "shots": 3
   },
   {
-    "name": "迷宫光路",
-    "chapter": "障碍区域",
-    "rows": 6,
-    "cols": 6,
-    "emitter": {
-      "side": "W",
-      "index": 5
-    },
-    "targets": [
-      {
-        "side": "E",
-        "index": 1
-      },
-      {
-        "side": "E",
-        "index": 2
-      }
-    ],
-    "items": [
-      {
-        "type": "splitter",
-        "x": 1,
-        "y": 5,
-        "s": 0
-      },
-      {
-        "type": "mirror",
-        "x": 1,
-        "y": 2,
-        "s": 0
-      },
-      {
-        "type": "mirror",
-        "x": 4,
-        "y": 5,
-        "s": 0
-      },
-      {
-        "type": "mirror",
-        "x": 4,
-        "y": 2,
-        "s": 0
-      },
-      {
-        "type": "wall",
-        "x": 2,
-        "y": 3
-      },
-      {
-        "type": "wall",
-        "x": 3,
-        "y": 3
-      },
-      {
-        "type": "wall",
-        "x": 2,
-        "y": 4
-      },
-      {
-        "type": "wall",
-        "x": 5,
-        "y": 4
-      },
-      {
-        "type": "mirror",
-        "x": 0,
-        "y": 0,
-        "s": 0,
-        "decoy": true
-      },
-      {
-        "type": "mirror",
-        "x": 4,
-        "y": 0,
-        "s": 0,
-        "decoy": true
-      },
-      {
-        "type": "mirror",
-        "x": 1,
-        "y": 1,
-        "s": 0
-      },
-      {
-        "type": "mirror",
-        "x": 0,
-        "y": 2,
-        "s": 0
-      }
-    ],
-    "hint": "",
-    "chapterNo": 3,
-    "shots": 3
-  },
-  {
     "name": "分流绕障碍",
     "chapter": "障碍区域",
     "rows": 6,
@@ -1804,6 +1709,101 @@
       }
     ],
     "hint": "墙体把简单折线变成了真正的路线规划。",
+    "chapterNo": 3,
+    "shots": 3
+  },
+  {
+    "name": "迷宫光路",
+    "chapter": "障碍区域",
+    "rows": 6,
+    "cols": 6,
+    "emitter": {
+      "side": "W",
+      "index": 5
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 1
+      },
+      {
+        "side": "E",
+        "index": 2
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 4
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 4
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 2,
+        "s": 0
+      }
+    ],
+    "hint": "",
     "chapterNo": 3,
     "shots": 3
   },
@@ -4073,23 +4073,12 @@
   {
     "name": "双源绕墙",
     "chapter": "双源激光",
-    "chapterNo": 6,
     "rows": 6,
     "cols": 6,
     "emitter": {
       "side": "W",
       "index": 1
     },
-    "emitters": [
-      {
-        "side": "W",
-        "index": 1
-      },
-      {
-        "side": "W",
-        "index": 4
-      }
-    ],
     "targets": [
       {
         "side": "E",
@@ -4175,28 +4164,28 @@
       }
     ],
     "hint": "两束光同时出发。中间的墙把直路封死，都得绕。",
-    "shots": 3
+    "chapterNo": 6,
+    "shots": 3,
+    "emitters": [
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "W",
+        "index": 4
+      }
+    ]
   },
   {
     "name": "窄缝双路",
     "chapter": "双源激光",
-    "chapterNo": 6,
     "rows": 6,
     "cols": 6,
     "emitter": {
       "side": "W",
       "index": 4
     },
-    "emitters": [
-      {
-        "side": "W",
-        "index": 4
-      },
-      {
-        "side": "W",
-        "index": 0
-      }
-    ],
     "targets": [
       {
         "side": "N",
@@ -4269,28 +4258,28 @@
       }
     ],
     "hint": "墙把棋盘切成窄缝。一束要抬头出北口，一束要绕到底部。",
-    "shots": 3
+    "chapterNo": 6,
+    "shots": 3,
+    "emitters": [
+      {
+        "side": "W",
+        "index": 4
+      },
+      {
+        "side": "W",
+        "index": 0
+      }
+    ]
   },
   {
     "name": "交叉绕障",
     "chapter": "双源激光",
-    "chapterNo": 6,
     "rows": 6,
     "cols": 6,
     "emitter": {
       "side": "W",
       "index": 2
     },
-    "emitters": [
-      {
-        "side": "W",
-        "index": 2
-      },
-      {
-        "side": "S",
-        "index": 2
-      }
-    ],
     "targets": [
       {
         "side": "N",
@@ -4376,12 +4365,22 @@
       }
     ],
     "hint": "一束从西、一束从南。中心那面镜子要同时伺候两个方向。",
-    "shots": 3
+    "chapterNo": 6,
+    "shots": 3,
+    "emitters": [
+      {
+        "side": "W",
+        "index": 2
+      },
+      {
+        "side": "S",
+        "index": 2
+      }
+    ]
   },
   {
     "name": "迷宫双源",
     "chapter": "双源激光",
-    "chapterNo": 6,
     "rows": 6,
     "cols": 6,
     "emitter": {
@@ -4459,28 +4458,18 @@
       }
     ],
     "hint": "墙切开中路。分光之后两条支路都要绕上去。",
+    "chapterNo": 6,
     "shots": 3
   },
   {
     "name": "对向迷宫",
     "chapter": "双源激光",
-    "chapterNo": 6,
     "rows": 6,
     "cols": 6,
     "emitter": {
       "side": "W",
       "index": 1
     },
-    "emitters": [
-      {
-        "side": "W",
-        "index": 1
-      },
-      {
-        "side": "E",
-        "index": 4
-      }
-    ],
     "targets": [
       {
         "side": "N",
@@ -4566,28 +4555,28 @@
       }
     ],
     "hint": "左右对打。诱饵镜很显眼，真正的路在墙的另一侧。",
-    "shots": 3
+    "chapterNo": 6,
+    "shots": 3,
+    "emitters": [
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "E",
+        "index": 4
+      }
+    ]
   },
   {
     "name": "分流夹击",
     "chapter": "双源激光",
-    "chapterNo": 6,
     "rows": 6,
     "cols": 7,
     "emitter": {
       "side": "W",
       "index": 5
     },
-    "emitters": [
-      {
-        "side": "W",
-        "index": 5
-      },
-      {
-        "side": "W",
-        "index": 1
-      }
-    ],
     "targets": [
       {
         "side": "E",
@@ -4681,28 +4670,28 @@
       }
     ],
     "hint": "三枚终点。下面那束要分光，上面那束走自己的窄路。",
-    "shots": 3
+    "chapterNo": 6,
+    "shots": 3,
+    "emitters": [
+      {
+        "side": "W",
+        "index": 5
+      },
+      {
+        "side": "W",
+        "index": 1
+      }
+    ]
   },
   {
     "name": "锁镜双火",
     "chapter": "双源激光",
-    "chapterNo": 6,
     "rows": 6,
     "cols": 6,
     "emitter": {
       "side": "S",
       "index": 0
     },
-    "emitters": [
-      {
-        "side": "S",
-        "index": 0
-      },
-      {
-        "side": "W",
-        "index": 2
-      }
-    ],
     "targets": [
       {
         "side": "S",
@@ -4799,28 +4788,28 @@
       }
     ],
     "hint": "带锁的镜子已经定死一段路。不要被右边那两面诱饵带走。",
-    "shots": 3
+    "chapterNo": 6,
+    "shots": 3,
+    "emitters": [
+      {
+        "side": "S",
+        "index": 0
+      },
+      {
+        "side": "W",
+        "index": 2
+      }
+    ]
   },
   {
     "name": "回廊双源",
     "chapter": "双源激光",
-    "chapterNo": 6,
     "rows": 7,
     "cols": 7,
     "emitter": {
       "side": "W",
       "index": 6
     },
-    "emitters": [
-      {
-        "side": "W",
-        "index": 6
-      },
-      {
-        "side": "N",
-        "index": 6
-      }
-    ],
     "targets": [
       {
         "side": "E",
@@ -4912,32 +4901,28 @@
       }
     ],
     "hint": "外圈是回廊，中心是死墙。两束光都要贴边走。",
-    "shots": 3
+    "chapterNo": 6,
+    "shots": 3,
+    "emitters": [
+      {
+        "side": "W",
+        "index": 6
+      },
+      {
+        "side": "N",
+        "index": 6
+      }
+    ]
   },
   {
     "name": "三源迷宫",
     "chapter": "双源激光",
-    "chapterNo": 6,
     "rows": 6,
     "cols": 7,
     "emitter": {
       "side": "W",
       "index": 1
     },
-    "emitters": [
-      {
-        "side": "W",
-        "index": 1
-      },
-      {
-        "side": "W",
-        "index": 4
-      },
-      {
-        "side": "S",
-        "index": 2
-      }
-    ],
     "targets": [
       {
         "side": "N",
@@ -5015,28 +5000,32 @@
       }
     ],
     "hint": "三束光、三枚终点。先接通最直的那条，再处理互相打架的两束。",
-    "shots": 3
+    "chapterNo": 6,
+    "shots": 3,
+    "emitters": [
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "W",
+        "index": 4
+      },
+      {
+        "side": "S",
+        "index": 2
+      }
+    ]
   },
   {
     "name": "双翼终章",
     "chapter": "双源激光",
-    "chapterNo": 6,
     "rows": 7,
     "cols": 7,
     "emitter": {
       "side": "W",
       "index": 5
     },
-    "emitters": [
-      {
-        "side": "W",
-        "index": 5
-      },
-      {
-        "side": "W",
-        "index": 0
-      }
-    ],
     "targets": [
       {
         "side": "E",
@@ -5118,28 +5107,28 @@
       }
     ],
     "hint": "分光之后两条支路要分别绕过中心墙块。第三束光走外圈。",
-    "shots": 3
+    "chapterNo": 6,
+    "shots": 3,
+    "emitters": [
+      {
+        "side": "W",
+        "index": 5
+      },
+      {
+        "side": "W",
+        "index": 0
+      }
+    ]
   },
   {
     "name": "双束入门",
     "chapter": "双束终点",
-    "chapterNo": 7,
     "rows": 6,
     "cols": 6,
     "emitter": {
       "side": "W",
       "index": 1
     },
-    "emitters": [
-      {
-        "side": "W",
-        "index": 1
-      },
-      {
-        "side": "S",
-        "index": 2
-      }
-    ],
     "targets": [
       {
         "side": "E",
@@ -5160,8 +5149,7 @@
       {
         "type": "focus",
         "x": 2,
-        "y": 4,
-        "need": 2
+        "y": 4
       },
       {
         "type": "splitter",
@@ -5197,28 +5185,28 @@
       }
     ],
     "hint": "金色菱形要从两个方向打中。墙面终点也要亮。",
-    "shots": 3
-  },
-  {
-    "name": "对面汇流",
-    "chapter": "双束终点",
     "chapterNo": 7,
-    "rows": 6,
-    "cols": 6,
-    "emitter": {
-      "side": "W",
-      "index": 1
-    },
+    "shots": 3,
     "emitters": [
       {
         "side": "W",
         "index": 1
       },
       {
-        "side": "E",
-        "index": 4
+        "side": "S",
+        "index": 2
       }
-    ],
+    ]
+  },
+  {
+    "name": "对面汇流",
+    "chapter": "双束终点",
+    "rows": 6,
+    "cols": 6,
+    "emitter": {
+      "side": "W",
+      "index": 1
+    },
     "targets": [],
     "items": [
       {
@@ -5239,8 +5227,7 @@
       {
         "type": "focus",
         "x": 3,
-        "y": 1,
-        "need": 2
+        "y": 1
       },
       {
         "type": "mirror",
@@ -5289,28 +5276,28 @@
       }
     ],
     "hint": "左右两束都要绕过中墙，从南、北两面打进同一颗晶体。",
-    "shots": 3
+    "chapterNo": 7,
+    "shots": 3,
+    "emitters": [
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "E",
+        "index": 4
+      }
+    ]
   },
   {
     "name": "分光充能",
     "chapter": "双束终点",
-    "chapterNo": 7,
     "rows": 6,
     "cols": 6,
     "emitter": {
       "side": "W",
       "index": 5
     },
-    "emitters": [
-      {
-        "side": "W",
-        "index": 5
-      },
-      {
-        "side": "N",
-        "index": 3
-      }
-    ],
     "targets": [
       {
         "side": "E",
@@ -5341,8 +5328,7 @@
       {
         "type": "focus",
         "x": 3,
-        "y": 1,
-        "need": 2
+        "y": 1
       },
       {
         "type": "splitter",
@@ -5372,18 +5358,8 @@
       }
     ],
     "hint": "分光之后一路去墙面终点。另一路和北面那束一起给晶体充能。",
-    "shots": 3
-  },
-  {
-    "name": "迷宫汇能",
-    "chapter": "双束终点",
     "chapterNo": 7,
-    "rows": 6,
-    "cols": 6,
-    "emitter": {
-      "side": "W",
-      "index": 5
-    },
+    "shots": 3,
     "emitters": [
       {
         "side": "W",
@@ -5391,9 +5367,19 @@
       },
       {
         "side": "N",
-        "index": 1
+        "index": 3
       }
-    ],
+    ]
+  },
+  {
+    "name": "迷宫汇能",
+    "chapter": "双束终点",
+    "rows": 6,
+    "cols": 6,
+    "emitter": {
+      "side": "W",
+      "index": 5
+    },
     "targets": [
       {
         "side": "E",
@@ -5419,8 +5405,7 @@
       {
         "type": "focus",
         "x": 3,
-        "y": 2,
-        "need": 2
+        "y": 2
       },
       {
         "type": "splitter",
@@ -5474,28 +5459,28 @@
       }
     ],
     "hint": "晶体藏在墙后。两束光要分别从两条走廊挤进去。",
-    "shots": 3
+    "chapterNo": 7,
+    "shots": 3,
+    "emitters": [
+      {
+        "side": "W",
+        "index": 5
+      },
+      {
+        "side": "N",
+        "index": 1
+      }
+    ]
   },
   {
     "name": "窄路双束",
     "chapter": "双束终点",
-    "chapterNo": 7,
     "rows": 6,
     "cols": 6,
     "emitter": {
       "side": "W",
       "index": 4
     },
-    "emitters": [
-      {
-        "side": "W",
-        "index": 4
-      },
-      {
-        "side": "S",
-        "index": 0
-      }
-    ],
     "targets": [
       {
         "side": "N",
@@ -5521,8 +5506,7 @@
       {
         "type": "focus",
         "x": 4,
-        "y": 2,
-        "need": 2
+        "y": 2
       },
       {
         "type": "splitter",
@@ -5582,36 +5566,28 @@
       }
     ],
     "hint": "竖墙把路挤得很窄。晶体和北侧终点都要亮。",
-    "shots": 3
+    "chapterNo": 7,
+    "shots": 3,
+    "emitters": [
+      {
+        "side": "W",
+        "index": 4
+      },
+      {
+        "side": "S",
+        "index": 0
+      }
+    ]
   },
   {
     "name": "双晶迷宫",
     "chapter": "双束终点",
-    "chapterNo": 7,
     "rows": 6,
     "cols": 7,
     "emitter": {
       "side": "W",
       "index": 1
     },
-    "emitters": [
-      {
-        "side": "W",
-        "index": 1
-      },
-      {
-        "side": "S",
-        "index": 1
-      },
-      {
-        "side": "W",
-        "index": 4
-      },
-      {
-        "side": "E",
-        "index": 3
-      }
-    ],
     "targets": [],
     "items": [
       {
@@ -5632,14 +5608,12 @@
       {
         "type": "focus",
         "x": 1,
-        "y": 2,
-        "need": 2
+        "y": 2
       },
       {
         "type": "focus",
         "x": 5,
-        "y": 3,
-        "need": 2
+        "y": 3
       },
       {
         "type": "mirror",
@@ -5693,28 +5667,36 @@
       }
     ],
     "hint": "两颗晶体都要两面充能。别让其中一束误入另一颗。",
-    "shots": 3
-  },
-  {
-    "name": "交叉充能",
-    "chapter": "双束终点",
     "chapterNo": 7,
-    "rows": 6,
-    "cols": 6,
-    "emitter": {
-      "side": "W",
-      "index": 1
-    },
+    "shots": 3,
     "emitters": [
       {
         "side": "W",
         "index": 1
       },
       {
-        "side": "N",
+        "side": "S",
+        "index": 1
+      },
+      {
+        "side": "W",
         "index": 4
+      },
+      {
+        "side": "E",
+        "index": 3
       }
-    ],
+    ]
+  },
+  {
+    "name": "交叉充能",
+    "chapter": "双束终点",
+    "rows": 6,
+    "cols": 6,
+    "emitter": {
+      "side": "W",
+      "index": 1
+    },
     "targets": [
       {
         "side": "S",
@@ -5735,8 +5717,7 @@
       {
         "type": "focus",
         "x": 3,
-        "y": 2,
-        "need": 2
+        "y": 2
       },
       {
         "type": "splitter",
@@ -5772,28 +5753,28 @@
       }
     ],
     "hint": "两束光在晶体处十字相交。转错一面就会把另一条路堵死。",
-    "shots": 3
-  },
-  {
-    "name": "门后双束",
-    "chapter": "双束终点",
     "chapterNo": 7,
-    "rows": 6,
-    "cols": 6,
-    "emitter": {
-      "side": "W",
-      "index": 1
-    },
+    "shots": 3,
     "emitters": [
       {
         "side": "W",
         "index": 1
       },
       {
-        "side": "W",
+        "side": "N",
         "index": 4
       }
-    ],
+    ]
+  },
+  {
+    "name": "门后双束",
+    "chapter": "双束终点",
+    "rows": 6,
+    "cols": 6,
+    "emitter": {
+      "side": "W",
+      "index": 1
+    },
     "targets": [],
     "items": [
       {
@@ -5809,8 +5790,7 @@
       {
         "type": "focus",
         "x": 4,
-        "y": 2,
-        "need": 2
+        "y": 2
       },
       {
         "type": "switch",
@@ -5879,32 +5859,28 @@
       }
     ],
     "hint": "先用一束点亮开关，另一束穿过光门，两面一起打进晶体。",
-    "shots": 3
+    "chapterNo": 7,
+    "shots": 3,
+    "emitters": [
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "W",
+        "index": 4
+      }
+    ]
   },
   {
     "name": "三向取二",
     "chapter": "双束终点",
-    "chapterNo": 7,
     "rows": 6,
     "cols": 6,
     "emitter": {
       "side": "W",
       "index": 2
     },
-    "emitters": [
-      {
-        "side": "W",
-        "index": 2
-      },
-      {
-        "side": "S",
-        "index": 2
-      },
-      {
-        "side": "N",
-        "index": 4
-      }
-    ],
     "targets": [
       {
         "side": "E",
@@ -5925,8 +5901,7 @@
       {
         "type": "focus",
         "x": 2,
-        "y": 2,
-        "need": 2
+        "y": 2
       },
       {
         "type": "mirror",
@@ -5968,36 +5943,32 @@
       }
     ],
     "hint": "三束光只有两束能进晶体。西面直路被墙封死，要另找入口。",
-    "shots": 3
+    "chapterNo": 7,
+    "shots": 3,
+    "emitters": [
+      {
+        "side": "W",
+        "index": 2
+      },
+      {
+        "side": "S",
+        "index": 2
+      },
+      {
+        "side": "N",
+        "index": 4
+      }
+    ]
   },
   {
     "name": "双核终阵",
     "chapter": "双束终点",
-    "chapterNo": 7,
     "rows": 7,
     "cols": 7,
     "emitter": {
       "side": "W",
       "index": 1
     },
-    "emitters": [
-      {
-        "side": "W",
-        "index": 1
-      },
-      {
-        "side": "S",
-        "index": 1
-      },
-      {
-        "side": "W",
-        "index": 5
-      },
-      {
-        "side": "E",
-        "index": 4
-      }
-    ],
     "targets": [],
     "items": [
       {
@@ -6033,14 +6004,12 @@
       {
         "type": "focus",
         "x": 1,
-        "y": 2,
-        "need": 2
+        "y": 2
       },
       {
         "type": "focus",
         "x": 5,
-        "y": 4,
-        "need": 2
+        "y": 4
       },
       {
         "type": "mirror",
@@ -6101,28 +6070,36 @@
       }
     ],
     "hint": "两颗晶体都要两面充能。中心墙块把走廊隔开。",
-    "shots": 3
-  },
-  {
-    "name": "聚合入门",
-    "chapter": "聚合核心",
-    "chapterNo": 8,
-    "rows": 6,
-    "cols": 6,
-    "emitter": {
-      "side": "W",
-      "index": 1
-    },
+    "chapterNo": 7,
+    "shots": 3,
     "emitters": [
       {
         "side": "W",
         "index": 1
       },
       {
-        "side": "E",
+        "side": "S",
+        "index": 1
+      },
+      {
+        "side": "W",
         "index": 5
+      },
+      {
+        "side": "E",
+        "index": 4
       }
-    ],
+    ]
+  },
+  {
+    "name": "聚合入门",
+    "chapter": "聚合核心",
+    "rows": 6,
+    "cols": 6,
+    "emitter": {
+      "side": "W",
+      "index": 1
+    },
     "targets": [
       {
         "side": "E",
@@ -6180,28 +6157,28 @@
       }
     ],
     "hint": "紫色聚合点要先吃到两束光，才会朝箭头射出。点按旋转箭头。",
-    "shots": 3
+    "chapterNo": 8,
+    "shots": 3,
+    "emitters": [
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "E",
+        "index": 5
+      }
+    ]
   },
   {
     "name": "转向聚合",
     "chapter": "聚合核心",
-    "chapterNo": 8,
     "rows": 6,
     "cols": 6,
     "emitter": {
       "side": "W",
       "index": 0
     },
-    "emitters": [
-      {
-        "side": "W",
-        "index": 0
-      },
-      {
-        "side": "W",
-        "index": 5
-      }
-    ],
     "targets": [
       {
         "side": "E",
@@ -6258,28 +6235,28 @@
       }
     ],
     "hint": "两束光不在同一行，要先折进聚合点，再把输出对准东边。",
-    "shots": 3
+    "chapterNo": 8,
+    "shots": 3,
+    "emitters": [
+      {
+        "side": "W",
+        "index": 0
+      },
+      {
+        "side": "W",
+        "index": 5
+      }
+    ]
   },
   {
     "name": "聚合迷宫",
     "chapter": "聚合核心",
-    "chapterNo": 8,
     "rows": 6,
     "cols": 6,
     "emitter": {
       "side": "W",
       "index": 5
     },
-    "emitters": [
-      {
-        "side": "W",
-        "index": 5
-      },
-      {
-        "side": "N",
-        "index": 1
-      }
-    ],
     "targets": [
       {
         "side": "E",
@@ -6363,28 +6340,28 @@
       }
     ],
     "hint": "聚合之后还能再分光。先让聚合点亮起来，再处理菱形。",
-    "shots": 3
+    "chapterNo": 8,
+    "shots": 3,
+    "emitters": [
+      {
+        "side": "W",
+        "index": 5
+      },
+      {
+        "side": "N",
+        "index": 1
+      }
+    ]
   },
   {
     "name": "错位输入",
     "chapter": "聚合核心",
-    "chapterNo": 8,
     "rows": 6,
     "cols": 7,
     "emitter": {
       "side": "W",
       "index": 0
     },
-    "emitters": [
-      {
-        "side": "W",
-        "index": 0
-      },
-      {
-        "side": "W",
-        "index": 5
-      }
-    ],
     "targets": [
       {
         "side": "E",
@@ -6441,18 +6418,8 @@
       }
     ],
     "hint": "两束光分列上下。都要绕到聚合点两侧，输出再钻过中缝。",
-    "shots": 3
-  },
-  {
-    "name": "聚合开门",
-    "chapter": "聚合核心",
     "chapterNo": 8,
-    "rows": 6,
-    "cols": 6,
-    "emitter": {
-      "side": "W",
-      "index": 0
-    },
+    "shots": 3,
     "emitters": [
       {
         "side": "W",
@@ -6460,9 +6427,19 @@
       },
       {
         "side": "W",
-        "index": 2
+        "index": 5
       }
-    ],
+    ]
+  },
+  {
+    "name": "聚合开门",
+    "chapter": "聚合核心",
+    "rows": 6,
+    "cols": 6,
+    "emitter": {
+      "side": "W",
+      "index": 0
+    },
     "targets": [
       {
         "side": "E",
@@ -6541,18 +6518,8 @@
       }
     ],
     "hint": "聚合后的那一束去点开关。门开了，光才能到达终点。",
-    "shots": 3
-  },
-  {
-    "name": "双核串联",
-    "chapter": "聚合核心",
     "chapterNo": 8,
-    "rows": 6,
-    "cols": 7,
-    "emitter": {
-      "side": "W",
-      "index": 0
-    },
+    "shots": 3,
     "emitters": [
       {
         "side": "W",
@@ -6561,12 +6528,18 @@
       {
         "side": "W",
         "index": 2
-      },
-      {
-        "side": "S",
-        "index": 5
       }
-    ],
+    ]
+  },
+  {
+    "name": "双核串联",
+    "chapter": "聚合核心",
+    "rows": 6,
+    "cols": 7,
+    "emitter": {
+      "side": "W",
+      "index": 0
+    },
     "targets": [
       {
         "side": "E",
@@ -6635,28 +6608,32 @@
       }
     ],
     "hint": "第一座聚合点的输出，要成为第二座的输入之一。",
-    "shots": 3
+    "chapterNo": 8,
+    "shots": 3,
+    "emitters": [
+      {
+        "side": "W",
+        "index": 0
+      },
+      {
+        "side": "W",
+        "index": 2
+      },
+      {
+        "side": "S",
+        "index": 5
+      }
+    ]
   },
   {
     "name": "窄缝输出",
     "chapter": "聚合核心",
-    "chapterNo": 8,
     "rows": 6,
     "cols": 6,
     "emitter": {
       "side": "W",
       "index": 1
     },
-    "emitters": [
-      {
-        "side": "W",
-        "index": 1
-      },
-      {
-        "side": "W",
-        "index": 4
-      }
-    ],
     "targets": [
       {
         "side": "E",
@@ -6725,32 +6702,28 @@
       }
     ],
     "hint": "终点前只留一格缝。两束光必须先合成一束再穿过去。",
-    "shots": 3
+    "chapterNo": 8,
+    "shots": 3,
+    "emitters": [
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "W",
+        "index": 4
+      }
+    ]
   },
   {
     "name": "先聚再充",
     "chapter": "聚合核心",
-    "chapterNo": 8,
     "rows": 6,
     "cols": 6,
     "emitter": {
       "side": "W",
       "index": 0
     },
-    "emitters": [
-      {
-        "side": "W",
-        "index": 0
-      },
-      {
-        "side": "W",
-        "index": 2
-      },
-      {
-        "side": "N",
-        "index": 4
-      }
-    ],
     "targets": [],
     "items": [
       {
@@ -6772,8 +6745,7 @@
       {
         "type": "focus",
         "x": 4,
-        "y": 1,
-        "need": 2
+        "y": 1
       },
       {
         "type": "mirror",
@@ -6803,28 +6775,32 @@
       }
     ],
     "hint": "北面那束先打中晶体。再把聚合输出转到东面，补上第二束。",
-    "shots": 3
+    "chapterNo": 8,
+    "shots": 3,
+    "emitters": [
+      {
+        "side": "W",
+        "index": 0
+      },
+      {
+        "side": "W",
+        "index": 2
+      },
+      {
+        "side": "N",
+        "index": 4
+      }
+    ]
   },
   {
     "name": "跃迁聚合",
     "chapter": "聚合核心",
-    "chapterNo": 8,
     "rows": 6,
     "cols": 7,
     "emitter": {
       "side": "W",
       "index": 3
     },
-    "emitters": [
-      {
-        "side": "W",
-        "index": 3
-      },
-      {
-        "side": "S",
-        "index": 5
-      }
-    ],
     "targets": [
       {
         "side": "E",
@@ -6899,32 +6875,28 @@
       }
     ],
     "hint": "一束光走传送，另一束走迷宫，在左上角聚合后射向终点。",
-    "shots": 3
+    "chapterNo": 8,
+    "shots": 3,
+    "emitters": [
+      {
+        "side": "W",
+        "index": 3
+      },
+      {
+        "side": "S",
+        "index": 5
+      }
+    ]
   },
   {
     "name": "双源终核",
     "chapter": "聚合核心",
-    "chapterNo": 8,
     "rows": 7,
     "cols": 7,
     "emitter": {
       "side": "W",
       "index": 5
     },
-    "emitters": [
-      {
-        "side": "W",
-        "index": 5
-      },
-      {
-        "side": "S",
-        "index": 2
-      },
-      {
-        "side": "N",
-        "index": 5
-      }
-    ],
     "targets": [],
     "items": [
       {
@@ -6956,8 +6928,7 @@
       {
         "type": "focus",
         "x": 4,
-        "y": 1,
-        "need": 2
+        "y": 1
       },
       {
         "type": "mirror",
@@ -7012,6 +6983,21 @@
       }
     ],
     "hint": "聚合、双束晶体、迷宫墙三条线一起做。先让聚合点吃饱。",
-    "shots": 3
+    "chapterNo": 8,
+    "shots": 3,
+    "emitters": [
+      {
+        "side": "W",
+        "index": 5
+      },
+      {
+        "side": "S",
+        "index": 2
+      },
+      {
+        "side": "N",
+        "index": 5
+      }
+    ]
   }
 ]
