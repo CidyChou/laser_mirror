@@ -128,6 +128,7 @@ export class GameApplication {
           case 'switch': this.audio.play('switchOn'); break;
           case 'focus': this.audio.play('targetHit'); break;
           case 'combiner': this.audio.play('splitterHit'); break;
+          case 'combiner-fire': this.audio.play('laserFire');this.vibrate('heavy');break;
           case 'door': this.audio.play('mirrorHit',.55); break;
           case 'wall': this.audio.play('mirrorHit',.42); break;
         }

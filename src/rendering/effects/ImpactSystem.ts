@@ -32,6 +32,7 @@ export class ImpactSystem extends Container{
   }
 
   triggerImpactEffect(e:ImpactEvent,now:number){
+    if(e.type==='combiner-fire'){this.activate(e.px,e.py,Theme.beam,now,460,2);return;}
     const color=e.type==='target'||e.type==='switch'||e.type==='focus'?Theme.green
       :e.type==='portal'||e.type==='combiner'?Theme.purple
         :e.type==='splitter'?Theme.cyan

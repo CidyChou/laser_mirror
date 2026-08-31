@@ -43,9 +43,11 @@ export interface BoardGeometry {
 export interface LaserSegment {
   x1: number; y1: number; x2: number; y2: number;
   startDist: number; endDist: number; branch: number;
+  /** Width multiplier carried through reflections, splits and portals. */
+  widthScale?: number;
 }
 
-export type ImpactType = 'mirror' | 'splitter' | 'portal' | 'switch' | 'door' | 'wall' | 'target' | 'focus' | 'combiner';
+export type ImpactType = 'mirror' | 'splitter' | 'portal' | 'switch' | 'door' | 'wall' | 'target' | 'focus' | 'combiner' | 'combiner-fire';
 export interface ImpactEvent {
   type: ImpactType;
   at: number;
@@ -57,6 +59,13 @@ export interface ImpactEvent {
   toX?: number; toY?: number;
   incomingDir?: Direction;
   outgoingDirs?: Direction[];
+}
+
+export interface CombinerPulse {
+  /** Milliseconds from the beginning of beam travel, excluding emitter charge. */
+  readyMs: number;
+  launchMs: number;
+  launchDist: number;
 }
 
 export interface LaserTrace {
@@ -71,6 +80,7 @@ export interface LaserTrace {
   focusOn: Record<string, boolean>;
   combinerHits: Record<string, number>;
   combinerOn: Record<string, boolean>;
+  combinerPulses: Record<string, CombinerPulse>;
 }
 
 export interface GameState {
@@ -82,6 +92,7 @@ export interface GameState {
   firing: boolean;
   won: boolean;
   shotStart: number;
+  shotElapsedMs: number;
   beamDistance: number;
   result: LaserTrace | null;
   activeSwitches: Set<string>;

@@ -1,13 +1,16 @@
-import { Container, Graphics, Rectangle } from 'pixi.js';
+import { Container, FillGradient, Graphics, Rectangle } from 'pixi.js';
 import { borderPoint, cellCenter } from '@/gameplay/geometry';
 import { combinerNeed, focusNeed, itemKey, levelEmitters } from '@/gameplay/levelAccess';
 import type { BoardGeometry, Direction, GameState, LevelItem, Port } from '@/gameplay/types';
 import { isLightTheme, Theme } from '../theme';
+import { GameConfig } from '@/config/GameConfig';
+import { CollectorVisual } from '../effects/CollectorVisual';
 
-type ItemNode={key:string;kind:LevelItem['type'];root:Container;motion:Container;angleCarrier?:Container;face?:Graphics;core?:Graphics;phase:number;lastLit?:boolean;lastOpen?:boolean;lastCharge?:number;pips?:Graphics};
+type ItemNode={key:string;kind:LevelItem['type'];root:Container;motion:Container;angleCarrier?:Container;face?:Graphics;core?:Graphics;phase:number;lastLit?:boolean;lastOpen?:boolean;lastCharge?:number;pips?:Graphics;collector?:CollectorVisual};
+type PortalMotion={flow:Container;mist:Graphics;phase:number};
 type Kick={start:number};
 type ClickFx={root:Container;ring:Graphics;flash:Graphics;start:number;active:boolean};
-type PortNode={port:Port;emitter:boolean;targetIndex?:number;root:Container;halo:Graphics;band:Graphics;plasma:Graphics;core:Graphics;detail:Container;toneParts:Graphics[];hotParts:Graphics[];phase:number;active:boolean;lastActive:boolean|null};
+type PortNode={port:Port;emitter:boolean;targetIndex?:number;root:Container;halo:Graphics;light:Graphics;core:Graphics;pips:Graphics;required:number;phase:number;active:boolean;lastActive:boolean|null;lastCharge:number};
 
 export class ObjectLayer extends Container{
   private portLayer=new Container();
@@ -20,6 +23,28 @@ export class ObjectLayer extends Container{
   private rotateHandler:(x:number,y:number)=>void=()=>{};
   private levelIndex=-1;
   private readonly energyBlend=isLightTheme()?'normal':'add';
+  private readonly finishes=new Map<string,FillGradient>();
+  private portals:PortalMotion[]=[];
+  private state:GameState|null=null;
+  private ambientActive=false;
+  private readonly mirrorFinish=new FillGradient({
+    start:{x:0,y:0},end:{x:1,y:0},textureSize:128,
+    colorStops:[
+      {offset:0,color:Theme.mirrorShade},
+      {offset:.30,color:Theme.mirrorBlade},
+      {offset:.50,color:Theme.mirrorCore},
+      {offset:.72,color:Theme.mirrorBlade},
+      {offset:1,color:Theme.mirrorEnd},
+    ],
+  });
+  private readonly mirrorSeatFinish=new FillGradient({
+    start:{x:0,y:0},end:{x:0,y:1},
+    colorStops:[{offset:0,color:Theme.raisedMovable},{offset:1,color:Theme.cellB}],
+  });
+  private readonly fixedMirrorSeatFinish=new FillGradient({
+    start:{x:0,y:0},end:{x:0,y:1},
+    colorStops:[{offset:0,color:Theme.raisedFixed},{offset:1,color:Theme.cellB}],
+  });
 
   constructor(){
     super();this.addChild(this.portLayer,this.itemLayer,this.feedbackLayer);
@@ -40,13 +65,14 @@ export class ObjectLayer extends Container{
   }
 
   sync(state:GameState,g:BoardGeometry){
+    this.state=state;
     if(this.levelIndex!==state.levelIndex){this.levelIndex=state.levelIndex;this.rebuild(state,g);}
     this.refresh(state,g);
   }
   private rebuild(state:GameState,g:BoardGeometry){
-    this.portLayer.removeChildren().forEach(c=>c.destroy({children:true}));this.itemLayer.removeChildren().forEach(c=>c.destroy({children:true}));this.itemNodes.clear();this.portNodes=[];
+    this.portLayer.removeChildren().forEach(c=>c.destroy({children:true}));this.itemLayer.removeChildren().forEach(c=>c.destroy({children:true}));this.itemNodes.clear();this.portNodes=[];this.portals=[];this.kicks.clear();
     levelEmitters(state.level).forEach(port=>{const emitter=this.makePort(port,g,true);this.portNodes.push(emitter);this.portLayer.addChild(emitter.root);});
-    state.targets.forEach((t,i)=>{const n=this.makePort(t,g,false,i);this.portNodes.push(n);this.portLayer.addChild(n.root);});
+    state.targets.forEach((t,i)=>{const n=this.makePort(t,g,false,i,t.required);this.portNodes.push(n);this.portLayer.addChild(n.root);});
     for(const item of state.items){const n=this.makeItem(item,state,g);this.itemLayer.addChild(n.root);this.itemNodes.set(n.key,n);if((item.type==='mirror'||item.type==='splitter'||item.type==='combiner')&&!item.fixed){n.root.eventMode='static';n.root.cursor='pointer';n.root.hitArea=new Rectangle(-g.cell*.43,-g.cell*.43,g.cell*.86,g.cell*.86);n.root.on('pointertap',()=>this.rotateHandler(item.x,item.y));}}
   }
   private refresh(state:GameState,g:BoardGeometry){
@@ -59,74 +85,149 @@ export class ObjectLayer extends Container{
       if(item.type==='switch'){const lit=state.activeSwitches.has(item.id);if(n.lastLit!==lit){n.lastLit=lit;this.drawSwitch(n,lit,g);}}
       if(item.type==='door'){const open=!!state.activeDoorStates[item.id];if(n.lastOpen!==open){n.lastOpen=open;this.drawDoor(n,open,g);}}
       if(item.type==='focus'){const charge=state.focusHits[itemKey(item.x,item.y)]??0;const on=charge>=focusNeed(item);if(n.lastCharge!==charge||n.lastLit!==on){n.lastCharge=charge;n.lastLit=on;this.drawFocus(n,charge,focusNeed(item),g);}}
-      if(item.type==='combiner'){const charge=state.combinerHits[itemKey(item.x,item.y)]??0;const on=!!state.combinerOn[itemKey(item.x,item.y)]||charge>=combinerNeed(item);if(n.lastCharge!==charge||n.lastLit!==on){n.lastCharge=charge;n.lastLit=on;this.drawCombinerFace(n,charge,combinerNeed(item),on,g);}}
+      if(item.type==='combiner'){const charge=state.combinerHits[itemKey(item.x,item.y)]??0;const on=!!state.combinerOn[itemKey(item.x,item.y)];if(n.lastCharge!==charge||n.lastLit!==on){n.lastCharge=charge;n.lastLit=on;n.collector?.setCharge(charge,on);}}
     });
   }
 
   kick(x:number,y:number,now:number){this.kicks.set(`${x},${y}`,{start:now});}
   rotateFeedback(x:number,y:number,now:number,g:BoardGeometry){const c=cellCenter(g,x,y),fx=this.clickPool.find(v=>!v.active)??this.clickPool[0];fx.active=true;fx.start=now;fx.root.visible=true;fx.root.position.set(c.x,c.y);fx.root.scale.set(.7);fx.root.alpha=1;fx.ring.scale.set(.75);fx.flash.rotation=0;}
-  update(now:number){
+  update(now:number,ambient=true){
+    this.ambientActive=ambient&&this.portals.length>0;
+    if(ambient)for(const portal of this.portals){
+      portal.flow.rotation=now*.0007+portal.phase;
+      portal.mist.alpha=.48+.18*Math.sin(now*.0017+portal.phase);
+      portal.mist.scale.set(1+.055*Math.sin(now*.0011+portal.phase));
+    }
+    const state=this.state;
+    if(state)for(const n of this.itemNodes.values()){
+      if(!n.collector)continue;
+      const pulse=state.result?.combinerPulses[n.key];
+      const travelMs=state.shotElapsedMs-GameConfig.laser.chargeMs;
+      const charging=state.firing&&pulse&&n.collector.full&&!state.combinerOn[n.key];
+      const progress=charging?Math.max(0,Math.min(1,(travelMs-pulse.readyMs)/GameConfig.laser.combinerChargeMs)):null;
+      const releaseAge=state.combinerOn[n.key]&&pulse?travelMs-pulse.launchMs:Infinity;
+      n.collector.animate(now,progress,releaseAge);
+    }
     for(const port of this.portNodes){
-      const breath=.5+.5*Math.sin(now*.00315+port.phase);
-      const haloBase=port.emitter?.085:port.active?.13:.045;
-      const haloRange=port.emitter?.075:port.active?.085:.045;
-      port.halo.alpha=haloBase+breath*haloRange;
-      port.halo.scale.set(1+breath*(port.active?.035:.022));
-      port.plasma.alpha=(port.emitter?.68:port.active?.76:.54)+breath*.16;
-      port.core.alpha=(port.emitter?.82:port.active?.90:.62)+breath*.10;
-      port.detail.scale.set(1+breath*(port.active?.035:.018));
+      const breath=.5+.5*Math.sin(now*.0025+port.phase);
+      port.halo.alpha=port.active?.28+breath*.07:port.emitter?.14:.14;
+      port.light.alpha=port.active?.96:port.emitter?.90:.93;
+      port.core.alpha=port.active?.84+breath*.08:.52;
     }
     for(const [key,k] of [...this.kicks]){const n=this.itemNodes.get(key);if(!n){this.kicks.delete(key);continue;}const t=(now-k.start)/280;if(t>=1){n.motion.scale.set(1);n.motion.position.set(0,0);n.motion.rotation=0;this.kicks.delete(key);continue;}const hit=Math.sin(t*Math.PI)*Math.exp(-t*1.55);n.motion.scale.set(1+hit*.12);n.motion.position.set(0,-hit*6);n.motion.rotation=hit*.028*Math.sin(now*.08);}
     for(const fx of this.clickPool){if(!fx.active)continue;const t=(now-fx.start)/300;if(t>=1){fx.active=false;fx.root.visible=false;continue;}const ease=1-Math.pow(1-t,3);fx.root.scale.set(.7+ease*.65);fx.root.alpha=1-t;fx.ring.scale.set(.75+ease*.85);fx.flash.rotation=t*.22;fx.flash.alpha=(1-t)*.62;}
   }
-  get active(){return this.kicks.size>0||this.clickPool.some(x=>x.active);}
+  get active(){return this.ambientActive||this.kicks.size>0||this.clickPool.some(x=>x.active);}
+
+  // Reuse small baked material ramps across every object and state.
+  private finish(top:number,bottom:number,horizontal=false){
+    const key=`${top}:${bottom}:${horizontal}`;
+    let fill=this.finishes.get(key);
+    if(!fill){
+      fill=new FillGradient({start:{x:0,y:0},end:{x:horizontal?1:0,y:horizontal?0:1},textureSize:64,
+        colorStops:[{offset:0,color:top},{offset:1,color:bottom}]});
+      this.finishes.set(key,fill);
+    }
+    return fill;
+  }
+
+  private light(g:Graphics,x:number,y:number,rx:number,ry:number,color:number,alpha:number){
+    const key=`glow:${color}`;
+    let fill=this.finishes.get(key);
+    if(!fill){
+      const hex=`#${color.toString(16).padStart(6,'0')}`;
+      fill=new FillGradient({type:'radial',center:{x:.5,y:.5},outerRadius:.5,textureSize:64,
+        colorStops:[{offset:0,color:`${hex}ff`},{offset:.22,color:`${hex}a0`},{offset:.55,color:`${hex}30`},{offset:1,color:`${hex}00`}]});
+      this.finishes.set(key,fill);
+    }
+    g.ellipse(x,y,rx,ry).fill({fill,alpha});
+  }
+
+  private blockShadow(g:Graphics,size:number,radius:number,depth:number){
+    for(let i=4;i>=1;i--){
+      const spread=size*.016*i;
+      g.roundRect(-size/2-spread,-size/2+depth-spread,size+spread*2,size+spread*2,radius+spread)
+        .fill({color:Theme.shadow,alpha:.035});
+    }
+  }
+
+  private lockMark(cell:number,y=cell*.27){
+    const w=cell*.10,h=cell*.065;
+    return new Graphics()
+      .roundRect(-w*.32,y-h*.8,w*.64,h,.025*cell).stroke({color:Theme.lock,width:Math.max(1,cell*.015)})
+      .roundRect(-w/2,y-h*.15,w,h,cell*.015).fill(Theme.lock);
+  }
+
+  private mirrorSeat(cell:number,fixed:boolean){
+    const seat=new Graphics(),size=cell*.72,depth=cell*.048,radius=cell*.14;
+    // A soft contact shadow and a single bevel keep the support quiet.
+    for(let i=5;i>=1;i--){
+      const spread=i*cell*.012;
+      seat.roundRect(-size/2-spread,-size/2+depth+cell*.045-spread,size+spread*2,size-depth+spread*2,radius+spread)
+        .fill({color:Theme.shadow,alpha:.035});
+    }
+    seat.roundRect(-size/2,-size/2+depth,size,size-depth,radius).fill(Theme.boardBottom);
+    seat.roundRect(-size/2,-size/2,size,size-depth,radius)
+      .fill(fixed?this.fixedMirrorSeatFinish:this.mirrorSeatFinish)
+      .stroke({color:Theme.white,width:1.3,alpha:.085});
+    seat.moveTo(-size/2+radius,-size/2+1)
+      .lineTo(size/2-radius,-size/2+1)
+      .stroke({color:Theme.white,width:1,alpha:.06,cap:'round'});
+    return seat;
+  }
 
   private makeItem(item:LevelItem,state:GameState,g:BoardGeometry):ItemNode{
     const root=new Container(),motion=new Container();root.position.copyFrom(cellCenter(g,item.x,item.y));root.addChild(motion);const key=`${item.x},${item.y}`;
     if(item.type==='mirror'){
-      const carrier=new Container();carrier.position.y=-g.cell*.025;carrier.rotation=item.s===0?Math.PI/4:-Math.PI/4;
-      const s=g.cell*.66,thickness=g.cell*.145,radius=Math.max(7,g.cell*.075);
-      const glow=new Graphics().roundRect(-s*.52,-thickness*.72,s*1.04,thickness*1.44,radius)
-        .fill({color:Theme.cyan,alpha:item.fixed?.055:.105});glow.blendMode='add';
-      const shadow=new Graphics().roundRect(-s/2+2,-thickness/2+5,s,thickness,radius)
-        .fill({color:Theme.shadow,alpha:.42});
-      const edge=new Graphics().roundRect(-s/2,-thickness/2+3,s,thickness,radius)
-        .fill(Theme.surfaceSide);
+      root.addChildAt(this.mirrorSeat(g.cell,!!item.fixed),0);
+      const carrier=new Container();carrier.position.y=-g.cell*.035;carrier.rotation=item.s===0?Math.PI/4:-Math.PI/4;
+      const s=g.cell*.54,thickness=g.cell*.13,radius=thickness*.46;
+      const glow=new Graphics();
+      for(let i=4;i>=1;i--){
+        const spread=i*g.cell*.010;
+        glow.roundRect(-s/2-spread,-thickness/2-spread,s+spread*2,thickness+spread*2,radius+spread)
+          .fill({color:Theme.cyan,alpha:item.fixed?.010:.018});
+      }
+      glow.blendMode=this.energyBlend;
+      const shadow=new Graphics().roundRect(-s/2+1,-thickness/2+g.cell*.026,s,thickness,radius)
+        .fill({color:Theme.shadow,alpha:.30});
       const blade=new Graphics().roundRect(-s/2,-thickness/2,s,thickness,radius)
-        .fill(Theme.mirrorBlade)
-        .stroke({color:Theme.white,width:1.35,alpha:.7});
-      const hot=new Graphics().roundRect(-s*.31,-thickness*.27,s*.62,thickness*.54,radius*.58)
-        .fill({color:Theme.mirrorCore,alpha:.94});
-      const sheen=new Graphics().moveTo(-s*.31,-thickness*.12).lineTo(s*.19,-thickness*.12)
-        .stroke({color:Theme.white,width:1.9,alpha:.75,cap:'round'});
-      carrier.addChild(glow,shadow,edge,blade,hot,sheen);motion.addChild(carrier);
-      if(item.fixed){const lock=new Graphics().roundRect(-9,g.cell*.225,18,11,4).fill(Theme.lock).roundRect(-3,g.cell*.255,6,7,2).fill(Theme.lockKey);motion.addChild(lock);}
+        .fill(this.mirrorFinish)
+        .stroke({color:Theme.white,width:1.35,alpha:.65});
+      carrier.addChild(glow,shadow,blade);motion.addChild(carrier);
+      if(item.fixed)motion.addChild(this.lockMark(g.cell));
       return{key,kind:item.type,root,motion,angleCarrier:carrier,phase:0};
     }
     if(item.type==='splitter'){
-      const gem=new Container();gem.position.y=-g.cell*.02;gem.rotation=Math.PI/4;
-      const s=g.cell*.49,radius=Math.max(7,g.cell*.07);
-      const halo=new Graphics().roundRect(-s*.57,-s*.57,s*1.14,s*1.14,radius)
-        .fill({color:Theme.cyan,alpha:item.fixed?.05:.10});halo.blendMode='add';
-      const shadow=new Graphics().roundRect(-s/2+3,-s/2+5,s,s,radius)
-        .fill({color:Theme.shadow,alpha:.42});
-      const edge=new Graphics().roundRect(-s/2,-s/2+3,s,s,radius)
-        .fill(Theme.surfaceSide);
-      const tile=new Graphics().roundRect(-s/2,-s/2,s,s,radius)
-        .fill(Theme.splitterGem)
-        .stroke({color:Theme.white,width:1.7,alpha:.76});
-      const center=new Graphics().roundRect(-s*.18,-s*.18,s*.36,s*.36,4)
-        .fill({color:Theme.white,alpha:.24});
-      gem.addChild(halo,shadow,edge,tile,center);motion.addChild(gem);
-      const dir=new Container();dir.rotation=item.s===0?Math.PI/4:-Math.PI/4;
-      const railGlow=new Graphics().moveTo(-g.cell*.275,0).lineTo(g.cell*.275,0).stroke({color:Theme.cyan,width:6,alpha:.16,cap:'round'});railGlow.blendMode='add';
-      const rail=new Graphics().moveTo(-g.cell*.255,0).lineTo(g.cell*.255,0).stroke({color:Theme.white,width:2.8,alpha:.92,cap:'round'});
-      dir.addChild(railGlow,rail);motion.addChild(dir);
-      if(item.fixed){const lock=new Graphics().roundRect(-9,g.cell*.255,18,11,4).fill(Theme.lock).roundRect(-3,g.cell*.285,6,7,2).fill(Theme.lockKey);motion.addChild(lock);}
+      root.addChildAt(this.mirrorSeat(g.cell,!!item.fixed),0);
+      const gem=new Container();gem.position.y=-g.cell*.025;gem.rotation=Math.PI/4;
+      const s=g.cell*.43,radius=g.cell*.055;
+      const halo=new Graphics();this.light(halo,0,0,s*.8,s*.8,Theme.cyan,.18);halo.blendMode=this.energyBlend;
+      const shadow=new Graphics().roundRect(-s/2+1,-s/2+g.cell*.025,s,s,radius).fill({color:Theme.shadow,alpha:.30});
+      const crystal=new Graphics().roundRect(-s/2,-s/2,s,s,radius)
+        .fill(this.finish(mix(Theme.cyanSoft,Theme.white,.25),mix(Theme.splitterGem,Theme.boardBottom,.28)))
+        .stroke({color:Theme.white,width:1.25,alpha:.42});
+      // Facets share the crystal silhouette instead of adding an opaque tile.
+      crystal.poly([-s*.43,-s*.40,s*.40,-s*.40,-s*.40,s*.40],true).fill({color:Theme.white,alpha:.15});
+      crystal.poly([s*.41,-s*.36,s*.41,s*.41,-s*.36,s*.41],true).fill({color:Theme.purple,alpha:.13});
+      gem.addChild(halo,shadow,crystal);motion.addChild(gem);
+      const dir=new Container();dir.position.y=-g.cell*.025;dir.rotation=item.s===0?Math.PI/4:-Math.PI/4;
+      const rail=new Graphics().moveTo(-g.cell*.23,0).lineTo(g.cell*.23,0)
+        .stroke({color:Theme.mirrorCore,width:Math.max(1.7,g.cell*.022),alpha:.92,cap:'round'});
+      dir.addChild(rail);motion.addChild(dir);
+      if(item.fixed)motion.addChild(this.lockMark(g.cell));
       return{key,kind:item.type,root,motion,angleCarrier:dir,phase:0};
     }
     if(item.type==='wall'){
-      const s=g.cell*.76,d=g.cell*.12;const sh=new Graphics().roundRect(-s/2+2,-s/2+d+7,s,s-d,g.cell*.12).fill({color:Theme.shadow,alpha:.42});const q=new Graphics().roundRect(-s/2,-s/2,s,s-d,g.cell*.12).fill(Theme.wallFace).stroke({color:Theme.white,width:1,alpha:.10}).roundRect(-s/2+2,g.cell*.02,s-4,s*.31,g.cell*.08).fill({color:Theme.wallInset,alpha:.45});motion.addChild(sh,q);return{key,kind:item.type,root,motion,phase:0};
+      const s=g.cell*.74,r=g.cell*.11,depth=g.cell*.045;
+      const block=new Graphics();this.blockShadow(block,s,r,depth);
+      block.roundRect(-s/2,-s/2+depth,s,s,r).fill(Theme.boardBottom);
+      block.roundRect(-s/2,-s/2,s,s,r)
+        .fill(this.finish(Theme.wallFace,Theme.wallInset))
+        .stroke({color:Theme.white,width:1,alpha:.09});
+      block.moveTo(-s/2+r,-s/2+1).lineTo(s/2-r,-s/2+1)
+        .stroke({color:Theme.white,width:1.2,alpha:.13,cap:'round'});
+      motion.addChild(block);return{key,kind:item.type,root,motion,phase:0};
     }
     if(item.type==='switch'){
       const face=new Graphics(),core=new Graphics();motion.addChild(face,core);const lit=state.activeSwitches.has(item.id);const n={key,kind:item.type,root,motion,face,core,phase:0,lastLit:lit};this.drawSwitch(n,lit,g);return n;
@@ -141,138 +242,182 @@ export class ObjectLayer extends Container{
       this.drawFocus(n,charge,need,g);return n;
     }
     if(item.type==='combiner'){
-      const face=new Graphics(),core=new Graphics(),pips=new Graphics();
-      const carrier=new Container();carrier.rotation=item.dir*Math.PI/2;
-      const chevron=new Graphics();
-      const tip=g.cell*.22,base=-g.cell*.04,half=g.cell*.11;
-      chevron.poly([tip,0,base,-half,base,half],true).fill({color:Theme.white,alpha:.92});
-      carrier.addChild(chevron);
-      motion.addChild(face,core,pips,carrier);
-      const charge=state.combinerHits[itemKey(item.x,item.y)]??0;const need=combinerNeed(item);
-      const on=!!state.combinerOn[itemKey(item.x,item.y)]||charge>=need;
-      const n={key,kind:item.type,root,motion,angleCarrier:carrier,face,core,pips,phase:0,lastCharge:charge,lastLit:on};
-      this.drawCombinerFace(n,charge,need,on,g);
-      if(item.fixed){const lock=new Graphics().roundRect(-9,g.cell*.225,18,11,4).fill(Theme.lock).roundRect(-3,g.cell*.255,6,7,2).fill(Theme.lockKey);motion.addChild(lock);}
-      return n;
+      const collector=new CollectorVisual(g.cell,combinerNeed(item));
+      collector.direction.rotation=item.dir*Math.PI/2;
+      const charge=state.combinerHits[key]??0,on=!!state.combinerOn[key];
+      collector.setCharge(charge,on);motion.addChild(collector);
+      if(item.fixed){const lock=this.lockMark(g.cell,g.cell*.365);lock.position.x=-g.cell*.20;motion.addChild(lock);}
+      return{key,kind:item.type,root,motion,angleCarrier:collector.direction,collector,phase:0,lastCharge:charge,lastLit:on};
     }
     const color=item.pair==='P1'?Theme.purple:Theme.cyan;
-    const portal=new Container();
-    const shadow=new Graphics().ellipse(1,g.cell*.055,g.cell*.31,g.cell*.215)
-      .fill({color:Theme.shadow,alpha:.42});
-    const edge=new Graphics().ellipse(0,g.cell*.035,g.cell*.30,g.cell*.205)
-      .fill(Theme.surfaceSide);
-    const shell=new Graphics().ellipse(0,0,g.cell*.30,g.cell*.205)
-      .fill(color)
-      .stroke({color:Theme.white,width:1.2,alpha:.28});
-    const aperture=new Graphics().ellipse(0,-g.cell*.006,g.cell*.195,g.cell*.112)
-      .fill(Theme.shadow)
-      .stroke({color:Theme.white,width:1.4,alpha:.48});
-    const highlight=new Graphics()
-      .moveTo(-g.cell*.205,-g.cell*.075)
-      .bezierCurveTo(-g.cell*.11,-g.cell*.17,g.cell*.09,-g.cell*.17,g.cell*.19,-g.cell*.085)
-      .stroke({color:Theme.white,width:2,alpha:.64,cap:'round'});
-    portal.addChild(shadow,edge,shell,aperture,highlight);
-    motion.addChild(portal);
+    const c=g.cell,portal=new Graphics();
+    this.light(portal,0,c*.04,c*.40,c*.29,Theme.shadow,.56);
+    portal.ellipse(0,c*.025,c*.30,c*.215).fill(Theme.boardBottom);
+    portal.ellipse(0,0,c*.30,c*.215)
+      .fill(this.finish(mix(color,Theme.white,.22),mix(color,Theme.boardBottom,.58)));
+    portal.ellipse(0,-c*.008,c*.235,c*.155)
+      .fill(this.finish(mix(color,Theme.boardBottom,.78),Theme.shadow));
+    this.light(portal,0,c*.026,c*.22,c*.12,color,.44);
+    // One polished rim and a shaded aperture, without concentric white rings.
+    portal.moveTo(-c*.24,-c*.092)
+      .bezierCurveTo(-c*.14,-c*.24,c*.15,-c*.24,c*.245,-c*.085)
+      .stroke({color:mix(color,Theme.white,.58),width:Math.max(1.2,c*.017),alpha:.8,cap:'round'});
+    const orbit=new Container();orbit.position.y=-c*.008;orbit.scale.y=.62;
+    const flow=new Container();
+    const swirl=new Graphics().arc(0,0,c*.19,-.6,.1).stroke({color:mix(color,Theme.white,.5),width:Math.max(1,c*.014),alpha:.58,cap:'round'})
+      .arc(0,0,c*.145,2.1,2.65).stroke({color,width:Math.max(1,c*.012),alpha:.45,cap:'round'});
+    for(let i=0;i<2;i++){
+      const angle=i*Math.PI+.1,r=c*(i===0?.19:.145);
+      swirl.circle(Math.cos(angle)*r,Math.sin(angle)*r,c*.013).fill({color:Theme.white,alpha:.65});
+    }
+    flow.addChild(swirl);orbit.addChild(flow);
+    const mist=new Graphics();this.light(mist,-c*.025,c*.016,c*.21,c*.115,color,.40);
+    motion.addChild(portal,mist,orbit);
+    this.portals.push({flow,mist,phase:item.x*.9+item.y*.5});
     return{key,kind:item.type,root,motion,phase:0};
   }
 
-  private drawSwitch(n:ItemNode,lit:boolean,g:BoardGeometry){if(!n.face||!n.core)return;n.face.clear().circle(0,0,g.cell*.20).fill(lit?Theme.green:Theme.switchOff).circle(0,0,g.cell*.27).stroke({color:lit?Theme.switchOnRing:Theme.switchOffRing,width:3,alpha:1});n.core.clear().circle(0,0,g.cell*.055).fill(lit?Theme.white:Theme.switchOffCore);}
-  private drawDoor(n:ItemNode,open:boolean,g:BoardGeometry){if(!n.face)return;n.face.clear();if(open){n.face.roundRect(-g.cell*.34,-g.cell*.34,g.cell*.68,g.cell*.68,10).stroke({color:Theme.cyan,width:3,alpha:.28}).rect(-g.cell*.22,-2,g.cell*.44,4).fill({color:Theme.cyan,alpha:.50});}else{n.face.roundRect(-g.cell*.34,-g.cell*.34,g.cell*.68,g.cell*.68,10).fill(Theme.doorClosed).stroke({color:Theme.doorEdge,width:2,alpha:.70});for(let i=-1;i<=1;i++)n.face.moveTo(i*g.cell*.14,-g.cell*.24).lineTo(i*g.cell*.14,g.cell*.24).stroke({color:Theme.doorBars,width:3,alpha:.55});}}
+  private drawSwitch(n:ItemNode,lit:boolean,g:BoardGeometry){
+    if(!n.face||!n.core)return;
+    const c=g.cell,r=c*.245,color=lit?Theme.green:Theme.switchOff;
+    n.face.clear();
+    this.light(n.face,0,c*.025,c*.33,c*.33,lit?Theme.green:Theme.shadow,lit?.18:.4);
+    n.face.circle(0,c*.025,r).fill(Theme.boardBottom);
+    n.face.circle(0,0,r)
+      .fill(this.finish(mix(color,Theme.white,lit?.12:.15),mix(color,Theme.boardBottom,.24)))
+      .stroke({color:Theme.white,width:1,alpha:.12});
+    // A power mark is a functional glyph, replacing the old bullseye.
+    n.core.clear().arc(0,0,c*.092,-Math.PI*.25,Math.PI*1.25)
+      .stroke({color:lit?Theme.switchOnRing:Theme.switchOffCore,width:Math.max(1.6,c*.024),alpha:.95,cap:'round'});
+    n.core.moveTo(0,-c*.13).lineTo(0,-c*.01)
+      .stroke({color:lit?Theme.switchOnRing:Theme.switchOffCore,width:Math.max(1.6,c*.024),cap:'round'});
+  }
+
+  private drawDoor(n:ItemNode,open:boolean,g:BoardGeometry){
+    if(!n.face)return;
+    const c=g.cell,size=c*.68,half=size/2,r=c*.08;
+    const face=n.face.clear();
+    if(open){
+      // The opened center is genuinely empty; light passes between the rails.
+      for(const side of [-1,1]){
+        const x=side<0?-half:half-c*.09;
+        face.roundRect(x,-half,c*.09,size,r*.45).fill(this.finish(Theme.wallFace,Theme.wallInset));
+        face.moveTo(side*(half-c*.10),-c*.24).lineTo(side*(half-c*.10),c*.24)
+          .stroke({color:Theme.green,width:Math.max(1.5,c*.02),alpha:.72,cap:'round'});
+      }
+      return;
+    }
+    this.blockShadow(face,size,r,c*.03);
+    face.roundRect(-half,-half+c*.025,size,size,r).fill(Theme.boardBottom);
+    const material=this.finish(mix(Theme.doorClosed,Theme.white,.10),mix(Theme.doorClosed,Theme.boardBottom,.42));
+    for(const side of [-1,1]){
+      const x=side<0?-half:c*.014;
+      face.roundRect(x,-half,half-c*.014,size,r).fill(material)
+        .stroke({color:Theme.white,width:1,alpha:.08});
+    }
+    face.moveTo(-c*.014,-c*.23).lineTo(-c*.014,c*.23)
+      .stroke({color:Theme.doorEdge,width:Math.max(1.5,c*.02),alpha:.65,cap:'round'});
+    face.roundRect(-c*.075,-c*.038,c*.15,c*.076,c*.018)
+      .fill(this.finish(Theme.doorEdge,Theme.doorClosed));
+  }
+
   private drawFocus(n:ItemNode,charge:number,need:number,g:BoardGeometry){
     if(!n.face||!n.core)return;
-    const on=charge>=need;
-    const r=g.cell*.30;
-    n.face.clear()
-      .poly([0,-r,r*.72,-r*.2,r*.72,r*.2,0,r,-r*.72,r*.2,-r*.72,-r*.2],true)
-      .fill(on?Theme.green:Theme.gold)
-      .stroke({color:Theme.white,width:1.6,alpha:on?.78:.42});
-    n.core.clear().circle(0,0,g.cell*.07).fill({color:Theme.white,alpha:on?.94:.55});
-    this.drawPips(n,charge,need,g,on?Theme.white:Theme.shadow);
+    const on=charge>=need,c=g.cell,r=c*.30,color=on?Theme.green:Theme.gold;
+    const hex=(dy:number)=>[0,-r+dy,r*.72,-r*.2+dy,r*.72,r*.2+dy,0,r+dy,-r*.72,r*.2+dy,-r*.72,-r*.2+dy];
+    n.face.clear();
+    this.light(n.face,0,0,c*.36,c*.38,color,on?.24:.075);
+    n.face.poly(hex(c*.027),true).fill(Theme.boardBottom);
+    n.face.poly(hex(0),true)
+      .fill(this.finish(mix(color,Theme.white,.22),mix(color,Theme.boardBottom,.38)))
+      .stroke({color:Theme.white,width:1.2,alpha:.30});
+    n.face.poly([0,-r*.9,r*.65,-r*.18,-r*.65,-r*.18],true).fill({color:Theme.white,alpha:.13});
+    n.core.clear();
+    this.light(n.core,0,0,c*.17,c*.17,color,on?.75:.30);
+    n.core.circle(0,0,c*.085).fill(this.finish(Theme.mirrorCore,mix(color,Theme.mirrorCore,.26)));
+    this.drawPips(n,charge,need,g,on?Theme.green:Theme.gold);
   }
-  private drawCombinerFace(n:ItemNode,charge:number,need:number,on:boolean,g:BoardGeometry){
-    if(!n.face||!n.core)return;
-    const s=g.cell*.52;
-    n.face.clear().roundRect(-s/2,-s/2,s,s,g.cell*.16)
-      .fill(on?Theme.purple:Theme.switchOff)
-      .stroke({color:on?Theme.cyanSoft:Theme.cyan,width:2.1,alpha:on?.9:.55});
-    n.core.clear().circle(0,0,g.cell*.08).fill({color:Theme.white,alpha:on?.9:.4});
-    this.drawPips(n,charge,need,g,on?Theme.white:Theme.cyanSoft);
-  }
+
   private drawPips(n:ItemNode,charge:number,need:number,g:BoardGeometry,color:number){
     if(!n.pips)return;
     n.pips.clear();
-    const count=Math.max(2,Math.min(4,need));
-    const span=g.cell*.20;
-    const y=g.cell*.28;
+    const count=Math.max(2,need),span=g.cell*.27,step=span/count;
+    const y=g.cell*(n.kind==='combiner'?.235:.35),height=Math.max(1.8,g.cell*.026);
     for(let i=0;i<count;i++){
-      const x=-span/2+ (count===1?0:span*(i/(count-1)));
-      n.pips.circle(x,y,Math.max(2.4,g.cell*.035)).fill({color,alpha:i<charge?1:.28});
+      const x=-span/2+step*(i+.5),width=step*.60;
+      n.pips.roundRect(x-width/2,y-height/2,width,height,height/2)
+        .fill({color,alpha:i<charge?1:.24});
     }
   }
 
-  private makePort(port:Port,g:BoardGeometry,emitter:boolean,targetIndex?:number){
+  private makePort(port:Port,g:BoardGeometry,emitter:boolean,targetIndex?:number,required=1):PortNode{
     const root=new Container();root.position.copyFrom(borderPoint(g,port));
-    const halo=new Graphics(),band=new Graphics(),plasma=new Graphics(),core=new Graphics(),detail=new Container();
-    const toneParts:Graphics[]=[];const hotParts:Graphics[]=[];
-    const long=g.cell*.92;
-    const thick=Math.max(6,g.cell*.0825);
-    const radius=thick*.48;
-    const vertical=port.side==='W'||port.side==='E';
-    if(vertical){
-      halo.roundRect(-thick*1.35,-long*.53,thick*2.7,long*1.06,thick*1.2);
-      band.roundRect(-thick/2,-long/2,thick,long,radius);
-      plasma.roundRect(-thick*.25,-long*.46,thick*.5,long*.92,thick*.24);
-      core.roundRect(-Math.max(.9,thick*.075),-long*.36,Math.max(1.8,thick*.15),long*.72,thick*.08);
-    }else{
-      halo.roundRect(-long*.53,-thick*1.35,long*1.06,thick*2.7,thick*1.2);
-      band.roundRect(-long/2,-thick/2,long,thick,radius);
-      plasma.roundRect(-long*.46,-thick*.25,long*.92,thick*.5,thick*.24);
-      core.roundRect(-long*.36,-Math.max(.9,thick*.075),long*.72,Math.max(1.8,thick*.15),thick*.08);
-    }
-    halo.fill({color:Theme.white,alpha:1});halo.blendMode=this.energyBlend;
-    halo.alpha=emitter?.12:.06;
-    if(emitter)band.fill({color:Theme.white,alpha:.94});
-    else band.stroke({color:Theme.white,width:Math.max(2,thick*.28),alpha:.88});
-    plasma.fill({color:Theme.white,alpha:1});plasma.blendMode=this.energyBlend;
-    plasma.alpha=emitter?.76:.62;
-    core.fill({color:Theme.white,alpha:1});core.blendMode=this.energyBlend;
-    core.alpha=emitter?.90:.72;
-    const offset=thick*.95+g.cell*.025;let dx=0,dy=0;if(port.side==='W')dx=-offset;if(port.side==='E')dx=offset;if(port.side==='N')dy=-offset;if(port.side==='S')dy=offset;
-    detail.position.set(dx,dy);
+    // Local +X always faces into the board, for all four wall orientations.
+    root.rotation={W:0,E:Math.PI,N:Math.PI/2,S:-Math.PI/2}[port.side];
+    const cell=g.cell,length=cell*.62,width=cell*.105;
+    const shell=new Graphics(),halo=new Graphics(),light=new Graphics(),core=new Graphics(),pips=new Graphics();
+    shell.roundRect(-width*.62,-length/2+cell*.025,width*1.24,length,width*.52)
+      .fill({color:Theme.shadow,alpha:.3});
+    shell.roundRect(-width/2,-length/2,width,length,width*.48)
+      .fill(this.finish(Theme.mirrorShade,Theme.boardBottom,true))
+      .stroke({color:Theme.white,width:1,alpha:.13});
+    this.light(halo,0,0,width*2.5,length*.65,Theme.white,1);halo.blendMode=this.energyBlend;
+    const lensW=width*(emitter?.55:.70),lensH=length*.86;
+    light.roundRect(-lensW/2,-lensH/2,lensW,lensH,lensW*.48)
+      .fill(this.finish(Theme.white,0x9faaba,true));
     if(emitter){
-      const ang={W:0,E:Math.PI,N:Math.PI/2,S:-Math.PI/2}[port.side];
-      const tip=g.cell*.16,base=-g.cell*.09,halfH=g.cell*.115;
-      const marker=new Container();marker.rotation=ang;
-      const markerHalo=new Graphics().poly([tip*1.25,0,base*1.15,-halfH*1.25,base*1.15,halfH*1.25],true).fill({color:Theme.white,alpha:.14});markerHalo.blendMode=this.energyBlend;
-      const markerBody=new Graphics().poly([tip,0,base,-halfH,base,halfH],true).fill({color:Theme.white,alpha:.96});markerBody.blendMode=this.energyBlend;
-      const markerPlasma=new Graphics().poly([tip*.68,0,base*.18,-halfH*.48,base*.18,halfH*.48],true).fill({color:Theme.white,alpha:.92});markerPlasma.blendMode=this.energyBlend;
-      const markerCore=new Graphics().moveTo(base*.05,0).lineTo(tip*.54,0).stroke({color:Theme.white,width:Math.max(1.5,g.cell*.022),alpha:.96,cap:'round'});markerCore.blendMode=this.energyBlend;
-      marker.addChild(markerHalo,markerBody,markerPlasma,markerCore);detail.addChild(marker);
-      toneParts.push(markerHalo,markerBody);hotParts.push(markerPlasma);
+      // One solid nozzle carries the direction; no nested arrow outlines.
+      light.poly([-cell*.125,-cell*.095,cell*.125,0,-cell*.125,cell*.095],true)
+        .fill(this.finish(Theme.white,0x9faaba));
+      core.moveTo(-cell*.025,0).lineTo(cell*.06,0)
+        .stroke({color:Theme.laserCore,width:Math.max(1.4,cell*.017),cap:'round'});
     }else{
-      const receiverHalo=new Graphics().circle(0,0,g.cell*.16).fill({color:Theme.white,alpha:.12});receiverHalo.blendMode=this.energyBlend;
-      const receiverBody=new Graphics().circle(0,0,g.cell*.108).stroke({color:Theme.white,width:Math.max(2.5,g.cell*.035),alpha:.94});receiverBody.blendMode=this.energyBlend;
-      const receiverPlasma=new Graphics().circle(0,0,g.cell*.068).stroke({color:Theme.white,width:Math.max(1.6,g.cell*.018),alpha:.78});receiverPlasma.blendMode=this.energyBlend;
-      const receiverCore=new Graphics().circle(0,0,g.cell*.027).fill({color:Theme.white,alpha:1});receiverCore.blendMode=this.energyBlend;
-      detail.addChild(receiverHalo,receiverBody,receiverPlasma,receiverCore);
-      toneParts.push(receiverHalo,receiverBody);hotParts.push(receiverPlasma);
+      // A single luminous slot replaces the detached bullseye and its rings.
+      core.moveTo(0,-lensH*.32).lineTo(0,lensH*.32)
+        .stroke({color:Theme.white,width:Math.max(1,cell*.012),cap:'round'});
     }
-    root.addChild(halo,band,plasma,core,detail);
-    const phase=(targetIndex??0)*1.37+({W:.2,E:1.1,N:2.05,S:2.8}[port.side]);
-    return{port,emitter,targetIndex,root,halo,band,plasma,core,detail,toneParts,hotParts,phase,active:false,lastActive:null as boolean|null};
+    core.blendMode=this.energyBlend;
+    root.addChild(halo,shell,light,core,pips);
+    return{port,emitter,targetIndex,root,halo,light,core,pips,required:Math.max(1,Math.floor(required)),
+      phase:(targetIndex??0)*1.37,active:false,lastActive:null,lastCharge:-1};
   }
-  private refreshPort(n:PortNode,state:GameState,_g:BoardGeometry){
-    n.root.position.copyFrom(borderPoint(_g,n.port));
-    const active=!n.emitter&&n.targetIndex!==undefined?!!state.targets[n.targetIndex]?.hit:false;
+
+  private refreshPort(n:PortNode,state:GameState,g:BoardGeometry){
+    n.root.position.copyFrom(borderPoint(g,n.port));
+    const target=n.targetIndex===undefined?undefined:state.targets[n.targetIndex];
+    const active=n.emitter?state.firing:!!target?.hit;
+    const charge=target?.charge??0;
     n.active=active;
-    if(n.lastActive===active) return;
-    n.lastActive=active;
-    const color=n.emitter?Theme.beam:active?Theme.green:Theme.gold;
-    const hot=n.emitter?Theme.beamHot:active?Theme.switchOnRing:Theme.coinHighlight;
-    n.halo.tint=color;
-    n.band.tint=color;
-    n.plasma.tint=hot;
-    for(const part of n.toneParts)part.tint=color;
-    for(const part of n.hotParts)part.tint=hot;
+    if(n.lastActive===active&&n.lastCharge===charge)return;
+    n.lastActive=active;n.lastCharge=charge;
+    const idleGold=isLightTheme()?mix(Theme.gold,0xffdb58,.68):mix(Theme.gold,Theme.white,.10);
+    const color=n.emitter?Theme.laserBody:active?Theme.green:idleGold;
+    n.halo.tint=color;n.light.tint=color;
+    n.core.visible=n.emitter||(active&&n.required===1);
+    n.pips.clear();
+    // Ordinary targets have no extra ornament. Multi-hit targets retain only
+    // the necessary charge marks, integrated into the receiving window.
+    if(n.required>1){
+      const cell=g.cell,span=cell*.35,step=span/n.required;
+      for(let i=0;i<n.required;i++){
+        const y=-span/2+step*(i+.5);
+        n.pips.roundRect(-cell*.017,y-step*.26,cell*.034,step*.52,cell*.008)
+          .fill({color:i<charge?Theme.white:Theme.shadow,alpha:i<charge?.92:.52});
+      }
+    }
   }
+
+  override destroy(options?:Parameters<Container['destroy']>[0]){
+    super.destroy(options);
+    this.mirrorFinish.destroy();
+    this.mirrorSeatFinish.destroy();
+    this.fixedMirrorSeatFinish.destroy();
+    for(const finish of this.finishes.values())finish.destroy();
+    this.finishes.clear();
+  }
+}
+
+function mix(a:number,b:number,t:number){
+  const channel=(shift:number)=>Math.round(((a>>shift)&255)*(1-t)+((b>>shift)&255)*t);
+  return (channel(16)<<16)|(channel(8)<<8)|channel(0);
 }
