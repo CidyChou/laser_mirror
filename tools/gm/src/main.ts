@@ -6,9 +6,11 @@ import {
   TOOLS,
   cloneLevel,
   emptyLevel,
+  gmEmitters,
   rotateItem,
   resizeLevel,
   validateLevel,
+  type Direction,
   type GmLevel,
   type LevelItem,
   type Tool,
@@ -205,6 +207,20 @@ const app = {
       this.replaceLevel({ ...level, targets });
       this.selection = { kind: 'none' };
       this.refresh(true);
+      return;
+    }
+    if (this.selection.kind === 'emitter') {
+      const emitters = gmEmitters(level);
+      if (emitters.length <= 1) return;
+      const removeAt = this.selection.index;
+      const next = emitters.filter((_, index) => index !== removeAt);
+      this.replaceLevel({
+        ...level,
+        emitter: next[0],
+        emitters: next.length > 1 ? next : undefined,
+      });
+      this.selection = { kind: 'none' };
+      this.refresh(true);
     }
   },
 
@@ -280,7 +296,7 @@ const app = {
     const keyMap: Record<string, Tool> = {
       v: 'select', x: 'eraser',
       '1': 'mirror', '2': 'splitter', '3': 'wall', '4': 'switch',
-      '5': 'door', '6': 'portal', '7': 'emitter', '8': 'target',
+      '5': 'door', '6': 'portal', '7': 'focus', '8': 'combiner', '9': 'emitter', '0': 'target',
     };
     if (keyMap[event.key.toLowerCase()]) {
       this.setTool(keyMap[event.key.toLowerCase()]);
@@ -453,16 +469,21 @@ function renderInspector(state: typeof app, force: boolean) {
 
 function renderSelection(state: typeof app, level: GmLevel, item: LevelItem | null): HTMLElement {
   if (state.selection.kind === 'emitter') {
+    const emitters = gmEmitters(level);
+    const port = emitters[state.selection.index] ?? level.emitter;
     return h('div', {},
-      h('p', {}, `发射器 · ${level.emitter.side}${level.emitter.index}`),
-      h('p', { class: 'empty' }, '拖到棋盘外框即可改位置。每关只能有一个发射器。'),
+      h('p', {}, `发射器 ${state.selection.index + 1} / ${emitters.length} · ${port.side}${port.index}`),
+      h('p', { class: 'empty' }, '拖到棋盘外框改位置。再用发射器工具点空端口即可增加。'),
+      emitters.length > 1
+        ? h('button', { type: 'button', class: 'danger', onClick: () => state.deleteSelection() }, '删除此发射器')
+        : h('p', { class: 'empty' }, '至少保留一个发射器'),
     );
   }
   if (state.selection.kind === 'target') {
     const target = level.targets[state.selection.index];
     return h('div', {},
       h('p', {}, `接收器 ${state.selection.index + 1} · ${target?.side}${target?.index}`),
-      h('p', { class: 'empty' }, '可添加多个接收器。全部命中才算过关。'),
+      h('p', { class: 'empty' }, '可添加多个墙面接收器。聚能终点在棋盘格子上，需要两束激光同时打中。'),
       level.targets.length > 1
         ? h('button', { type: 'button', class: 'danger', onClick: () => state.deleteSelection() }, '删除此接收器')
         : h('p', { class: 'empty' }, '至少保留一个接收器'),
@@ -504,6 +525,33 @@ function renderSelection(state: typeof app, level: GmLevel, item: LevelItem | nu
   }
   if (item.type === 'portal') {
     kids.push(field('传送对 pair', input('text', item.pair, value => patchItem(state, it => { if (it.type === 'portal') it.pair = value.trim() || it.pair; }))));
+  }
+  if (item.type === 'focus') {
+    kids.push(field('需要光束', input('number', String(item.need ?? 2), value => patchItem(state, it => {
+      if (it.type !== 'focus') return;
+      it.need = Math.max(2, Math.min(4, Number(value) || 2));
+    }))));
+  }
+  if (item.type === 'combiner') {
+    const dir = item.dir;
+    kids.push(
+      h('div', { class: 'chips' },
+        ...(['东', '南', '西', '北'] as const).map((label, index) =>
+          h('button', {
+            type: 'button',
+            class: dir === index ? 'active' : '',
+            onClick: () => patchItem(state, it => { if (it.type === 'combiner') it.dir = index as Direction; }),
+          }, `${label} 输出`),
+        ),
+      ),
+      field('需要光束', input('number', String(item.need ?? 2), value => patchItem(state, it => {
+        if (it.type !== 'combiner') return;
+        it.need = Math.max(2, Math.min(4, Number(value) || 2));
+      }))),
+      h('div', { class: 'toggle-row' },
+        check('固定不可旋转', !!item.fixed, value => patchItem(state, it => { if (it.type === 'combiner') it.fixed = value || undefined; })),
+      ),
+    );
   }
   kids.push(h('button', { type: 'button', class: 'danger', onClick: () => state.deleteSelection() }, '删除物体'));
   return h('div', {}, ...kids);

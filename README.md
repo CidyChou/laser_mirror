@@ -16,7 +16,7 @@
 make gm
 ```
 
-启动关卡设计后台（默认 http://127.0.0.1:8350/）。首次打开会载入当前 `src/levels/levels.json` 里的 50 关，可拖拽排序、在棋盘上拖放物体、新建/复制关卡。编辑保存在 `tools/gm/data/` 草稿里，点 **导出到项目** 才会写回 `src/levels/levels.json`。
+启动关卡设计后台（默认 http://127.0.0.1:8350/）。首次打开会载入当前 `src/levels/levels.json` 里的关卡，可拖拽排序、在棋盘上拖放物体、新建/复制关卡。编辑保存在 `tools/gm/data/` 草稿里，点 **导出到项目** 才会写回 `src/levels/levels.json`。前 50 关冻结在 `src/levels/classic.json`。
 
 ## 构建
 
@@ -34,7 +34,7 @@ npm run build:all
 ## 核心原则
 
 - 玩法计算与渲染完全解耦。
-- 50 关全部位于 `src/levels/levels.json`。
+- 关卡数据位于 `src/levels/levels.json`（1–50 冻结对照 `classic.json`，51–80 为双源 / 双束终点 / 聚合点）。
 - Pixi UI：正式游戏 UI 不依赖 HTML/CSS DOM。
 - WebGL 优先，默认兼容 WebGL1/2；不依赖 WebGPU。
 - 静态棋盘 `cacheAsTexture()`。

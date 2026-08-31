@@ -21,7 +21,9 @@ GameApplication
 
 ## Gameplay 与 Renderer 解耦
 
-`LaserSimulator` 只输出 `LaserTrace`：segments、impactEvents、targets、switches、doors。视觉层决定激光粗细、粒子、震动、颜色，不改变解谜结果。
+`LaserSimulator` 只输出 `LaserTrace`：segments、impactEvents、targets、switches、doors、focus、combiner。视觉层决定激光粗细、粒子、震动、颜色，不改变解谜结果。
+
+51 关之后可选：多个 `emitters`、棋盘 `focus` 双束终点、`combiner` 聚合点。1–50 不含这些字段，光路与旧版一致（由 `classic.json` + `classic-traces.json` 冻结）。
 
 ## 长期扩展
 

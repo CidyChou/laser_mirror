@@ -3,7 +3,7 @@ export type Direction = 0 | 1 | 2 | 3;
 export type Orientation = 0 | 1;
 
 export interface Port { side: Side; index: number }
-export interface Target extends Port { hit?: boolean }
+export interface Target extends Port { hit?: boolean; required?: number; charge?: number }
 
 export type LevelItem =
   | { type: 'mirror'; x: number; y: number; s: Orientation; fixed?: boolean; decoy?: boolean }
@@ -11,7 +11,9 @@ export type LevelItem =
   | { type: 'wall'; x: number; y: number }
   | { type: 'switch'; x: number; y: number; id: string }
   | { type: 'door'; x: number; y: number; id: string; requires: string[] }
-  | { type: 'portal'; x: number; y: number; pair: string };
+  | { type: 'portal'; x: number; y: number; pair: string }
+  | { type: 'focus'; x: number; y: number; need?: number }
+  | { type: 'combiner'; x: number; y: number; dir: Direction; need?: number; fixed?: boolean };
 
 export interface LevelDefinition {
   name: string;
@@ -20,6 +22,8 @@ export interface LevelDefinition {
   rows: number;
   cols: number;
   emitter: Port;
+  /** Extra emitters. When omitted, the level uses only `emitter`. */
+  emitters?: Port[];
   targets: Port[];
   items: LevelItem[];
   shots: number;
@@ -41,7 +45,7 @@ export interface LaserSegment {
   startDist: number; endDist: number; branch: number;
 }
 
-export type ImpactType = 'mirror' | 'splitter' | 'portal' | 'switch' | 'door' | 'wall' | 'target';
+export type ImpactType = 'mirror' | 'splitter' | 'portal' | 'switch' | 'door' | 'wall' | 'target' | 'focus' | 'combiner';
 export interface ImpactEvent {
   type: ImpactType;
   at: number;
@@ -63,6 +67,10 @@ export interface LaserTrace {
   maxTravel: number;
   doorStates: Record<string, boolean>;
   hits: boolean[];
+  focusHits: Record<string, number>;
+  focusOn: Record<string, boolean>;
+  combinerHits: Record<string, number>;
+  combinerOn: Record<string, boolean>;
 }
 
 export interface GameState {
@@ -78,5 +86,8 @@ export interface GameState {
   result: LaserTrace | null;
   activeSwitches: Set<string>;
   activeDoorStates: Record<string, boolean>;
+  focusHits: Record<string, number>;
+  combinerHits: Record<string, number>;
+  combinerOn: Record<string, boolean>;
   comboCount: number;
 }

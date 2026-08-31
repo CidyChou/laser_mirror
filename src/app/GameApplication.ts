@@ -111,7 +111,7 @@ export class GameApplication {
         saveCurrentLevel(this.platform,state.levelIndex);
       }
       if(event.type==='rotate'){
-        this.view.rotateItem(event.x,event.y,event.s);
+        this.view.rotateItem(event.x,event.y,event.s,event.dir);
         return;
       }
       if(event.type==='state'||event.type==='level'){
@@ -126,6 +126,8 @@ export class GameApplication {
           case 'portal': this.audio.play('portal'); break;
           case 'target': this.audio.play('targetHit'); break;
           case 'switch': this.audio.play('switchOn'); break;
+          case 'focus': this.audio.play('targetHit'); break;
+          case 'combiner': this.audio.play('splitterHit'); break;
           case 'door': this.audio.play('mirrorHit',.55); break;
           case 'wall': this.audio.play('mirrorHit',.42); break;
         }

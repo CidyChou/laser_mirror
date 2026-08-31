@@ -2,12 +2,13 @@ import { GameConfig } from '@/config/GameConfig';
 import { computeGeometry } from './geometry';
 import { LaserSimulator } from './LaserSimulator';
 import { COMBO_VISIBLE_FROM, MAX_COMBO_COUNT } from './combo';
-import type { GameState, ImpactEvent, LevelDefinition, LevelItem } from './types';
+import { combinerNeed, focusNeed, itemKey, nextCombinerDir } from './levelAccess';
+import type { Direction, GameState, ImpactEvent, LevelDefinition, LevelItem } from './types';
 
 export type GameEvent =
   | { type:'state' }
   | { type:'level' }
-  | { type:'rotate'; x:number; y:number; s:0|1 }
+  | { type:'rotate'; x:number; y:number; s:0|1; dir?: Direction }
   | { type:'impact'; impact:ImpactEvent }
   | { type:'toast'; text:string }
   | { type:'shot-start' }
@@ -47,9 +48,10 @@ export class GameSession {
     const level = this.levels[index];
     const items = level.items.map(item => ({...item})) as LevelItem[];
     return {
-      levelIndex:index, level, items, targets:level.targets.map(t=>({...t,hit:false})),
+      levelIndex:index, level, items, targets:level.targets.map(t=>({...t,hit:false,charge:0})),
       hearts:Math.max(0, Math.floor(hearts)), firing:false, won:false, shotStart:0, beamDistance:0,
-      result:null, activeSwitches:new Set(), activeDoorStates:{}, comboCount:0,
+      result:null, activeSwitches:new Set(), activeDoorStates:{},
+      focusHits:{}, combinerHits:{}, combinerOn:{}, comboCount:0,
     };
   }
 
@@ -61,7 +63,7 @@ export class GameSession {
   reset() { this.load(this.state.levelIndex); }
   next() {
     if (this.state.levelIndex < this.levels.length - 1) this.load(this.state.levelIndex + 1);
-    else { this.load(0); this.emit({type:'toast',text:'50 关全部完成'}); }
+    else { this.load(0); this.emit({type:'toast',text:`${this.levels.length} 关全部完成`}); }
   }
 
   restoreHearts(count = 3) {
@@ -73,9 +75,16 @@ export class GameSession {
   rotateAt(x:number,y:number) {
     if (this.state.firing || this.state.won) return;
     const item = this.state.items.find(i=>i.x===x && i.y===y);
-    if (!item || (item.type !== 'mirror' && item.type !== 'splitter') || item.fixed) return;
-    item.s = item.s === 0 ? 1 : 0;
-    this.emit({type:'rotate', x, y, s:item.s});
+    if (!item || ('fixed' in item && item.fixed)) return;
+    if (item.type === 'mirror' || item.type === 'splitter') {
+      item.s = item.s === 0 ? 1 : 0;
+      this.emit({type:'rotate', x, y, s:item.s});
+      return;
+    }
+    if (item.type === 'combiner') {
+      item.dir = nextCombinerDir(item.dir);
+      this.emit({type:'rotate', x, y, s:0, dir:item.dir});
+    }
   }
 
   fire() {
@@ -101,7 +110,8 @@ export class GameSession {
     s.beamDistance = 0;
     s.comboCount = 0;
     s.result = result;
-    s.targets.forEach(t=>t.hit=false); s.activeSwitches.clear(); s.activeDoorStates={};
+    s.targets.forEach(t=>{t.hit=false;t.charge=0;}); s.activeSwitches.clear(); s.activeDoorStates={};
+    s.focusHits={}; s.combinerHits={}; s.combinerOn={};
     this.triggered.clear(); this.launchTriggered=false; this.comboEmitted.clear(); this.finishAt=0;
     this.shotClockArmed=false; this.simNow=0;
     this.emit({type:'shot-start'}); this.emit({type:'state'});
@@ -117,7 +127,8 @@ export class GameSession {
     s.comboCount = 0;
     s.activeSwitches.clear();
     s.activeDoorStates = {};
-    s.targets.forEach(t => t.hit = false);
+    s.targets.forEach(t => { t.hit = false; t.charge = 0; });
+    s.focusHits = {}; s.combinerHits = {}; s.combinerOn = {};
     this.triggered.clear();
     this.launchTriggered = false;
     this.comboEmitted.clear();
@@ -148,7 +159,7 @@ export class GameSession {
 
     const elapsed = this.simNow - s.shotStart;
     if (elapsed > SHOT_TIMEOUT_MS) {
-      const success = s.result.hits.every(Boolean) && s.targets.every(t => t.hit);
+      const success = this.isSuccess(s.result);
       this.finish(success);
       return s.firing;
     }
@@ -164,7 +175,7 @@ export class GameSession {
     let applied = 0;
     for (const impact of s.result.impactEvents) {
       if (impact.at > s.beamDistance) break;
-      const key = `${impact.type}:${impact.x ?? ''}:${impact.y ?? ''}:${impact.targetIndex ?? ''}:${Math.round(impact.at)}`;
+      const key = impactKey(impact);
       if (this.triggered.has(key)) continue;
       this.triggered.add(key); this.applyImpact(impact); this.emit({type:'impact',impact});
       if (++applied >= IMPACTS_PER_FRAME) break;
@@ -172,11 +183,10 @@ export class GameSession {
 
     const pendingImpact = s.result.impactEvents.some(impact => {
       if (impact.at > s.beamDistance) return false;
-      const key = `${impact.type}:${impact.x ?? ''}:${impact.y ?? ''}:${impact.targetIndex ?? ''}:${Math.round(impact.at)}`;
-      return !this.triggered.has(key);
+      return !this.triggered.has(impactKey(impact));
     });
 
-    const success = s.result.hits.every(Boolean) && s.targets.every(t=>t.hit);
+    const success = this.isSuccess(s.result);
     if (!pendingImpact && (success || s.beamDistance >= s.result.maxTravel)) {
       if (!this.finishAt) {
         const tail = s.comboCount >= COMBO_VISIBLE_FROM
@@ -197,9 +207,22 @@ export class GameSession {
       this.emit({type:'state'});
     }
     if (impact.type === 'target' && impact.targetIndex !== undefined) {
-      const target=s.targets[impact.targetIndex]; if(target) target.hit=true; this.emit({type:'state'});
+      const target=s.targets[impact.targetIndex];
+      if (target) { target.charge = (target.charge ?? 0) + 1; target.hit = true; }
+      this.emit({type:'state'});
     }
-    if (impact.type === 'mirror' || impact.type === 'target') {
+    if ((impact.type === 'focus' || impact.type === 'combiner') && impact.x !== undefined && impact.y !== undefined) {
+      const key = itemKey(impact.x, impact.y);
+      if (impact.type === 'focus') {
+        s.focusHits[key] = (s.focusHits[key] ?? 0) + 1;
+      } else {
+        s.combinerHits[key] = (s.combinerHits[key] ?? 0) + 1;
+        const item = s.items.find(entry => entry.type === 'combiner' && entry.x === impact.x && entry.y === impact.y);
+        if (item?.type === 'combiner') s.combinerOn[key] = s.combinerHits[key] >= combinerNeed(item);
+      }
+      this.emit({type:'state'});
+    }
+    if (impact.type === 'mirror' || impact.type === 'target' || impact.type === 'focus') {
       s.comboCount = Math.min(MAX_COMBO_COUNT, s.comboCount + 1);
       if (s.comboCount >= COMBO_VISIBLE_FROM && !this.comboEmitted.has(s.comboCount)) {
         this.comboEmitted.add(s.comboCount);
@@ -208,21 +231,48 @@ export class GameSession {
     }
   }
 
+  private isSuccess(result: GameState['result']): boolean {
+    const s = this.state;
+    if (!result) return false;
+    const walls = result.hits.every(Boolean) && s.targets.every(t => t.hit);
+    const focuses = s.items.filter((item): item is Extract<LevelItem, { type: 'focus' }> => item.type === 'focus');
+    const focusOk = focuses.every(item => (s.focusHits[itemKey(item.x, item.y)] ?? 0) >= focusNeed(item));
+    return walls && focusOk;
+  }
+
+  private missPrefix(): string {
+    const s = this.state;
+    const result = s.result;
+    const focuses = s.items.filter((item): item is Extract<LevelItem, { type: 'focus' }> => item.type === 'focus');
+    const unfilled = result && focuses.some(item => (result.focusHits[itemKey(item.x, item.y)] ?? 0) < focusNeed(item));
+    return unfilled ? '双束终点未充满' : '没有命中';
+  }
+
   private finish(success: boolean) {
     const s=this.state; s.firing=false;
     this.shotClockArmed=false; this.simNow=0; this.finishAt=0;
     if (success) {
       s.won=true;
-      if (s.result) { s.activeSwitches=new Set(s.result.switches); s.activeDoorStates={...s.result.doorStates}; }
+      if (s.result) {
+        s.activeSwitches=new Set(s.result.switches); s.activeDoorStates={...s.result.doorStates};
+        s.focusHits={...s.result.focusHits}; s.combinerHits={...s.result.combinerHits}; s.combinerOn={...s.result.combinerOn};
+      }
       this.emit({type:'victory'});
     } else {
-      s.result=null; s.beamDistance=0; s.comboCount=0; s.activeSwitches.clear(); s.activeDoorStates={}; s.targets.forEach(t=>t.hit=false);
+      const prefix = this.missPrefix();
       s.hearts=Math.max(0,s.hearts-1);
+      s.result=null; s.beamDistance=0; s.comboCount=0; s.activeSwitches.clear(); s.activeDoorStates={};
+      s.focusHits={}; s.combinerHits={}; s.combinerOn={};
+      s.targets.forEach(t=>{t.hit=false;t.charge=0;});
       if (s.hearts <= 0) this.emit({type:'defeat'});
-      else this.emit({type:'toast',text:`没有命中 · 还剩 ${s.hearts} 颗爱心`});
+      else this.emit({type:'toast',text:`${prefix} · 还剩 ${s.hearts} 颗爱心`});
     }
     this.emit({type:'shot-end',success}); this.emit({type:'state'});
   }
+}
+
+function impactKey(impact: ImpactEvent): string {
+  return `${impact.type}:${impact.x ?? ''}:${impact.y ?? ''}:${impact.targetIndex ?? ''}:${impact.incomingDir ?? ''}:${Math.round(impact.at)}`;
 }
 
 const CLOCK_JUMP_MS = 250;

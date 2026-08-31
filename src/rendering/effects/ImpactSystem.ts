@@ -32,12 +32,12 @@ export class ImpactSystem extends Container{
   }
 
   triggerImpactEffect(e:ImpactEvent,now:number){
-    const color=e.type==='target'||e.type==='switch'?Theme.green
-      :e.type==='portal'?Theme.purple
+    const color=e.type==='target'||e.type==='switch'||e.type==='focus'?Theme.green
+      :e.type==='portal'||e.type==='combiner'?Theme.purple
         :e.type==='splitter'?Theme.cyan
           :e.type==='mirror'?Theme.white:Theme.beam;
-    const strength=e.type==='target'?1.65:e.type==='portal'?1.38:e.type==='mirror'||e.type==='splitter'?1.24:1.08;
-    this.activate(e.px,e.py,color,now,e.type==='target'?520:e.type==='portal'?430:340,strength);
+    const strength=e.type==='target'||e.type==='focus'?1.65:e.type==='portal'||e.type==='combiner'?1.38:e.type==='mirror'||e.type==='splitter'?1.24:1.08;
+    this.activate(e.px,e.py,color,now,e.type==='target'||e.type==='focus'?520:e.type==='portal'?430:340,strength);
     if(e.type==='portal'&&e.toX!==undefined&&e.toY!==undefined){
       this.activate(e.toX,e.toY,color,now+42,430,1.26);
     }

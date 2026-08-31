@@ -3,7 +3,10 @@ import { cellCenter } from '@/gameplay/geometry';
 import type { BoardGeometry, LevelDefinition, LevelItem as GameItem, Port as GamePort } from '@/gameplay/types';
 import {
   createItem,
+  gmEmitters,
+  portOccupiedByEmitter,
   samePort,
+  type Direction,
   type GmLevel,
   type LevelItem,
   type PlaceableType,
@@ -15,7 +18,7 @@ import {
 export type Selection =
   | { kind: 'none' }
   | { kind: 'item'; x: number; y: number }
-  | { kind: 'emitter' }
+  | { kind: 'emitter'; index: number }
   | { kind: 'target'; index: number };
 
 export type BoardHandlers = {
@@ -29,7 +32,7 @@ type Hit =
 
 type Drag =
   | { kind: 'item'; fromX: number; fromY: number; item: LevelItem; px: number; py: number; moved: boolean }
-  | { kind: 'emitter'; px: number; py: number; moved: boolean }
+  | { kind: 'emitter'; index: number; px: number; py: number; moved: boolean }
   | { kind: 'target'; index: number; px: number; py: number; moved: boolean };
 
 const PORTAL_COLORS = ['#9a7cff', '#55ddff', '#ffd66c', '#55efae', '#ff8b5a'];
@@ -202,7 +205,9 @@ export class BoardCanvas {
       ctx.restore();
     };
 
-    draw(level.emitter, '#ff5578', true, this.selection.kind === 'emitter');
+    gmEmitters(level).forEach((port, index) => {
+      draw(port, '#ff5578', true, this.selection.kind === 'emitter' && this.selection.index === index);
+    });
     level.targets.forEach((target, index) => {
       draw(target, '#ffd66c', false, this.selection.kind === 'target' && this.selection.index === index);
     });
@@ -245,6 +250,8 @@ export class BoardCanvas {
     else if (item.type === 'wall') this.drawWall(ctx, g);
     else if (item.type === 'switch') this.drawSwitch(ctx, item, g);
     else if (item.type === 'door') this.drawDoor(ctx, item, g);
+    else if (item.type === 'focus') this.drawFocus(ctx, item, g);
+    else if (item.type === 'combiner') this.drawCombiner(ctx, item, g);
     else this.drawPortal(ctx, item, g);
 
     if (selected) {
@@ -331,6 +338,43 @@ export class BoardCanvas {
       ctx.stroke();
     }
     this.label(ctx, item.id, g, '#ffe3ea');
+  }
+
+  private drawFocus(ctx: CanvasRenderingContext2D, item: Extract<LevelItem, { type: 'focus' }>, g: BoardGeometry) {
+    const r = g.cell * 0.28;
+    ctx.fillStyle = '#ffd66c';
+    ctx.beginPath();
+    ctx.moveTo(0, -r);
+    ctx.lineTo(r * 0.72, -r * 0.2);
+    ctx.lineTo(r * 0.72, r * 0.2);
+    ctx.lineTo(0, r);
+    ctx.lineTo(-r * 0.72, r * 0.2);
+    ctx.lineTo(-r * 0.72, -r * 0.2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    ctx.arc(0, 0, g.cell * 0.06, 0, Math.PI * 2);
+    ctx.fill();
+    this.label(ctx, `×${item.need ?? 2}`, g, '#fff6d2');
+  }
+
+  private drawCombiner(ctx: CanvasRenderingContext2D, item: Extract<LevelItem, { type: 'combiner' }>, g: BoardGeometry) {
+    const s = g.cell * 0.5;
+    ctx.fillStyle = '#9a7cff';
+    roundRect(ctx, -s / 2, -s / 2, s, s, g.cell * 0.14);
+    ctx.fill();
+    ctx.save();
+    ctx.rotate(item.dir * Math.PI / 2);
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    ctx.moveTo(g.cell * 0.2, 0);
+    ctx.lineTo(-g.cell * 0.06, -g.cell * 0.1);
+    ctx.lineTo(-g.cell * 0.06, g.cell * 0.1);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+    if (item.fixed) this.drawLock(ctx, g);
   }
 
   private drawPortal(ctx: CanvasRenderingContext2D, item: Extract<LevelItem, { type: 'portal' }>, g: BoardGeometry) {
@@ -483,10 +527,10 @@ export class BoardCanvas {
     }
     if (hit.type === 'port') {
       const targetIndex = level.targets.findIndex(t => t.side === hit.side && t.index === hit.index);
-      const isEmitter = samePort(level.emitter, hit);
-      if (this.tool === 'emitter' || isEmitter) {
-        this.drag = { kind: 'emitter', px: p.x, py: p.y, moved: false };
-        this.handlers.onSelect({ kind: 'emitter' });
+      const emitterIndex = gmEmitters(level).findIndex(port => samePort(port, hit));
+      if (this.tool === 'emitter' || emitterIndex >= 0) {
+        this.drag = { kind: 'emitter', index: emitterIndex, px: p.x, py: p.y, moved: false };
+        if (emitterIndex >= 0) this.handlers.onSelect({ kind: 'emitter', index: emitterIndex });
       } else if (this.tool === 'target' || targetIndex >= 0) {
         this.drag = { kind: 'target', index: targetIndex >= 0 ? targetIndex : -1, px: p.x, py: p.y, moved: false };
         if (targetIndex >= 0) this.handlers.onSelect({ kind: 'target', index: targetIndex });
@@ -542,14 +586,16 @@ export class BoardCanvas {
       return;
     }
     if (drag?.kind === 'emitter' && hit?.type === 'port') {
-      if (level.targets.some(t => samePort(t, hit))) return this.draw();
-      if (samePort(level.emitter, hit)) return this.draw();
-      this.commit({ ...level, emitter: { side: hit.side, index: hit.index } }, { kind: 'emitter' });
+      this.applyEmitterPort(hit, drag.index, drag.moved);
       return;
     }
     if (drag?.kind === 'target') {
       if (hit?.type === 'port') this.applyTargetPort(hit, drag.index, drag.moved);
       else this.draw();
+      return;
+    }
+    if (!drag?.moved && hit?.type === 'port' && this.tool === 'emitter') {
+      this.applyEmitterPort(hit, drag?.kind === 'emitter' ? drag.index : -1, false);
       return;
     }
     if (!drag?.moved && hit?.type === 'port' && this.tool === 'target') {
@@ -580,11 +626,7 @@ export class BoardCanvas {
     const hit = this.hitTest(p.x, p.y);
     if (!hit) return;
     if (hit.type === 'cell' && isPlaceable(type)) this.placeAt(hit.x, hit.y, type);
-    if (hit.type === 'port' && type === 'emitter') {
-      const level = this.level!;
-      if (level.targets.some(t => samePort(t, hit))) return;
-      this.commit({ ...level, emitter: { side: hit.side, index: hit.index } }, { kind: 'emitter' });
-    }
+    if (hit.type === 'port' && type === 'emitter') this.applyEmitterPort(hit, -1, false);
     if (hit.type === 'port' && type === 'target') this.applyTargetPort(hit, -1, false);
   }
 
@@ -601,10 +643,35 @@ export class BoardCanvas {
     this.commit({ ...level, items: [...rest, item] }, { kind: 'item', x, y });
   }
 
+  private applyEmitterPort(port: Port, existingIndex: number, moved: boolean) {
+    const level = this.level;
+    if (!level) return;
+    if (level.targets.some(target => samePort(target, port))) return this.draw();
+    const current = gmEmitters(level);
+    const found = current.findIndex(entry => samePort(entry, port));
+    if (found >= 0 && !moved) {
+      this.handlers.onSelect({ kind: 'emitter', index: found });
+      this.draw();
+      return;
+    }
+    const next = [...current];
+    if (existingIndex >= 0 && existingIndex < next.length) {
+      if (found >= 0 && found !== existingIndex) return this.draw();
+      next[existingIndex] = { side: port.side, index: port.index };
+    } else if (found >= 0) {
+      this.handlers.onSelect({ kind: 'emitter', index: found });
+      this.draw();
+      return;
+    } else {
+      next.push({ side: port.side, index: port.index });
+    }
+    this.commit(withEmitters(level, next), { kind: 'emitter', index: Math.max(0, existingIndex >= 0 ? existingIndex : next.length - 1) });
+  }
+
   private applyTargetPort(port: Port, existingIndex: number, moved: boolean) {
     const level = this.level;
     if (!level) return;
-    if (samePort(level.emitter, port)) return;
+    if (portOccupiedByEmitter(level, port)) return;
     const found = level.targets.findIndex(t => samePort(t, port));
     if (found >= 0 && !moved) {
       this.handlers.onSelect({ kind: 'target', index: found });
@@ -643,11 +710,20 @@ function rotateItemLocal(item: LevelItem): LevelItem {
     const s: 0 | 1 = item.s === 0 ? 1 : 0;
     return { ...item, s };
   }
+  if (item.type === 'combiner') {
+    const dir = ((item.dir + 1) % 4) as Direction;
+    return { ...item, dir };
+  }
   return item;
 }
 
+function withEmitters(level: GmLevel, ports: Port[]): GmLevel {
+  const emitters = ports.length ? ports : [level.emitter];
+  return { ...level, emitter: emitters[0], emitters: emitters.length > 1 ? emitters : undefined };
+}
+
 function isPlaceable(tool: Tool): tool is PlaceableType {
-  return tool === 'mirror' || tool === 'splitter' || tool === 'wall' || tool === 'switch' || tool === 'door' || tool === 'portal';
+  return tool === 'mirror' || tool === 'splitter' || tool === 'wall' || tool === 'switch' || tool === 'door' || tool === 'portal' || tool === 'focus' || tool === 'combiner';
 }
 
 function clampIndex(raw: number, count: number) {

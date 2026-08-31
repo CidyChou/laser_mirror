@@ -1,0 +1,641 @@
+[
+  {
+    "n": 1,
+    "hits": [
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "S1"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 2,
+    "hits": [
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "S1"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 3,
+    "hits": [
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "S1"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 4,
+    "hits": [
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "S1"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 5,
+    "hits": [
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "S1"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 6,
+    "hits": [
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "S1"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 7,
+    "hits": [
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "S1"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 8,
+    "hits": [
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "E3"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 9,
+    "hits": [
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "S1"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 10,
+    "hits": [
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "E4"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 11,
+    "hits": [
+      true,
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "E2",
+      "S1"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 12,
+    "hits": [
+      true,
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "E3",
+      "W1"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 13,
+    "hits": [
+      false,
+      true
+    ],
+    "switches": [],
+    "exits": [
+      "S4",
+      "E1"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 14,
+    "hits": [
+      false,
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "S4",
+      "W1"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 15,
+    "hits": [
+      true,
+      false,
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "E5",
+      "S1",
+      "S4"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 16,
+    "hits": [
+      false,
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "W1",
+      "S1"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 17,
+    "hits": [
+      false,
+      false,
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "S6",
+      "S1"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 18,
+    "hits": [
+      false,
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "S4",
+      "S1"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 19,
+    "hits": [
+      true,
+      false,
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "E6",
+      "S1",
+      "S4"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 20,
+    "hits": [
+      false,
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "S5",
+      "N2"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 21,
+    "hits": [
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "S1"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 22,
+    "hits": [
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "S1"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 23,
+    "hits": [
+      false,
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "S4",
+      "S1"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 24,
+    "hits": [
+      false,
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "S2",
+      "W1"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 25,
+    "hits": [
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "N1"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 26,
+    "hits": [
+      true,
+      false,
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "E7",
+      "S1",
+      "S5"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 27,
+    "hits": [
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "S1"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 28,
+    "hits": [
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "W5"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 29,
+    "hits": [
+      false,
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "S6",
+      "S1"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 30,
+    "hits": [
+      false,
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "W1"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 31,
+    "hits": [
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "S1"
+    ],
+    "doors": {
+      "D1": false
+    }
+  },
+  {
+    "n": 32,
+    "hits": [
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "W1"
+    ],
+    "doors": {
+      "D1": false
+    }
+  },
+  {
+    "n": 33,
+    "hits": [
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "S1",
+      "S4"
+    ],
+    "doors": {
+      "D1": false
+    }
+  },
+  {
+    "n": 34,
+    "hits": [
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "S1"
+    ],
+    "doors": {
+      "D1": false,
+      "D2": false
+    }
+  },
+  {
+    "n": 35,
+    "hits": [
+      false,
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "S1",
+      "S4"
+    ],
+    "doors": {
+      "D1": false,
+      "D2": false
+    }
+  },
+  {
+    "n": 36,
+    "hits": [
+      false,
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "S1"
+    ],
+    "doors": {
+      "D1": false,
+      "D2": false
+    }
+  },
+  {
+    "n": 37,
+    "hits": [
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "S1"
+    ],
+    "doors": {
+      "D1": false
+    }
+  },
+  {
+    "n": 38,
+    "hits": [
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "S1",
+      "S4"
+    ],
+    "doors": {
+      "D1": false
+    }
+  },
+  {
+    "n": 39,
+    "hits": [
+      false,
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "S1"
+    ],
+    "doors": {
+      "D1": false,
+      "D2": false
+    }
+  },
+  {
+    "n": 40,
+    "hits": [
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "S1",
+      "S3",
+      "S5"
+    ],
+    "doors": {
+      "D1": false
+    }
+  },
+  {
+    "n": 41,
+    "hits": [
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "W2"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 42,
+    "hits": [
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "N4"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 43,
+    "hits": [
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "S1"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 44,
+    "hits": [
+      true,
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "E4",
+      "S1"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 45,
+    "hits": [
+      false,
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "S1"
+    ],
+    "doors": {
+      "D1": false,
+      "D2": false
+    }
+  },
+  {
+    "n": 46,
+    "hits": [
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "S1"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 47,
+    "hits": [
+      false,
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "S7",
+      "S1"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 48,
+    "hits": [
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "S1",
+      "S4"
+    ],
+    "doors": {
+      "D1": false
+    }
+  },
+  {
+    "n": 49,
+    "hits": [
+      true,
+      false,
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "E7",
+      "S1",
+      "S4"
+    ],
+    "doors": {}
+  },
+  {
+    "n": 50,
+    "hits": [
+      false,
+      false,
+      false
+    ],
+    "switches": [],
+    "exits": [
+      "S0",
+      "S3"
+    ],
+    "doors": {
+      "D2": false,
+      "D1": false
+    }
+  }
+]

@@ -3,6 +3,7 @@ import fs from 'node:fs';
 const MAX_COLS = 8;
 const MAX_ROWS = 12;
 const levels = JSON.parse(fs.readFileSync(new URL('../src/levels/levels.json', import.meta.url), 'utf8'));
+const classic = JSON.parse(fs.readFileSync(new URL('../src/levels/classic.json', import.meta.url), 'utf8'));
 const errors = [];
 
 function portInBounds(port, level) {
@@ -11,6 +12,34 @@ function portInBounds(port, level) {
   return port.index >= 0 && port.index < limit;
 }
 
+function emittersOf(level) {
+  if (Array.isArray(level.emitters) && level.emitters.length) return level.emitters;
+  return [level.emitter];
+}
+
+function classicSnapshot(level) {
+  return JSON.stringify({
+    name: level.name,
+    chapter: level.chapter,
+    chapterNo: level.chapterNo,
+    rows: level.rows,
+    cols: level.cols,
+    emitter: level.emitter,
+    targets: level.targets,
+    items: level.items,
+    shots: level.shots,
+    hint: level.hint ?? '',
+  });
+}
+
+if (classic.length !== 50) errors.push(`classic.json should contain 50 levels, got ${classic.length}`);
+if (levels.length < 50) errors.push(`levels.json lost classic levels (${levels.length})`);
+classic.forEach((level, index) => {
+  if (classicSnapshot(levels[index] ?? {}) !== classicSnapshot(level)) {
+    errors.push(`#${index + 1} diverged from frozen classic.json`);
+  }
+});
+
 levels.forEach((level, index) => {
   const number = index + 1;
   if (!Number.isInteger(level.rows) || !Number.isInteger(level.cols) || level.rows < 1 || level.cols < 1) {
@@ -18,10 +47,19 @@ levels.forEach((level, index) => {
   }
   if (level.cols > MAX_COLS) errors.push(`#${number} has ${level.cols} columns; max is ${MAX_COLS}`);
   if (level.rows > MAX_ROWS) errors.push(`#${number} has ${level.rows} rows; max is ${MAX_ROWS}`);
-  if (!portInBounds(level.emitter, level)) errors.push(`#${number} invalid emitter`);
-  if (!level.targets?.length) errors.push(`#${number} no target`);
+  const emitters = emittersOf(level);
+  const emitterKeys = new Set();
+  for (const [emitterIndex, port] of emitters.entries()) {
+    if (!portInBounds(port, level)) errors.push(`#${number} invalid emitter ${emitterIndex + 1}`);
+    const key = `${port.side}:${port.index}`;
+    if (emitterKeys.has(key)) errors.push(`#${number} duplicate emitter ${key}`);
+    emitterKeys.add(key);
+  }
+  const hasFocus = (level.items ?? []).some((item) => item.type === 'focus');
+  if (!level.targets?.length && !hasFocus) errors.push(`#${number} no target`);
   for (const [targetIndex, target] of (level.targets ?? []).entries()) {
     if (!portInBounds(target, level)) errors.push(`#${number} invalid target ${targetIndex + 1}`);
+    if (emitterKeys.has(`${target.side}:${target.index}`)) errors.push(`#${number} target ${targetIndex + 1} overlaps emitter`);
   }
   if (!level.shots || level.shots < 1) errors.push(`#${number} invalid shots`);
 
@@ -32,6 +70,9 @@ levels.forEach((level, index) => {
     cells.add(key);
     if (item.x < 0 || item.x >= level.cols || item.y < 0 || item.y >= level.rows) {
       errors.push(`#${number} out-of-board item ${key}`);
+    }
+    if (item.type === 'combiner' && ![0, 1, 2, 3].includes(item.dir)) {
+      errors.push(`#${number} combiner ${key} has invalid dir`);
     }
   }
 

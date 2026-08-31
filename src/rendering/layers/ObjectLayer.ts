@@ -1,9 +1,10 @@
 import { Container, Graphics, Rectangle } from 'pixi.js';
 import { borderPoint, cellCenter } from '@/gameplay/geometry';
-import type { BoardGeometry, GameState, LevelItem, Port } from '@/gameplay/types';
+import { combinerNeed, focusNeed, itemKey, levelEmitters } from '@/gameplay/levelAccess';
+import type { BoardGeometry, Direction, GameState, LevelItem, Port } from '@/gameplay/types';
 import { isLightTheme, Theme } from '../theme';
 
-type ItemNode={key:string;kind:LevelItem['type'];root:Container;motion:Container;angleCarrier?:Container;face?:Graphics;core?:Graphics;phase:number;lastLit?:boolean;lastOpen?:boolean};
+type ItemNode={key:string;kind:LevelItem['type'];root:Container;motion:Container;angleCarrier?:Container;face?:Graphics;core?:Graphics;phase:number;lastLit?:boolean;lastOpen?:boolean;lastCharge?:number;pips?:Graphics};
 type Kick={start:number};
 type ClickFx={root:Container;ring:Graphics;flash:Graphics;start:number;active:boolean};
 type PortNode={port:Port;emitter:boolean;targetIndex?:number;root:Container;halo:Graphics;band:Graphics;plasma:Graphics;core:Graphics;detail:Container;toneParts:Graphics[];hotParts:Graphics[];phase:number;active:boolean;lastActive:boolean|null};
@@ -31,10 +32,11 @@ export class ObjectLayer extends Container{
   }
   setRotateHandler(fn:(x:number,y:number)=>void){this.rotateHandler=fn;}
 
-  rotateItem(x:number,y:number,s:0|1){
+  rotateItem(x:number,y:number,s:0|1,dir?:Direction){
     const n=this.itemNodes.get(`${x},${y}`);
     if(!n?.angleCarrier) return;
-    n.angleCarrier.rotation=s===0?Math.PI/4:-Math.PI/4;
+    if(n.kind==='combiner' && dir!==undefined) n.angleCarrier.rotation=dir*Math.PI/2;
+    else n.angleCarrier.rotation=s===0?Math.PI/4:-Math.PI/4;
   }
 
   sync(state:GameState,g:BoardGeometry){
@@ -43,9 +45,9 @@ export class ObjectLayer extends Container{
   }
   private rebuild(state:GameState,g:BoardGeometry){
     this.portLayer.removeChildren().forEach(c=>c.destroy({children:true}));this.itemLayer.removeChildren().forEach(c=>c.destroy({children:true}));this.itemNodes.clear();this.portNodes=[];
-    const emitter=this.makePort(state.level.emitter,g,true);this.portNodes.push(emitter);this.portLayer.addChild(emitter.root);
+    levelEmitters(state.level).forEach(port=>{const emitter=this.makePort(port,g,true);this.portNodes.push(emitter);this.portLayer.addChild(emitter.root);});
     state.targets.forEach((t,i)=>{const n=this.makePort(t,g,false,i);this.portNodes.push(n);this.portLayer.addChild(n.root);});
-    for(const item of state.items){const n=this.makeItem(item,state,g);this.itemLayer.addChild(n.root);this.itemNodes.set(n.key,n);if((item.type==='mirror'||item.type==='splitter')&&!item.fixed){n.root.eventMode='static';n.root.cursor='pointer';n.root.hitArea=new Rectangle(-g.cell*.43,-g.cell*.43,g.cell*.86,g.cell*.86);n.root.on('pointertap',()=>this.rotateHandler(item.x,item.y));}}
+    for(const item of state.items){const n=this.makeItem(item,state,g);this.itemLayer.addChild(n.root);this.itemNodes.set(n.key,n);if((item.type==='mirror'||item.type==='splitter'||item.type==='combiner')&&!item.fixed){n.root.eventMode='static';n.root.cursor='pointer';n.root.hitArea=new Rectangle(-g.cell*.43,-g.cell*.43,g.cell*.86,g.cell*.86);n.root.on('pointertap',()=>this.rotateHandler(item.x,item.y));}}
   }
   private refresh(state:GameState,g:BoardGeometry){
     this.portNodes.forEach(n=>this.refreshPort(n,state,g));
@@ -53,8 +55,11 @@ export class ObjectLayer extends Container{
       const n=this.itemNodes.get(`${item.x},${item.y}`);if(!n)return;
       n.root.position.copyFrom(cellCenter(g,item.x,item.y));
       if((item.type==='mirror'||item.type==='splitter')&&n.angleCarrier)n.angleCarrier.rotation=item.s===0?Math.PI/4:-Math.PI/4;
+      if(item.type==='combiner'&&n.angleCarrier)n.angleCarrier.rotation=item.dir*Math.PI/2;
       if(item.type==='switch'){const lit=state.activeSwitches.has(item.id);if(n.lastLit!==lit){n.lastLit=lit;this.drawSwitch(n,lit,g);}}
       if(item.type==='door'){const open=!!state.activeDoorStates[item.id];if(n.lastOpen!==open){n.lastOpen=open;this.drawDoor(n,open,g);}}
+      if(item.type==='focus'){const charge=state.focusHits[itemKey(item.x,item.y)]??0;const on=charge>=focusNeed(item);if(n.lastCharge!==charge||n.lastLit!==on){n.lastCharge=charge;n.lastLit=on;this.drawFocus(n,charge,focusNeed(item),g);}}
+      if(item.type==='combiner'){const charge=state.combinerHits[itemKey(item.x,item.y)]??0;const on=!!state.combinerOn[itemKey(item.x,item.y)]||charge>=combinerNeed(item);if(n.lastCharge!==charge||n.lastLit!==on){n.lastCharge=charge;n.lastLit=on;this.drawCombinerFace(n,charge,combinerNeed(item),on,g);}}
     });
   }
 
@@ -129,6 +134,27 @@ export class ObjectLayer extends Container{
     if(item.type==='door'){
       const face=new Graphics();motion.addChild(face);const open=!!state.activeDoorStates[item.id];const n={key,kind:item.type,root,motion,face,phase:0,lastOpen:open};this.drawDoor(n,open,g);return n;
     }
+    if(item.type==='focus'){
+      const face=new Graphics(),core=new Graphics(),pips=new Graphics();motion.addChild(face,core,pips);
+      const charge=state.focusHits[itemKey(item.x,item.y)]??0;const need=focusNeed(item);
+      const n={key,kind:item.type,root,motion,face,core,pips,phase:0,lastCharge:charge,lastLit:charge>=need};
+      this.drawFocus(n,charge,need,g);return n;
+    }
+    if(item.type==='combiner'){
+      const face=new Graphics(),core=new Graphics(),pips=new Graphics();
+      const carrier=new Container();carrier.rotation=item.dir*Math.PI/2;
+      const chevron=new Graphics();
+      const tip=g.cell*.22,base=-g.cell*.04,half=g.cell*.11;
+      chevron.poly([tip,0,base,-half,base,half],true).fill({color:Theme.white,alpha:.92});
+      carrier.addChild(chevron);
+      motion.addChild(face,core,pips,carrier);
+      const charge=state.combinerHits[itemKey(item.x,item.y)]??0;const need=combinerNeed(item);
+      const on=!!state.combinerOn[itemKey(item.x,item.y)]||charge>=need;
+      const n={key,kind:item.type,root,motion,angleCarrier:carrier,face,core,pips,phase:0,lastCharge:charge,lastLit:on};
+      this.drawCombinerFace(n,charge,need,on,g);
+      if(item.fixed){const lock=new Graphics().roundRect(-9,g.cell*.225,18,11,4).fill(Theme.lock).roundRect(-3,g.cell*.255,6,7,2).fill(Theme.lockKey);motion.addChild(lock);}
+      return n;
+    }
     const color=item.pair==='P1'?Theme.purple:Theme.cyan;
     const portal=new Container();
     const shadow=new Graphics().ellipse(1,g.cell*.055,g.cell*.31,g.cell*.215)
@@ -152,6 +178,37 @@ export class ObjectLayer extends Container{
 
   private drawSwitch(n:ItemNode,lit:boolean,g:BoardGeometry){if(!n.face||!n.core)return;n.face.clear().circle(0,0,g.cell*.20).fill(lit?Theme.green:Theme.switchOff).circle(0,0,g.cell*.27).stroke({color:lit?Theme.switchOnRing:Theme.switchOffRing,width:3,alpha:1});n.core.clear().circle(0,0,g.cell*.055).fill(lit?Theme.white:Theme.switchOffCore);}
   private drawDoor(n:ItemNode,open:boolean,g:BoardGeometry){if(!n.face)return;n.face.clear();if(open){n.face.roundRect(-g.cell*.34,-g.cell*.34,g.cell*.68,g.cell*.68,10).stroke({color:Theme.cyan,width:3,alpha:.28}).rect(-g.cell*.22,-2,g.cell*.44,4).fill({color:Theme.cyan,alpha:.50});}else{n.face.roundRect(-g.cell*.34,-g.cell*.34,g.cell*.68,g.cell*.68,10).fill(Theme.doorClosed).stroke({color:Theme.doorEdge,width:2,alpha:.70});for(let i=-1;i<=1;i++)n.face.moveTo(i*g.cell*.14,-g.cell*.24).lineTo(i*g.cell*.14,g.cell*.24).stroke({color:Theme.doorBars,width:3,alpha:.55});}}
+  private drawFocus(n:ItemNode,charge:number,need:number,g:BoardGeometry){
+    if(!n.face||!n.core)return;
+    const on=charge>=need;
+    const r=g.cell*.30;
+    n.face.clear()
+      .poly([0,-r,r*.72,-r*.2,r*.72,r*.2,0,r,-r*.72,r*.2,-r*.72,-r*.2],true)
+      .fill(on?Theme.green:Theme.gold)
+      .stroke({color:Theme.white,width:1.6,alpha:on?.78:.42});
+    n.core.clear().circle(0,0,g.cell*.07).fill({color:Theme.white,alpha:on?.94:.55});
+    this.drawPips(n,charge,need,g,on?Theme.white:Theme.shadow);
+  }
+  private drawCombinerFace(n:ItemNode,charge:number,need:number,on:boolean,g:BoardGeometry){
+    if(!n.face||!n.core)return;
+    const s=g.cell*.52;
+    n.face.clear().roundRect(-s/2,-s/2,s,s,g.cell*.16)
+      .fill(on?Theme.purple:Theme.switchOff)
+      .stroke({color:on?Theme.cyanSoft:Theme.cyan,width:2.1,alpha:on?.9:.55});
+    n.core.clear().circle(0,0,g.cell*.08).fill({color:Theme.white,alpha:on?.9:.4});
+    this.drawPips(n,charge,need,g,on?Theme.white:Theme.cyanSoft);
+  }
+  private drawPips(n:ItemNode,charge:number,need:number,g:BoardGeometry,color:number){
+    if(!n.pips)return;
+    n.pips.clear();
+    const count=Math.max(2,Math.min(4,need));
+    const span=g.cell*.20;
+    const y=g.cell*.28;
+    for(let i=0;i<count;i++){
+      const x=-span/2+ (count===1?0:span*(i/(count-1)));
+      n.pips.circle(x,y,Math.max(2.4,g.cell*.035)).fill({color,alpha:i<charge?1:.28});
+    }
+  }
 
   private makePort(port:Port,g:BoardGeometry,emitter:boolean,targetIndex?:number){
     const root=new Container();root.position.copyFrom(borderPoint(g,port));

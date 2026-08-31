@@ -7,10 +7,14 @@ export const CHAPTERS = [
   { no: 3, name: '障碍区域' },
   { no: 4, name: '能源机关' },
   { no: 5, name: '空间谜题' },
+  { no: 6, name: '双源激光' },
+  { no: 7, name: '双束终点' },
+  { no: 8, name: '聚合核心' },
 ] as const;
 
 export type Side = 'N' | 'E' | 'S' | 'W';
 export type Orientation = 0 | 1;
+export type Direction = 0 | 1 | 2 | 3;
 export type Port = { side: Side; index: number };
 
 export type LevelItem =
@@ -19,7 +23,9 @@ export type LevelItem =
   | { type: 'wall'; x: number; y: number }
   | { type: 'switch'; x: number; y: number; id: string }
   | { type: 'door'; x: number; y: number; id: string; requires: string[] }
-  | { type: 'portal'; x: number; y: number; pair: string };
+  | { type: 'portal'; x: number; y: number; pair: string }
+  | { type: 'focus'; x: number; y: number; need?: number }
+  | { type: 'combiner'; x: number; y: number; dir: Direction; need?: number; fixed?: boolean };
 
 export type PlaceableType = LevelItem['type'];
 
@@ -29,6 +35,7 @@ export type GameLevel = {
   rows: number;
   cols: number;
   emitter: Port;
+  emitters?: Port[];
   targets: Port[];
   items: LevelItem[];
   hint: string;
@@ -52,6 +59,8 @@ export type Tool =
   | 'switch'
   | 'door'
   | 'portal'
+  | 'focus'
+  | 'combiner'
   | 'emitter'
   | 'target';
 
@@ -64,8 +73,10 @@ export const TOOLS: Array<{ id: Tool; label: string; hint: string }> = [
   { id: 'switch', label: '开关', hint: '4' },
   { id: 'door', label: '门', hint: '5' },
   { id: 'portal', label: '传送门', hint: '6' },
-  { id: 'emitter', label: '发射器', hint: '7' },
-  { id: 'target', label: '接收器', hint: '8' },
+  { id: 'focus', label: '聚能终点', hint: '7' },
+  { id: 'combiner', label: '聚合点', hint: '8' },
+  { id: 'emitter', label: '发射器', hint: '9' },
+  { id: 'target', label: '接收器', hint: '0' },
 ];
 
 export const ITEM_LABELS: Record<PlaceableType | 'emitter' | 'target', string> = {
@@ -75,6 +86,8 @@ export const ITEM_LABELS: Record<PlaceableType | 'emitter' | 'target', string> =
   switch: '开关',
   door: '门',
   portal: '传送门',
+  focus: '聚能终点',
+  combiner: '聚合点',
   emitter: '发射器',
   target: '接收器',
 };
@@ -103,6 +116,21 @@ export function samePort(a: Port, b: Port): boolean {
   return a.side === b.side && a.index === b.index;
 }
 
+export function gmEmitters(level: Pick<GameLevel, 'emitter' | 'emitters'>): Port[] {
+  if (level.emitters && level.emitters.length) return level.emitters;
+  return [level.emitter];
+}
+
+export function clampDir(dir: unknown): Direction {
+  const n = Math.floor(Number(dir));
+  if (n === 1 || n === 2 || n === 3) return n as Direction;
+  return 0;
+}
+
+export function portOccupiedByEmitter(level: Pick<GameLevel, 'emitter' | 'emitters'>, port: Port): boolean {
+  return gmEmitters(level).some(entry => samePort(entry, port));
+}
+
 export function withId(level: GameLevel, id = newId()): GmLevel {
   return { ...structuredClone(level), id };
 }
@@ -120,6 +148,9 @@ export function emptyLevel(partial: Partial<GmLevel> = {}): GmLevel {
     rows,
     cols,
     emitter: clampPort(partial.emitter ?? { side: 'W' as Side, index: Math.floor(rows / 2) }, rows, cols),
+    emitters: partial.emitters && partial.emitters.length > 1
+      ? partial.emitters.map(port => clampPort(port, rows, cols))
+      : undefined,
     targets: (partial.targets?.length ? partial.targets : [{ side: 'E' as Side, index: Math.floor(rows / 2) }])
       .map(t => clampPort({ side: t.side as Side, index: t.index }, rows, cols)),
     items: Array.isArray(partial.items) ? structuredClone(partial.items) : [],
@@ -146,18 +177,28 @@ export function resizeLevel(level: GmLevel, rows: number, cols: number): GmLevel
   next.rows = clampInt(rows, 1, MAX_ROWS);
   next.cols = clampInt(cols, 1, MAX_COLS);
   next.items = next.items.filter(item => item.x >= 0 && item.x < next.cols && item.y >= 0 && item.y < next.rows);
-  next.emitter = clampPort(next.emitter, next.rows, next.cols);
+  const emitters = gmEmitters(next).map(port => clampPort(port, next.rows, next.cols));
+  const uniqueEmitters: Port[] = [];
+  const emitterKeys = new Set<string>();
+  for (const port of emitters) {
+    const key = `${port.side}:${port.index}`;
+    if (emitterKeys.has(key)) continue;
+    emitterKeys.add(key);
+    uniqueEmitters.push(port);
+  }
+  next.emitter = uniqueEmitters[0] ?? clampPort({ side: 'W', index: 0 }, next.rows, next.cols);
+  next.emitters = uniqueEmitters.length > 1 ? uniqueEmitters : undefined;
   const seen = new Set<string>();
   next.targets = next.targets
     .map(t => clampPort(t, next.rows, next.cols))
     .filter(t => {
-      if (samePort(t, next.emitter)) return false;
+      if (portOccupiedByEmitter(next, t)) return false;
       const key = `${t.side}:${t.index}`;
       if (seen.has(key)) return false;
       seen.add(key);
       return true;
     });
-  if (!next.targets.length) {
+  if (!next.targets.length && !next.items.some(item => item.type === 'focus')) {
     const side: Side = next.emitter.side === 'W' ? 'E' : next.emitter.side === 'E' ? 'W' : next.emitter.side === 'N' ? 'S' : 'N';
     next.targets = [clampPort({ side, index: 0 }, next.rows, next.cols)];
   }
@@ -180,22 +221,38 @@ export function toGameItem(item: LevelItem): LevelItem {
   if (item.type === 'door') {
     return { type: 'door', x, y, id: String(item.id || 'D1'), requires: [...(item.requires ?? [])].map(String) };
   }
+  if (item.type === 'focus') {
+    const next: Extract<LevelItem, { type: 'focus' }> = { type: 'focus', x, y };
+    const need = Math.floor(Number(item.need ?? 2));
+    if (need !== 2) next.need = Math.max(2, Math.min(4, need));
+    return next;
+  }
+  if (item.type === 'combiner') {
+    const next: Extract<LevelItem, { type: 'combiner' }> = { type: 'combiner', x, y, dir: clampDir(item.dir) };
+    const need = Math.floor(Number(item.need ?? 2));
+    if (need !== 2) next.need = Math.max(2, Math.min(4, need));
+    if (item.fixed) next.fixed = true;
+    return next;
+  }
   return { type: 'portal', x, y, pair: String(item.pair || 'P1') };
 }
 
 export function toGameLevel(level: GmLevel): GameLevel {
-  return {
+  const emitters = gmEmitters(level).map(port => ({ side: port.side, index: Math.floor(port.index) }));
+  const next: GameLevel = {
     name: String(level.name ?? ''),
     chapter: String(level.chapter ?? ''),
     rows: Math.floor(Number(level.rows)),
     cols: Math.floor(Number(level.cols)),
-    emitter: { side: level.emitter.side, index: Math.floor(level.emitter.index) },
+    emitter: emitters[0] ?? { side: 'W', index: 0 },
     targets: (level.targets ?? []).map(t => ({ side: t.side, index: Math.floor(t.index) })),
     items: (level.items ?? []).map(toGameItem),
     hint: String(level.hint ?? ''),
     chapterNo: Math.floor(Number(level.chapterNo)),
     shots: Math.floor(Number(level.shots)),
   };
+  if (emitters.length > 1) next.emitters = emitters;
+  return next;
 }
 
 export function canonicalize(levels: GmLevel[]): string {
@@ -218,10 +275,13 @@ function normalizeIncoming(entry: unknown, index: number): GmLevel {
     chapterNo: clampInt(raw.chapterNo ?? 1, 1, 99),
     rows,
     cols,
-    emitter: clampPort(raw.emitter ?? { side: 'W', index: 0 }, rows, cols),
+    emitter: clampPort(raw.emitter ?? raw.emitters?.[0] ?? { side: 'W', index: 0 }, rows, cols),
+    emitters: Array.isArray(raw.emitters) && raw.emitters.length > 1
+      ? raw.emitters.map(port => clampPort(port, rows, cols))
+      : undefined,
     targets: Array.isArray(raw.targets) && raw.targets.length
       ? raw.targets.map(t => clampPort(t, rows, cols))
-      : [{ side: 'E', index: 0 }],
+      : [],
     items: Array.isArray(raw.items) ? raw.items.map(item => toGameItem(item as LevelItem)) : [],
     hint: String(raw.hint ?? ''),
     shots: clampInt(raw.shots ?? 5, 1, 99),
@@ -267,12 +327,17 @@ export function createItem(type: PlaceableType, x: number, y: number, items: Lev
     const switches = items.filter((item): item is Extract<LevelItem, { type: 'switch' }> => item.type === 'switch');
     return { type, x, y, id: nextDoorId(items), requires: switches.length ? [switches[switches.length - 1].id] : [] };
   }
+  if (type === 'focus') return { type, x, y, need: 2 };
+  if (type === 'combiner') return { type, x, y, dir: 0, need: 2 };
   return { type: 'portal', x, y, pair: nextPortalPair(items) };
 }
 
 export function rotateItem(item: LevelItem): LevelItem {
   if (item.type === 'mirror' || item.type === 'splitter') {
     return { ...item, s: item.s === 0 ? 1 : 0 };
+  }
+  if (item.type === 'combiner') {
+    return { ...item, dir: ((item.dir + 1) % 4) as Direction };
   }
   return item;
 }
@@ -310,15 +375,24 @@ export function validateLevel(level: GmLevel, index: number): ValidationIssue[] 
   }
   if (level.cols > MAX_COLS) push(`列数为 ${level.cols}，最大 ${MAX_COLS}`);
   if (level.rows > MAX_ROWS) push(`行数为 ${level.rows}，最大 ${MAX_ROWS}`);
-  if (!portInBounds(level.emitter, level)) push('发射器位置越界');
-  if (!level.targets?.length) push('至少需要 1 个接收器');
+  const emitters = gmEmitters(level);
+  const emitterKeys = new Set<string>();
+  for (const [index, port] of emitters.entries()) {
+    if (!portInBounds(port, level)) push(`发射器 ${index + 1} 位置越界`);
+    const key = `${port.side}:${port.index}`;
+    if (emitterKeys.has(key)) push(`发射器重复 ${key}`);
+    emitterKeys.add(key);
+  }
+  if (!emitters.length) push('至少需要 1 个发射器');
+  const hasFocus = (level.items ?? []).some(item => item.type === 'focus');
+  if (!level.targets?.length && !hasFocus) push('至少需要 1 个接收器或聚能终点');
   const targetKeys = new Set<string>();
   for (const [targetIndex, target] of (level.targets ?? []).entries()) {
     if (!portInBounds(target, level)) push(`接收器 ${targetIndex + 1} 位置越界`);
     const key = `${target.side}:${target.index}`;
     if (targetKeys.has(key)) push(`接收器重复 ${key}`);
     targetKeys.add(key);
-    if (samePort(target, level.emitter)) push(`接收器 ${targetIndex + 1} 与发射器重叠`);
+    if (portOccupiedByEmitter(level, target)) push(`接收器 ${targetIndex + 1} 与发射器重叠`);
   }
   if (!level.shots || level.shots < 1) push('激光次数必须 ≥ 1');
 
@@ -336,6 +410,9 @@ export function validateLevel(level: GmLevel, index: number): ValidationIssue[] 
     if (item.type === 'switch' && !item.id) push(`开关 ${key} 缺少 id`);
     if (item.type === 'door' && !item.id) push(`门 ${key} 缺少 id`);
     if (item.type === 'portal' && !item.pair) push(`传送门 ${key} 缺少 pair`);
+    if (item.type === 'combiner' && item.dir !== 0 && item.dir !== 1 && item.dir !== 2 && item.dir !== 3) {
+      push(`聚合点 ${key} 方向无效`);
+    }
   }
 
   const portalPairs: Record<string, number> = {};

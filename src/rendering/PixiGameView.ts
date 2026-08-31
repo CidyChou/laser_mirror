@@ -1,6 +1,6 @@
 import { Container, Graphics, Text, Texture, type Renderer } from 'pixi.js';
 import { DESIGN_HEIGHT, DESIGN_WIDTH, STAGE_HEIGHT, STAGE_TOP, UI_RECTS } from '@/config/GameConfig';
-import { beamScale, borderPoint, computeGeometry } from '@/gameplay/geometry';
+import { beamScale, borderPoint, cellCenter, computeGeometry } from '@/gameplay/geometry';
 import type { BoardGeometry, Direction, GameState, ImpactEvent, LevelDefinition } from '@/gameplay/types';
 import type { PerformanceManager } from '@/performance/PerformanceManager';
 import { BoardLayer } from './layers/BoardLayer';
@@ -72,7 +72,7 @@ export class PixiGameView{
     }
   }
   sync(state:GameState){const g=computeGeometry(state.level);this.lastGeometry=g;if(this.currentLevel!==state.levelIndex){this.currentLevel=state.levelIndex;this.board.rebuild(state.level,g);this.hideOverlays();}this.objects.sync(state,g);this.laser.bind(state,g.cell);this.hud.sync(state);}
-  rotateItem(x:number,y:number,s:0|1){this.objects.rotateItem(x,y,s);}
+  rotateItem(x:number,y:number,s:0|1,dir?:Direction){this.objects.rotateItem(x,y,s,dir);}
   hideOverlays(){this.result.hide();this.settings.hide();this.levelSelect.hide();this.combo.clear();this.confetti.clear();this.coins.hide();this.hud.setHeartsVisible(true);}
   showSettings(audioEnabled:boolean,hapticsEnabled:boolean,themeId:ThemeId){this.settings.show(audioEnabled,hapticsEnabled,themeId);}
   setAudioEnabled(enabled:boolean){this.settings.setAudioEnabled(enabled);}
@@ -93,9 +93,9 @@ export class PixiGameView{
   impact(e:ImpactEvent,now:number){
     try{
       this.impacts.triggerImpactEffect(e,now);
-      if((e.type==='mirror'||e.type==='splitter')&&e.x!==undefined&&e.y!==undefined)this.objects.kick(e.x,e.y,now);
-      const count=Math.max(2,Math.round((e.type==='target'?16:e.type==='splitter'?12:e.type==='mirror'?10:e.type==='portal'?10:7)*this.emitScale()));
-      const color=e.type==='target'||e.type==='switch'?Theme.green:e.type==='portal'?Theme.purple:e.type==='splitter'?Theme.cyan:e.type==='mirror'?Theme.beamHot:Theme.beam;
+      if((e.type==='mirror'||e.type==='splitter'||e.type==='focus'||e.type==='combiner')&&e.x!==undefined&&e.y!==undefined)this.objects.kick(e.x,e.y,now);
+      const count=Math.max(2,Math.round((e.type==='target'||e.type==='focus'?16:e.type==='splitter'||e.type==='combiner'?12:e.type==='mirror'?10:e.type==='portal'?10:7)*this.emitScale()));
+      const color=e.type==='target'||e.type==='switch'||e.type==='focus'?Theme.green:e.type==='portal'||e.type==='combiner'?Theme.purple:e.type==='splitter'?Theme.cyan:e.type==='mirror'?Theme.beamHot:Theme.beam;
       const budget=this.performance.particleBudget;
       if(e.type==='portal'){
         const incoming=e.incomingDir===undefined?0:this.directionAngle(e.incomingDir)+Math.PI;
@@ -120,24 +120,39 @@ export class PixiGameView{
       this.particles.emit(e.px,e.py,color,count,budget);
     }catch(error){console.warn('[view] impact failed',error);}
   }
-  private muzzle(state:GameState){const p=state.result?.segments[0];if(!p)return null;const dx=p.x2-p.x1,dy=p.y2-p.y1,len=Math.hypot(dx,dy)||1;const s=this.lastGeometry?beamScale(this.lastGeometry.cell):1;return{x:p.x1+dx/len*18*s,y:p.y1+dy/len*18*s,ang:Math.atan2(dy,dx)};}
+  private muzzles(state:GameState){
+    const segments=state.result?.segments??[];
+    const seen=new Set<number>();
+    const out:{x:number;y:number;ang:number}[]=[];
+    const s=this.lastGeometry?beamScale(this.lastGeometry.cell):1;
+    for(const p of segments){
+      if(p.startDist>0.5||seen.has(p.branch)) continue;
+      seen.add(p.branch);
+      const dx=p.x2-p.x1,dy=p.y2-p.y1,len=Math.hypot(dx,dy)||1;
+      out.push({x:p.x1+dx/len*18*s,y:p.y1+dy/len*18*s,ang:Math.atan2(dy,dx)});
+    }
+    return out;
+  }
   shotStart(state:GameState,now:number){
     try{
-      const m=this.muzzle(state);
-      if(m)this.particles.emit(m.x,m.y,Theme.beamHot,Math.round(9*this.emitScale()),this.performance.particleBudget,{angle:m.ang,spread:2.6,speedMin:.4,speedMax:1.8,shape:'dot'});
+      for(const m of this.muzzles(state)){
+        this.particles.emit(m.x,m.y,Theme.beamHot,Math.round(9*this.emitScale()),this.performance.particleBudget,{angle:m.ang,spread:2.6,speedMin:.4,speedMax:1.8,shape:'dot'});
+      }
     }catch(error){console.warn('[view] shotStart failed',error);}
     this.victoryUntil=0;this.victoryWash.visible=false;this.victoryWash.alpha=0;
   }
   laserLaunch(state:GameState,now:number){
     try{
-      const m=this.muzzle(state);if(!m)return;
-      this.impacts.triggerLaunch(m.x,m.y,now);
+      const muzzles=this.muzzles(state);if(!muzzles.length)return;
       const scale=this.emitScale();
-      this.particles.emit(m.x,m.y,Theme.beam,Math.round(15*scale),this.performance.particleBudget,{angle:m.ang,spread:.86,speedMin:1.8,speedMax:5.8,shape:'spark',stretch:1.45});
-      this.particles.emit(m.x,m.y,Theme.white,Math.round(8*scale),this.performance.particleBudget,{angle:m.ang,spread:2.25,speedMin:.8,speedMax:2.8,shape:'dot'});
+      for(const m of muzzles){
+        this.impacts.triggerLaunch(m.x,m.y,now);
+        this.particles.emit(m.x,m.y,Theme.beam,Math.round(15*scale),this.performance.particleBudget,{angle:m.ang,spread:.86,speedMin:1.8,speedMax:5.8,shape:'spark',stretch:1.45});
+        this.particles.emit(m.x,m.y,Theme.white,Math.round(8*scale),this.performance.particleBudget,{angle:m.ang,spread:2.25,speedMin:.8,speedMax:2.8,shape:'dot'});
+      }
     }catch(error){console.warn('[view] laserLaunch failed',error);}
   }
-  victory(now:number,state:GameState){this.victoryUntil=now+900;this.confetti.start(now);const g=computeGeometry(state.level),points=state.targets.map(t=>borderPoint(g,t));this.impacts.triggerVictory(points,now);for(const p of points)this.particles.emit(p.x,p.y,Theme.green,Math.round(22*this.emitScale()),this.performance.particleBudget);}
+  victory(now:number,state:GameState){this.victoryUntil=now+900;this.confetti.start(now);const g=computeGeometry(state.level);const points=[...state.targets.map(t=>borderPoint(g,t)),...state.items.filter(item=>item.type==='focus').map(item=>cellCenter(g,item.x,item.y))];this.impacts.triggerVictory(points,now);for(const p of points)this.particles.emit(p.x,p.y,Theme.green,Math.round(22*this.emitScale()),this.performance.particleBudget);}
   showToast(text:string,now:number){this.toast.text=text;const pad=20,w=Math.max(180,this.toast.width+pad*2),y=198+this.hudOffset;this.toast.position.set(360,y+22);this.toastBg.clear().roundRect(360-w/2,y,w,40,20).fill({color:Theme.overlay,alpha:.92}).stroke({color:Theme.white,width:1,alpha:.10});this.toast.visible=true;this.toastBg.visible=true;this.toastUntil=now+1200;}
   update(state:GameState,now:number){
     this.objects.update(now);
