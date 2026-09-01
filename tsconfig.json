@@ -28,6 +28,7 @@
   "include": [
     "src",
     "vite.config.ts",
-    "tools/gm"
+    "tools/gm",
+    "tools/visual"
   ]
 }

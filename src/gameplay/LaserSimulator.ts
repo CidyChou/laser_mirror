@@ -1,7 +1,8 @@
 import { GameConfig } from '@/config/GameConfig';
+import { laserDistanceAtMs, laserMsAtDistance } from './laserTiming';
 import { borderPoint, cellCenter, samePort } from './geometry';
 import { combinerNeed, focusNeed, itemKey, levelEmitters, startStateFromPort } from './levelAccess';
-import type { BoardGeometry, Direction, ImpactEvent, LaserSegment, LaserTrace, LevelDefinition, LevelItem, Orientation, Port } from './types';
+import type { BoardGeometry, CombinerPulse, Direction, ImpactEvent, LaserSegment, LaserTrace, LevelDefinition, LevelItem, Orientation, Port } from './types';
 
 const DIRS: Record<Direction, {x:number;y:number}> = {
   0: { x: 1, y: 0 }, 1: { x: 0, y: 1 }, 2: { x: -1, y: 0 }, 3: { x: 0, y: -1 },
@@ -33,7 +34,7 @@ export class LaserSimulator {
     for (const item of items) if (item.type === 'combiner') combinerOn[itemKey(item.x, item.y)] = false;
 
     let pass = this.simulatePass(level, items, geometry, doorStates, combinerOn, combinerReadyAt);
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < Math.max(12,items.length*2); i++) {
       const nextDoors: Record<string, boolean> = {};
       for (const item of items) {
         if (item.type === 'door') nextDoors[item.id] = item.requires.every(id => pass.switches.has(id));
@@ -49,7 +50,8 @@ export class LaserSimulator {
         nextCombiners[key] = on;
         if (on) nextReady[key] = ats[need - 1];
       }
-      if (sameRecord(nextDoors, doorStates) && sameRecord(nextCombiners, combinerOn)) break;
+      if (sameRecord(nextDoors, doorStates) && sameRecord(nextCombiners, combinerOn)
+        && Object.keys(nextReady).every(key=>Math.abs(nextReady[key]-(combinerReadyAt[key]??-1))<.001)) break;
       doorStates = nextDoors;
       combinerOn = nextCombiners;
       combinerReadyAt = nextReady;
@@ -91,14 +93,15 @@ export class LaserSimulator {
     const impacts: ImpactEvent[] = [];
     const combinerHits: Record<string, number> = {};
     const combinerHitAt: Record<string, number[]> = {};
+    const combinerPulses: Record<string, CombinerPulse> = {};
     const focusHits: Record<string, number> = {};
-    const queue: Array<{x:number;y:number;dir:Direction;px:number;py:number;travel:number;branch:number}> = [];
+    const queue: Array<{x:number;y:number;dir:Direction;px:number;py:number;travel:number;branch:number;widthScale:number}> = [];
 
     const emitters = levelEmitters(level);
     emitters.forEach((port, index) => {
       const start = startStateFromPort(level, port);
       const p = borderPoint(g, port);
-      queue.push({ ...start, px: p.x, py: p.y, travel: 0, branch: index });
+      queue.push({ ...start, px: p.x, py: p.y, travel: 0, branch: index, widthScale:1 });
     });
     let branchSeq = Math.max(emitters.length, 1);
 
@@ -107,10 +110,15 @@ export class LaserSimulator {
       const key = itemKey(item.x, item.y);
       if (!combinerOn[key] || combinerReadyAt[key] === undefined) continue;
       const oc = cellCenter(g, item.x, item.y);
+      const readyMs=laserMsAtDistance(combinerReadyAt[key]);
+      const launchMs=readyMs+GameConfig.laser.combinerChargeMs;
+      const launchDist=laserDistanceAtMs(launchMs);
+      combinerPulses[key]={readyMs,launchMs,launchDist};
+      impacts.push({type:'combiner-fire',x:item.x,y:item.y,px:oc.x,py:oc.y,at:launchDist,outgoingDirs:[item.dir]});
       queue.push({
         x: item.x, y: item.y, dir: item.dir,
         px: oc.x, py: oc.y,
-        travel: combinerReadyAt[key] + GameConfig.laser.mirrorPauseDistance,
+        travel: launchDist, widthScale:GameConfig.laser.combinedWidthScale,
         branch: branchSeq++,
       });
     }
@@ -120,10 +128,11 @@ export class LaserSimulator {
 
     while (queue.length) {
       const seed = queue.shift()!;
-      let { x, y, dir, px, py, travel, branch } = seed;
+      let { x, y, dir, px, py, travel, branch, widthScale } = seed;
+      maxTravel=Math.max(maxTravel,travel);
       for (let step = 0; step < 180; step++) {
         const openDoors = Object.keys(doorStates).filter(k => doorStates[k]).sort().join('|');
-        const stateKey = `${x},${y},${dir},${openDoors}`;
+        const stateKey = `${x},${y},${dir},${openDoors},${widthScale}`;
         if (seen.has(stateKey)) break;
         seen.add(stateKey);
 
@@ -132,7 +141,7 @@ export class LaserSimulator {
           const port = exitPort(level, x, y);
           const out = borderPoint(g, port);
           const len = Math.hypot(out.x - px, out.y - py);
-          segments.push({ x1:px, y1:py, x2:out.x, y2:out.y, startDist:travel, endDist:travel+len, branch });
+          segments.push({ x1:px, y1:py, x2:out.x, y2:out.y, startDist:travel, endDist:travel+len, branch, widthScale });
           travel += len; maxTravel = Math.max(maxTravel, travel); exits.push(port);
           level.targets.forEach((target, targetIndex) => {
             if (samePort(port, target)) impacts.push({ type:'target', targetIndex, px:out.x, py:out.y, at:travel, incomingDir:dir });
@@ -142,7 +151,7 @@ export class LaserSimulator {
 
         const c = cellCenter(g, x, y);
         const len = Math.hypot(c.x - px, c.y - py);
-        segments.push({ x1:px, y1:py, x2:c.x, y2:c.y, startDist:travel, endDist:travel+len, branch });
+        segments.push({ x1:px, y1:py, x2:c.x, y2:c.y, startDist:travel, endDist:travel+len, branch, widthScale });
         travel += len; maxTravel = Math.max(maxTravel, travel); px = c.x; py = c.y;
         const item = byCell.get(itemKey(x, y));
         if (!item) continue;
@@ -159,7 +168,7 @@ export class LaserSimulator {
           const key = itemKey(x, y);
           combinerHits[key] = (combinerHits[key] ?? 0) + 1;
           (combinerHitAt[key] ??= []).push(travel);
-          impacts.push({type:'combiner',x,y,px,py,at:travel,incomingDir:dir,outgoingDirs:combinerOn[key]?[item.dir]:[]});
+          impacts.push({type:'combiner',x,y,px,py,at:travel,incomingDir:dir,outgoingDirs:[]});
           break;
         }
         if (item.type === 'switch') { switches.add(item.id); impacts.push({type:'switch',x,y,px,py,at:travel,id:item.id,incomingDir:dir,outgoingDirs:[dir]}); continue; }
@@ -173,7 +182,7 @@ export class LaserSimulator {
           const reflected=reflect(dir,item.s);
           impacts.push({type:'splitter',x,y,px,py,at:travel,incomingDir:dir,outgoingDirs:[dir,reflected]});
           const resume = travel + GameConfig.laser.mirrorPauseDistance;
-          queue.push({x,y,dir:reflected,px,py,travel:resume,branch:branchSeq++});
+          queue.push({x,y,dir:reflected,px,py,travel:resume,branch:branchSeq++,widthScale});
           travel = resume; maxTravel = Math.max(maxTravel, travel); continue;
         }
         if (item.type === 'portal') {
@@ -195,6 +204,6 @@ export class LaserSimulator {
       const key = `${e.type}:${e.targetIndex ?? ''}:${e.x ?? ''}:${e.y ?? ''}:${e.incomingDir ?? ''}:${Math.round(e.at)}`;
       if (!keys.has(key)) { keys.add(key); deduped.push(e); }
     }
-    return { switches, exits, segments, impactEvents:deduped, maxTravel, combinerHits, combinerHitAt, focusHits };
+    return { switches, exits, segments, impactEvents:deduped, maxTravel, combinerHits, combinerHitAt, combinerPulses, focusHits };
   }
 }

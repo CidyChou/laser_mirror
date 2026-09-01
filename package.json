@@ -14,6 +14,7 @@
     "analyze:levels": "npx tsx --tsconfig tsconfig.json scripts/analyze-levels.ts",
     "validate:levels": "node scripts/validate-levels.mjs",
     "verify:expansion": "npx tsx --tsconfig tsconfig.json scripts/solve-expansion.ts",
+    "verify:optics": "npx tsx --tsconfig tsconfig.json scripts/verify-optics.ts",
     "typecheck": "tsc --noEmit",
     "gm": "vite --config tools/gm/vite.config.ts --host 0.0.0.0 --port 8350 --strictPort --open"
   },

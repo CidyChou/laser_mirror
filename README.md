@@ -40,8 +40,8 @@ npm run build:all
 - 静态棋盘 `cacheAsTexture()`。
 - 激光段预创建，发射时只更新 transform / alpha / visibility。
 - 粒子使用 `ParticleContainer + Object Pool + Budget`。
-- 空闲状态停止 Ticker，减少发热和耗电。
-- DPR 上限 2，并由 `PerformanceManager` 自动降质量。
+- 无动态道具时空闲停止 Ticker；传送门只在棋盘可见时保持轻量流光动画。
+- DPR 最高 3，按后备缓冲像素预算限幅，并由 `PerformanceManager` 自动调节质量。
 
 ## v7.7.0 视觉与交互升级
 ### v7.7 Taste redesign pass
@@ -63,6 +63,18 @@ npm run build:all
 - HUD 恢复品牌霓虹标记、卡片高光和更有质感的按钮层次。
 
 详细说明见 `docs/`。
+
+## 光学效果校验
+
+启动开发服务器后打开 `/tools/visual/optics.html`，可查看集光、串联、传送和棋盘场景，切换三个主题及 GPU / Graphics 渲染，并定格收集、蓄力和释放阶段。此页面复用正式玩法与渲染，不写入存档或关卡。
+
+圆形集光器显示收集进度，集满后蓄力 1.5 秒，再释放 3 倍宽光束；粗光束通过镜子、传送门和分光器后仍保留宽度。
+
+```bash
+npm run verify:optics
+npm run verify:expansion
+npm run typecheck
+```
 
 ## Audio
 

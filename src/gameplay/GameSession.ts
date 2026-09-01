@@ -1,8 +1,9 @@
 import { GameConfig } from '@/config/GameConfig';
+import { laserDistanceAtMs, laserMsAtDistance } from './laserTiming';
 import { computeGeometry } from './geometry';
 import { LaserSimulator } from './LaserSimulator';
 import { COMBO_VISIBLE_FROM, MAX_COMBO_COUNT } from './combo';
-import { combinerNeed, focusNeed, itemKey, nextCombinerDir } from './levelAccess';
+import { focusNeed, itemKey, nextCombinerDir } from './levelAccess';
 import type { Direction, GameState, ImpactEvent, LevelDefinition, LevelItem } from './types';
 
 export type GameEvent =
@@ -49,7 +50,7 @@ export class GameSession {
     const items = level.items.map(item => ({...item})) as LevelItem[];
     return {
       levelIndex:index, level, items, targets:level.targets.map(t=>({...t,hit:false,charge:0})),
-      hearts:Math.max(0, Math.floor(hearts)), firing:false, won:false, shotStart:0, beamDistance:0,
+      hearts:Math.max(0, Math.floor(hearts)), firing:false, won:false, shotStart:0, shotElapsedMs:0, beamDistance:0,
       result:null, activeSwitches:new Set(), activeDoorStates:{},
       focusHits:{}, combinerHits:{}, combinerOn:{}, comboCount:0,
     };
@@ -107,6 +108,7 @@ export class GameSession {
 
     s.firing = true;
     s.shotStart = 0;
+    s.shotElapsedMs = 0;
     s.beamDistance = 0;
     s.comboCount = 0;
     s.result = result;
@@ -123,6 +125,7 @@ export class GameSession {
     if (!s.firing) return;
     s.firing = false;
     s.result = null;
+    s.shotElapsedMs = 0;
     s.beamDistance = 0;
     s.comboCount = 0;
     s.activeSwitches.clear();
@@ -158,7 +161,8 @@ export class GameSession {
     else if (dt > 0) this.simNow = now;
 
     const elapsed = this.simNow - s.shotStart;
-    if (elapsed > SHOT_TIMEOUT_MS) {
+    s.shotElapsedMs = elapsed;
+    if (elapsed > Math.max(SHOT_TIMEOUT_MS,GameConfig.laser.chargeMs+laserMsAtDistance(s.result.maxTravel)+2000)) {
       const success = this.isSuccess(s.result);
       this.finish(success);
       return s.firing;
@@ -166,10 +170,7 @@ export class GameSession {
     if (elapsed < GameConfig.laser.chargeMs) return true;
     if (!this.launchTriggered) { this.launchTriggered=true; this.emit({type:'laser-launch'}); }
 
-    const travelSec = (elapsed - GameConfig.laser.chargeMs) / 1000;
-    const { startSpeed, acceleration, maxSpeed } = GameConfig.laser;
-    const accelTime = Math.min(travelSec, (maxSpeed - startSpeed) / acceleration);
-    const distance = startSpeed * accelTime + 0.5 * acceleration * accelTime * accelTime + Math.max(0, travelSec - accelTime) * maxSpeed;
+    const distance=laserDistanceAtMs(elapsed-GameConfig.laser.chargeMs);
     s.beamDistance = Number.isFinite(distance) ? distance : s.result.maxTravel;
 
     let applied = 0;
@@ -187,7 +188,8 @@ export class GameSession {
     });
 
     const success = this.isSuccess(s.result);
-    if (!pendingImpact && (success || s.beamDistance >= s.result.maxTravel)) {
+    const combinedTail=Object.keys(s.result.combinerPulses).length>0&&s.beamDistance<s.result.maxTravel;
+    if (!pendingImpact && !combinedTail && (success || s.beamDistance >= s.result.maxTravel)) {
       if (!this.finishAt) {
         const tail = s.comboCount >= COMBO_VISIBLE_FROM
           ? GameConfig.laser.comboHoldMs
@@ -217,10 +219,12 @@ export class GameSession {
         s.focusHits[key] = (s.focusHits[key] ?? 0) + 1;
       } else {
         s.combinerHits[key] = (s.combinerHits[key] ?? 0) + 1;
-        const item = s.items.find(entry => entry.type === 'combiner' && entry.x === impact.x && entry.y === impact.y);
-        if (item?.type === 'combiner') s.combinerOn[key] = s.combinerHits[key] >= combinerNeed(item);
+        // Full inputs enter charge; output switches on only at combiner-fire.
       }
       this.emit({type:'state'});
+    }
+    if (impact.type==='combiner-fire'&&impact.x!==undefined&&impact.y!==undefined){
+      s.combinerOn[itemKey(impact.x,impact.y)]=true;this.emit({type:'state'});
     }
     if (impact.type === 'mirror' || impact.type === 'target' || impact.type === 'focus') {
       s.comboCount = Math.min(MAX_COMBO_COUNT, s.comboCount + 1);
@@ -261,7 +265,7 @@ export class GameSession {
     } else {
       const prefix = this.missPrefix();
       s.hearts=Math.max(0,s.hearts-1);
-      s.result=null; s.beamDistance=0; s.comboCount=0; s.activeSwitches.clear(); s.activeDoorStates={};
+      s.result=null; s.shotElapsedMs=0; s.beamDistance=0; s.comboCount=0; s.activeSwitches.clear(); s.activeDoorStates={};
       s.focusHits={}; s.combinerHits={}; s.combinerOn={};
       s.targets.forEach(t=>{t.hit=false;t.charge=0;});
       if (s.hearts <= 0) this.emit({type:'defeat'});

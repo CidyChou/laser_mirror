@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>光学效果校验 · Laser Mirror</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;background:#0d1218;color:#f3f0ea;font:14px system-ui,sans-serif}
+    main{display:grid;grid-template-columns:260px 1fr;height:100dvh}aside{padding:24px;background:#171d24;overflow:auto}
+    h1{font-size:20px;margin:0 0 8px}p{color:#b4aea6;line-height:1.7}label{display:block;margin:18px 0 6px}
+    select,button{font:inherit;color:inherit;background:#263346;border:1px solid #43536e;border-radius:8px;padding:9px}
+    select{width:100%}button{cursor:pointer}button:hover{background:#34465e}.actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px}
+    output{display:block;white-space:pre-line;line-height:1.8;font-variant-numeric:tabular-nums;margin-top:18px;color:#a8efff}
+    #stage{min-width:0;min-height:0;overflow:hidden}canvas{display:block}a{color:#a8efff}
+    @media(max-width:620px){main{display:flex;flex-direction:column;height:auto}#stage{height:100dvh;order:-1}aside{padding:18px}}
+  </style>
+</head>
+<body>
+<main>
+  <aside>
+    <h1>光学效果校验</h1>
+    <p>使用正式游戏的渲染与发射逻辑。仅供本地检查，不修改关卡或存档。</p>
+    <label for="scene">场景</label>
+    <select id="scene"><option value="collector">分步集光</option><option value="chain">串联集光</option><option value="transport">传送与粗光束</option><option value="board">棋盘与镜面</option></select>
+    <label for="theme">主题</label>
+    <select id="theme"><option value="void">深空霓虹</option><option value="aurora">极光紫</option><option value="atelier">暖金工坊</option></select>
+    <label for="renderer">激光渲染</label>
+    <select id="renderer"><option value="gpu">GPU · 高画质</option><option value="fallback">Graphics · 兼容低画质</option></select>
+    <div class="actions"><button id="play">重新播放</button><button id="pause">暂停</button><button id="reset">重置</button></div>
+    <div class="actions"><button data-phase="partial">收到一束</button><button data-phase="charge">蓄力中段</button><button data-phase="release">释放强光</button></div>
+    <div class="actions"><button id="overlay">设置遮罩</button></div>
+    <output id="status" aria-live="off">准备中</output>
+    <p><a href="/">返回游戏</a></p>
+  </aside>
+  <div id="stage" aria-label="光学效果画面"></div>
+</main>
+<script type="module" src="./optics.ts"></script>
+</body>
+</html>

@@ -93,6 +93,13 @@ export class PixiGameView{
   impact(e:ImpactEvent,now:number){
     try{
       this.impacts.triggerImpactEffect(e,now);
+      if(e.type==='combiner-fire'){
+        if(e.x!==undefined&&e.y!==undefined)this.objects.kick(e.x,e.y,now);
+        const angle=this.directionAngle(e.outgoingDirs?.[0]??0);
+        this.particles.emit(e.px,e.py,Theme.beamHot,Math.round(22*this.emitScale()),this.performance.particleBudget,
+          {angle,spread:.8,speedMin:2.4,speedMax:6.5,shape:'spark',stretch:1.7});
+        return;
+      }
       if((e.type==='mirror'||e.type==='splitter'||e.type==='focus'||e.type==='combiner')&&e.x!==undefined&&e.y!==undefined)this.objects.kick(e.x,e.y,now);
       const count=Math.max(2,Math.round((e.type==='target'||e.type==='focus'?16:e.type==='splitter'||e.type==='combiner'?12:e.type==='mirror'?10:e.type==='portal'?10:7)*this.emitScale()));
       const color=e.type==='target'||e.type==='switch'||e.type==='focus'?Theme.green:e.type==='portal'||e.type==='combiner'?Theme.purple:e.type==='splitter'?Theme.cyan:e.type==='mirror'?Theme.beamHot:Theme.beam;
@@ -155,7 +162,7 @@ export class PixiGameView{
   victory(now:number,state:GameState){this.victoryUntil=now+900;this.confetti.start(now);const g=computeGeometry(state.level);const points=[...state.targets.map(t=>borderPoint(g,t)),...state.items.filter(item=>item.type==='focus').map(item=>cellCenter(g,item.x,item.y))];this.impacts.triggerVictory(points,now);for(const p of points)this.particles.emit(p.x,p.y,Theme.green,Math.round(22*this.emitScale()),this.performance.particleBudget);}
   showToast(text:string,now:number){this.toast.text=text;const pad=20,w=Math.max(180,this.toast.width+pad*2),y=198+this.hudOffset;this.toast.position.set(360,y+22);this.toastBg.clear().roundRect(360-w/2,y,w,40,20).fill({color:Theme.overlay,alpha:.92}).stroke({color:Theme.white,width:1,alpha:.10});this.toast.visible=true;this.toastBg.visible=true;this.toastUntil=now+1200;}
   update(state:GameState,now:number){
-    this.objects.update(now);
+    this.objects.update(now,!this.settings.visible&&!this.levelSelect.visible&&!this.result.visible);
     try{this.laser.update(state,now,this.performance.quality);}catch(error){console.warn('[view] laser update failed',error);}
     this.impacts.update(now);
     try{this.particles.update(this.performance.quality);}catch(error){console.warn('[view] particles failed',error);}
