@@ -33,6 +33,7 @@ function classicSnapshot(level) {
 }
 
 if (classic.length !== 50) errors.push(`classic.json should contain 50 levels, got ${classic.length}`);
+if (levels.length !== 100) errors.push(`levels.json should contain 100 levels, got ${levels.length}`);
 if (levels.length < 50) errors.push(`levels.json lost classic levels (${levels.length})`);
 classic.forEach((level, index) => {
   if (classicSnapshot(levels[index] ?? {}) !== classicSnapshot(level)) {

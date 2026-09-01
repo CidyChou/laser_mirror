@@ -34,7 +34,7 @@ npm run build:all
 ## 核心原则
 
 - 玩法计算与渲染完全解耦。
-- 关卡数据位于 `src/levels/levels.json`（1–50 冻结对照 `classic.json`，51–80 为双源 / 双束终点 / 聚合点）。
+- 关卡数据位于 `src/levels/levels.json`（1–50 冻结对照 `classic.json`，51–80 为双源 / 双束终点 / 聚合点，81–100 为困难“交错机关”和专家“终极光域”）。
 - Pixi UI：正式游戏 UI 不依赖 HTML/CSS DOM。
 - WebGL 优先，默认兼容 WebGL1/2；不依赖 WebGPU。
 - 静态棋盘 `cacheAsTexture()`。

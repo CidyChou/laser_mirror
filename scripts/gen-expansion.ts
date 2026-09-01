@@ -1,9 +1,11 @@
 import { writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import classic from '../src/levels/classic.json';
 import { computeGeometry } from '../src/gameplay/geometry';
 import { LaserSimulator } from '../src/gameplay/LaserSimulator';
 import { itemKey } from '../src/gameplay/levelAccess';
 import type { Direction, LevelDefinition, LevelItem, Orientation, Port } from '../src/gameplay/types';
+import { buildAdvancedLevels } from './advanced-levels';
 
 const simulator = new LaserSimulator();
 type Extra = { fixed?: true; decoy?: true };
@@ -601,6 +603,12 @@ specs.forEach((spec, index) => {
   out.push(toLevel(spec, startItems));
 });
 
+try {
+  out.push(...buildAdvancedLevels());
+} catch (error) {
+  errors.push(error instanceof Error ? error.message : String(error));
+}
+
 if (errors.length) {
   console.error(errors.join('\n'));
   process.exit(1);
@@ -608,4 +616,7 @@ if (errors.length) {
 
 const path = fileURLToPath(new URL('../src/levels/expansion.json', import.meta.url));
 writeFileSync(path, `${JSON.stringify(out, null, 2)}\n`);
-console.log(`wrote ${out.length} levels`);
+const levelsPath = fileURLToPath(new URL('../src/levels/levels.json', import.meta.url));
+const allLevels = [...(classic as LevelDefinition[]), ...out];
+writeFileSync(levelsPath, `${JSON.stringify(allLevels, null, 2)}\n`);
+console.log(`wrote ${out.length} expansion levels and ${allLevels.length} total levels`);

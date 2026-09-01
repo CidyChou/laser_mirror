@@ -3,7 +3,7 @@ import classic from '../src/levels/classic.json';
 import expansion from '../src/levels/expansion.json';
 import { computeGeometry } from '../src/gameplay/geometry';
 import { LaserSimulator } from '../src/gameplay/LaserSimulator';
-import { itemKey } from '../src/gameplay/levelAccess';
+import { focusNeed, itemKey } from '../src/gameplay/levelAccess';
 import type { Direction, LevelDefinition, LevelItem, Orientation } from '../src/gameplay/types';
 
 type ClassicTrace = {
@@ -109,6 +109,10 @@ function assertMechanics() {
     for (const item of focuses) {
       const hits = win.impactEvents.filter(e => e.type === 'focus' && e.x === item.x && e.y === item.y);
       if (hits.length < 2) errors.push(`#${n} focus ${item.x},${item.y} only ${hits.length} impact(s)`);
+      const directions = new Set(hits.flatMap(hit => hit.incomingDir === undefined ? [] : [hit.incomingDir]));
+      if (directions.size < focusNeed(item)) {
+        errors.push(`#${n} focus ${item.x},${item.y} has ${directions.size} incoming direction(s), needs ${focusNeed(item)}`);
+      }
     }
     for (const item of result.first) {
       if (item.type !== 'combiner' || !win.combinerOn[itemKey(item.x, item.y)]) continue;

@@ -10,6 +10,8 @@ export const CHAPTERS = [
   { no: 6, name: '双源激光' },
   { no: 7, name: '双束终点' },
   { no: 8, name: '聚合核心' },
+  { no: 9, name: '交错机关' },
+  { no: 10, name: '终极光域' },
 ] as const;
 
 export type Side = 'N' | 'E' | 'S' | 'W';

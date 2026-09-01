@@ -1,6 +1,6 @@
 # Level Data
 
-所有关卡都在 `src/levels/levels.json`，玩法层只读取数据，不写死关卡。前 50 关冻结在 `src/levels/classic.json`，校验时不允许改动。
+所有 100 个关卡都在 `src/levels/levels.json`，玩法层只读取数据，不写死关卡。前 50 关冻结在 `src/levels/classic.json`，校验时不允许改动；51–100 由扩展关生成器维护。
 
 主要字段：
 
@@ -28,4 +28,7 @@ make gm
 ```bash
 npm run validate:levels
 npm run verify:expansion
+npm run analyze:levels
 ```
+
+`npm run generate:levels` 会重新生成 `expansion.json`，并以 `classic.json + expansion.json` 的顺序同步正式 `levels.json`。第 81–100 关还会由分析器检查唯一解、最少点击、必要操作数、状态空间以及 Focus 的不同入射方向。

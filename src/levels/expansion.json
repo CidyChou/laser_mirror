@@ -2942,5 +2942,2644 @@
     ],
     "hint": "聚合、双束晶体、迷宫墙三条线一起做。先让聚合点吃饱。",
     "shots": 3
+  },
+  {
+    "name": "交叉开门",
+    "chapter": "交错机关",
+    "chapterNo": 9,
+    "rows": 7,
+    "cols": 7,
+    "emitter": {
+      "side": "W",
+      "index": 1
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "W",
+        "index": 5
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 1
+      },
+      {
+        "side": "E",
+        "index": 5
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 2,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 2,
+        "y": 4,
+        "id": "A"
+      },
+      {
+        "type": "switch",
+        "x": 4,
+        "y": 2,
+        "id": "B"
+      },
+      {
+        "type": "door",
+        "x": 5,
+        "y": 0,
+        "id": "DB",
+        "requires": [
+          "B"
+        ]
+      },
+      {
+        "type": "door",
+        "x": 5,
+        "y": 5,
+        "id": "DA",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 3
+      }
+    ],
+    "shots": 3,
+    "hint": "两束光打开的门，并不属于自己。"
+  },
+  {
+    "name": "跃迁充能",
+    "chapter": "交错机关",
+    "chapterNo": 9,
+    "rows": 7,
+    "cols": 7,
+    "emitter": {
+      "side": "W",
+      "index": 1
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "S",
+        "index": 3
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 5
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "portal",
+        "x": 1,
+        "y": 3,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 5,
+        "y": 3,
+        "pair": "P1"
+      },
+      {
+        "type": "focus",
+        "x": 3,
+        "y": 4,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 2
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 2
+      }
+    ],
+    "shots": 3,
+    "hint": "传送只改变位置，不改变方向。"
+  },
+  {
+    "name": "双锁分流",
+    "chapter": "交错机关",
+    "chapterNo": 9,
+    "rows": 7,
+    "cols": 7,
+    "emitter": {
+      "side": "W",
+      "index": 2
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 2
+      },
+      {
+        "side": "S",
+        "index": 0
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 1
+      },
+      {
+        "side": "E",
+        "index": 5
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 2,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 5,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 4,
+        "id": "A"
+      },
+      {
+        "type": "switch",
+        "x": 3,
+        "y": 2,
+        "id": "B"
+      },
+      {
+        "type": "door",
+        "x": 5,
+        "y": 1,
+        "id": "D",
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 4
+      }
+    ],
+    "shots": 3,
+    "hint": "两枚认证缺一不可，分出去的光也要回来。"
+  },
+  {
+    "name": "聚合分岔",
+    "chapter": "交错机关",
+    "chapterNo": 9,
+    "rows": 7,
+    "cols": 7,
+    "emitter": {
+      "side": "W",
+      "index": 1
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "S",
+        "index": 2
+      }
+    ],
+    "targets": [
+      {
+        "side": "S",
+        "index": 1
+      },
+      {
+        "side": "E",
+        "index": 3
+      },
+      {
+        "side": "N",
+        "index": 5
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "combiner",
+        "x": 3,
+        "y": 3,
+        "dir": 2,
+        "need": 2
+      },
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 4
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 4
+      }
+    ],
+    "shots": 3,
+    "hint": "聚合后的光还可以再次分流。"
+  },
+  {
+    "name": "双核接力",
+    "chapter": "交错机关",
+    "chapterNo": 9,
+    "rows": 7,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 0
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 0
+      },
+      {
+        "side": "W",
+        "index": 3
+      },
+      {
+        "side": "S",
+        "index": 6
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 5
+      }
+    ],
+    "items": [
+      {
+        "type": "combiner",
+        "x": 2,
+        "y": 2,
+        "dir": 1,
+        "need": 2
+      },
+      {
+        "type": "combiner",
+        "x": 6,
+        "y": 5,
+        "dir": 0,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 2
+      }
+    ],
+    "shots": 3,
+    "hint": "第一座核心的终点，也是第二座核心的起点。"
+  },
+  {
+    "name": "门后晶体",
+    "chapter": "交错机关",
+    "chapterNo": 9,
+    "rows": 7,
+    "cols": 7,
+    "emitter": {
+      "side": "W",
+      "index": 1
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "W",
+        "index": 5
+      }
+    ],
+    "targets": [],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 2,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "switch",
+        "x": 2,
+        "y": 4,
+        "id": "A"
+      },
+      {
+        "type": "door",
+        "x": 2,
+        "y": 6,
+        "id": "D",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 5,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 5,
+        "y": 4,
+        "pair": "P1"
+      },
+      {
+        "type": "focus",
+        "x": 4,
+        "y": 3,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 6
+      }
+    ],
+    "shots": 3,
+    "hint": "一束负责开门，两束要从不同方向抵达晶体。"
+  },
+  {
+    "name": "三源取舍",
+    "chapter": "交错机关",
+    "chapterNo": 9,
+    "rows": 7,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 1
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "S",
+        "index": 2
+      },
+      {
+        "side": "N",
+        "index": 6
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 4
+      }
+    ],
+    "items": [
+      {
+        "type": "combiner",
+        "x": 3,
+        "y": 4,
+        "dir": 0,
+        "need": 2
+      },
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "focus",
+        "x": 5,
+        "y": 2,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 5
+      }
+    ],
+    "shots": 3,
+    "hint": "聚合输出还有两份工作，第三束光只负责晶体。"
+  },
+  {
+    "name": "回廊互锁",
+    "chapter": "交错机关",
+    "chapterNo": 9,
+    "rows": 7,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 1
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "W",
+        "index": 5
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 1
+      },
+      {
+        "side": "E",
+        "index": 5
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 2,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 2,
+        "y": 4,
+        "id": "A"
+      },
+      {
+        "type": "switch",
+        "x": 5,
+        "y": 2,
+        "id": "B"
+      },
+      {
+        "type": "door",
+        "x": 6,
+        "y": 0,
+        "id": "DB",
+        "requires": [
+          "B"
+        ]
+      },
+      {
+        "type": "door",
+        "x": 6,
+        "y": 5,
+        "id": "DA",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 3
+      }
+    ],
+    "shots": 3,
+    "hint": "两条回廊各自保管着对方的钥匙。"
+  },
+  {
+    "name": "双跃聚能",
+    "chapter": "交错机关",
+    "chapterNo": 9,
+    "rows": 7,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 1
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "W",
+        "index": 5
+      },
+      {
+        "side": "S",
+        "index": 6
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 3
+      },
+      {
+        "side": "S",
+        "index": 5
+      },
+      {
+        "side": "N",
+        "index": 6
+      }
+    ],
+    "items": [
+      {
+        "type": "portal",
+        "x": 2,
+        "y": 1,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 2,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 2,
+        "y": 5,
+        "pair": "P2"
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 4,
+        "pair": "P2"
+      },
+      {
+        "type": "combiner",
+        "x": 3,
+        "y": 3,
+        "dir": 0,
+        "need": 2
+      },
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 2
+      }
+    ],
+    "shots": 3,
+    "hint": "两次跃迁在中心会合，第三束走最远的外圈。"
+  },
+  {
+    "name": "机关交响",
+    "chapter": "交错机关",
+    "chapterNo": 9,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 1
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "W",
+        "index": 6
+      },
+      {
+        "side": "E",
+        "index": 1
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 4
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 4,
+        "id": "A"
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 1,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 3,
+        "pair": "P1"
+      },
+      {
+        "type": "combiner",
+        "x": 4,
+        "y": 4,
+        "dir": 2,
+        "need": 2
+      },
+      {
+        "type": "door",
+        "x": 5,
+        "y": 4,
+        "id": "D",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "focus",
+        "x": 6,
+        "y": 2,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 6
+      }
+    ],
+    "shots": 3,
+    "hint": "开门、跃迁和聚合只是同一条旋律的不同小节。"
+  },
+  {
+    "name": "镜像陷阱",
+    "chapter": "终极光域",
+    "chapterNo": 10,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 1
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "S",
+        "index": 3
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 5
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "portal",
+        "x": 1,
+        "y": 3,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 5,
+        "y": 3,
+        "pair": "P1"
+      },
+      {
+        "type": "focus",
+        "x": 3,
+        "y": 4,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 2
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 2
+      },
+      {
+        "type": "switch",
+        "x": 2,
+        "y": 1,
+        "id": "A"
+      },
+      {
+        "type": "door",
+        "x": 5,
+        "y": 0,
+        "id": "D",
+        "requires": [
+          "A"
+        ]
+      }
+    ],
+    "shots": 3,
+    "hint": "外观可以对称，机关的责任却不对称。"
+  },
+  {
+    "name": "双门互锁",
+    "chapter": "终极光域",
+    "chapterNo": 10,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 1
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "W",
+        "index": 5
+      },
+      {
+        "side": "N",
+        "index": 0
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 1
+      },
+      {
+        "side": "E",
+        "index": 5
+      },
+      {
+        "side": "S",
+        "index": 7
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 2,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 2,
+        "y": 4,
+        "id": "A"
+      },
+      {
+        "type": "switch",
+        "x": 5,
+        "y": 2,
+        "id": "B"
+      },
+      {
+        "type": "door",
+        "x": 6,
+        "y": 0,
+        "id": "DB",
+        "requires": [
+          "B"
+        ]
+      },
+      {
+        "type": "door",
+        "x": 6,
+        "y": 5,
+        "id": "DA",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 2,
+        "s": 1
+      }
+    ],
+    "shots": 3,
+    "hint": "共享开关之外，第三束光还要穿过两条回廊。"
+  },
+  {
+    "name": "三束汇核",
+    "chapter": "终极光域",
+    "chapterNo": 10,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 1
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "W",
+        "index": 6
+      },
+      {
+        "side": "S",
+        "index": 0
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 4
+      },
+      {
+        "side": "S",
+        "index": 6
+      },
+      {
+        "side": "N",
+        "index": 7
+      },
+      {
+        "side": "E",
+        "index": 6
+      },
+      {
+        "side": "W",
+        "index": 2
+      },
+      {
+        "side": "N",
+        "index": 1
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "combiner",
+        "x": 4,
+        "y": 4,
+        "dir": 0,
+        "need": 3
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 7,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 7,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 7
+      }
+    ],
+    "shots": 3,
+    "hint": "三条输入缺一不可，聚合输出仍要一分为二。"
+  },
+  {
+    "name": "串联跃迁",
+    "chapter": "终极光域",
+    "chapterNo": 10,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 0
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 0
+      },
+      {
+        "side": "W",
+        "index": 3
+      },
+      {
+        "side": "S",
+        "index": 7
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 5
+      }
+    ],
+    "items": [
+      {
+        "type": "combiner",
+        "x": 2,
+        "y": 2,
+        "dir": 1,
+        "need": 2
+      },
+      {
+        "type": "portal",
+        "x": 4,
+        "y": 2,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 5,
+        "y": 4,
+        "pair": "P1"
+      },
+      {
+        "type": "combiner",
+        "x": 6,
+        "y": 5,
+        "dir": 1,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 5
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 2
+      }
+    ],
+    "shots": 3,
+    "hint": "第一座核心的输出必须跃迁后才能加入第二座核心。"
+  },
+  {
+    "name": "双核双晶",
+    "chapter": "终极光域",
+    "chapterNo": 10,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 1
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "S",
+        "index": 2
+      },
+      {
+        "side": "E",
+        "index": 6
+      },
+      {
+        "side": "N",
+        "index": 5
+      }
+    ],
+    "targets": [],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "combiner",
+        "x": 2,
+        "y": 3,
+        "dir": 1,
+        "need": 2
+      },
+      {
+        "type": "focus",
+        "x": 4,
+        "y": 3,
+        "need": 2
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "combiner",
+        "x": 5,
+        "y": 4,
+        "dir": 3,
+        "need": 2
+      },
+      {
+        "type": "focus",
+        "x": 4,
+        "y": 4,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 1
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "shots": 3,
+    "hint": "两座核心各管一颗晶体，另外两条支路交叉补能。"
+  },
+  {
+    "name": "四源矩阵",
+    "chapter": "终极光域",
+    "chapterNo": 10,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 1
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "S",
+        "index": 2
+      },
+      {
+        "side": "E",
+        "index": 6
+      },
+      {
+        "side": "N",
+        "index": 7
+      }
+    ],
+    "targets": [
+      {
+        "side": "N",
+        "index": 3
+      },
+      {
+        "side": "N",
+        "index": 5
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "combiner",
+        "x": 2,
+        "y": 3,
+        "dir": 2,
+        "need": 2
+      },
+      {
+        "type": "focus",
+        "x": 4,
+        "y": 3,
+        "need": 2
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "combiner",
+        "x": 5,
+        "y": 4,
+        "dir": 2,
+        "need": 2
+      },
+      {
+        "type": "focus",
+        "x": 4,
+        "y": 4,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 6
+      },
+      {
+        "type": "splitter",
+        "x": 3,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 4,
+        "s": 0
+      }
+    ],
+    "shots": 3,
+    "hint": "四个方向共享中心镜阵，两颗晶体之外还有两条分光出口。"
+  },
+  {
+    "name": "三门认证",
+    "chapter": "终极光域",
+    "chapterNo": 10,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 1
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "W",
+        "index": 4
+      },
+      {
+        "side": "S",
+        "index": 4
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 1
+      },
+      {
+        "side": "E",
+        "index": 4
+      },
+      {
+        "side": "N",
+        "index": 4
+      }
+    ],
+    "items": [
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 1,
+        "id": "A"
+      },
+      {
+        "type": "door",
+        "x": 4,
+        "y": 0,
+        "id": "D2",
+        "requires": [
+          "B",
+          "C"
+        ]
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 0,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 6,
+        "y": 0,
+        "pair": "P1"
+      },
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 5,
+        "id": "B"
+      },
+      {
+        "type": "door",
+        "x": 5,
+        "y": 6,
+        "id": "D1",
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "type": "switch",
+        "x": 3,
+        "y": 3,
+        "id": "C"
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 5
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 3
+      }
+    ],
+    "shots": 3,
+    "hint": "A+B 与 B+C 是两套认证，共享的 B 不能断。"
+  },
+  {
+    "name": "双分光回路",
+    "chapter": "终极光域",
+    "chapterNo": 10,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 1
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "W",
+        "index": 6
+      },
+      {
+        "side": "E",
+        "index": 1
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 4
+      },
+      {
+        "side": "W",
+        "index": 5
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 4,
+        "id": "A"
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 1,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 3,
+        "pair": "P1"
+      },
+      {
+        "type": "combiner",
+        "x": 4,
+        "y": 4,
+        "dir": 2,
+        "need": 2
+      },
+      {
+        "type": "door",
+        "x": 5,
+        "y": 4,
+        "id": "D",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "focus",
+        "x": 6,
+        "y": 2,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 6
+      },
+      {
+        "type": "portal",
+        "x": 1,
+        "y": 2,
+        "pair": "P2"
+      },
+      {
+        "type": "portal",
+        "x": 1,
+        "y": 3,
+        "pair": "P2"
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 5,
+        "s": 0
+      }
+    ],
+    "shots": 3,
+    "hint": "两级分光分别承担开门、终点与晶体充能。"
+  },
+  {
+    "name": "光域迷城",
+    "chapter": "终极光域",
+    "chapterNo": 10,
+    "rows": 9,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 1
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "W",
+        "index": 6
+      },
+      {
+        "side": "E",
+        "index": 1
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 4
+      },
+      {
+        "side": "W",
+        "index": 5
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 4,
+        "id": "A"
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 1,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 3,
+        "pair": "P1"
+      },
+      {
+        "type": "combiner",
+        "x": 4,
+        "y": 4,
+        "dir": 1,
+        "need": 2
+      },
+      {
+        "type": "door",
+        "x": 5,
+        "y": 4,
+        "id": "D",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "focus",
+        "x": 6,
+        "y": 2,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 6
+      },
+      {
+        "type": "portal",
+        "x": 1,
+        "y": 2,
+        "pair": "P2"
+      },
+      {
+        "type": "portal",
+        "x": 1,
+        "y": 3,
+        "pair": "P2"
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 6,
+        "id": "B"
+      },
+      {
+        "type": "portal",
+        "x": 2,
+        "y": 5,
+        "pair": "P3"
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 5,
+        "pair": "P3"
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "door",
+        "x": 7,
+        "y": 4,
+        "id": "D2",
+        "requires": [
+          "A",
+          "B"
+        ]
+      }
+    ],
+    "shots": 3,
+    "hint": "两组跃迁与两套门锁把同一条主路拆成三层。"
+  },
+  {
+    "name": "终极光域",
+    "chapter": "终极光域",
+    "chapterNo": 10,
+    "rows": 9,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 1
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "W",
+        "index": 6
+      },
+      {
+        "side": "S",
+        "index": 4
+      },
+      {
+        "side": "E",
+        "index": 1
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 4
+      },
+      {
+        "side": "W",
+        "index": 5
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 1,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 3,
+        "pair": "P1"
+      },
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 4,
+        "id": "A"
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "combiner",
+        "x": 4,
+        "y": 4,
+        "dir": 1,
+        "need": 3
+      },
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "door",
+        "x": 6,
+        "y": 4,
+        "id": "D",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "focus",
+        "x": 6,
+        "y": 2,
+        "need": 3
+      },
+      {
+        "type": "splitter",
+        "x": 7,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 6
+      }
+    ],
+    "shots": 3,
+    "hint": "四束光各有职责：三束汇核，最后一束把晶体补满。"
   }
 ]
