@@ -56,8 +56,23 @@ const earlySession=new GameSession([early]);earlySession.fire();earlySession.upd
 for(let ms=10;ms<launch-100;ms+=10)earlySession.update(ms);
 assert(earlySession.state.targets[0].hit);assert(earlySession.state.firing);assert(!earlySession.state.won);
 
+// Claiming hearts after the last failed shot must preserve the board setup;
+// an explicit reset should still restore the authored orientation.
+const retryLevel:LevelDefinition={chapter:'回归校验',chapterNo:1,name:'补心保留摆法',rows:3,cols:3,
+  emitter:{side:'W',index:0},targets:[{side:'E',index:2}],shots:1,
+  items:[{type:'mirror',x:1,y:1,s:0}]};
+const retrySession=new GameSession([retryLevel],1);
+retrySession.rotateAt(1,1);assert.equal(retrySession.state.items[0].type==='mirror'&&retrySession.state.items[0].s,1);
+retrySession.fire();retrySession.update(0);
+for(let ms=10;ms<15000&&retrySession.state.firing;ms+=10)retrySession.update(ms);
+assert.equal(retrySession.state.hearts,0);assert(!retrySession.state.firing);
+retrySession.restoreHearts(3);
+assert.equal(retrySession.state.items[0].type==='mirror'&&retrySession.state.items[0].s,1);
+retrySession.reset();
+assert.equal(retrySession.state.items[0].type==='mirror'&&retrySession.state.items[0].s,0);
+
 // Frozen classic levels must keep the same functional outcomes.
 const classic=JSON.parse(readFileSync(new URL('../src/levels/classic.json',import.meta.url),'utf8')) as LevelDefinition[];
 const expected=JSON.parse(readFileSync(new URL('../src/levels/classic-traces.json',import.meta.url),'utf8'));
 classic.forEach((level,index)=>{const r=trace(level);assert.deepEqual({n:index+1,hits:r.hits,switches:[...r.switches].sort(),exits:r.exits.map(p=>`${p.side}${p.index}`),doors:r.doorStates},expected[index])});
-console.log('Optics verified: staged collection, 1500 ms charge, single release, 3× transported beam, chaining, insufficient input, abort/reset, no premature victory; 50 classic outcomes unchanged.');
+console.log('Optics verified: staged collection, 1500 ms charge, single release, 3× transported beam, chaining, insufficient input, abort/reset, rewarded-heart retry state, no premature victory; 50 classic outcomes unchanged.');

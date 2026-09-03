@@ -328,7 +328,10 @@ export class GameApplication {
         else if(this.session.state.hearts<=0){
           this.session.restoreHearts(Math.min(MAX_HEARTS,this.session.state.hearts+AD_HEART_REWARD));
           saveHearts(this.platform,this.session.state.hearts);
-          this.session.reset();
+          // Keep the player's current mirror setup when returning from the
+          // rewarded-ad flow. The failed shot has already been cleared by the
+          // session; reloading the level here would discard all their work.
+          this.view.hideOverlays();
           this.view.showToast(`广告功能暂未接入 · 已增加 ${AD_HEART_REWARD} 颗爱心`,nowMs());
         }else this.session.reset();
         this.wake();
