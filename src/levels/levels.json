@@ -2426,9 +2426,9 @@
       },
       {
         "type": "switch",
-        "x": 4,
-        "y": 3,
-        "id": "A"
+        "x": 7,
+        "y": 0,
+        "id": "B"
       },
       {
         "type": "splitter",
@@ -2437,20 +2437,14 @@
         "s": 0
       },
       {
-        "type": "switch",
-        "x": 4,
-        "y": 5,
-        "id": "B"
-      },
-      {
         "type": "mirror",
-        "x": 4,
+        "x": 1,
         "y": 2,
-        "s": 0
+        "s": 1
       },
       {
         "type": "switch",
-        "x": 6,
+        "x": 3,
         "y": 2,
         "id": "C"
       },
@@ -2497,22 +2491,55 @@
       {
         "type": "mirror",
         "x": 2,
-        "y": 1,
+        "y": 3,
         "s": 0
       },
       {
         "type": "mirror",
-        "x": 0,
+        "x": 1,
         "y": 0,
         "s": 1,
         "decoy": true
       },
       {
         "type": "mirror",
-        "x": 1,
+        "x": 2,
         "y": 0,
-        "s": 0,
+        "s": 1,
         "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "door",
+        "x": 4,
+        "y": 2,
+        "id": "D3",
+        "requires": [
+          "C"
+        ]
+      },
+      {
+        "type": "switch",
+        "x": 5,
+        "y": 2,
+        "id": "A"
       }
     ],
     "hint": "门与节点形成联锁时，主光束和供能支路必须一起规划。",
@@ -2553,8 +2580,8 @@
       },
       {
         "type": "door",
-        "x": 3,
-        "y": 5,
+        "x": 4,
+        "y": 1,
         "id": "D1",
         "requires": [
           "A"
@@ -2569,16 +2596,16 @@
       {
         "type": "mirror",
         "x": 4,
-        "y": 1,
+        "y": 2,
         "s": 0
       },
       {
         "type": "door",
-        "x": 5,
-        "y": 1,
+        "x": 6,
+        "y": 6,
         "id": "D2",
         "requires": [
-          "A"
+          "B"
         ]
       },
       {
@@ -2590,14 +2617,14 @@
       {
         "type": "mirror",
         "x": 0,
-        "y": 0,
+        "y": 1,
         "s": 0,
         "decoy": true
       },
       {
         "type": "mirror",
         "x": 6,
-        "y": 0,
+        "y": 2,
         "s": 1,
         "decoy": true
       },
@@ -2607,6 +2634,54 @@
         "y": 6,
         "s": 1,
         "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 2,
+        "y": 3,
+        "id": "B"
       }
     ],
     "hint": "",
