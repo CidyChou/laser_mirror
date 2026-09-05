@@ -71,6 +71,8 @@ export const GameConfig = {
     maxSpeed: 720,
     mirrorPauseDistance: 34,
     portalPauseDistance: 58,
+    doorSignalMs: 420,
+    doorOpenMs: 280,
     combinerChargeMs: 1500,
     combinedWidthScale: 3,
     settleMs: 160,

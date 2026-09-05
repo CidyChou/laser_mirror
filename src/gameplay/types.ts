@@ -47,7 +47,7 @@ export interface LaserSegment {
   widthScale?: number;
 }
 
-export type ImpactType = 'mirror' | 'splitter' | 'portal' | 'switch' | 'door' | 'wall' | 'target' | 'focus' | 'combiner' | 'combiner-fire';
+export type ImpactType = 'mirror' | 'splitter' | 'portal' | 'switch' | 'door' | 'door-open' | 'wall' | 'target' | 'focus' | 'combiner' | 'combiner-fire';
 export interface ImpactEvent {
   type: ImpactType;
   at: number;

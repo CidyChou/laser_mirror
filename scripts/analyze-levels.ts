@@ -48,6 +48,29 @@ const complexityProfiles: Record<number, { dependencyDepth: number; mechanicInte
   100: { dependencyDepth: 3, mechanicInteractions: 3 },
 };
 
+// The extension preserves each source graph's mechanism dependencies;
+// the added ingress changes spatial routing, not the mechanism dependency graph.
+complexityProfiles[101] = complexityProfiles[91];
+complexityProfiles[102] = complexityProfiles[93];
+complexityProfiles[103] = complexityProfiles[94];
+complexityProfiles[104] = complexityProfiles[97];
+complexityProfiles[105] = complexityProfiles[98];
+complexityProfiles[106] = complexityProfiles[99];
+complexityProfiles[107] = complexityProfiles[100];
+complexityProfiles[108] = complexityProfiles[93];
+complexityProfiles[109] = complexityProfiles[94];
+complexityProfiles[110] = complexityProfiles[97];
+complexityProfiles[111] = complexityProfiles[98];
+complexityProfiles[112] = complexityProfiles[99];
+complexityProfiles[113] = complexityProfiles[100];
+complexityProfiles[114] = complexityProfiles[91];
+complexityProfiles[115] = complexityProfiles[93];
+complexityProfiles[116] = complexityProfiles[94];
+complexityProfiles[117] = complexityProfiles[97];
+complexityProfiles[118] = complexityProfiles[98];
+complexityProfiles[119] = complexityProfiles[99];
+complexityProfiles[120] = complexityProfiles[100];
+
 function controlsOf(items: LevelItem[]): Control[] {
   return items.flatMap((item, index): Control[] => {
     if ((item.type === 'mirror' || item.type === 'splitter') && !item.fixed) return [{ index, kind: 'bit' }];

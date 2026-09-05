@@ -31,13 +31,22 @@ export class LaserSimulator {
     for (const item of items) if (item.type === 'door') doorStates[item.id] = false;
     let combinerOn: Record<string, boolean> = {};
     let combinerReadyAt: Record<string, number> = {};
+    let doorReadyAt: Record<string, number> = {};
     for (const item of items) if (item.type === 'combiner') combinerOn[itemKey(item.x, item.y)] = false;
 
-    let pass = this.simulatePass(level, items, geometry, doorStates, combinerOn, combinerReadyAt);
+    let pass = this.simulatePass(level, items, geometry, doorStates, combinerOn, combinerReadyAt, doorReadyAt);
     for (let i = 0; i < Math.max(12,items.length*2); i++) {
       const nextDoors: Record<string, boolean> = {};
+      const nextDoorReady: Record<string, number> = {};
       for (const item of items) {
-        if (item.type === 'door') nextDoors[item.id] = item.requires.every(id => pass.switches.has(id));
+        if (item.type !== 'door') continue;
+        nextDoors[item.id] = item.requires.every(id => pass.switches.has(id));
+        if (nextDoors[item.id]) {
+          const lastSwitch = Math.max(0, ...item.requires.map(id =>
+            Math.min(...pass.impactEvents.filter(e => e.type === 'switch' && e.id === id).map(e => e.at))));
+          nextDoorReady[item.id] = laserDistanceAtMs(laserMsAtDistance(lastSwitch)
+            + GameConfig.laser.doorSignalMs + GameConfig.laser.doorOpenMs);
+        }
       }
       const nextCombiners: Record<string, boolean> = {};
       const nextReady: Record<string, number> = {};
@@ -51,14 +60,16 @@ export class LaserSimulator {
         if (on) nextReady[key] = ats[need - 1];
       }
       if (sameRecord(nextDoors, doorStates) && sameRecord(nextCombiners, combinerOn)
+        && Object.keys(nextDoorReady).every(key=>Math.abs(nextDoorReady[key]-(doorReadyAt[key]??-1))<.001)
         && Object.keys(nextReady).every(key=>Math.abs(nextReady[key]-(combinerReadyAt[key]??-1))<.001)) break;
       doorStates = nextDoors;
       combinerOn = nextCombiners;
       combinerReadyAt = nextReady;
-      pass = this.simulatePass(level, items, geometry, doorStates, combinerOn, combinerReadyAt);
+      doorReadyAt = nextDoorReady;
+      pass = this.simulatePass(level, items, geometry, doorStates, combinerOn, combinerReadyAt, doorReadyAt);
     }
 
-    pass = this.simulatePass(level, items, geometry, doorStates, combinerOn, combinerReadyAt);
+    pass = this.simulatePass(level, items, geometry, doorStates, combinerOn, combinerReadyAt, doorReadyAt);
     const hits = level.targets.map(target => pass.exits.some(exit => samePort(exit, target)));
     const focusOn: Record<string, boolean> = {};
     for (const item of items) {
@@ -76,6 +87,7 @@ export class LaserSimulator {
     doorStates: Record<string, boolean>,
     combinerOn: Record<string, boolean>,
     combinerReadyAt: Record<string, number>,
+    doorReadyAt: Record<string, number>,
   ) {
     const byCell = new Map<string, LevelItem>();
     const portals = new Map<string, Extract<LevelItem, {type:'portal'}>[]>();
@@ -91,6 +103,11 @@ export class LaserSimulator {
     const exits: Port[] = [];
     const segments: LaserSegment[] = [];
     const impacts: ImpactEvent[] = [];
+    for (const item of items) {
+      if (item.type !== 'door' || !doorStates[item.id] || doorReadyAt[item.id] === undefined) continue;
+      const c = cellCenter(g, item.x, item.y);
+      impacts.push({type:'door-open', id:item.id, x:item.x, y:item.y, px:c.x, py:c.y, at:doorReadyAt[item.id]});
+    }
     const combinerHits: Record<string, number> = {};
     const combinerHitAt: Record<string, number[]> = {};
     const combinerPulses: Record<string, CombinerPulse> = {};
@@ -158,6 +175,12 @@ export class LaserSimulator {
 
         if (item.type === 'wall') { impacts.push({type:'wall', x,y,px,py,at:travel,incomingDir:dir}); break; }
         if (item.type === 'door' && !doorStates[item.id]) { impacts.push({type:'door',x,y,px,py,at:travel,id:item.id,incomingDir:dir}); break; }
+        if (item.type === 'door') {
+          // An early beam waits at the closed gate until the signal and panels finish.
+          travel = Math.max(travel, doorReadyAt[item.id] ?? travel);
+          maxTravel = Math.max(maxTravel, travel);
+          continue;
+        }
         if (item.type === 'focus') {
           const key = itemKey(x, y);
           focusHits[key] = (focusHits[key] ?? 0) + 1;
@@ -204,6 +227,7 @@ export class LaserSimulator {
       const key = `${e.type}:${e.targetIndex ?? ''}:${e.x ?? ''}:${e.y ?? ''}:${e.incomingDir ?? ''}:${Math.round(e.at)}`;
       if (!keys.has(key)) { keys.add(key); deduped.push(e); }
     }
+    maxTravel = Math.max(maxTravel, ...Object.values(doorReadyAt));
     return { switches, exits, segments, impactEvents:deduped, maxTravel, combinerHits, combinerHitAt, combinerPulses, focusHits };
   }
 }

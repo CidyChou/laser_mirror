@@ -5581,5 +5581,3758 @@
     ],
     "shots": 3,
     "hint": "四束光各有职责：三束汇核，最后一束把晶体补满。"
+  },
+  {
+    "name": "折光启程",
+    "chapter": "远光回廊",
+    "chapterNo": 11,
+    "rows": 11,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 0
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 0
+      },
+      {
+        "side": "S",
+        "index": 3
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 8
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "portal",
+        "x": 1,
+        "y": 6,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 5,
+        "y": 6,
+        "pair": "P1"
+      },
+      {
+        "type": "focus",
+        "x": 3,
+        "y": 7,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 4,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 8,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 9,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 9,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 8,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 8,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 5
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 5
+      },
+      {
+        "type": "switch",
+        "x": 2,
+        "y": 4,
+        "id": "A"
+      },
+      {
+        "type": "door",
+        "x": 5,
+        "y": 3,
+        "id": "D",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "portal",
+        "x": 6,
+        "y": 1,
+        "pair": "INGRESS"
+      },
+      {
+        "type": "portal",
+        "x": 0,
+        "y": 4,
+        "pair": "INGRESS"
+      }
+    ],
+    "shots": 3,
+    "hint": "先接通上方折光走廊，传送出口保持向右。外观可以对称，机关的责任却不对称。"
+  },
+  {
+    "name": "三源远渡",
+    "chapter": "远光回廊",
+    "chapterNo": 11,
+    "rows": 11,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 0
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 0
+      },
+      {
+        "side": "W",
+        "index": 9
+      },
+      {
+        "side": "S",
+        "index": 0
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 7
+      },
+      {
+        "side": "S",
+        "index": 6
+      },
+      {
+        "side": "N",
+        "index": 7
+      },
+      {
+        "side": "E",
+        "index": 9
+      },
+      {
+        "side": "W",
+        "index": 5
+      },
+      {
+        "side": "N",
+        "index": 1
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "combiner",
+        "x": 4,
+        "y": 7,
+        "dir": 0,
+        "need": 3
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 7,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 7,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 9,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 4,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 9,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 8,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 8,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 8,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 8,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 6
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 10
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "portal",
+        "x": 6,
+        "y": 1,
+        "pair": "INGRESS"
+      },
+      {
+        "type": "portal",
+        "x": 0,
+        "y": 4,
+        "pair": "INGRESS"
+      }
+    ],
+    "shots": 3,
+    "hint": "先接通上方折光走廊，传送出口保持向右。三条输入缺一不可，聚合输出仍要一分为二。"
+  },
+  {
+    "name": "跃迁前奏",
+    "chapter": "远光回廊",
+    "chapterNo": 11,
+    "rows": 11,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 2
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 2
+      },
+      {
+        "side": "W",
+        "index": 6
+      },
+      {
+        "side": "S",
+        "index": 7
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 8
+      }
+    ],
+    "items": [
+      {
+        "type": "combiner",
+        "x": 2,
+        "y": 5,
+        "dir": 1,
+        "need": 2
+      },
+      {
+        "type": "portal",
+        "x": 4,
+        "y": 5,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 5,
+        "y": 7,
+        "pair": "P1"
+      },
+      {
+        "type": "combiner",
+        "x": 6,
+        "y": 8,
+        "dir": 1,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 3,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 5,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 7,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 9,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 9,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 8
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 5
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "portal",
+        "x": 6,
+        "y": 1,
+        "pair": "INGRESS"
+      },
+      {
+        "type": "portal",
+        "x": 0,
+        "y": 3,
+        "pair": "INGRESS"
+      }
+    ],
+    "shots": 3,
+    "hint": "先接通上方折光走廊，传送出口保持向右。第一座核心的输出必须跃迁后才能加入第二座核心。"
+  },
+  {
+    "name": "远端认证",
+    "chapter": "远光回廊",
+    "chapterNo": 11,
+    "rows": 11,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 0
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 0
+      },
+      {
+        "side": "W",
+        "index": 7
+      },
+      {
+        "side": "S",
+        "index": 4
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 4
+      },
+      {
+        "side": "E",
+        "index": 7
+      },
+      {
+        "side": "N",
+        "index": 4
+      }
+    ],
+    "items": [
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 4,
+        "id": "A"
+      },
+      {
+        "type": "door",
+        "x": 4,
+        "y": 3,
+        "id": "D2",
+        "requires": [
+          "B",
+          "C"
+        ]
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 3,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 6,
+        "y": 3,
+        "pair": "P1"
+      },
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 8,
+        "id": "B"
+      },
+      {
+        "type": "door",
+        "x": 5,
+        "y": 9,
+        "id": "D1",
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "type": "switch",
+        "x": 3,
+        "y": 6,
+        "id": "C"
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 4,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 3,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 9,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 9,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 10,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 10,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 8
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 6
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "portal",
+        "x": 6,
+        "y": 1,
+        "pair": "INGRESS"
+      },
+      {
+        "type": "portal",
+        "x": 0,
+        "y": 4,
+        "pair": "INGRESS"
+      }
+    ],
+    "shots": 3,
+    "hint": "先接通上方折光走廊，传送出口保持向右。A+B 与 B+C 是两套认证，共享的 B 不能断。"
+  },
+  {
+    "name": "分流引桥",
+    "chapter": "远光回廊",
+    "chapterNo": 11,
+    "rows": 11,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 0
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 0
+      },
+      {
+        "side": "W",
+        "index": 9
+      },
+      {
+        "side": "E",
+        "index": 4
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 7
+      },
+      {
+        "side": "W",
+        "index": 8
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 7,
+        "id": "A"
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 4,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 6,
+        "pair": "P1"
+      },
+      {
+        "type": "combiner",
+        "x": 4,
+        "y": 7,
+        "dir": 1,
+        "need": 2
+      },
+      {
+        "type": "door",
+        "x": 5,
+        "y": 7,
+        "id": "D",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "focus",
+        "x": 6,
+        "y": 5,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 9,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 7,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 4,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 6
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 9
+      },
+      {
+        "type": "portal",
+        "x": 1,
+        "y": 5,
+        "pair": "P2"
+      },
+      {
+        "type": "portal",
+        "x": 1,
+        "y": 6,
+        "pair": "P2"
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 8,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "portal",
+        "x": 6,
+        "y": 1,
+        "pair": "INGRESS"
+      },
+      {
+        "type": "portal",
+        "x": 0,
+        "y": 4,
+        "pair": "INGRESS"
+      }
+    ],
+    "shots": 3,
+    "hint": "先接通上方折光走廊，传送出口保持向右。两级分光分别承担开门、终点与晶体充能。"
+  },
+  {
+    "name": "迷城入口",
+    "chapter": "远光回廊",
+    "chapterNo": 11,
+    "rows": 12,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 2
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 2
+      },
+      {
+        "side": "W",
+        "index": 9
+      },
+      {
+        "side": "E",
+        "index": 4
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 7
+      },
+      {
+        "side": "W",
+        "index": 8
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 7,
+        "id": "A"
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 4,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 6,
+        "pair": "P1"
+      },
+      {
+        "type": "combiner",
+        "x": 4,
+        "y": 7,
+        "dir": 1,
+        "need": 2
+      },
+      {
+        "type": "door",
+        "x": 5,
+        "y": 7,
+        "id": "D",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "focus",
+        "x": 6,
+        "y": 5,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 9,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 4,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 6
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 9
+      },
+      {
+        "type": "portal",
+        "x": 1,
+        "y": 5,
+        "pair": "P2"
+      },
+      {
+        "type": "portal",
+        "x": 1,
+        "y": 6,
+        "pair": "P2"
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 8,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 9,
+        "id": "B"
+      },
+      {
+        "type": "portal",
+        "x": 2,
+        "y": 8,
+        "pair": "P3"
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 8,
+        "pair": "P3"
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "door",
+        "x": 7,
+        "y": 7,
+        "id": "D2",
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "portal",
+        "x": 6,
+        "y": 1,
+        "pair": "INGRESS"
+      },
+      {
+        "type": "portal",
+        "x": 0,
+        "y": 4,
+        "pair": "INGRESS"
+      }
+    ],
+    "shots": 3,
+    "hint": "先接通上方折光走廊，传送出口保持向右。两组跃迁与两套门锁把同一条主路拆成三层。"
+  },
+  {
+    "name": "晶核远航",
+    "chapter": "远光回廊",
+    "chapterNo": 11,
+    "rows": 12,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 0
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 0
+      },
+      {
+        "side": "W",
+        "index": 9
+      },
+      {
+        "side": "S",
+        "index": 4
+      },
+      {
+        "side": "E",
+        "index": 4
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 7
+      },
+      {
+        "side": "W",
+        "index": 8
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 4,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 6,
+        "pair": "P1"
+      },
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 7,
+        "id": "A"
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 8,
+        "s": 0
+      },
+      {
+        "type": "combiner",
+        "x": 4,
+        "y": 7,
+        "dir": 1,
+        "need": 3
+      },
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "door",
+        "x": 6,
+        "y": 7,
+        "id": "D",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "focus",
+        "x": 6,
+        "y": 5,
+        "need": 3
+      },
+      {
+        "type": "splitter",
+        "x": 7,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 9,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 6
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 9
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "portal",
+        "x": 6,
+        "y": 1,
+        "pair": "INGRESS"
+      },
+      {
+        "type": "portal",
+        "x": 0,
+        "y": 4,
+        "pair": "INGRESS"
+      }
+    ],
+    "shots": 3,
+    "hint": "先接通上方折光走廊，传送出口保持向右。四束光各有职责：三束汇核，最后一束把晶体补满。"
+  },
+  {
+    "name": "侧路汇流",
+    "chapter": "远光回廊",
+    "chapterNo": 11,
+    "rows": 11,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 2
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 2
+      },
+      {
+        "side": "W",
+        "index": 9
+      },
+      {
+        "side": "S",
+        "index": 0
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 7
+      },
+      {
+        "side": "S",
+        "index": 6
+      },
+      {
+        "side": "N",
+        "index": 7
+      },
+      {
+        "side": "E",
+        "index": 9
+      },
+      {
+        "side": "W",
+        "index": 5
+      },
+      {
+        "side": "N",
+        "index": 1
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "combiner",
+        "x": 4,
+        "y": 7,
+        "dir": 0,
+        "need": 3
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 7,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 7,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 9,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 4,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 9,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 8,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 8,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 8,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 8,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 6
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 10
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "portal",
+        "x": 6,
+        "y": 1,
+        "pair": "INGRESS"
+      },
+      {
+        "type": "portal",
+        "x": 0,
+        "y": 4,
+        "pair": "INGRESS"
+      }
+    ],
+    "shots": 3,
+    "hint": "先接通上方折光走廊，传送出口保持向右。三条输入缺一不可，聚合输出仍要一分为二。"
+  },
+  {
+    "name": "次核来信",
+    "chapter": "远光回廊",
+    "chapterNo": 11,
+    "rows": 11,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 3
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 3
+      },
+      {
+        "side": "W",
+        "index": 0
+      },
+      {
+        "side": "S",
+        "index": 7
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 8
+      }
+    ],
+    "items": [
+      {
+        "type": "combiner",
+        "x": 2,
+        "y": 5,
+        "dir": 1,
+        "need": 2
+      },
+      {
+        "type": "portal",
+        "x": 4,
+        "y": 5,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 5,
+        "y": 7,
+        "pair": "P1"
+      },
+      {
+        "type": "combiner",
+        "x": 6,
+        "y": 8,
+        "dir": 1,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 3,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 5,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 7,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 9,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 9,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 8
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 5
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "portal",
+        "x": 6,
+        "y": 1,
+        "pair": "INGRESS"
+      },
+      {
+        "type": "portal",
+        "x": 0,
+        "y": 6,
+        "pair": "INGRESS"
+      }
+    ],
+    "shots": 3,
+    "hint": "先接通上方折光走廊，传送出口保持向右。第一座核心的输出必须跃迁后才能加入第二座核心。"
+  },
+  {
+    "name": "回折密钥",
+    "chapter": "远光回廊",
+    "chapterNo": 11,
+    "rows": 11,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 4
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 4
+      },
+      {
+        "side": "W",
+        "index": 2
+      },
+      {
+        "side": "S",
+        "index": 4
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 4
+      },
+      {
+        "side": "E",
+        "index": 7
+      },
+      {
+        "side": "N",
+        "index": 4
+      }
+    ],
+    "items": [
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 4,
+        "id": "A"
+      },
+      {
+        "type": "door",
+        "x": 4,
+        "y": 3,
+        "id": "D2",
+        "requires": [
+          "B",
+          "C"
+        ]
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 3,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 6,
+        "y": 3,
+        "pair": "P1"
+      },
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 8,
+        "id": "B"
+      },
+      {
+        "type": "door",
+        "x": 5,
+        "y": 9,
+        "id": "D1",
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "type": "switch",
+        "x": 3,
+        "y": 6,
+        "id": "C"
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 4,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 3,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 3,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 4,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 9,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 9,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 10,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 10,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 8
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 6
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "portal",
+        "x": 6,
+        "y": 1,
+        "pair": "INGRESS"
+      },
+      {
+        "type": "portal",
+        "x": 0,
+        "y": 7,
+        "pair": "INGRESS"
+      }
+    ],
+    "shots": 3,
+    "hint": "先接通上方折光走廊，传送出口保持向右。A+B 与 B+C 是两套认证，共享的 B 不能断。"
+  },
+  {
+    "name": "支流回响",
+    "chapter": "星环枢纽",
+    "chapterNo": 12,
+    "rows": 11,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 4
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 4
+      },
+      {
+        "side": "W",
+        "index": 0
+      },
+      {
+        "side": "E",
+        "index": 4
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 7
+      },
+      {
+        "side": "W",
+        "index": 8
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 7,
+        "id": "A"
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 4,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 6,
+        "pair": "P1"
+      },
+      {
+        "type": "combiner",
+        "x": 4,
+        "y": 7,
+        "dir": 2,
+        "need": 2
+      },
+      {
+        "type": "door",
+        "x": 5,
+        "y": 7,
+        "id": "D",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "focus",
+        "x": 6,
+        "y": 5,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 9,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 6
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 9
+      },
+      {
+        "type": "portal",
+        "x": 1,
+        "y": 5,
+        "pair": "P2"
+      },
+      {
+        "type": "portal",
+        "x": 1,
+        "y": 6,
+        "pair": "P2"
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 8,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "portal",
+        "x": 6,
+        "y": 1,
+        "pair": "INGRESS"
+      },
+      {
+        "type": "portal",
+        "x": 0,
+        "y": 9,
+        "pair": "INGRESS"
+      }
+    ],
+    "shots": 3,
+    "hint": "先接通上方折光走廊，传送出口保持向右。两级分光分别承担开门、终点与晶体充能。"
+  },
+  {
+    "name": "双锁长廊",
+    "chapter": "星环枢纽",
+    "chapterNo": 12,
+    "rows": 12,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 4
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 4
+      },
+      {
+        "side": "W",
+        "index": 0
+      },
+      {
+        "side": "E",
+        "index": 4
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 7
+      },
+      {
+        "side": "W",
+        "index": 8
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 7,
+        "id": "A"
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 4,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 6,
+        "pair": "P1"
+      },
+      {
+        "type": "combiner",
+        "x": 4,
+        "y": 7,
+        "dir": 2,
+        "need": 2
+      },
+      {
+        "type": "door",
+        "x": 5,
+        "y": 7,
+        "id": "D",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "focus",
+        "x": 6,
+        "y": 5,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 9,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 4,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 6
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 9
+      },
+      {
+        "type": "portal",
+        "x": 1,
+        "y": 5,
+        "pair": "P2"
+      },
+      {
+        "type": "portal",
+        "x": 1,
+        "y": 6,
+        "pair": "P2"
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 8,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 9,
+        "id": "B"
+      },
+      {
+        "type": "portal",
+        "x": 2,
+        "y": 8,
+        "pair": "P3"
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 8,
+        "pair": "P3"
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "door",
+        "x": 7,
+        "y": 7,
+        "id": "D2",
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "portal",
+        "x": 6,
+        "y": 1,
+        "pair": "INGRESS"
+      },
+      {
+        "type": "portal",
+        "x": 0,
+        "y": 9,
+        "pair": "INGRESS"
+      }
+    ],
+    "shots": 3,
+    "hint": "先接通上方折光走廊，传送出口保持向右。两组跃迁与两套门锁把同一条主路拆成三层。"
+  },
+  {
+    "name": "三束归航",
+    "chapter": "星环枢纽",
+    "chapterNo": 12,
+    "rows": 12,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 4
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 4
+      },
+      {
+        "side": "W",
+        "index": 2
+      },
+      {
+        "side": "S",
+        "index": 4
+      },
+      {
+        "side": "E",
+        "index": 4
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 7
+      },
+      {
+        "side": "W",
+        "index": 8
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 4,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 6,
+        "pair": "P1"
+      },
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 7,
+        "id": "A"
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 8,
+        "s": 0
+      },
+      {
+        "type": "combiner",
+        "x": 4,
+        "y": 7,
+        "dir": 2,
+        "need": 3
+      },
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "door",
+        "x": 6,
+        "y": 7,
+        "id": "D",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "focus",
+        "x": 6,
+        "y": 5,
+        "need": 3
+      },
+      {
+        "type": "splitter",
+        "x": 7,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 9,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 7,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 4,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 6
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 9
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "portal",
+        "x": 6,
+        "y": 1,
+        "pair": "INGRESS"
+      },
+      {
+        "type": "portal",
+        "x": 0,
+        "y": 9,
+        "pair": "INGRESS"
+      }
+    ],
+    "shots": 3,
+    "hint": "先接通上方折光走廊，传送出口保持向右。四束光各有职责：三束汇核，最后一束把晶体补满。"
+  },
+  {
+    "name": "曲径补能",
+    "chapter": "星环枢纽",
+    "chapterNo": 12,
+    "rows": 11,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 2
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 2
+      },
+      {
+        "side": "S",
+        "index": 3
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 8
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "portal",
+        "x": 1,
+        "y": 6,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 5,
+        "y": 6,
+        "pair": "P1"
+      },
+      {
+        "type": "focus",
+        "x": 3,
+        "y": 7,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 4,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 3,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 8,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 9,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 9,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 8,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 8,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 5
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 5
+      },
+      {
+        "type": "switch",
+        "x": 2,
+        "y": 4,
+        "id": "A"
+      },
+      {
+        "type": "door",
+        "x": 5,
+        "y": 3,
+        "id": "D",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "portal",
+        "x": 6,
+        "y": 1,
+        "pair": "INGRESS"
+      },
+      {
+        "type": "portal",
+        "x": 0,
+        "y": 4,
+        "pair": "INGRESS"
+      }
+    ],
+    "shots": 3,
+    "hint": "先接通上方折光走廊，传送出口保持向右。外观可以对称，机关的责任却不对称。"
+  },
+  {
+    "name": "三源折返",
+    "chapter": "星环枢纽",
+    "chapterNo": 12,
+    "rows": 11,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 0
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 0
+      },
+      {
+        "side": "W",
+        "index": 9
+      },
+      {
+        "side": "S",
+        "index": 0
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 7
+      },
+      {
+        "side": "S",
+        "index": 6
+      },
+      {
+        "side": "N",
+        "index": 7
+      },
+      {
+        "side": "E",
+        "index": 9
+      },
+      {
+        "side": "W",
+        "index": 5
+      },
+      {
+        "side": "N",
+        "index": 1
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "combiner",
+        "x": 4,
+        "y": 7,
+        "dir": 0,
+        "need": 3
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 7,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 7,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 9,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 4,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 9,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 8,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 8,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 8,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 8,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 6
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 10
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "portal",
+        "x": 6,
+        "y": 1,
+        "pair": "INGRESS"
+      },
+      {
+        "type": "portal",
+        "x": 0,
+        "y": 4,
+        "pair": "INGRESS"
+      }
+    ],
+    "shots": 3,
+    "hint": "先接通上方折光走廊，传送出口保持向右。三条输入缺一不可，聚合输出仍要一分为二。"
+  },
+  {
+    "name": "双核曲径",
+    "chapter": "星环枢纽",
+    "chapterNo": 12,
+    "rows": 11,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 3
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 3
+      },
+      {
+        "side": "W",
+        "index": 0
+      },
+      {
+        "side": "S",
+        "index": 7
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 8
+      }
+    ],
+    "items": [
+      {
+        "type": "combiner",
+        "x": 2,
+        "y": 5,
+        "dir": 1,
+        "need": 2
+      },
+      {
+        "type": "portal",
+        "x": 4,
+        "y": 5,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 5,
+        "y": 7,
+        "pair": "P1"
+      },
+      {
+        "type": "combiner",
+        "x": 6,
+        "y": 8,
+        "dir": 1,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 3,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 9,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 9,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 8
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 5
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "portal",
+        "x": 6,
+        "y": 1,
+        "pair": "INGRESS"
+      },
+      {
+        "type": "portal",
+        "x": 0,
+        "y": 6,
+        "pair": "INGRESS"
+      }
+    ],
+    "shots": 3,
+    "hint": "先接通上方折光走廊，传送出口保持向右。第一座核心的输出必须跃迁后才能加入第二座核心。"
+  },
+  {
+    "name": "认证回航",
+    "chapter": "星环枢纽",
+    "chapterNo": 12,
+    "rows": 11,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 0
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 0
+      },
+      {
+        "side": "W",
+        "index": 7
+      },
+      {
+        "side": "S",
+        "index": 4
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 4
+      },
+      {
+        "side": "E",
+        "index": 7
+      },
+      {
+        "side": "N",
+        "index": 4
+      }
+    ],
+    "items": [
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 4,
+        "id": "A"
+      },
+      {
+        "type": "door",
+        "x": 4,
+        "y": 3,
+        "id": "D2",
+        "requires": [
+          "B",
+          "C"
+        ]
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 3,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 6,
+        "y": 3,
+        "pair": "P1"
+      },
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 8,
+        "id": "B"
+      },
+      {
+        "type": "door",
+        "x": 5,
+        "y": 9,
+        "id": "D1",
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "type": "switch",
+        "x": 3,
+        "y": 6,
+        "id": "C"
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 4,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 3,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 3,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 4,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 9,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 9,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 10,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 10,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 8
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 6
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "portal",
+        "x": 6,
+        "y": 1,
+        "pair": "INGRESS"
+      },
+      {
+        "type": "portal",
+        "x": 0,
+        "y": 4,
+        "pair": "INGRESS"
+      }
+    ],
+    "shots": 3,
+    "hint": "先接通上方折光走廊，传送出口保持向右。A+B 与 B+C 是两套认证，共享的 B 不能断。"
+  },
+  {
+    "name": "折返分光",
+    "chapter": "星环枢纽",
+    "chapterNo": 12,
+    "rows": 11,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 4
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 4
+      },
+      {
+        "side": "W",
+        "index": 2
+      },
+      {
+        "side": "E",
+        "index": 4
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 7
+      },
+      {
+        "side": "W",
+        "index": 8
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 7,
+        "id": "A"
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 4,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 6,
+        "pair": "P1"
+      },
+      {
+        "type": "combiner",
+        "x": 4,
+        "y": 7,
+        "dir": 2,
+        "need": 2
+      },
+      {
+        "type": "door",
+        "x": 5,
+        "y": 7,
+        "id": "D",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "focus",
+        "x": 6,
+        "y": 5,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 9,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 7,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 4,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 6
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 9
+      },
+      {
+        "type": "portal",
+        "x": 1,
+        "y": 5,
+        "pair": "P2"
+      },
+      {
+        "type": "portal",
+        "x": 1,
+        "y": 6,
+        "pair": "P2"
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 8,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "portal",
+        "x": 6,
+        "y": 1,
+        "pair": "INGRESS"
+      },
+      {
+        "type": "portal",
+        "x": 0,
+        "y": 9,
+        "pair": "INGRESS"
+      }
+    ],
+    "shots": 3,
+    "hint": "先接通上方折光走廊，传送出口保持向右。两级分光分别承担开门、终点与晶体充能。"
+  },
+  {
+    "name": "光城回环",
+    "chapter": "星环枢纽",
+    "chapterNo": 12,
+    "rows": 12,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 0
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 0
+      },
+      {
+        "side": "W",
+        "index": 9
+      },
+      {
+        "side": "E",
+        "index": 4
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 7
+      },
+      {
+        "side": "W",
+        "index": 8
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 7,
+        "id": "A"
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 4,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 6,
+        "pair": "P1"
+      },
+      {
+        "type": "combiner",
+        "x": 4,
+        "y": 7,
+        "dir": 1,
+        "need": 2
+      },
+      {
+        "type": "door",
+        "x": 5,
+        "y": 7,
+        "id": "D",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "focus",
+        "x": 6,
+        "y": 5,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 9,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 4,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 6
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 9
+      },
+      {
+        "type": "portal",
+        "x": 1,
+        "y": 5,
+        "pair": "P2"
+      },
+      {
+        "type": "portal",
+        "x": 1,
+        "y": 6,
+        "pair": "P2"
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 8,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 9,
+        "id": "B"
+      },
+      {
+        "type": "portal",
+        "x": 2,
+        "y": 8,
+        "pair": "P3"
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 8,
+        "pair": "P3"
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "door",
+        "x": 7,
+        "y": 7,
+        "id": "D2",
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "portal",
+        "x": 6,
+        "y": 1,
+        "pair": "INGRESS"
+      },
+      {
+        "type": "portal",
+        "x": 0,
+        "y": 4,
+        "pair": "INGRESS"
+      }
+    ],
+    "shots": 3,
+    "hint": "先接通上方折光走廊，传送出口保持向右。两组跃迁与两套门锁把同一条主路拆成三层。"
+  },
+  {
+    "name": "星环终章",
+    "chapter": "星环枢纽",
+    "chapterNo": 12,
+    "rows": 12,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 2
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 2
+      },
+      {
+        "side": "W",
+        "index": 9
+      },
+      {
+        "side": "S",
+        "index": 4
+      },
+      {
+        "side": "E",
+        "index": 4
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 7
+      },
+      {
+        "side": "W",
+        "index": 8
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 4,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 6,
+        "pair": "P1"
+      },
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 7,
+        "id": "A"
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 8,
+        "s": 0
+      },
+      {
+        "type": "combiner",
+        "x": 4,
+        "y": 7,
+        "dir": 1,
+        "need": 3
+      },
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "door",
+        "x": 6,
+        "y": 7,
+        "id": "D",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "focus",
+        "x": 6,
+        "y": 5,
+        "need": 3
+      },
+      {
+        "type": "splitter",
+        "x": 7,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 9,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 7,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 4,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 6
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 9
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "portal",
+        "x": 6,
+        "y": 1,
+        "pair": "INGRESS"
+      },
+      {
+        "type": "portal",
+        "x": 0,
+        "y": 4,
+        "pair": "INGRESS"
+      }
+    ],
+    "shots": 3,
+    "hint": "先接通上方折光走廊，传送出口保持向右。四束光各有职责：三束汇核，最后一束把晶体补满。"
   }
 ]

@@ -188,7 +188,7 @@ export class GameSession {
     });
 
     const success = this.isSuccess(s.result);
-    const combinedTail=Object.keys(s.result.combinerPulses).length>0&&s.beamDistance<s.result.maxTravel;
+    const combinedTail=(Object.keys(s.result.combinerPulses).length>0||s.result.impactEvents.some(e=>e.type==='door-open'))&&s.beamDistance<s.result.maxTravel;
     if (!pendingImpact && !combinedTail && (success || s.beamDistance >= s.result.maxTravel)) {
       if (!this.finishAt) {
         const tail = s.comboCount >= COMBO_VISIBLE_FROM
@@ -205,7 +205,10 @@ export class GameSession {
     const s = this.state;
     if (impact.type === 'switch' && impact.id) {
       s.activeSwitches.add(impact.id);
-      for (const item of s.items) if (item.type==='door') s.activeDoorStates[item.id]=item.requires.every(id=>s.activeSwitches.has(id));
+      this.emit({type:'state'});
+    }
+    if (impact.type === 'door-open' && impact.id) {
+      s.activeDoorStates[impact.id] = true;
       this.emit({type:'state'});
     }
     if (impact.type === 'target' && impact.targetIndex !== undefined) {

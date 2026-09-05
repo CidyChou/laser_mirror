@@ -31,12 +31,12 @@ export class ImpactSystem extends Container{
     this.activate(x,y,Theme.beam,now,360,1.55);
   }
 
-  triggerImpactEffect(e:ImpactEvent,now:number){
+  triggerImpactEffect(e:ImpactEvent,now:number,colorOverride?:number){
     if(e.type==='combiner-fire'){this.activate(e.px,e.py,Theme.beam,now,460,2);return;}
-    const color=e.type==='target'||e.type==='switch'||e.type==='focus'?Theme.green
-      :e.type==='portal'||e.type==='combiner'?Theme.purple
+    const color=colorOverride??(e.type==='target'||e.type==='switch'||e.type==='focus'||e.type==='door-open'?Theme.green
+      :e.type==='portal'?Theme.purple:e.type==='combiner'?Theme.cyan
         :e.type==='splitter'?Theme.cyan
-          :e.type==='mirror'?Theme.white:Theme.beam;
+          :e.type==='mirror'?Theme.white:Theme.beam);
     const strength=e.type==='target'||e.type==='focus'?1.65:e.type==='portal'||e.type==='combiner'?1.38:e.type==='mirror'||e.type==='splitter'?1.24:1.08;
     this.activate(e.px,e.py,color,now,e.type==='target'||e.type==='focus'?520:e.type==='portal'?430:340,strength);
     if(e.type==='portal'&&e.toX!==undefined&&e.toY!==undefined){
@@ -72,4 +72,5 @@ export class ImpactSystem extends Container{
   }
 
   get active(){return this.pool.some(effect=>effect.active);}
+  clear(){for(const effect of this.pool){effect.active=false;effect.root.visible=false;}}
 }

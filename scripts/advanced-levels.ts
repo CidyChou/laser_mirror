@@ -479,6 +479,72 @@ specs.push({
   ),
 });
 
+// 101–120 extend expert mechanism graphs with a separately routed ingress.
+// The new ingress replaces an existing source (it does not add free energy).
+// Some old routing mirrors are fixed to keep the search space at expert size.
+const continuationSpecs = [
+  [10, '折光启程', 0, 0], [12, '三源远渡', 0, 1],
+  [13, '跃迁前奏', 0, 2], [16, '远端认证', 0, 0],
+  [17, '分流引桥', 0, 1], [18, '迷城入口', 0, 2],
+  [19, '晶核远航', 0, 0], [12, '侧路汇流', 0, 2],
+  [13, '次核来信', 1, 1], [16, '回折密钥', 1, 2],
+  [17, '支流回响', 1, 0], [18, '双锁长廊', 1, 1],
+  [19, '三束归航', 1, 2], [10, '曲径补能', 0, 2],
+  [12, '三源折返', 0, 0], [13, '双核曲径', 1, 0],
+  [16, '认证回航', 0, 1], [17, '折返分光', 1, 2],
+  [18, '光城回环', 0, 1], [19, '星环终章', 0, 2],
+] as const;
+
+function continuation(baseIndex: number, name: string, sourceIndex: number, route: number, index: number): AdvancedSpec {
+  const base = specs[baseIndex];
+  const source = base.emitters[sourceIndex];
+  if (source.side !== 'W' || base.emitters.some(entry => entry.side === 'N')) {
+    throw new Error(`${name}: ingress requires a west source and no north sources`);
+  }
+  const shiftPort = (entry: Port): Port => ({
+    ...entry, index: entry.index + (entry.side === 'W' || entry.side === 'E' ? 3 : 0),
+  });
+  const solution = base.solution.map(item => ({ ...item, y: item.y + 3 })) as LevelItem[];
+  if (solution.some(item => item.x === 0 && item.y === source.index + 3)) {
+    throw new Error(`${name}: ingress landing is occupied`);
+  }
+  const northTargets = new Set(base.targets.filter(entry => entry.side === 'N').map(entry => entry.index));
+  const columns = [1, 2, 3, 4, 5].filter(x => !northTargets.has(x));
+  const a = columns[0];
+  const b = columns[columns.length - 1];
+  const routes: XY[][] = [
+    [[0, 0], [a, 0], [a, 1], [6, 1]],
+    [[0, 0], [b, 0], [b, 2], [a, 2], [a, 1], [6, 1]],
+    [[0, 2], [a, 2], [a, 0], [b, 0], [b, 1], [6, 1]],
+  ];
+  const ingress = path(routes[route], {}, { startDir: 0 });
+  let toFix = ingress.length - (baseIndex === 18 || baseIndex === 10 ? 1 : 0);
+  for (const item of solution) {
+    if (toFix && item.type === 'mirror' && !item.fixed) {
+      item.fixed = true;
+      toFix -= 1;
+    }
+  }
+  if (toFix) throw new Error(`${name}: too few routing mirrors to fix`);
+  const emitters = base.emitters.map(shiftPort);
+  emitters[sourceIndex] = port('W', routes[route][0][1]);
+  return {
+    ...base, name,
+    targetClicks: baseIndex === 19 && route === 2 ? 13 : base.targetClicks,
+    chapter: index < 10 ? '远光回廊' : '星环枢纽',
+    chapterNo: index < 10 ? 11 : 12,
+    rows: base.rows + 3,
+    emitters,
+    targets: base.targets.map(shiftPort),
+    hint: `先接通上方折光走廊，传送出口保持向右。${base.hint}`,
+    solution: merge(solution, ingress, [portal(6, 1, 'INGRESS'), portal(0, source.index + 3, 'INGRESS')]),
+  };
+}
+
+export function buildContinuationLevels(): LevelDefinition[] {
+  return continuationSpecs.map(([base, name, source, route], index) => finalize(continuation(base, name, source, route, index)));
+}
+
 export function buildAdvancedLevels(): LevelDefinition[] {
   return specs.map(finalize);
 }

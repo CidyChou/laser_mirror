@@ -21,7 +21,7 @@ import type { UiAssetKey } from './ui/assets';
 export class PixiGameView{
   readonly root=new Container();
   private bg=new Graphics();private stageBg=new Graphics();private board=new BoardLayer();private objects=new ObjectLayer();private laser:LaserEffect;private impacts=new ImpactSystem();private particles:ParticleSystem;private confetti=new WinConfetti();private hud=new HudLayer();private combo=new ComboLayer();readonly coins=new CoinLayer();readonly result=new ResultLayer();readonly settings:SettingsLayer;readonly levelSelect:LevelSelectLayer;private toastBg=new Graphics();private toast=new Text({text:'',style:uiText({fontSize:18,fill:Theme.text})});private toastUntil=0;private victoryUntil=0;private victoryWash=new Graphics();private currentLevel=-1;private lastGeometry:BoardGeometry|null=null;private comboActive=false;private resultActive=false;private coinsActive=false;private confettiActive=false;private hudOffset=0;
-  constructor(renderer:Renderer,private readonly performance:PerformanceManager,themeId:ThemeId,levels:readonly LevelDefinition[],gpuLaser=true){this.laser=new LaserEffect(renderer,gpuLaser);this.particles=new ParticleSystem(renderer);this.settings=new SettingsLayer(themeId);this.levelSelect=new LevelSelectLayer(levels);this.buildBackground();this.root.addChild(this.bg,this.stageBg,this.board,this.objects,this.laser,this.particles.container,this.impacts,this.victoryWash,this.hud,this.combo,this.toastBg,this.toast,this.result,this.confetti,this.coins,this.levelSelect,this.settings);this.toast.anchor.set(.5);this.toast.position.set(360,220);this.toast.visible=false;this.toastBg.visible=false;}
+  constructor(renderer:Renderer,private readonly performance:PerformanceManager,themeId:ThemeId,levels:readonly LevelDefinition[],gpuLaser=true){this.laser=new LaserEffect(renderer,gpuLaser);this.particles=new ParticleSystem(renderer);this.settings=new SettingsLayer(themeId);this.levelSelect=new LevelSelectLayer(levels);this.buildBackground();this.root.addChild(this.bg,this.stageBg,this.board,this.objects,this.laser,this.particles.container,this.impacts,this.objects.captions,this.victoryWash,this.hud,this.combo,this.toastBg,this.toast,this.result,this.confetti,this.coins,this.levelSelect,this.settings);this.toast.anchor.set(.5);this.toast.position.set(360,220);this.toast.visible=false;this.toastBg.visible=false;}
   private buildBackground(){
     this.bg.rect(0,0,DESIGN_WIDTH,DESIGN_HEIGHT).fill(Theme.bg);
     // Broad ambient fields create depth without competing with the laser.
@@ -71,7 +71,7 @@ export class PixiGameView{
       this.coins.setCoinTexture(texture);
     }
   }
-  sync(state:GameState){const g=computeGeometry(state.level);this.lastGeometry=g;if(this.currentLevel!==state.levelIndex){this.currentLevel=state.levelIndex;this.board.rebuild(state.level,g);this.hideOverlays();}this.objects.sync(state,g);this.laser.bind(state,g.cell);this.hud.sync(state);}
+  sync(state:GameState){const g=computeGeometry(state.level);this.lastGeometry=g;if(this.currentLevel!==state.levelIndex){this.currentLevel=state.levelIndex;this.board.rebuild(state.level,g);this.hideOverlays();}if(!state.result&&!state.firing){this.particles.clear();this.impacts.clear();}this.objects.sync(state,g);this.laser.bind(state,g.cell);this.hud.sync(state);}
   rotateItem(x:number,y:number,s:0|1,dir?:Direction){this.objects.rotateItem(x,y,s,dir);}
   hideOverlays(){this.result.hide();this.settings.hide();this.levelSelect.hide();this.combo.clear();this.confetti.clear();this.coins.hide();this.hud.setHeartsVisible(true);}
   showSettings(audioEnabled:boolean,hapticsEnabled:boolean,themeId:ThemeId){this.settings.show(audioEnabled,hapticsEnabled,themeId);}
@@ -92,7 +92,8 @@ export class PixiGameView{
   private directionAngle(direction:Direction){return direction*Math.PI/2;}
   impact(e:ImpactEvent,now:number){
     try{
-      this.impacts.triggerImpactEffect(e,now);
+      const feedbackColor=e.type==='portal'?this.objects.portalColor(e.pair??''):e.type==='focus'?this.objects.focusColor(e.x,e.y):undefined;
+      this.impacts.triggerImpactEffect(e,now,feedbackColor);
       if(e.type==='combiner-fire'){
         if(e.x!==undefined&&e.y!==undefined)this.objects.kick(e.x,e.y,now);
         const angle=this.directionAngle(e.outgoingDirs?.[0]??0);
@@ -102,7 +103,7 @@ export class PixiGameView{
       }
       if((e.type==='mirror'||e.type==='splitter'||e.type==='focus'||e.type==='combiner')&&e.x!==undefined&&e.y!==undefined)this.objects.kick(e.x,e.y,now);
       const count=Math.max(2,Math.round((e.type==='target'||e.type==='focus'?16:e.type==='splitter'||e.type==='combiner'?12:e.type==='mirror'?10:e.type==='portal'?10:7)*this.emitScale()));
-      const color=e.type==='target'||e.type==='switch'||e.type==='focus'?Theme.green:e.type==='portal'||e.type==='combiner'?Theme.purple:e.type==='splitter'?Theme.cyan:e.type==='mirror'?Theme.beamHot:Theme.beam;
+      const color=feedbackColor??(e.type==='target'||e.type==='switch'||e.type==='door-open'?Theme.green:e.type==='combiner'||e.type==='splitter'?Theme.cyan:e.type==='mirror'?Theme.beamHot:Theme.beam);
       const budget=this.performance.particleBudget;
       if(e.type==='portal'){
         const incoming=e.incomingDir===undefined?0:this.directionAngle(e.incomingDir)+Math.PI;

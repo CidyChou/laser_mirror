@@ -5,7 +5,7 @@ import { computeGeometry } from '../src/gameplay/geometry';
 import { LaserSimulator } from '../src/gameplay/LaserSimulator';
 import { itemKey } from '../src/gameplay/levelAccess';
 import type { Direction, LevelDefinition, LevelItem, Orientation, Port } from '../src/gameplay/types';
-import { buildAdvancedLevels } from './advanced-levels';
+import { buildAdvancedLevels, buildContinuationLevels } from './advanced-levels';
 
 const simulator = new LaserSimulator();
 type Extra = { fixed?: true; decoy?: true };
@@ -604,7 +604,7 @@ specs.forEach((spec, index) => {
 });
 
 try {
-  out.push(...buildAdvancedLevels());
+  out.push(...buildAdvancedLevels(), ...buildContinuationLevels());
 } catch (error) {
   errors.push(error instanceof Error ? error.message : String(error));
 }

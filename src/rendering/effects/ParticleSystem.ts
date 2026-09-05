@@ -114,6 +114,14 @@ export class ParticleSystem {
 
   get active(){return this.activeParticles.length>0;}
 
+  clear(){
+    for(const active of this.activeParticles){
+      (active.kind==='dot'?this.dots:this.sparks).removeParticle(active.p);
+      (active.kind==='dot'?this.dotPool:this.sparkPool).push(active.p);
+    }
+    this.activeParticles=[];
+  }
+
   destroy(){
     this.container.destroy({children:true});
     this.dotTexture.destroy(true);this.sparkTexture.destroy(true);
