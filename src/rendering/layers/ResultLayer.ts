@@ -9,6 +9,8 @@ export type ResultKind = 'win' | 'lose';
 
 export class ResultLayer extends Container {
   readonly primary = new Button(326, 82, '下一关', 'primary');
+  readonly preview = new Button(244, 70, '预览本关', 'secondary');
+  readonly levels = new Button(244, 70, '选择关卡', 'secondary');
   readonly secondary = new Button(340, 64, '重新挑战', 'secondary');
   private readonly dim = new Graphics();
   private readonly panel = new Container();
@@ -54,6 +56,8 @@ export class ResultLayer extends Container {
     this.crown.height = 124;
     drawCrownIcon(this.crownFallback, 124);
     this.primary.setLabelSize(28);
+    this.preview.setLabelSize(22);
+    this.levels.setLabelSize(22);
     this.secondary.setLabelSize(22);
     this.panel.addChild(
       this.panelGfx,
@@ -66,6 +70,8 @@ export class ResultLayer extends Container {
       this.rewardValue,
       this.rewardCoinFallback,
       this.rewardCoin,
+      this.preview,
+      this.levels,
       this.primary,
       this.secondary,
     );
@@ -101,6 +107,8 @@ export class ResultLayer extends Container {
     this.primary.setText(copy.primary);
     this.secondary.setText(copy.secondary ?? '重新挑战');
     this.secondary.visible = false;
+    this.preview.visible = kind === 'win';
+    this.levels.visible = kind === 'win';
     const reward = Math.max(0, Math.floor(copy.reward ?? 0));
     this.rewardValue.text = `+${reward}`;
     const showReward = kind === 'win' && reward > 0;
@@ -144,7 +152,14 @@ export class ResultLayer extends Container {
     this.subtitle.position.set(0, this.kind === 'win' ? -rect.h / 2 + 218 : -rect.h / 2 + 198);
     this.tip.position.set(0, this.kind === 'win' ? -18 : 18);
     this.layoutReward();
-    this.primary.position.set(-this.primary.widthPx / 2, rect.h / 2 - (this.kind === 'win' ? 150 : 108));
+    if (this.kind === 'win') {
+      const dualY = rect.h / 2 - 186;
+      this.preview.position.set(-this.preview.widthPx - 8, dualY);
+      this.levels.position.set(8, dualY);
+      this.primary.position.set(-this.primary.widthPx / 2, rect.h / 2 - 100);
+    } else {
+      this.primary.position.set(-this.primary.widthPx / 2, rect.h / 2 - 108);
+    }
     this.secondary.position.set(-this.secondary.widthPx / 2, rect.h / 2 - 58);
   }
 
@@ -200,6 +215,8 @@ export class ResultLayer extends Container {
     const scale = 0.76 + easeOutBack(entering) * 0.24;
     this.panel.scale.set(scale);
     this.primary.alpha = clamp((elapsed - 420) / 220, 0, 1);
+    this.preview.alpha = this.primary.alpha;
+    this.levels.alpha = this.primary.alpha;
     this.secondary.alpha = this.primary.alpha;
     this.entering = entering < 1 || this.primary.alpha < 1;
     return this.entering;

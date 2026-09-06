@@ -16,7 +16,7 @@ export const UI_RECTS = {
   coinCounter: { x: 520, y: 104, w: 168, h: 72 },
   fire: { x: 210, y: 1186, w: 300, h: 92 },
   hint: { x: 360, y: 1292 },
-  resultWin: { x: 86, y: 300, w: 548, h: 560 },
+  resultWin: { x: 80, y: 256, w: 560, h: 640 },
   resultLose: { x: 90, y: 318, w: 540, h: 540 },
   settingsPanel: { x: 70, y: 210, w: 580, h: 960 },
 } as const;

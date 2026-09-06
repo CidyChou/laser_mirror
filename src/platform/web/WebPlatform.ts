@@ -1,4 +1,5 @@
-import type { IPlatform, ViewportInfo } from '../IPlatform';
+import { downloadCanvas } from '../album';
+import type { AlbumSaveInput, AlbumSaveResult, IPlatform, ViewportInfo } from '../IPlatform';
 export class WebPlatform implements IPlatform{
   readonly kind='web' as const;
   viewport():ViewportInfo{return{width:Math.min(window.innerWidth,520),height:window.innerHeight,pixelRatio:Math.max(1,window.devicePixelRatio||1)}}
@@ -13,4 +14,7 @@ export class WebPlatform implements IPlatform{
     }catch{}
   }
   storage={get:(key:string)=>localStorage.getItem(key),set:(key:string,value:string)=>localStorage.setItem(key,value)};
+  saveImageToAlbum(input:AlbumSaveInput):Promise<AlbumSaveResult>{
+    return downloadCanvas(input.canvas,input.filename??'laser-mirror.png');
+  }
 }

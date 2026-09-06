@@ -133,7 +133,11 @@ export class LevelSelectLayer extends Container {
 
   show(currentIndex: number, completed: ReadonlySet<number>, allLevelsUnlocked = false) {
     this.visible = true;
+    this.stopDrag();
+    this.coasting = false;
+    this.velocity = 0;
     this.sync(currentIndex, completed, allLevelsUnlocked);
+    this.scrollToLevel(firstIncompleteLevel(this.levels.length, completed));
   }
 
   hide() {
@@ -206,6 +210,30 @@ export class LevelSelectLayer extends Container {
     this.titleTapCount = 0;
     this.titleTapStartedAt = 0;
     this.unlockAllHandler();
+  }
+
+  private scrollToLevel(index: number) {
+    const loc = this.locateLevel(index);
+    if (!loc) {
+      this.setScroll(0, true);
+      return;
+    }
+    const padding = 20;
+    let scroll = loc.cardY;
+    if (loc.tileY - scroll < padding) scroll = loc.tileY - padding;
+    if (loc.tileY + TILE_H - scroll > this.viewportHeight - padding) {
+      scroll = loc.tileY + TILE_H - this.viewportHeight + padding;
+    }
+    this.setScroll(scroll, true);
+  }
+
+  private locateLevel(index: number) {
+    for (const card of this.chapterCards) {
+      const tileY = card.offsetYForLevel(index);
+      if (tileY == null) continue;
+      return { cardY: card.y, tileY: card.y + tileY };
+    }
+    return null;
   }
 
   private maxScroll() {
@@ -342,6 +370,11 @@ class ChapterCard extends Container {
       tile.setSelectHandler((index) => this.selectHandler(index));
     });
     this.addChild(this.chrome, this.chapterBadge, this.chapterNumber, this.title, this.progress, ...this.tiles);
+  }
+
+  offsetYForLevel(index: number) {
+    const tile = this.tiles.find((item) => item.levelIndex === index);
+    return tile ? tile.y : null;
   }
 
   setSelectHandler(handler: (index: number) => void) {

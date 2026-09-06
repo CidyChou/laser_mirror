@@ -56,6 +56,8 @@ export class GameApplication {
   private lastVibrateAt=-Infinity;
   private firePulseAt=0;
   private fireWatchdog:ReturnType<typeof setInterval>|0=0;
+  private paidVictory=false;
+  private savingPoster=false;
 
   constructor(private readonly platform:IPlatform){
     const repo=new LevelRepository();
@@ -107,7 +109,7 @@ export class GameApplication {
       const now=nowMs();
       const state=this.session.state;
       if(event.type==='level'){
-        this.collectPendingCoins();this.pendingResult=null;this.view.hideOverlays();
+        this.collectPendingCoins();this.pendingResult=null;this.paidVictory=false;this.view.hideOverlays();
         saveCurrentLevel(this.platform,state.levelIndex);
       }
       if(event.type==='rotate'){
@@ -170,7 +172,7 @@ export class GameApplication {
         if(newlyCompleted)saveCurrentLevel(this.platform,firstIncompleteLevel(this.totalLevels,this.completedLevels));
         this.audio.play('win');
         this.view.victory(now,state);
-        const reward=winReward(state.levelIndex);
+        const reward=this.paidVictory?0:winReward(state.levelIndex);
         const copy={
           title:'通关成功',
           subtitle:`第 ${state.levelIndex+1} 关已完成`,
@@ -179,10 +181,11 @@ export class GameApplication {
           reward,
         };
         if(reward){
+          this.paidVictory=true;
           this.coins+=reward;
           saveCoins(this.platform,this.coins);
+          this.view.startWinCoins(now, this.coins-reward, reward);
         }
-        this.view.startWinCoins(now, this.coins-reward, reward);
         this.pendingResult={kind:'win',copy,at:now+(state.comboCount>=2?900:280)};
         this.vibrate('success');this.wake();
       }
@@ -210,7 +213,7 @@ export class GameApplication {
         if(this.pendingResult&&now>=this.pendingResult.at){
           const pending=this.pendingResult; this.pendingResult=null;
           this.view.showResult(pending.kind, pending.copy, now);
-          if(pending.kind==='win') this.view.revealWinCoins();
+          if(pending.kind==='win' && (pending.copy.reward??0)>0) this.view.revealWinCoins();
         }
         this.view.update(this.session.state,now);
         if(!logicActive&&!this.view.active&&!this.pendingResult){this.app.ticker.stop();this.renderOnce();}
@@ -267,7 +270,7 @@ export class GameApplication {
   private bindViewHandlers(){
     this.view.setHandlers({
       rotate:(x,y)=>{
-        if(this.session.state.firing||this.session.state.won||this.view.result.visible||this.view.settings.visible||this.view.levelSelect.visible)return;
+        if(this.session.state.firing||this.session.state.won||this.overlayLocked())return;
         const now=nowMs();
         this.session.rotateAt(x,y);
         this.view.mirrorRotateFeedback(x,y,now);
@@ -275,7 +278,7 @@ export class GameApplication {
         this.wake();this.audio.play('mirrorRotate');this.vibrate('light');
       },
       fire:()=>{
-        if(this.view.result.visible||this.view.settings.visible||this.view.levelSelect.visible)return;
+        if(this.overlayLocked())return;
         if(this.session.state.hearts<=0){this.audio.play('uiClick');this.showHeartRefill(nowMs());this.wake();return;}
         try{this.session.fire();}
         catch(error){
@@ -286,7 +289,7 @@ export class GameApplication {
         this.wake();
       },
       reset:()=>{this.collectPendingCoins();this.pendingResult=null;this.audio.play('uiClick');this.session.reset();this.wake();},
-      openSettings:()=>{if(this.view.result.visible)return;this.audio.play('uiClick');this.view.showSettings(this.audioEnabled,this.hapticsEnabled,this.themeId);this.wake();},
+      openSettings:()=>{if(this.view.result.visible||this.view.poster.visible)return;this.audio.play('uiClick');this.view.showSettings(this.audioEnabled,this.hapticsEnabled,this.themeId);this.wake();},
       closeSettings:()=>{this.audio.play('uiClick');this.view.closeSettings();this.wake();},
       toggleAudio:()=>{
         this.audioEnabled=!this.audioEnabled;this.audio.setEnabled(this.audioEnabled);
@@ -310,7 +313,7 @@ export class GameApplication {
         Promise.resolve().then(()=>{this.createView(true,reopenLevels);this.wake();});
       },
       openLevels:()=>{
-        if(this.session.state.firing||this.view.result.visible)return;
+        if(this.session.state.firing||this.view.result.visible||this.view.poster.visible)return;
         this.audio.play('uiClick');
         this.view.showLevelSelect(this.session.state.levelIndex,this.completedLevels,this.allLevelsUnlocked);
         this.wake();
@@ -338,8 +341,56 @@ export class GameApplication {
         this.wake();
       },
       resultSecondary:()=>{this.collectPendingCoins();this.pendingResult=null;this.audio.play('uiClick');this.session.reset();this.wake();},
+      resultPreview:()=>this.openWinPreview(),
+      resultLevels:()=>{
+        this.collectPendingCoins();this.pendingResult=null;this.audio.play('uiClick');
+        this.view.showLevelSelectFromWin(this.session.state.levelIndex,this.completedLevels,this.allLevelsUnlocked);
+        this.wake();
+      },
+      closePoster:()=>{this.audio.play('uiClick');this.view.poster.hide();this.wake();},
+      savePoster:()=>{void this.saveWinPoster();},
       coinSound:()=>this.audio.play('coin'),
     });
+  }
+  private overlayLocked(){
+    return this.view.result.visible||this.view.settings.visible||this.view.levelSelect.visible||this.view.poster.visible;
+  }
+  private openWinPreview(){
+    if(this.view.poster.visible)return;
+    this.audio.play('uiClick');
+    this.vibrate('heavy');
+    const state=this.session.state;
+    const ok=this.view.showWinPreview({levelIndex:state.levelIndex,comboCount:state.comboCount},nowMs());
+    if(!ok) this.view.showToast('预览失败',nowMs());
+    this.wake();
+    this.renderOnce();
+  }
+  private async saveWinPoster(){
+    if(this.savingPoster||!this.view.poster.visible)return;
+    this.savingPoster=true;
+    this.view.poster.setSaveStatus('saving');
+    this.audio.play('uiClick');
+    this.wake();
+    try{
+      const canvas=this.view.exportPosterCanvas();
+      if(!canvas){
+        this.view.poster.setSaveStatus('error');
+        this.view.showToast('保存失败',nowMs());
+        return;
+      }
+      const result=await this.platform.saveImageToAlbum({
+        canvas,
+        filename:`光线急转弯-第${this.session.state.levelIndex+1}关.png`,
+      });
+      this.view.poster.setSaveStatus(result.ok?'saved':'error');
+      this.view.showToast(result.message,nowMs());
+    }catch{
+      this.view.poster.setSaveStatus('error');
+      this.view.showToast('保存失败',nowMs());
+    }finally{
+      this.savingPoster=false;
+      this.wake();
+    }
   }
   private clearHistory(){
     this.audio.play('uiClick');

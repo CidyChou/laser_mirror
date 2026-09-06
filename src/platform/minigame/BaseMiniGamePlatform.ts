@@ -1,4 +1,5 @@
-import type { IPlatform, PlatformKind, ViewportInfo } from '../IPlatform';
+import { saveCanvasToAlbum } from '../album';
+import type { AlbumSaveInput, AlbumSaveResult, IPlatform, PlatformKind, ViewportInfo } from '../IPlatform';
 export class BaseMiniGamePlatform implements IPlatform{
   private detachInput=()=>{};
   constructor(readonly kind:PlatformKind,protected readonly api:any){}
@@ -83,6 +84,9 @@ export class BaseMiniGamePlatform implements IPlatform{
     }catch{}
   }
   storage={get:(key:string)=>{try{return this.api.getStorageSync?.(key)??null}catch{return null}},set:(key:string,value:string)=>{try{this.api.setStorageSync?.(key,value)}catch{}}};
+  saveImageToAlbum(input:AlbumSaveInput):Promise<AlbumSaveResult>{
+    return saveCanvasToAlbum(this.api,input.canvas);
+  }
 }
 
 function pointerEvent(type:string,touch:any,nativeEvent:any,canvas:any){

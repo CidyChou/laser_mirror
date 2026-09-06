@@ -1,6 +1,8 @@
 export type PlatformKind='web'|'wechat'|'douyin'|'xhs';
 export type HapticKind='light'|'medium'|'heavy'|'success';
 export interface ViewportInfo { width:number;height:number;pixelRatio:number }
+export interface AlbumSaveInput { canvas:unknown; filename?:string }
+export interface AlbumSaveResult { ok:boolean; message:string }
 export interface IPlatform {
   readonly kind:PlatformKind;
   viewport():ViewportInfo;
@@ -12,4 +14,5 @@ export interface IPlatform {
   safeTop():number;
   vibrate(type?:HapticKind):void;
   storage:{get(key:string):string|null;set(key:string,value:string):void};
+  saveImageToAlbum(input:AlbumSaveInput):Promise<AlbumSaveResult>;
 }

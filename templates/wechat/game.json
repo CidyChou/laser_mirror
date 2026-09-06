@@ -1,6 +1,11 @@
 {
   "deviceOrientation": "portrait",
   "showStatusBar": false,
+  "permission": {
+    "scope.writePhotosAlbum": {
+      "desc": "用于保存通关光路海报到相册"
+    }
+  },
   "networkTimeout": {
     "request": 10000,
     "connectSocket": 10000,
