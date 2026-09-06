@@ -2,7 +2,7 @@ import type { IPlatform } from '@/platform/IPlatform';
 
 export const HEART_STORAGE_KEY = 'laser-mirror-hearts';
 export const MAX_HEARTS = 5;
-export const AD_HEART_REWARD = 3;
+export const AD_HEART_REWARD = 5;
 
 export function loadHearts(platform: IPlatform): number {
   const raw = platform.storage.get(HEART_STORAGE_KEY);

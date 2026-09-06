@@ -8,8 +8,8 @@ export const mechanismsFixture:LevelDefinition={...base,name:'配对机关与三
     {type:'door',x:5,y:1,id:'ABC',requires:['A','B','C']},{type:'door',x:5,y:4,id:'A-only',requires:['A']},
     {type:'combiner',x:3,y:6,dir:0},{type:'focus',x:6,y:6,need:3},
     ...[0,2,3,7].flatMap((y,index)=>[{type:'portal' as const,x:0,y,pair:`P${index+1}`},{type:'portal' as const,x:7,y,pair:`P${index+1}`}]) ]};
-export const denseMechanismsFixture:LevelDefinition={...mechanismsFixture,name:'小格机关 · 六组传送',rows:12,
-  items:[...mechanismsFixture.items,...[9,11].flatMap((y,index)=>[{type:'portal' as const,x:0,y,pair:`P${index+5}`},{type:'portal' as const,x:7,y,pair:`P${index+5}`}])]};
+export const denseMechanismsFixture:LevelDefinition={...mechanismsFixture,name:'八格机关 · 六组传送',
+  items:[...mechanismsFixture.items,...[2,4].flatMap((x,index)=>[{type:'portal' as const,x,y:2,pair:`P${index+5}`},{type:'portal' as const,x,y:7,pair:`P${index+5}`}])]};
 export const collectorFixture:LevelDefinition={...base,name:'收集 · 蓄力 · 释放',rows:6,cols:6,
   emitter:{side:'W',index:3},emitters:[{side:'W',index:3},{side:'N',index:2}],targets:[{side:'E',index:3}],
   items:[{type:'combiner',x:2,y:3,dir:0}]};

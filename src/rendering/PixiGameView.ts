@@ -27,14 +27,14 @@ export class PixiGameView{
     // Broad ambient fields create depth without competing with the laser.
     this.bg.ellipse(42,220,440,360).fill({color:Theme.beam,alpha:.022});
     this.bg.ellipse(680,1010,520,460).fill({color:Theme.cyan,alpha:.018});
-    this.victoryWash.rect(32,STAGE_TOP,656,STAGE_HEIGHT).fill({color:Theme.victoryWash,alpha:1});
+    this.victoryWash.rect(0,STAGE_TOP,DESIGN_WIDTH,STAGE_HEIGHT).fill({color:Theme.victoryWash,alpha:1});
     this.victoryWash.alpha=0;
     this.victoryWash.visible=false;
-    this.stageBg.roundRect(36,STAGE_TOP+12,648,STAGE_HEIGHT,22).fill({color:Theme.shadow,alpha:.28});
-    this.stageBg.roundRect(32,STAGE_TOP,656,STAGE_HEIGHT,22).fill(Theme.bg1).stroke({color:Theme.surfaceLine,width:1.5,alpha:.28});
-    this.stageBg.roundRect(32,STAGE_TOP,656,280,22).fill({color:Theme.bg0,alpha:.42});
-    this.stageBg.ellipse(360,STAGE_TOP+70,520,220).fill({color:Theme.cyan,alpha:.024});
-    this.stageBg.moveTo(164,STAGE_TOP+1).lineTo(556,STAGE_TOP+1).stroke({color:Theme.cyan,width:2,alpha:.12,cap:'round'});
+    this.stageBg.roundRect(4,STAGE_TOP+10,DESIGN_WIDTH-8,STAGE_HEIGHT,18).fill({color:Theme.shadow,alpha:.22});
+    this.stageBg.roundRect(0,STAGE_TOP,DESIGN_WIDTH,STAGE_HEIGHT,16).fill(Theme.bg1).stroke({color:Theme.surfaceLine,width:1.5,alpha:.22});
+    this.stageBg.roundRect(0,STAGE_TOP,DESIGN_WIDTH,280,16).fill({color:Theme.bg0,alpha:.42});
+    this.stageBg.ellipse(360,STAGE_TOP+70,560,220).fill({color:Theme.cyan,alpha:.024});
+    this.stageBg.moveTo(48,STAGE_TOP+1).lineTo(672,STAGE_TOP+1).stroke({color:Theme.cyan,width:2,alpha:.12,cap:'round'});
   }
   setHandlers(h:{rotate:(x:number,y:number)=>void;fire:()=>void;reset:()=>void;openSettings:()=>void;toggleAudio:()=>void;toggleHaptics:()=>void;selectTheme:(id:ThemeId)=>void;closeSettings:()=>void;openLevels:()=>void;selectLevel:(index:number)=>void;unlockAllLevels:()=>void;clearHistory:()=>void;uiChanged:()=>void;resultPrimary:()=>void;resultSecondary:()=>void;coinSound:()=>void}){
     this.objects.setRotateHandler(h.rotate);
@@ -167,6 +167,7 @@ export class PixiGameView{
     try{this.laser.update(state,now,this.performance.quality);}catch(error){console.warn('[view] laser update failed',error);}
     this.impacts.update(now);
     try{this.particles.update(this.performance.quality);}catch(error){console.warn('[view] particles failed',error);}
+    this.levelSelect.update(now);
     this.comboActive=this.combo.update(now,this.performance.quality);
     this.resultActive=this.result.update(now);
     this.confettiActive=this.confetti.update(now,this.performance.quality);

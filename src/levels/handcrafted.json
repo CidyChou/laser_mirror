@@ -1,0 +1,565 @@
+{
+  "21": {
+    "name": "墙与固定镜",
+    "chapter": "障碍区域",
+    "rows": 6,
+    "cols": 6,
+    "emitter": {
+      "side": "S",
+      "index": 0
+    },
+    "targets": [
+      {
+        "side": "S",
+        "index": 3
+      }
+    ],
+    "items": [
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 4,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 1,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 0
+      }
+    ],
+    "hint": "",
+    "chapterNo": 3,
+    "shots": 3
+  },
+  "22": {
+    "name": "窄路",
+    "chapter": "障碍区域",
+    "rows": 6,
+    "cols": 5,
+    "emitter": {
+      "side": "W",
+      "index": 4
+    },
+    "targets": [
+      {
+        "side": "N",
+        "index": 3
+      }
+    ],
+    "items": [
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 4
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 5,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 1
+      }
+    ],
+    "hint": "",
+    "chapterNo": 3,
+    "shots": 3
+  },
+  "23": {
+    "name": "迷宫光路",
+    "chapter": "障碍区域",
+    "rows": 6,
+    "cols": 6,
+    "emitter": {
+      "side": "W",
+      "index": 5
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 1
+      },
+      {
+        "side": "E",
+        "index": 2
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 4
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 4
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 2,
+        "s": 0
+      }
+    ],
+    "hint": "",
+    "chapterNo": 3,
+    "shots": 3
+  },
+  "35": {
+    "name": "核心联锁",
+    "chapter": "能源机关",
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 7
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 7
+      },
+      {
+        "side": "E",
+        "index": 2
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 7,
+        "y": 0,
+        "id": "B"
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "switch",
+        "x": 3,
+        "y": 2,
+        "id": "C"
+      },
+      {
+        "type": "door",
+        "x": 5,
+        "y": 7,
+        "id": "D1",
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "type": "door",
+        "x": 7,
+        "y": 7,
+        "id": "D2",
+        "requires": [
+          "C"
+        ]
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 5
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 5
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 5
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "door",
+        "x": 4,
+        "y": 2,
+        "id": "D3",
+        "requires": [
+          "C"
+        ]
+      },
+      {
+        "type": "switch",
+        "x": 5,
+        "y": 2,
+        "id": "A"
+      }
+    ],
+    "hint": "门与节点形成联锁时，主光束和供能支路必须一起规划。",
+    "chapterNo": 4,
+    "shots": 3
+  },
+  "36": {
+    "name": "能源核心",
+    "chapter": "能源机关",
+    "rows": 7,
+    "cols": 7,
+    "emitter": {
+      "side": "W",
+      "index": 5
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 1
+      },
+      {
+        "side": "S",
+        "index": 6
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 1,
+        "id": "A"
+      },
+      {
+        "type": "door",
+        "x": 4,
+        "y": 1,
+        "id": "D1",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "door",
+        "x": 6,
+        "y": 6,
+        "id": "D2",
+        "requires": [
+          "B"
+        ]
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 1,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 2,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 6,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 2,
+        "y": 3,
+        "id": "B"
+      }
+    ],
+    "hint": "",
+    "chapterNo": 4,
+    "shots": 3
+  }
+}

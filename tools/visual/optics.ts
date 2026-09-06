@@ -6,13 +6,23 @@ import { PerformanceManager } from '../../src/performance/PerformanceManager';
 import { PixiGameView } from '../../src/rendering/PixiGameView';
 import { setActiveTheme, Theme, type ThemeId } from '../../src/rendering/theme';
 import { boardFixture, chainedFixture, collectorFixture, transportedFixture, mechanismsFixture, denseMechanismsFixture } from '../../scripts/fixtures/optics';
+import campaign from '../../src/levels/levels.json';
+import solvedCampaign from './campaign-solutions.json';
+import type { LevelDefinition } from '../../src/gameplay/types';
 
 const stage=document.querySelector<HTMLDivElement>('#stage')!;
 const status=document.querySelector<HTMLOutputElement>('#status')!;
 const scene=document.querySelector<HTMLSelectElement>('#scene')!;
 const theme=document.querySelector<HTMLSelectElement>('#theme')!;
 const renderer=document.querySelector<HTMLSelectElement>('#renderer')!;
-const fixtures={collector:collectorFixture,chain:chainedFixture,transport:transportedFixture,board:boardFixture,mechanisms:mechanismsFixture,dense:denseMechanismsFixture};
+const fixtures:Record<string,LevelDefinition>={collector:collectorFixture,chain:chainedFixture,transport:transportedFixture,board:boardFixture,mechanisms:mechanismsFixture,dense:denseMechanismsFixture};
+campaign.forEach((level,index)=>{
+  const number=index+1;
+  fixtures[`level-${number}`]=level as LevelDefinition;
+  fixtures[`solved-${number}`]=(solvedCampaign as Record<string,LevelDefinition>)[number];
+  scene.add(new Option(`${number} · ${level.name} · 开局`,`level-${number}`));
+  scene.add(new Option(`${number} · ${level.name} · 解法`,`solved-${number}`));
+});
 const preset=new URLSearchParams(location.search);
 for(const select of [scene,theme,renderer]){
   const value=preset.get(select.id);
@@ -50,7 +60,7 @@ function build(){
   resize();view.update(session.state,clock);report();
 }
 function reset(){playing=false;overlay=false;clock=0;session.reset();view.hideOverlays();view.update(session.state,clock);report();}
-function play(){reset();session.fire();session.update(clock);playing=true;report();}
+function play(){playing=false;overlay=false;clock=0;view.hideOverlays();session.fire();session.update(clock);playing=true;report();}
 function showOverlay(){overlay=!overlay;if(overlay)view.showSettings(true,true,theme.value as ThemeId);else view.closeSettings();report();}
 function seek(phase:string){
   reset();session.fire();session.update(0);

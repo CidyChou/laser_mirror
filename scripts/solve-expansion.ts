@@ -98,10 +98,8 @@ function assertMechanics() {
   const errors: string[] = [];
   (expansion as LevelDefinition[]).forEach((level, index) => {
     const n = 51 + index;
-    const start = simulator.simulate(level, level.items as LevelItem[], computeGeometry(level));
-    for (const [key, on] of Object.entries(start.combinerOn)) {
-      if (on) errors.push(`#${n} combiner ${key} is on at start`);
-    }
+    // A partially connected start may already power a collector. Only an
+    // entirely solved start is invalid; mixed correct/wrong routes are intended.
     const result = search(level);
     if (!result.first) return;
     const win = simulator.simulate(level, result.first, computeGeometry(level));
@@ -150,7 +148,7 @@ levels.forEach((level, index) => {
   const combiners = level.items.filter(item => item.type === 'combiner').length;
   const flag = result.solutions === 0 ? 'UNSOLVED' : result.startSolved ? 'ALREADY' : 'ok';
   console.log(`#${n} ${level.name.padEnd(8)} sol=${result.solutions} start=${result.startSolved ? 'yes' : 'no'} focus=${focus} comb=${combiners} ${flag}`);
-  if (result.solutions === 0) failed += 1;
+  if (result.solutions === 0 || result.startSolved) failed += 1;
 });
 if (failed) {
   console.error(`${failed} expansion levels have no solution`);

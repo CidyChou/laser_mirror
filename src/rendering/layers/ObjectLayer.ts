@@ -367,18 +367,12 @@ export class ObjectLayer extends Container{
     }
     const identity=this.portalIdentities.get(item.pair)!,color=identity.color;
     const c=g.cell,portal=new Graphics();
-    this.light(portal,0,c*.04,c*.40,c*.29,Theme.shadow,.56);
-    portal.roundRect(-c*.30,-c*.30+c*.035,c*.60,c*.60,c*.17).fill(Theme.boardBottom);
-    portal.roundRect(-c*.30,-c*.30,c*.60,c*.60,c*.17)
-      .fill(this.finish(mix(color,Theme.white,.22),mix(color,Theme.boardBottom,.58)));
-    portal.roundRect(-c*.23,-c*.23,c*.46,c*.46,c*.115)
-      .fill(this.finish(mix(color,0x101827,.82),0x060c15));
-    this.light(portal,0,0,c*.24,c*.24,color,.25);
-    // Four corner cuts describe an aperture; the pair number stays upright.
-    for(const side of [-1,1]){
-      portal.moveTo(side*c*.26,-c*.10).lineTo(side*c*.26,-c*.18).quadraticCurveTo(side*c*.26,-c*.26,side*c*.18,-c*.26).lineTo(side*c*.10,-c*.26)
-        .stroke({color:mix(color,Theme.white,.5),width:Math.max(2,c*.027),cap:'round'});
-    }
+    this.light(portal,0,c*.035,c*.35,c*.33,Theme.shadow,.38);
+    portal.circle(0,0,c*.285).fill(this.finish(mix(color,0x101827,.88),0x060c15))
+      .stroke({color,width:Math.max(1.6,c*.024),alpha:.95});
+    portal.arc(0,0,c*.285,Math.PI*1.13,Math.PI*1.75)
+      .stroke({color:mix(color,Theme.white,.48),width:Math.max(1,c*.012),alpha:.85,cap:'round'});
+    this.light(portal,0,0,c*.25,c*.25,color,.19);
     const orbit=new Container();
     const flow=new Container();
     const swirl=new Graphics().arc(0,0,c*.19,-.6,.1).stroke({color:mix(color,Theme.white,.5),width:Math.max(1,c*.014),alpha:.58,cap:'round'})
@@ -390,11 +384,6 @@ export class ObjectLayer extends Container{
     flow.addChild(swirl);orbit.addChild(flow);
     const mist=new Graphics();this.light(mist,0,0,c*.21,c*.21,color,.28);
     motion.addChild(portal,mist,orbit);
-    const label=new Text({text:identity.label,style:uiText({fontSize:Math.max(17,c*.25),fontWeight:'800',fill:mix(color,Theme.white,.55)})});
-    label.anchor.set(.5);motion.addChild(label);
-    const hop=new Graphics().moveTo(-c*.07,c*.255).lineTo(c*.075,c*.255).lineTo(c*.025,c*.215)
-      .moveTo(c*.075,c*.255).lineTo(c*.025,c*.295).stroke({color,width:Math.max(1.5,c*.022),cap:'round',join:'round'});
-    motion.addChild(hop);
     this.portals.push({flow,mist,phase:item.x*.9+item.y*.5});
     return{key,kind:item.type,root,motion,phase:0};
   }

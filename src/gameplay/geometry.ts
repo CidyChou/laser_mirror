@@ -1,19 +1,28 @@
-import { STAGE_HEIGHT, STAGE_TOP } from '@/config/GameConfig';
+import { DESIGN_WIDTH, STAGE_HEIGHT, STAGE_TOP } from '@/config/GameConfig';
 import type { BoardGeometry, LevelDefinition, Point, Port } from './types';
 
+function cellForBudget(cols: number, rows: number, cellGuess: number) {
+  const portPad = Math.max(16, Math.min(32, cellGuess * 0.2));
+  const lip = Math.max(8, Math.min(12, cellGuess * 0.08));
+  const maxBoardW = DESIGN_WIDTH - portPad * 2 - lip;
+  const maxBoardH = STAGE_HEIGHT - portPad * 1.55 - lip;
+  return Math.min(maxBoardW / cols, maxBoardH / rows);
+}
+
 export function computeGeometry(level: LevelDefinition): BoardGeometry {
-  const maxBoardW = 590;
-  const maxBoardH = 650;
-  const cell = Math.min(maxBoardW / level.cols, maxBoardH / level.rows);
-  const boardW = cell * level.cols;
-  const boardH = cell * level.rows;
+  const cols = Math.max(1, level.cols);
+  const rows = Math.max(1, level.rows);
+  let cell = cellForBudget(cols, rows, 90);
+  cell = cellForBudget(cols, rows, cell);
+  const boardW = cell * cols;
+  const boardH = cell * rows;
   return {
     cell,
     boardW,
     boardH,
-    ox: (720 - boardW) / 2,
-    oy: STAGE_TOP + (STAGE_HEIGHT - boardH) / 2 - 6,
-    wall: Math.max(18, cell * 0.18),
+    ox: (DESIGN_WIDTH - boardW) / 2,
+    oy: STAGE_TOP + (STAGE_HEIGHT - boardH) / 2 - 4,
+    wall: Math.max(16, cell * 0.16),
   };
 }
 
@@ -32,7 +41,7 @@ export function samePort(a: Port, b: Port): boolean {
   return a.side === b.side && a.index === b.index;
 }
 
-/** 6×6 boards sit near cell=100; 3×3 / 4×4 cells are much larger and need a thicker beam. */
+/** 6×6 boards sit near cell=110; 3×3 / 4×4 cells are much larger and need a thicker beam. */
 export function beamScale(cell: number): number {
-  return Math.max(0.95, Math.min(2.2, cell / 100));
+  return Math.max(0.95, Math.min(2.2, cell / 110));
 }

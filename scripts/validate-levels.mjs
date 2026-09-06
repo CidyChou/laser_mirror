@@ -1,9 +1,9 @@
 import fs from 'node:fs';
 
 const MAX_COLS = 8;
-const MAX_ROWS = 12;
+const MAX_ROWS = 8;
 const levels = JSON.parse(fs.readFileSync(new URL('../src/levels/levels.json', import.meta.url), 'utf8'));
-const classic = JSON.parse(fs.readFileSync(new URL('../src/levels/classic.json', import.meta.url), 'utf8'));
+const handcrafted = JSON.parse(fs.readFileSync(new URL('../src/levels/handcrafted.json', import.meta.url), 'utf8'));
 const errors = [];
 
 function portInBounds(port, level) {
@@ -17,27 +17,10 @@ function emittersOf(level) {
   return [level.emitter];
 }
 
-function classicSnapshot(level) {
-  return JSON.stringify({
-    name: level.name,
-    chapter: level.chapter,
-    chapterNo: level.chapterNo,
-    rows: level.rows,
-    cols: level.cols,
-    emitter: level.emitter,
-    targets: level.targets,
-    items: level.items,
-    shots: level.shots,
-    hint: level.hint ?? '',
-  });
-}
-
-if (classic.length !== 50) errors.push(`classic.json should contain 50 levels, got ${classic.length}`);
-if (levels.length !== 120) errors.push(`levels.json should contain 120 levels, got ${levels.length}`);
-if (levels.length < 50) errors.push(`levels.json lost classic levels (${levels.length})`);
-classic.forEach((level, index) => {
-  if (classicSnapshot(levels[index] ?? {}) !== classicSnapshot(level)) {
-    errors.push(`#${index + 1} diverged from frozen classic.json`);
+if (levels.length !== 130) errors.push(`levels.json should contain 130 levels, got ${levels.length}`);
+Object.entries(handcrafted).forEach(([number, level]) => {
+  if (JSON.stringify(levels[Number(number) - 1] ?? {}) !== JSON.stringify(level)) {
+    errors.push(`#${number} diverged from handcrafted.json`);
   }
 });
 

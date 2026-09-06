@@ -15,7 +15,8 @@ const TILE_GAP_X = 12;
 const TILE_GAP_Y = 12;
 const TILE_COLUMNS = 4;
 const SCROLL_TOP = 246;
-const SCROLL_BOTTOM = DESIGN_HEIGHT - 28;
+const CONTENT_BOTTOM_PAD = 48;
+const DRAG_THRESHOLD = 10;
 const GM_TAP_COUNT = 5;
 const GM_TAP_WINDOW_MS = 2500;
 
@@ -38,11 +39,17 @@ export class LevelSelectLayer extends Container {
   private titleTapStartedAt = 0;
   private contentHeight = 0;
   private viewportTop = SCROLL_TOP;
-  private viewportHeight = SCROLL_BOTTOM - SCROLL_TOP;
+  private viewportHeight = DESIGN_HEIGHT - SCROLL_TOP;
   private scrollY = 0;
   private dragStartY = 0;
   private dragStartScroll = 0;
   private dragging = false;
+  private dragArmed = false;
+  private velocity = 0;
+  private lastDragY = 0;
+  private lastDragAt = 0;
+  private lastFrameAt = 0;
+  private coasting = false;
 
   constructor(private readonly levels: readonly LevelDefinition[]) {
     super();
@@ -77,7 +84,7 @@ export class LevelSelectLayer extends Container {
       this.cards.addChild(card);
     });
     this.contentHeight = this.chapterCards.length
-      ? this.chapterCards.length * CARD_H + (this.chapterCards.length - 1) * CARD_GAP
+      ? this.chapterCards.length * CARD_H + (this.chapterCards.length - 1) * CARD_GAP + CONTENT_BOTTOM_PAD
       : 0;
 
     this.addChild(
@@ -96,7 +103,11 @@ export class LevelSelectLayer extends Container {
     this.on('pointerupoutside', () => this.stopDrag());
     this.on('pointercancel', () => this.stopDrag());
     this.on('wheel', (event: any) => {
-      this.setScroll(this.scrollY + Number(event.deltaY || 0));
+      const raw = Number(event.deltaY || 0);
+      const dy = event.deltaMode === 1 ? raw * 18 : raw;
+      this.velocity = 0;
+      this.coasting = false;
+      this.setScroll(this.scrollY + dy, true);
       event.preventDefault?.();
     });
   }
@@ -108,7 +119,7 @@ export class LevelSelectLayer extends Container {
   setTopOffset(offset: number) {
     this.header.position.y = offset;
     this.viewportTop = SCROLL_TOP + offset;
-    this.viewportHeight = Math.max(240, SCROLL_BOTTOM - this.viewportTop);
+    this.viewportHeight = Math.max(240, DESIGN_HEIGHT - this.viewportTop);
     this.layoutViewport();
   }
 
@@ -130,10 +141,43 @@ export class LevelSelectLayer extends Container {
     this.titleTapCount = 0;
     this.titleTapStartedAt = 0;
     this.stopDrag();
+    this.coasting = false;
+    this.velocity = 0;
   }
 
   get active() {
-    return this.dragging;
+    return this.dragging || this.coasting;
+  }
+
+  update(now: number) {
+    if (!this.visible || this.dragging || !this.coasting) {
+      this.lastFrameAt = now;
+      return;
+    }
+    const dt = Math.max(8, Math.min(32, now - (this.lastFrameAt || now)));
+    this.lastFrameAt = now;
+    const maxScroll = this.maxScroll();
+    const overscrolled = this.scrollY < 0 || this.scrollY > maxScroll;
+    if (overscrolled) {
+      const target = this.scrollY < 0 ? 0 : maxScroll;
+      this.velocity *= 0.55;
+      const next = this.scrollY + (target - this.scrollY) * Math.min(1, dt * 0.014);
+      if (Math.abs(next - target) < 0.6 && Math.abs(this.velocity) < 0.02) {
+        this.velocity = 0;
+        this.coasting = false;
+        this.setScroll(target, true);
+        return;
+      }
+      this.setScroll(next, false);
+      return;
+    }
+    this.velocity *= Math.exp(-dt * 0.0048);
+    this.setScroll(this.scrollY + this.velocity * dt, false);
+    if (Math.abs(this.velocity) < 0.018) {
+      this.velocity = 0;
+      this.coasting = false;
+      this.setScroll(this.scrollY, true);
+    }
   }
 
   sync(currentIndex: number, completed: ReadonlySet<number>, allLevelsUnlocked = false) {
@@ -164,28 +208,62 @@ export class LevelSelectLayer extends Container {
     this.unlockAllHandler();
   }
 
+  private maxScroll() {
+    return Math.max(0, this.contentHeight - this.viewportHeight);
+  }
+
   private startDrag(event: FederatedPointerEvent) {
-    this.dragging = true;
-    this.dragStartY = event.getLocalPosition(this).y;
+    const y = event.getLocalPosition(this).y;
+    this.dragArmed = true;
+    this.dragging = false;
+    this.coasting = false;
+    this.velocity = 0;
+    this.dragStartY = y;
+    this.lastDragY = y;
+    this.lastDragAt = performance.now();
     this.dragStartScroll = this.scrollY;
-    this.emit('scrollchange');
   }
 
   private moveDrag(event: FederatedPointerEvent) {
-    if (!this.dragging) return;
+    if (!this.dragArmed && !this.dragging) return;
     const y = event.getLocalPosition(this).y;
-    this.setScroll(this.dragStartScroll + this.dragStartY - y);
+    if (!this.dragging) {
+      if (Math.abs(y - this.dragStartY) < DRAG_THRESHOLD) return;
+      this.dragging = true;
+      this.dragStartY = y;
+      this.dragStartScroll = this.scrollY;
+      this.emit('scrollchange');
+    }
+    const now = performance.now();
+    const dt = Math.max(8, now - this.lastDragAt);
+    this.velocity = (this.lastDragY - y) / dt;
+    this.lastDragY = y;
+    this.lastDragAt = now;
+    this.setScroll(this.dragStartScroll + this.dragStartY - y, false);
   }
 
   private stopDrag() {
-    if (!this.dragging) return;
+    const wasDragging = this.dragging;
+    this.dragArmed = false;
     this.dragging = false;
+    if (!wasDragging) return;
+    if (performance.now() - this.lastDragAt > 90) this.velocity = 0;
+    this.velocity = Math.max(-3.2, Math.min(3.2, this.velocity));
+    this.coasting = true;
+    this.lastFrameAt = performance.now();
     this.emit('scrollchange');
   }
 
-  private setScroll(value: number) {
-    const maxScroll = Math.max(0, this.contentHeight - this.viewportHeight);
-    const next = Math.max(0, Math.min(maxScroll, value));
+  private setScroll(value: number, hardClamp = true) {
+    const maxScroll = this.maxScroll();
+    let next = value;
+    if (hardClamp) {
+      next = Math.max(0, Math.min(maxScroll, value));
+    } else if (value < 0) {
+      next = value * 0.36;
+    } else if (value > maxScroll) {
+      next = maxScroll + (value - maxScroll) * 0.36;
+    }
     const changed = Math.abs(next - this.scrollY) > 0.1;
     this.scrollY = next;
     this.cards.position.y = this.viewportTop - this.scrollY;
@@ -194,25 +272,24 @@ export class LevelSelectLayer extends Container {
   }
 
   private layoutViewport() {
-    // Keep the scrolling list behind an opaque fixed header/footer. This is
-    // more reliable than a stencil mask in mini-game WebGL1 implementations.
+    // Opaque header cover is more reliable than a stencil mask in mini-game WebGL1.
     this.viewportCover.clear()
-      .rect(0, -DESIGN_HEIGHT, DESIGN_WIDTH, DESIGN_HEIGHT + this.viewportTop).fill(Theme.bg)
-      .rect(0, SCROLL_BOTTOM, DESIGN_WIDTH, DESIGN_HEIGHT - SCROLL_BOTTOM).fill(Theme.bg);
+      .rect(0, -DESIGN_HEIGHT, DESIGN_WIDTH, DESIGN_HEIGHT + this.viewportTop).fill(Theme.bg);
     this.scrollTrack.clear().roundRect(696, this.viewportTop + 10, 5, this.viewportHeight - 20, 3)
       .fill({ color: Theme.surfaceLine, alpha: 0.46 });
-    this.setScroll(this.scrollY);
+    this.setScroll(this.scrollY, true);
   }
 
   private drawScrollIndicator() {
-    const maxScroll = Math.max(0, this.contentHeight - this.viewportHeight);
+    const maxScroll = this.maxScroll();
     this.scrollThumb.clear();
     this.scrollTrack.visible = maxScroll > 0;
     if (maxScroll <= 0) return;
     const trackH = this.viewportHeight - 20;
     const thumbH = Math.max(72, trackH * this.viewportHeight / this.contentHeight);
-    const travel = trackH - thumbH;
-    const y = this.viewportTop + 10 + travel * this.scrollY / maxScroll;
+    const travel = Math.max(0, trackH - thumbH);
+    const ratio = maxScroll > 0 ? Math.max(0, Math.min(1, this.scrollY / maxScroll)) : 0;
+    const y = this.viewportTop + 10 + travel * ratio;
     this.scrollThumb.roundRect(695, y, 7, thumbH, 4).fill({ color: Theme.inkSoft, alpha: 0.72 });
   }
 

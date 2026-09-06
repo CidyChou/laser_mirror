@@ -1,5 +1,5 @@
 export const MAX_COLS = 8;
-export const MAX_ROWS = 12;
+export const MAX_ROWS = 8;
 
 export const CHAPTERS = [
   { no: 1, name: '光的方向' },

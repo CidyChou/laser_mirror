@@ -32,7 +32,7 @@ export class GameSession {
   private simNow = 0;
   state: GameState;
 
-  constructor(private readonly levels: readonly LevelDefinition[], initialHearts = 3, initialLevelIndex = 0) {
+  constructor(private readonly levels: readonly LevelDefinition[], initialHearts = 5, initialLevelIndex = 0) {
     const safe = Math.max(0, Math.min(levels.length - 1, Math.floor(initialLevelIndex)));
     this.state = this.createState(safe, initialHearts);
   }
