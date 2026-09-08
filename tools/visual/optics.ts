@@ -69,7 +69,8 @@ function seek(phase:string){
   const sw=trace.impactEvents.find(e=>e.type==='switch');
   const door=trace.impactEvents.find(e=>e.type==='door-open');
   let t:number;
-  if(phase==='signal'&&sw)t=laserMsAtDistance(sw.at)+GameConfig.laser.doorSignalMs*.5;
+  if(phase==='complete')t=laserMsAtDistance(trace.maxTravel)+800;
+  else if(phase==='signal'&&sw)t=laserMsAtDistance(sw.at)+GameConfig.laser.doorSignalMs*.5;
   else if(phase==='opening'&&door)t=laserMsAtDistance(door.at)-GameConfig.laser.doorOpenMs*.5;
   else if(phase==='open'&&door)t=laserMsAtDistance(door.at)+80;
   else if(pulse&&hits.length)t=phase==='partial'?laserMsAtDistance(hits[0].at)+90:phase==='charge'?pulse.readyMs+750:pulse.launchMs+210;

@@ -1,4 +1,4 @@
-import { Container, Graphics, Particle, ParticleContainer, type Renderer, type Texture } from 'pixi.js';
+import { Container, Graphics, Particle, ParticleContainer, ParticleShader, type Renderer, type Texture } from 'pixi.js';
 import type { Quality } from '@/performance/PerformanceManager';
 
 export type ParticleShape='dot'|'spark'|'mixed';
@@ -28,6 +28,9 @@ export class ParticleSystem {
   readonly container=new Container();
   private readonly dots:ParticleContainer;
   private readonly sparks:ParticleContainer;
+  // Texture disposal must not invalidate Pixi's renderer-wide default shader.
+  // These bind groups have the same lifetime as this system's owned textures.
+  private readonly shader=new ParticleShader();
   private activeParticles:ActiveParticle[]=[];
   private dotPool:Particle[]=[];
   private sparkPool:Particle[]=[];
@@ -48,8 +51,8 @@ export class ParticleSystem {
     this.sparkTexture=renderer.generateTexture(spark);spark.destroy();
 
     const dynamic={position:true,vertex:true,rotation:true,color:true};
-    this.dots=new ParticleContainer({texture:this.dotTexture,dynamicProperties:dynamic});
-    this.sparks=new ParticleContainer({texture:this.sparkTexture,dynamicProperties:dynamic});
+    this.dots=new ParticleContainer({texture:this.dotTexture,dynamicProperties:dynamic,shader:this.shader});
+    this.sparks=new ParticleContainer({texture:this.sparkTexture,dynamicProperties:dynamic,shader:this.shader});
     this.dots.blendMode='add';this.sparks.blendMode='add';
     this.container.addChild(this.dots,this.sparks);
   }
@@ -123,7 +126,10 @@ export class ParticleSystem {
   }
 
   destroy(){
+    this.clear();
     this.container.destroy({children:true});
+    this.shader.destroy();
+    this.dotPool=[];this.sparkPool=[];
     this.dotTexture.destroy(true);this.sparkTexture.destroy(true);
   }
 }

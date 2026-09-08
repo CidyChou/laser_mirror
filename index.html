@@ -3,16 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <meta name="theme-color" content="#0d1218" />
+  <meta name="theme-color" content="#070d18" />
   <link rel="icon" type="image/png" sizes="512x512" href="./ui/app-icon.png" />
   <link rel="apple-touch-icon" href="./ui/app-icon.png" />
   <meta name="application-name" content="光线急转弯" />
   <title>光线急转弯</title>
   <style>
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-    :root{--app-bg:#0d1218;--focus:#4da43a;color-scheme:dark}
+    :root{--app-bg:#070d18;--focus:#3ce9ef;color-scheme:dark}
     html,body,#app{width:100%;height:100%;margin:0;overflow:hidden;background:var(--app-bg)}
     body{display:flex;align-items:center;justify-content:center;font-family:ui-rounded,"SF Pro Rounded","PingFang SC",system-ui,sans-serif}
+    #app{max-width:520px}
     canvas{display:block;touch-action:none;outline:none}
     canvas:focus-visible{outline:3px solid var(--focus);outline-offset:-3px}
   </style>

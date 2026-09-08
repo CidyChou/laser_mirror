@@ -75,7 +75,7 @@ export class Button extends Container {
     this.body.clear();
     this.face.clear();
 
-    const radius = this.kind === 'icon' ? UI_TOKENS.radius.md : UI_TOKENS.radius.lg;
+    const radius = this.kind === 'fire' ? 15 : this.kind === 'icon' ? UI_TOKENS.radius.md : 14;
     const pressed = this.pressedState;
     const disabled = this.disabledState;
     const depth = pressed
@@ -92,8 +92,9 @@ export class Button extends Container {
       fill = Theme.accent;
       edge = Theme.accentDark;
     } else if (this.kind === 'fire') {
-      fill = this.activeState ? Theme.beam : Theme.accent;
-      edge = this.activeState ? Theme.beam2 : Theme.accentDark;
+      fill = this.activeState ? Theme.beam2 : Theme.laserBody;
+      edge = Theme.laserPlasma;
+      label = Theme.white;
     } else if (this.kind === 'danger') {
       fill = Theme.dangerSurface;
       edge = Theme.danger;
@@ -111,13 +112,22 @@ export class Button extends Container {
       label = Theme.inkSoft;
     }
 
-    // A restrained 2.5D lip and soft contact shadow. The previous full-width
-    // top highlight made every control look glossy and visually noisy.
+    // Machined controls share a shallow bevel; launch carries the energy color.
     this.shadow.roundRect(1, 7, this.widthPx - 2, this.heightPx - 2, radius)
       .fill({ color: Theme.shadow, alpha: disabled ? 0.16 : 0.26 });
     this.body.roundRect(0, depth, this.widthPx, faceH, radius).fill(shade(fill, 0.76));
     this.face.roundRect(0, 0, this.widthPx, faceH, radius).fill(fill).stroke({ color: edge, width: 1.5, alpha: 0.95 });
 
+    this.face.moveTo(18,2).lineTo(this.widthPx-18,2)
+      .stroke({color:this.kind==='fire'?Theme.laserPlasma:Theme.cyanSoft,width:1.5,alpha:this.kind==='fire'?.8:.24});
+    if(this.kind==='fire'&&!disabled){
+      this.shadow.roundRect(-5,2,this.widthPx+10,this.heightPx+6,radius+5)
+        .fill({color:Theme.beam,alpha:.08});
+      this.face.poly([27,faceH*.30,47,faceH*.50,27,faceH*.70,32,faceH*.50],true)
+        .fill({color:Theme.white,alpha:.9});
+      for(let i=0;i<3;i++)this.face.roundRect(this.widthPx-38+i*6,faceH*.38,2,faceH*.24,1)
+        .fill({color:Theme.white,alpha:.3+i*.18});
+    }
     this.caption.style.fill = label;
     this.caption.alpha = disabled ? 0.62 : 1;
     this.caption.position.set(this.widthPx / 2, faceH / 2 + (pressed ? 1 : 0) + this.labelOffsetY);

@@ -18,6 +18,8 @@ export class HudLayer extends Container {
     text: '',
     style: uiText({ fontSize: 15, fill: Theme.inkSoft, align: 'center', wordWrap: true, wordWrapWidth: 640 }),
   });
+  private readonly masthead=new Container();
+  private readonly status=new Text({text:'光路待命',style:uiText({fontSize:16,fill:Theme.cyan})});
   private lastLevel = -1;
   private lastHearts = -1;
   private lastHint = '';
@@ -36,6 +38,7 @@ export class HudLayer extends Container {
     if (this.topOffset === offset) return;
     this.topOffset = offset;
     const y = (rectY: number) => rectY + offset;
+    this.masthead.y=offset;
     this.settingsButton.position.set(UI_RECTS.settings.x, y(UI_RECTS.settings.y));
     this.levelButton.position.set(UI_RECTS.progress.x, y(UI_RECTS.progress.y));
     this.hearts.position.set(UI_RECTS.hearts.x, y(UI_RECTS.hearts.y));
@@ -48,7 +51,7 @@ export class HudLayer extends Container {
 
     const progress = UI_RECTS.progress;
     this.levelButton.position.set(progress.x, progress.y);
-    this.levelButton.setLabelSize(36);
+    this.levelButton.setLabelSize(32);
     this.levelButton.setLabelOffsetY(-4);
 
     const hearts = UI_RECTS.hearts;
@@ -60,6 +63,16 @@ export class HudLayer extends Container {
     this.hint.anchor.set(0.5, 0);
     this.hint.position.set(UI_RECTS.hint.x, UI_RECTS.hint.y);
 
+    const title=new Text({text:'光线急转弯',style:uiText({fontSize:20,fill:Theme.ink})});
+    title.position.set(34,49);
+    const edition=new Text({text:'NEON / OPTICS',style:uiText({fontSize:14,fill:Theme.inkSoft,letterSpacing:2})});
+    edition.anchor.set(1,0);edition.position.set(686,54);
+    this.status.anchor.set(.5);this.status.position.set(360,216);
+    const legend=new Container();legend.position.set(360,1159);
+    const legendText=new Text({text:'旋转镜面  /  连接所有接收器',style:uiText({fontSize:17,fill:Theme.inkSoft})});
+    legendText.anchor.set(.5);legend.addChild(legendText);
+    this.masthead.addChild(title,edition,this.status);
+    this.addChild(this.masthead,legend);
     this.addChild(this.settingsButton, this.levelButton, this.hearts, this.heartsCount, this.fireButton, this.hint);
   }
 
@@ -79,7 +92,9 @@ export class HudLayer extends Container {
     }
     this.fireButton.setDisabled(state.firing || state.won);
     this.fireButton.setActive(state.firing);
-    this.fireButton.setText(state.hearts > 0 ? '发射' : '补充爱心');
+    this.fireButton.setText(state.hearts > 0 ? (state.firing?'能量释放中':'发射光束') : '补充爱心');
+    this.status.text=state.won?'光路已接通':state.firing?'●  能量传输中':'●  光路待命';
+    this.status.tint=state.won?Theme.green:state.firing?Theme.laserPlasma:Theme.cyan;
   }
 
   setHeartsVisible(visible: boolean) {
