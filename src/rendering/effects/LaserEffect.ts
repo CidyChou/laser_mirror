@@ -10,6 +10,8 @@ type Run={x1:number;y1:number;x2:number;y2:number;startDist:number;endDist:numbe
 type FallbackRun={run:Run;length:number;root:Container;halo:Graphics};
 type BeamUniforms={
   uBeamDistance:number;
+  uTailDistance:number;
+  uTailFade:number;
   uTime:number;
   uFlowStrength:number;
   uPacketCount:number;
@@ -70,6 +72,8 @@ in vec4 vColor;
 out vec4 finalColor;
 
 uniform float uBeamDistance;
+uniform float uTailDistance;
+uniform float uTailFade;
 uniform float uTime;
 uniform float uFlowStrength;
 uniform float uPacketCount;
@@ -96,6 +100,7 @@ void main(void){
   float edge=abs(vBeamData.z);
   float runLength=max(1.0,vBeamData.w);
   float reveal=smoothstep(-1.25,1.25,uBeamDistance-pathDistance);
+  reveal*=smoothstep(uTailDistance,uTailDistance+uTailFade,pathDistance);
 
   float breathPhase=0.5+0.5*sin(uTime*3.15-localDistance*0.012);
   float halo=(0.26*exp(-edge*edge*5.2)+0.24*exp(-edge*edge*27.0))*(1.0-smoothstep(0.78,1.0,edge));
@@ -137,6 +142,8 @@ export class LaserEffect extends Container{
   private gpuShader:Shader|null=null;
   private gpuUniforms:BeamUniforms|null=null;
   private runs:Run[]=[];
+  private tailDistance=-1e9;
+  private tailFade=1;
   private fallbackRuns:FallbackRun[]=[];
   private joints=new Graphics();
   private head=new Graphics();
@@ -150,6 +157,11 @@ export class LaserEffect extends Container{
   private boundResult:LaserTrace|null=null;
   private renderSegments:LaserSegment[]=[];
   private animating=false;
+  private visualDistance=0;
+  private visualTarget=0;
+  private visualSpeed=0;
+  private visualNow=0;
+  private visualFiring=false;
   private jointSignature='';
   private frozen=false;
   private gpuFailed=false;
@@ -196,6 +208,8 @@ export class LaserEffect extends Container{
         resources:{
           beamUniforms:{
             uBeamDistance:{value:0,type:'f32'},
+            uTailDistance:{value:-1e9,type:'f32'},
+            uTailFade:{value:1,type:'f32'},
             uTime:{value:0,type:'f32'},
             uFlowStrength:{value:1,type:'f32'},
             uPacketCount:{value:2,type:'f32'},
@@ -372,6 +386,8 @@ export class LaserEffect extends Container{
   private updateGpuBeam(dist:number,now:number,quality:Quality,punch:number,breathe:number){
     if(!this.gpuUniforms)return;
     this.gpuUniforms.uBeamDistance=dist;
+    this.gpuUniforms.uTailDistance=this.tailDistance;
+    this.gpuUniforms.uTailFade=this.tailFade;
     this.gpuUniforms.uTime=now*.001;
     this.gpuUniforms.uFlowStrength=quality==='high'?1:quality==='medium'?.54:0;
     this.gpuUniforms.uPacketCount=quality==='high'?2:quality==='medium'?1:0;
@@ -385,6 +401,7 @@ export class LaserEffect extends Container{
       const span=Math.max(.001,visual.run.endDist-visual.run.startDist);
       const t=Math.min(1,Math.max(0,(dist-visual.run.startDist)/span));
       visual.root.visible=t>.001;
+      visual.root.alpha=smoothstep(this.tailDistance,this.tailDistance+this.tailFade,visual.run.endDist);
       visual.root.scale.set(t,breathe);
       const breathPhase=.5+.5*Math.sin(now*.00315-visual.run.startDist*.012);
       visual.halo.alpha=.91+breathPhase*.09;
@@ -397,6 +414,7 @@ export class LaserEffect extends Container{
     if(!this.fallbackPackets.visible)return;
     let used=0;
     for(const visual of this.fallbackRuns){
+      if(visual.run.endDist<=this.tailDistance+this.tailFade)continue;
       const span=Math.max(.001,visual.run.endDist-visual.run.startDist);
       const visible=Math.min(1,Math.max(0,(dist-visual.run.startDist)/span));
       if(visible<=0||visual.length<12)continue;
@@ -472,8 +490,8 @@ export class LaserEffect extends Container{
       if(!existing||existing.width<width)points.set(key,{x,y,width});
     };
     for(const run of this.runs){
-      if(run.startDist<=dist)add(run.x1,run.y1,run.widthScale);
-      if(run.endDist<=dist)add(run.x2,run.y2,run.widthScale);
+      if(run.startDist<=dist&&run.startDist>=this.tailDistance+this.tailFade)add(run.x1,run.y1,run.widthScale);
+      if(run.endDist<=dist&&run.endDist>=this.tailDistance+this.tailFade)add(run.x2,run.y2,run.widthScale);
     }
     const signature=[...points].map(([key,p])=>`${key}:${p.width}`).join('|');
     if(signature===this.jointSignature)return;
@@ -496,12 +514,10 @@ export class LaserEffect extends Container{
       this.head.circle(mx,my,(12+blast*17)*s).fill({color:Theme.beam2,alpha:.15*blast});
       this.head.circle(mx,my,(5+blast*7)*s).fill({color:Theme.white,alpha:.5*blast});
     }
-    const travelling=this.runs.filter(run=>{
-      const t=(dist-run.startDist)/Math.max(.001,run.endDist-run.startDist);
-      return t>0&&t<1;
-    });
-    for(const partial of travelling){
-    const s=this.cellScale*partial.widthScale;
+    for(const partial of this.runs){
+      const progress=(dist-partial.startDist)/Math.max(.001,partial.endDist-partial.startDist);
+      if(!(progress>0&&progress<1))continue;
+      const s=this.cellScale*partial.widthScale;
     const span=Math.max(.001,partial.endDist-partial.startDist);
     const t=Math.min(1,Math.max(0,(dist-partial.startDist)/span));
     const x=partial.x1+(partial.x2-partial.x1)*t,y=partial.y1+(partial.y2-partial.y1)*t;
@@ -514,6 +530,27 @@ export class LaserEffect extends Container{
     this.head.circle(x,y,(3.2+pulse*.25+punch*.7)*s).fill({color:Theme.laserPlasma,alpha:.9});
     this.head.circle(x,y,(1.55+punch*.35)*s).fill({color:Theme.white,alpha:1});
     }
+  }
+
+  /** Interpolate the fixed-step simulation clock so the snake head and tail
+   * advance together between 10ms logic ticks instead of visibly jumping. */
+  private smoothDistance(state:GameState,now:number){
+    const target=state.beamDistance;
+    if(!state.timeSkill||!state.firing||target<=0){
+      this.visualDistance=target;this.visualTarget=target;this.visualSpeed=0;this.visualNow=now;this.visualFiring=state.firing;
+      return target;
+    }
+    if(!this.visualFiring||target+this.cellScale*2<this.visualDistance){
+      this.visualDistance=target;this.visualSpeed=0;
+    }else{
+      const dt=Math.min(50,Math.max(0,now-this.visualNow));
+      const targetDelta=target-this.visualTarget;
+      if(targetDelta>0&&dt>0)this.visualSpeed=targetDelta/dt;
+      if(this.visualSpeed>0)this.visualDistance=Math.min(target,this.visualDistance+this.visualSpeed*dt);
+      else this.visualDistance=target;
+    }
+    this.visualTarget=target;this.visualNow=now;this.visualFiring=true;
+    return this.visualDistance;
   }
 
   private hideOverlays(){
@@ -534,7 +571,9 @@ export class LaserEffect extends Container{
     if(state.firing&&chargeT<1&&origin)this.updateCharge(origin,chargeT,quality);
     else this.chargeRoot.visible=false;
 
-    const dist=state.beamDistance;
+    const dist=this.smoothDistance(state,now);
+    this.tailFade=state.timeSkill?computeGeometry(state.level).cell:1;
+    this.tailDistance=state.timeSkill?dist-this.tailFade*6:-1e9;
     if(!state.result||dist<=0){
       this.beamRoot.visible=false;
       if(this.jointSignature){this.joints.clear();this.jointSignature='';}
@@ -547,10 +586,11 @@ export class LaserEffect extends Container{
     if(!state.firing){
       if(!this.frozen){
         this.frozen=true;
-        this.updateGpuBeam(1e12,now,quality,0,1);
-        this.updateFallbackBeam(1e12,1,now);
-        this.hideOverlays();this.ensureJoints(1e12);
-        this.drawFallbackPackets(1e12,now,quality);
+        const visibleDistance=state.timeSkill?state.beamDistance:1e12;
+        this.updateGpuBeam(visibleDistance,now,quality,0,1);
+        this.updateFallbackBeam(visibleDistance,1,now);
+        this.hideOverlays();this.ensureJoints(visibleDistance);
+        this.drawFallbackPackets(visibleDistance,now,quality);
       }
       return;
     }

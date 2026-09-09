@@ -1,6 +1,7 @@
 import { Container, Graphics, Text, Texture } from 'pixi.js';
 import { UI_RECTS } from '@/config/GameConfig';
 import type { GameState } from '@/gameplay/types';
+import { stageLabel } from '@/levels/campaign';
 import { Button } from '../ui/Button';
 import { SettingsButton } from '../ui/SettingsButton';
 import { Theme, uiText } from '../theme';
@@ -77,9 +78,10 @@ export class HudLayer extends Container {
   }
 
   sync(state: GameState) {
+    this.hint.visible=!state.level.timeBoss;
     if (state.levelIndex !== this.lastLevel) {
       this.lastLevel = state.levelIndex;
-      this.levelButton.setText(`第 ${state.levelIndex + 1} 关`);
+      this.levelButton.setText(stageLabel(state.level, state.levelIndex));
     }
     if (state.hearts !== this.lastHearts) {
       this.lastHearts = state.hearts;
@@ -90,9 +92,9 @@ export class HudLayer extends Container {
       this.lastHint = hint;
       this.hint.text = hint;
     }
-    this.fireButton.setDisabled(state.firing || state.won);
+    this.fireButton.setDisabled((state.firing&&!state.timeSkill) || state.won);
     this.fireButton.setActive(state.firing);
-    this.fireButton.setText(state.hearts > 0 ? (state.firing?'能量释放中':'发射光束') : '补充爱心');
+    this.fireButton.setText(state.hearts > 0 ? (state.firing?(state.timeSkill?'结束本次试射':'能量释放中'):'发射光束') : '补充爱心');
     this.status.text=state.won?'光路已接通':state.firing?'●  能量传输中':'●  光路待命';
     this.status.tint=state.won?Theme.green:state.firing?Theme.laserPlasma:Theme.cyan;
   }

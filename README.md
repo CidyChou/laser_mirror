@@ -2,6 +2,8 @@
 
 正式工程底座：**Vite + TypeScript + PixiJS 8 + WebGL + Pixi UI + JSON Levels + Platform Adapter**。
 
+每章第10关之后会追加一个独立的章节挑战；原 1–130 关保持原编号和内容。规则与验证范围见 [章节挑战](docs/TIME_BOSSES.md)，本地试玩校验页为 `/tools/visual/time-bosses.html`。
+
 ## macOS 一键运行
 
 ```bash

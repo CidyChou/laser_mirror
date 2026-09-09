@@ -1,5 +1,5 @@
 import { Container, FillGradient, Graphics, Rectangle, Text } from 'pixi.js';
-import { portPosition, portSize, cellCenter } from '@/gameplay/geometry';
+import { portPosition, portSize, cellCenter, computeGeometry } from '@/gameplay/geometry';
 import { combinerNeed, focusNeed, itemKey, levelEmitters } from '@/gameplay/levelAccess';
 import type { BoardGeometry, Direction, GameState, LevelItem, Port } from '@/gameplay/types';
 import { isLightTheme, Theme, uiText } from '../theme';
@@ -124,9 +124,11 @@ export class ObjectLayer extends Container{
       if(this.trace!==state.result){
         this.trace=state.result;this.switchTimes.clear();this.doorTimes.clear();
         for(const e of state.result?.impactEvents??[]){
-          if(e.type==='switch'&&e.id&&!this.switchTimes.has(e.id))this.switchTimes.set(e.id,laserMsAtDistance(e.at));
-          if(e.type==='door-open'&&e.id)this.doorTimes.set(e.id,laserMsAtDistance(e.at));
+          const at=state.timeSkill?e.at/(computeGeometry(state.level).cell*.002):laserMsAtDistance(e.at);
+          if(e.type==='switch'&&e.id&&!this.switchTimes.has(e.id))this.switchTimes.set(e.id,at);
+          if(e.type==='door-open'&&e.id)this.doorTimes.set(e.id,at);
         }
+        if(state.timeSkill)for(const [id,at] of Object.entries(state.result?.doorReadyMs??{}))this.doorTimes.set(id,at);
       }
       const travel=state.shotElapsedMs-GameConfig.laser.chargeMs;
       for(const link of this.signals){

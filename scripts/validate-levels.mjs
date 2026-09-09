@@ -3,6 +3,7 @@ import fs from 'node:fs';
 const MAX_COLS = 8;
 const MAX_ROWS = 8;
 const levels = JSON.parse(fs.readFileSync(new URL('../src/levels/levels.json', import.meta.url), 'utf8'));
+const bosses = JSON.parse(fs.readFileSync(new URL('../src/levels/time-bosses.json', import.meta.url), 'utf8'));
 const handcrafted = JSON.parse(fs.readFileSync(new URL('../src/levels/handcrafted.json', import.meta.url), 'utf8'));
 const errors = [];
 
@@ -18,14 +19,30 @@ function emittersOf(level) {
 }
 
 if (levels.length !== 130) errors.push(`levels.json should contain 130 levels, got ${levels.length}`);
+if (bosses.length !== 13) errors.push(`time-bosses.json should contain 13 challenges, got ${bosses.length}`);
 Object.entries(handcrafted).forEach(([number, level]) => {
   if (JSON.stringify(levels[Number(number) - 1] ?? {}) !== JSON.stringify(level)) {
     errors.push(`#${number} diverged from handcrafted.json`);
   }
 });
 
-levels.forEach((level, index) => {
-  const number = index + 1;
+const validationEntries = [
+  ...levels.map((level, index) => ({ level, number: index + 1, boss: false })),
+  ...bosses.map((level, index) => ({ level, number: (index + 1) * 10, boss: true })),
+];
+validationEntries.forEach(({level, number, boss}) => {
+  const time=level.timeBoss;
+  if(boss){
+    if(!time)errors.push(`BOSS after #${number} missing time rules`);
+    if(level.chapterNo!==number/10)errors.push(`BOSS after #${number} has invalid chapterNo`);
+  }else if(time)errors.push(`#${number} ordinary level must not contain time boss rules`);
+  if(time){
+    for(const name of ['adjustmentUses','bulletTimeUses','rewindUses'])if(!Number.isInteger(time[name])||time[name]<0||time[name]>9)errors.push(`#${number} invalid ${name}`);
+    if(time.adjustmentUses<1)errors.push(`#${number} no God Hand adjustments`);
+    if(time.bulletTimeUses!==0)errors.push(`#${number} bullet time must stay hidden in this release`);
+    if(time.rewindUses>0&&![2,3,4].includes(time.rewindCells))errors.push(`#${number} invalid rewindCells`);
+    if(time.firstFailureFree!==true)errors.push(`#${number} missing first failure protection`);
+  }
   if (!Number.isInteger(level.rows) || !Number.isInteger(level.cols) || level.rows < 1 || level.cols < 1) {
     errors.push(`#${number} invalid board`);
   }
@@ -81,4 +98,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`Validated ${levels.length} levels (max ${MAX_COLS} columns × ${MAX_ROWS} rows).`);
+console.log(`Validated ${levels.length} original levels and ${bosses.length} separate challenges (max ${MAX_COLS} columns × ${MAX_ROWS} rows).`);

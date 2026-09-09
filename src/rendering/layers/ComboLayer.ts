@@ -1,7 +1,7 @@
 import { Container, Graphics, Text } from 'pixi.js';
 import { COMBO_MOTION, UI_RECTS } from '@/config/GameConfig';
 import { clamp, easeInCubic, easeOutBack, easeOutCubic, lerp } from '@/core/easing';
-import { comboPraiseForCount, comboTierForCount, type ComboTier } from '@/gameplay/combo';
+import { comboPraiseForCount, comboTierForCount, isComboMilestone, type ComboTier } from '@/gameplay/combo';
 import type { Quality } from '@/performance/PerformanceManager';
 import { setUiFontSize, Theme, uiText } from '../theme';
 
@@ -9,6 +9,7 @@ type ComboFx = {
   count: number;
   tier: ComboTier;
   startedAt: number;
+  updatedAt: number;
   endsAt: number;
 };
 
@@ -38,7 +39,15 @@ export class ComboLayer extends Container {
 
   show(count: number, now: number) {
     const tier = comboTierForCount(count);
-    this.effect = { count, tier, startedAt: now, endsAt: now + COMBO_MOTION.duration };
+    const previous = this.effect;
+    const restart = !previous || isComboMilestone(count);
+    this.effect = {
+      count,
+      tier,
+      startedAt: restart ? now : previous.startedAt,
+      updatedAt: now,
+      endsAt: now + COMBO_MOTION.duration,
+    };
     this.praise.text = comboPraiseForCount(count);
     this.comboText.text = `COMBO ×${count}`;
     setUiFontSize(this.praise, 18 + tier);
@@ -84,8 +93,9 @@ export class ComboLayer extends Container {
   private draw(effect: ComboFx, now: number, quality: Quality) {
     const elapsed = now - effect.startedAt;
     const enter = easeOutBack(clamp(elapsed / COMBO_MOTION.enterDuration, 0, 1), 1.28);
+    const sinceUpdate = now - effect.updatedAt;
     const exit = easeInCubic(clamp(
-      (elapsed - COMBO_MOTION.holdUntil) / Math.max(1, COMBO_MOTION.duration - COMBO_MOTION.holdUntil),
+      (sinceUpdate - COMBO_MOTION.holdUntil) / Math.max(1, COMBO_MOTION.duration - COMBO_MOTION.holdUntil),
       0,
       1,
     ));
@@ -93,7 +103,7 @@ export class ComboLayer extends Container {
     const tierMotion = COMBO_MOTION.tiers[effect.tier];
     const width = 300 + effect.tier * 16;
     const height = 86 + effect.tier * 4;
-    const pulse = 1 + Math.sin(clamp((elapsed - COMBO_MOTION.enterDuration) / 430, 0, 1) * Math.PI) * 0.045 * (1 - exit);
+    const pulse = 1 + Math.sin(clamp(sinceUpdate / 220, 0, 1) * Math.PI) * 0.03 * (1 - exit);
     const scale = lerp(0.56, tierMotion.badgeScale, enter) * pulse * (1 - exit * 0.08);
     const x = UI_RECTS.progress.x + UI_RECTS.progress.w / 2;
     const y = Math.max(height * scale / 2 + 10, COMBO_MOTION.badgeY - exit * 18) + this.topOffset;

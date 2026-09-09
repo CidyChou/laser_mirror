@@ -2,6 +2,16 @@ export const COMBO_VISIBLE_FROM = 2;
 export const MAX_COMBO_COUNT = 99;
 
 export type ComboTier = 1 | 2 | 3;
+export type ComboAudioIndex = 1 | 2 | 3 | 4 | 5 | 6;
+
+const COMBO_AUDIO_MILESTONES = new Map<number, ComboAudioIndex>([
+  [2, 1],
+  [3, 2],
+  [5, 3],
+  [8, 4],
+  [12, 5],
+  [20, 6],
+]);
 
 export function comboTierForCount(count: number): ComboTier {
   if (count >= 5) return 3;
@@ -16,6 +26,11 @@ export function comboPraiseForCount(count: number): string {
   return '漂亮连击！';
 }
 
-export function comboAudioIndex(count: number): 1 | 2 | 3 | 4 | 5 | 6 {
-  return Math.min(6, Math.max(1, Math.floor(count) - 1)) as 1 | 2 | 3 | 4 | 5 | 6;
+export function comboAudioIndex(count: number): ComboAudioIndex | null {
+  const safeCount = Math.max(0, Math.floor(count));
+  return COMBO_AUDIO_MILESTONES.get(safeCount) ?? (safeCount > 20 && safeCount % 5 === 0 ? 6 : null);
+}
+
+export function isComboMilestone(count: number): boolean {
+  return comboAudioIndex(count) !== null;
 }

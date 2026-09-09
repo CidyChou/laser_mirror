@@ -5,7 +5,7 @@ import { Button } from '../ui/Button';
 import { Theme, uiText } from '../theme';
 
 export type PosterMeta = {
-  levelIndex: number;
+  stageLabel: string;
   comboCount: number;
 };
 
@@ -63,7 +63,7 @@ export class PreviewPosterLayer extends Container {
     this.disposePhoto();
     this.photoTexture = texture;
     this.photo.texture = texture;
-    this.subtitle.text = `第 ${meta.levelIndex + 1} 关 · 通关`;
+    this.subtitle.text = `${meta.stageLabel} · 通关`;
     this.caption.text = meta.comboCount >= 2 ? `连击 ×${meta.comboCount}  ·  光路接通` : '光路接通';
     this.saveButton.setText('保存到相册');
     this.saveButton.setDisabled(false);
