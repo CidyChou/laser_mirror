@@ -55,6 +55,7 @@ function build(){
   view=new PixiGameView(app.renderer,quality,theme.value as ThemeId,[level],renderer.value==='gpu');
   app.stage.addChild(view.root);session.on(event);view.sync(session.state);
   view.setHandlers({rotate:(x,y)=>session.rotateAt(x,y),fire:()=>play(),reset:()=>reset(),openSettings:()=>showOverlay(),
+    tutorialNext:()=>{},tutorialSkip:()=>{},tutorialTap:()=>{},replayTutorial:()=>{},
     toggleAudio:()=>{},toggleHaptics:()=>{},selectTheme:()=>{},closeSettings:()=>showOverlay(),openLevels:()=>{},
     selectLevel:()=>{},unlockAllLevels:()=>{},clearHistory:()=>{},uiChanged:()=>{},resultPrimary:()=>{},resultSecondary:()=>{},resultPreview:()=>{},resultLevels:()=>{},closePoster:()=>{},savePoster:()=>{},coinSound:()=>{}});
   resize();view.update(session.state,clock);report();

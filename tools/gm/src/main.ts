@@ -436,6 +436,7 @@ function renderInspector(state: typeof app, force: boolean) {
   root.replaceChildren(
     section('关卡',
       field('名称', input('text', level.name, value => patchLevel(state, current => { current.name = value; }))),
+      check('挑战关卡（首次进入时显示挑战引导）', level.mode === 'challenge', value => patchLevel(state, current => { current.mode = value ? 'challenge' : 'campaign'; })),
       h('div', { class: 'chips' }, ...CHAPTERS.map(chapter =>
         h('button', {
           type: 'button',

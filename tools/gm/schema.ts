@@ -32,6 +32,7 @@ export type LevelItem =
 export type PlaceableType = LevelItem['type'];
 
 export type GameLevel = {
+  mode?: 'campaign' | 'challenge';
   name: string;
   chapter: string;
   rows: number;
@@ -145,6 +146,7 @@ export function emptyLevel(partial: Partial<GmLevel> = {}): GmLevel {
   return {
     id: partial.id ?? newId(),
     name: partial.name ?? '新关卡',
+    mode: partial.mode,
     chapter,
     chapterNo,
     rows,
@@ -254,6 +256,7 @@ export function toGameLevel(level: GmLevel): GameLevel {
     shots: Math.floor(Number(level.shots)),
   };
   if (emitters.length > 1) next.emitters = emitters;
+  if (level.mode) next.mode = level.mode;
   return next;
 }
 
@@ -273,6 +276,7 @@ function normalizeIncoming(entry: unknown, index: number): GmLevel {
   return {
     id: typeof raw.id === 'string' && raw.id ? raw.id : newId(),
     name: String(raw.name ?? `关卡 ${index + 1}`),
+    mode: raw.mode === 'challenge' ? 'challenge' : raw.mode === 'campaign' ? 'campaign' : undefined,
     chapter: String(raw.chapter ?? '未分类'),
     chapterNo: clampInt(raw.chapterNo ?? 1, 1, 99),
     rows,

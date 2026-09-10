@@ -77,6 +77,7 @@ const requiredFiles = [
   'ui/settings-gear.png',
   'ui/victory-crown.png',
   'ui/victory-coin.png',
+  'ui/tutorial/finger.png',
   'ui/app-icon.png',
 ];
 for (const relativePath of requiredFiles) {

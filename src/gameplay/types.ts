@@ -16,6 +16,8 @@ export type LevelItem =
   | { type: 'combiner'; x: number; y: number; dir: Direction; need?: number; fixed?: boolean };
 
 export interface LevelDefinition {
+  /** Travels with the board when levels are reordered. */
+  mode?: 'campaign' | 'challenge';
   name: string;
   chapter: string;
   chapterNo: number;

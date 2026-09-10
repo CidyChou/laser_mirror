@@ -22,7 +22,7 @@
         "s": 0
       }
     ],
-    "hint": "先旋转镜子规划路线；确认后再发射。每次试射会消耗 1 次激光机会。",
+    "hint": "点按镜面调整方向，再点击发射；只有发射失败才扣 1 颗爱心。",
     "chapterNo": 1,
     "shots": 5
   },
@@ -55,7 +55,7 @@
         "s": 0
       }
     ],
-    "hint": "镜子无限旋转，激光次数有限。尽量在脑中先完成光路。",
+    "hint": "镜子可无限旋转；先连接两段光路，再发射。",
     "chapterNo": 1,
     "shots": 5
   },
@@ -596,13 +596,6 @@
         "x": 1,
         "y": 2,
         "s": 0
-      },
-      {
-        "type": "mirror",
-        "x": 3,
-        "y": 3,
-        "s": 1,
-        "decoy": true
       }
     ],
     "hint": "菱形分光镜会保留原光束，同时反射出第二束光。",
@@ -2264,20 +2257,6 @@
         "requires": [
           "A"
         ]
-      },
-      {
-        "type": "mirror",
-        "x": 4,
-        "y": 4,
-        "s": 1,
-        "decoy": true
-      },
-      {
-        "type": "mirror",
-        "x": 0,
-        "y": 4,
-        "s": 1,
-        "decoy": true
       }
     ],
     "hint": "圆形能量节点被照亮时，会打开对应光门。",
@@ -3556,27 +3535,6 @@
         "x": 3,
         "y": 4,
         "pair": "P1"
-      },
-      {
-        "type": "mirror",
-        "x": 4,
-        "y": 0,
-        "s": 1,
-        "decoy": true
-      },
-      {
-        "type": "mirror",
-        "x": 4,
-        "y": 1,
-        "s": 1,
-        "decoy": true
-      },
-      {
-        "type": "mirror",
-        "x": 4,
-        "y": 3,
-        "s": 1,
-        "decoy": true
       }
     ],
     "hint": "进入同色传送门后，激光会从另一端继续前进。",
@@ -6015,20 +5973,6 @@
         "x": 4,
         "y": 4,
         "s": 1
-      },
-      {
-        "type": "mirror",
-        "x": 0,
-        "y": 0,
-        "s": 0,
-        "decoy": true
-      },
-      {
-        "type": "mirror",
-        "x": 5,
-        "y": 0,
-        "s": 1,
-        "decoy": true
       }
     ],
     "hint": "金色菱形要从两个方向打中。墙面终点也要亮。",
@@ -7086,20 +7030,6 @@
         "x": 2,
         "y": 5,
         "s": 1
-      },
-      {
-        "type": "mirror",
-        "x": 0,
-        "y": 0,
-        "s": 0,
-        "decoy": true
-      },
-      {
-        "type": "mirror",
-        "x": 5,
-        "y": 0,
-        "s": 1,
-        "decoy": true
       }
     ],
     "hint": "紫色聚合点要先吃到两束光，才会朝箭头射出。点按旋转箭头。",
@@ -10970,7 +10900,8 @@
         "side": "E",
         "index": 0
       }
-    ]
+    ],
+    "mode": "challenge"
   },
   {
     "name": "隔墙取钥",
@@ -11148,7 +11079,8 @@
         "side": "E",
         "index": 3
       }
-    ]
+    ],
+    "mode": "challenge"
   },
   {
     "name": "折返航道",
@@ -11304,7 +11236,8 @@
         "side": "W",
         "index": 6
       }
-    ]
+    ],
+    "mode": "challenge"
   },
   {
     "name": "三岔晶阵",
@@ -11458,7 +11391,8 @@
         "side": "S",
         "index": 7
       }
-    ]
+    ],
+    "mode": "challenge"
   },
   {
     "name": "借光开门",
@@ -11603,7 +11537,8 @@
         "side": "E",
         "index": 5
       }
-    ]
+    ],
+    "mode": "challenge"
   },
   {
     "name": "真假近路",
@@ -11726,7 +11661,8 @@
     ],
     "hint": "靠近终点的镜子不一定在正确路线上。",
     "chapterNo": 11,
-    "shots": 3
+    "shots": 3,
+    "mode": "challenge"
   },
   {
     "name": "双钥同锁",
@@ -11896,7 +11832,8 @@
         "side": "S",
         "index": 6
       }
-    ]
+    ],
+    "mode": "challenge"
   },
   {
     "name": "交叉跃迁",
@@ -12068,7 +12005,8 @@
         "side": "S",
         "index": 5
       }
-    ]
+    ],
+    "mode": "challenge"
   },
   {
     "name": "双晶分账",
@@ -12210,7 +12148,8 @@
         "side": "S",
         "index": 2
       }
-    ]
+    ],
+    "mode": "challenge"
   },
   {
     "name": "汇流岔道",
@@ -12346,7 +12285,8 @@
         "side": "N",
         "index": 5
       }
-    ]
+    ],
+    "mode": "challenge"
   },
   {
     "name": "远端回钥",
@@ -12520,7 +12460,8 @@
         "side": "W",
         "index": 2
       }
-    ]
+    ],
+    "mode": "challenge"
   },
   {
     "name": "分光暗巷",
@@ -12661,7 +12602,8 @@
     ],
     "hint": "有些镜子只会把你引进死路。",
     "chapterNo": 12,
-    "shots": 3
+    "shots": 3,
+    "mode": "challenge"
   },
   {
     "name": "跃迁补光",
@@ -12821,7 +12763,8 @@
         "side": "W",
         "index": 6
       }
-    ]
+    ],
+    "mode": "challenge"
   },
   {
     "name": "三钥密室",
@@ -13012,7 +12955,8 @@
         "side": "E",
         "index": 4
       }
-    ]
+    ],
+    "mode": "challenge"
   },
   {
     "name": "双核接棒",
@@ -13158,7 +13102,8 @@
         "side": "S",
         "index": 4
       }
-    ]
+    ],
+    "mode": "challenge"
   },
   {
     "name": "四向折返",
@@ -13303,7 +13248,8 @@
         "side": "W",
         "index": 5
       }
-    ]
+    ],
+    "mode": "challenge"
   },
   {
     "name": "三色迷航",
@@ -13500,7 +13446,8 @@
         "side": "N",
         "index": 1
       }
-    ]
+    ],
+    "mode": "challenge"
   },
   {
     "name": "门锁双晶",
@@ -13667,7 +13614,8 @@
         "side": "E",
         "index": 3
       }
-    ]
+    ],
+    "mode": "challenge"
   },
   {
     "name": "汇核远送",
@@ -13837,7 +13785,8 @@
         "side": "W",
         "index": 4
       }
-    ]
+    ],
+    "mode": "challenge"
   },
   {
     "name": "三向合璧",
@@ -13994,7 +13943,8 @@
         "side": "S",
         "index": 4
       }
-    ]
+    ],
+    "mode": "challenge"
   },
   {
     "name": "镜中旁路",
@@ -14133,7 +14083,8 @@
         "side": "W",
         "index": 7
       }
-    ]
+    ],
+    "mode": "challenge"
   },
   {
     "name": "双域取钥",
@@ -14313,7 +14264,8 @@
         "side": "S",
         "index": 5
       }
-    ]
+    ],
+    "mode": "challenge"
   },
   {
     "name": "晶核分工",
@@ -14464,7 +14416,8 @@
         "side": "S",
         "index": 6
       }
-    ]
+    ],
+    "mode": "challenge"
   },
   {
     "name": "多门异钥",
@@ -14660,7 +14613,8 @@
         "side": "E",
         "index": 3
       }
-    ]
+    ],
+    "mode": "challenge"
   },
   {
     "name": "环路分流",
@@ -14794,7 +14748,8 @@
     ],
     "hint": "一次分光能打开更多路，也可能把光带回原处。",
     "chapterNo": 13,
-    "shots": 3
+    "shots": 3,
+    "mode": "challenge"
   },
   {
     "name": "双核异向",
@@ -14955,7 +14910,8 @@
         "side": "S",
         "index": 1
       }
-    ]
+    ],
+    "mode": "challenge"
   },
   {
     "name": "双晶换位",
@@ -15114,7 +15070,8 @@
         "side": "E",
         "index": 3
       }
-    ]
+    ],
+    "mode": "challenge"
   },
   {
     "name": "四出口博弈",
@@ -15250,7 +15207,8 @@
         "side": "S",
         "index": 1
       }
-    ]
+    ],
+    "mode": "challenge"
   },
   {
     "name": "三域联锁",
@@ -15454,7 +15412,8 @@
         "side": "E",
         "index": 6
       }
-    ]
+    ],
+    "mode": "challenge"
   },
   {
     "name": "光路终局",
@@ -15643,6 +15602,7 @@
         "side": "N",
         "index": 2
       }
-    ]
+    ],
+    "mode": "challenge"
   }
 ]

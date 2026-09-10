@@ -12,6 +12,7 @@ export class SettingsLayer extends Container {
   readonly hapticsButton = new Button(500, 64, '震动反馈  ·  已开启', 'secondary');
   readonly levelSelectButton = new Button(500, 68, '选择关卡', 'secondary');
   readonly restartButton = new Button(500, 68, '重新开始当前关卡', 'primary');
+  readonly tutorialButton = new Button(500, 68, '重看本关引导', 'secondary');
   readonly clearHistoryButton = new Button(500, 68, '清理历史记录', 'danger');
   readonly confirmClearButton = new Button(224, 72, '确认清理', 'danger');
   readonly cancelClearButton = new Button(224, 72, '取消', 'secondary');
@@ -30,7 +31,7 @@ export class SettingsLayer extends Container {
   private readonly confirmPanel = new Graphics();
   private readonly confirmTitle = new Text({ text: '清理历史记录？', style: uiText({ fontSize: 34, fill: Theme.ink }) });
   private readonly confirmCopy = new Text({
-    text: '将清空关卡进度、金币和爱心\n主题、音效与震动设置会保留',
+    text: '将清空关卡进度、金币并恢复爱心\n新手引导重置，主题、音效与震动保留',
     style: uiText({ fontSize: 19, fill: Theme.inkSoft, align: 'center', lineHeight: 32 }),
   });
   private readonly themeCards = THEMES.map((theme) => new ThemeCard(theme));
@@ -53,6 +54,7 @@ export class SettingsLayer extends Container {
     this.hapticsButton.setLabelSize(22);
     this.levelSelectButton.setLabelSize(22);
     this.restartButton.setLabelSize(24);
+    this.tutorialButton.setLabelSize(22);
     this.clearHistoryButton.setLabelSize(22);
     this.confirmClearButton.setLabelSize(23);
     this.cancelClearButton.setLabelSize(23);
@@ -63,7 +65,7 @@ export class SettingsLayer extends Container {
       this.dim, this.panel, this.title, this.closeButton,
       this.appearanceLabel, ...this.themeCards,
       this.audioLabel, this.audioButton, this.hapticsButton,
-      this.actionLabel, this.levelSelectButton, this.restartButton, this.clearHistoryButton, this.footer,
+      this.actionLabel, this.levelSelectButton, this.restartButton, this.tutorialButton, this.clearHistoryButton, this.footer,
     );
     this.confirmLayer.visible = false;
     this.confirmLayer.eventMode = 'static';
@@ -147,8 +149,9 @@ export class SettingsLayer extends Container {
     this.actionLabel.position.set(rect.x + 40, rect.y + 536);
     this.levelSelectButton.position.set(rect.x + 40, rect.y + 566);
     this.restartButton.position.set(rect.x + 40, rect.y + 646);
-    this.clearHistoryButton.position.set(rect.x + 40, rect.y + 726);
-    this.footer.position.set(DESIGN_WIDTH / 2, rect.y + 884);
+    this.tutorialButton.position.set(rect.x + 40, rect.y + 726);
+    this.clearHistoryButton.position.set(rect.x + 40, rect.y + 806);
+    this.footer.position.set(DESIGN_WIDTH / 2, rect.y + 908);
 
     const confirm = { x: 100, y: 490, w: 520, h: 330 };
     this.confirmDim.rect(0, 0, DESIGN_WIDTH, DESIGN_HEIGHT).fill({ color: Theme.overlay, alpha: 0.82 });

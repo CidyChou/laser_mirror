@@ -59,6 +59,7 @@ export function forge(recipe:Recipe,others:LevelDefinition[]){
     const controlCount=Math.min(n*n-8,18+recipe.splitters);
     for(let i=0;i<controlCount;i++)items.push({type:i<recipe.splitters?'splitter':'mirror',...cells[i],s:random()<.5?0:1});
     const level:LevelDefinition={name:recipe.name,chapter:recipe.number<=110?'岔路迷阵':recipe.number<=120?'机关织网':'光路博弈',chapterNo:Math.ceil(recipe.number/10),rows:n,cols:n,emitter:emitters[0],emitters,targets:[],shots:3,hint:recipe.hint,items};
+    if(recipe.number>100)level.mode='challenge';
     let trace=simulate(level),failed=false;
     for(let p=0;p<(recipe.portals??0);p++){
       const live=shuffle([...crossed(level,trace).values()].filter(c=>!occupied(level,c.x,c.y)),random);

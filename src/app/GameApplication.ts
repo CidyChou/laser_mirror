@@ -5,6 +5,8 @@ import { nowMs } from '@/core/clock';
 import { loadCoins, saveCoins, winReward } from '@/economy/wallet';
 import { AD_HEART_REWARD, loadHearts, MAX_HEARTS, saveHearts } from '@/economy/hearts';
 import { GameSession } from '@/gameplay/GameSession';
+import { TutorialDirector } from '@/gameplay/tutorial';
+import { loadTutorialProgress, saveTutorialProgress } from '@/progression/tutorialProgress';
 import type { LevelDefinition } from '@/gameplay/types';
 import { LevelRepository } from '@/levels/LevelRepository';
 import { PerformanceManager } from '@/performance/PerformanceManager';
@@ -40,6 +42,7 @@ const THEME_STORAGE_KEY = 'laser-mirror-theme';
 export class GameApplication {
   private app=new Application();
   private session:GameSession;
+  private tutorial:TutorialDirector;
   private view!:PixiGameView;
   private perf=new PerformanceManager();
   private audio:AudioManager;
@@ -68,6 +71,8 @@ export class GameApplication {
     if(loadAllLevelsUnlocked(platform))saveAllLevelsUnlocked(platform,false);
     const initialLevel=loadCurrentLevel(platform,this.totalLevels,this.completedLevels,false);
     this.session=new GameSession(this.levels,loadHearts(platform),initialLevel);
+    this.tutorial=new TutorialDirector(loadTutorialProgress(platform,this.levels,this.completedLevels),seen=>saveTutorialProgress(platform,seen));
+    this.tutorial.enter(this.session.state);
     this.audio=new AudioManager(platform);
     this.coins=loadCoins(platform);
     this.themeId=normalizeThemeId(this.platform.storage.get(THEME_STORAGE_KEY));
@@ -111,9 +116,13 @@ export class GameApplication {
       if(event.type==='level'){
         this.collectPendingCoins();this.pendingResult=null;this.paidVictory=false;this.view.hideOverlays();
         saveCurrentLevel(this.platform,state.levelIndex);
+        this.tutorial.enter(state);
+        this.syncTutorial();
       }
       if(event.type==='rotate'){
         this.view.rotateItem(event.x,event.y,event.s,event.dir);
+        this.tutorial.rotated(state,event.x,event.y);
+        this.syncTutorial();
         return;
       }
       if(event.type==='state'||event.type==='level'){
@@ -166,6 +175,8 @@ export class GameApplication {
         }
       }
       if(event.type==='victory'){
+        this.tutorial.victory();
+        this.syncTutorial();
         const newlyCompleted=!this.completedLevels.has(state.levelIndex);
         this.completedLevels.add(state.levelIndex);
         saveCompletedLevels(this.platform,this.completedLevels);
@@ -254,6 +265,7 @@ export class GameApplication {
     this.view.sync(this.session.state);
     this.applyUiTextures();
     this.bindViewHandlers();
+    this.syncTutorial();
     if(reopenLevels)this.view.showLevelSelect(this.session.state.levelIndex,this.completedLevels,this.allLevelsUnlocked);
     if(reopenSettings)this.view.showSettings(this.audioEnabled,this.hapticsEnabled,this.themeId);
     const renderer=this.app.renderer as any;
@@ -266,28 +278,12 @@ export class GameApplication {
     this.view.setUiTexture('settings',uiTexture(this.platform.kind,'settings'));
     this.view.setUiTexture('crown',uiTexture(this.platform.kind,'crown'));
     this.view.setUiTexture('coin',uiTexture(this.platform.kind,'coin'));
+    this.view.setUiTexture('finger',uiTexture(this.platform.kind,'finger'));
   }
   private bindViewHandlers(){
     this.view.setHandlers({
-      rotate:(x,y)=>{
-        if(this.session.state.firing||this.session.state.won||this.overlayLocked())return;
-        const now=nowMs();
-        this.session.rotateAt(x,y);
-        this.view.mirrorRotateFeedback(x,y,now);
-        if(!this.app.ticker.started)this.renderOnce();
-        this.wake();this.audio.play('mirrorRotate');this.vibrate('light');
-      },
-      fire:()=>{
-        if(this.overlayLocked())return;
-        if(this.session.state.hearts<=0){this.audio.play('uiClick');this.showHeartRefill(nowMs());this.wake();return;}
-        try{this.session.fire();}
-        catch(error){
-          console.warn('[game] fire failed', error);
-          this.session.abortFire();
-        }
-        if(this.session.state.firing) this.armFireWatchdog();
-        this.wake();
-      },
+      rotate:(x,y)=>this.rotate(x,y),
+      fire:()=>this.fire(),
       reset:()=>{this.collectPendingCoins();this.pendingResult=null;this.audio.play('uiClick');this.session.reset();this.wake();},
       openSettings:()=>{if(this.view.result.visible||this.view.poster.visible)return;this.audio.play('uiClick');this.view.showSettings(this.audioEnabled,this.hapticsEnabled,this.themeId);this.wake();},
       closeSettings:()=>{this.audio.play('uiClick');this.view.closeSettings();this.wake();},
@@ -350,7 +346,40 @@ export class GameApplication {
       closePoster:()=>{this.audio.play('uiClick');this.view.poster.hide();this.wake();},
       savePoster:()=>{void this.saveWinPoster();},
       coinSound:()=>this.audio.play('coin'),
+      tutorialNext:()=>{if(this.overlayLocked())return;this.audio.play('uiClick');this.tutorial.next();this.syncTutorial();this.wake();},
+      tutorialSkip:()=>{if(this.overlayLocked())return;this.audio.play('uiClick');this.tutorial.skip();this.syncTutorial();this.wake();},
+      tutorialTap:()=>{
+        const step=this.tutorial.current,anchor=step?.anchors[0];
+        if(step?.action==='rotate'&&anchor?.kind==='cell')this.rotate(anchor.x,anchor.y);
+        else if(step?.action==='fire')this.fire();
+      },
+      replayTutorial:()=>{
+        if(this.session.state.firing){this.view.showToast('请等待本次发射结束',nowMs());this.wake();return;}
+        this.collectPendingCoins();this.pendingResult=null;
+        if(this.session.state.won)this.session.reset();
+        this.view.hideOverlays();
+        this.tutorial.enter(this.session.state,true);
+        this.syncTutorial();this.audio.play('uiClick');this.wake();
+      },
     });
+  }
+  private rotate(x:number,y:number){
+    if(this.session.state.firing||this.session.state.won||this.overlayLocked()||!this.tutorial.allowsRotate(x,y))return;
+    this.session.rotateAt(x,y);
+    this.view.mirrorRotateFeedback(x,y,nowMs());
+    if(!this.app.ticker.started)this.renderOnce();
+    this.wake();this.audio.play('mirrorRotate');this.vibrate('light');
+  }
+  private fire(){
+    if(this.overlayLocked()||!this.tutorial.allowsFire())return;
+    if(this.session.state.hearts<=0){this.audio.play('uiClick');this.showHeartRefill(nowMs());this.wake();return;}
+    try{this.session.fire();}
+    catch(error){console.warn('[game] fire failed',error);this.session.abortFire();}
+    if(this.session.state.firing)this.armFireWatchdog();
+    this.wake();
+  }
+  private syncTutorial(){
+    if(this.view)this.view.setTutorial(this.tutorial.current,this.session.state,this.tutorial.progress);
   }
   private overlayLocked(){
     return this.view.result.visible||this.view.settings.visible||this.view.levelSelect.visible||this.view.poster.visible;
@@ -396,6 +425,7 @@ export class GameApplication {
     this.audio.play('uiClick');
     this.completedLevels.clear();
     clearLevelProgress(this.platform);
+    this.tutorial.clear();
     this.coins=0;saveCoins(this.platform,0);
     this.session.restoreHearts(MAX_HEARTS);saveHearts(this.platform,MAX_HEARTS);
     this.session.load(0);

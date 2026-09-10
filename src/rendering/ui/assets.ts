@@ -5,6 +5,7 @@ const FILES = {
   settings: 'ui/settings-gear.png',
   crown: 'ui/victory-crown.png',
   coin: 'ui/victory-coin.png',
+  finger: 'ui/tutorial/finger.png',
 } as const;
 
 export type UiAssetKey = keyof typeof FILES;
