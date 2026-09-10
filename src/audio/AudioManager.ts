@@ -41,12 +41,12 @@ const SOUND_DEFS: Record<SfxName, SoundDef> = {
   uiClick:      { file:'button-select.mp3', volume:.62, pool:2, cooldownMs:35, rateJitter:.025 },
   win:          { file:'level-victory.mp3', volume:.88, pool:1, cooldownMs:500 },
   lose:         { file:'game-over.mp3', volume:.78, pool:1, cooldownMs:400 },
-  combo1:       { file:'combo-1.mp3', volume:.90, pool:1, cooldownMs:40 },
-  combo2:       { file:'combo-2.mp3', volume:.90, pool:1, cooldownMs:40 },
-  combo3:       { file:'combo-3.mp3', volume:.90, pool:1, cooldownMs:40 },
-  combo4:       { file:'combo-4.mp3', volume:.90, pool:1, cooldownMs:40 },
-  combo5:       { file:'combo-5.mp3', volume:.92, pool:1, cooldownMs:40 },
-  combo6:       { file:'combo-6.mp3', volume:.96, pool:1, cooldownMs:40 },
+  combo1:       { file:'combo-1.mp3', volume:.56, pool:1, cooldownMs:40 },
+  combo2:       { file:'combo-2.mp3', volume:.58, pool:1, cooldownMs:40 },
+  combo3:       { file:'combo-3.mp3', volume:.61, pool:1, cooldownMs:40 },
+  combo4:       { file:'combo-4.mp3', volume:.64, pool:1, cooldownMs:40 },
+  combo5:       { file:'combo-5.mp3', volume:.67, pool:1, cooldownMs:40 },
+  combo6:       { file:'combo-6.mp3', volume:.70, pool:1, cooldownMs:40 },
   coin:         { file:'coin-pickup.mp3', volume:.728, pool:8, cooldownMs:70 },
 };
 
@@ -108,7 +108,9 @@ export class AudioManager {
   }
 
   playCombo(count:number) {
-    const name = `combo${comboAudioIndex(count)}` as SfxName;
+    const index = comboAudioIndex(count);
+    if (index === null) return;
+    const name = `combo${index}` as SfxName;
     this.stopCombo();
     this.play(name);
   }

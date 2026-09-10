@@ -22,7 +22,9 @@ const value = (item: LevelItem) => item.type === 'combiner' ? item.dir : item.ty
 const goalAnchors = (level: LevelDefinition) => [...level.targets.map(port), ...level.items.filter(i => i.type === 'focus').map(cell)];
 
 /** Challenge is level metadata, so moving or inserting a board does not move its tutorial. */
-export function isChallengeLevel(level: LevelDefinition) { return level.mode === 'challenge'; }
+export function isChallengeLevel(level: LevelDefinition) {
+  return level.mode === 'challenge' || level.campaign?.kind === 'boss' || Boolean(level.timeBoss);
+}
 
 /** Everything is discovered from the live board, including paired portals and multi-key doors. */
 function lessonsFor(level: LevelDefinition, items: LevelItem[]): Lesson[] {

@@ -11,7 +11,7 @@ import { collectorFixture,chainedFixture,transportedFixture } from './fixtures/o
 const sim=new LaserSimulator();
 const trace=(level:LevelDefinition)=>sim.simulate(level,level.items,computeGeometry(level));
 const t=trace(collectorFixture),pulse=t.combinerPulses['2,3'];
-assert(pulse);assert.equal(pulse.launchMs-pulse.readyMs,1500);
+assert(pulse);assert(Math.abs(pulse.launchMs-pulse.readyMs-1500)<1e-7,'Collector charge duration must be 1500 ms');
 assert(Math.abs(laserMsAtDistance(pulse.launchDist)-pulse.launchMs)<.0001);
 assert(t.segments.filter(s=>(s.widthScale??1)>1).every(s=>s.startDist>=pulse.launchDist));
 assert(t.hits.every(Boolean));
@@ -44,7 +44,7 @@ const insufficient=trace(weak);assert.deepEqual(insufficient.combinerPulses,{});
 const chain=trace(chainedFixture);
 assert(chain.hits.every(Boolean));assert.equal(Object.keys(chain.combinerPulses).length,2);
 const a=chain.combinerPulses['2,1'],b=chain.combinerPulses['2,4'];
-assert(b.readyMs>a.launchMs);assert.equal(b.launchMs-b.readyMs,1500);
+assert(b.readyMs>a.launchMs);assert(Math.abs(b.launchMs-b.readyMs-1500)<1e-7,'Chained collector charge duration must be 1500 ms');
 const carried=trace(transportedFixture);assert(carried.hits.every(Boolean));
 assert(carried.impactEvents.some(e=>e.type==='portal'));assert(carried.impactEvents.some(e=>e.type==='splitter'));
 const wide=carried.segments.filter(s=>(s.widthScale??1)>1);

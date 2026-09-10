@@ -14,5 +14,7 @@ SFX:
 - shot_fail: failed test shot
 - victory: completion sting
 - ui_click: reset / next
+- combo-1..6: milestone stings at combos 2, 3, 5, 8, 12, and 20; above 20,
+  combo-6 repeats only every five hits so dense late-game paths stay readable
 
 Files are compact mono MP3 at 96 kbps and are played through the platform audio adapter.

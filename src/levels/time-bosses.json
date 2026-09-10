@@ -1,0 +1,1479 @@
+[
+  {
+    "name": "镜阵·换轨",
+    "chapter": "光的方向",
+    "rows": 8,
+    "cols": 5,
+    "emitter": {
+      "side": "W",
+      "index": 3
+    },
+    "targets": [
+      {
+        "side": "S",
+        "index": 3
+      },
+      {
+        "side": "N",
+        "index": 3
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 3,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 0,
+        "fixed": false
+      }
+    ],
+    "hint": "先点亮一端，再使用技能旋转中央镜，让下一批光束照亮另一端。",
+    "chapterNo": 1,
+    "shots": 4,
+    "timeBoss": {
+      "adjustmentUses": 2,
+      "bulletTimeUses": 0,
+      "rewindUses": 0,
+      "firstFailureFree": true
+    }
+  },
+  {
+    "name": "双翼·错拍",
+    "chapter": "分光实验",
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 3
+    },
+    "targets": [
+      {
+        "side": "S",
+        "index": 3
+      },
+      {
+        "side": "S",
+        "index": 6
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 3,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 0,
+        "fixed": false
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 1,
+        "s": 0,
+        "fixed": true
+      }
+    ],
+    "hint": "先点亮一端，再使用技能旋转中央镜，让下一批光束照亮另一端。",
+    "chapterNo": 2,
+    "shots": 3,
+    "timeBoss": {
+      "adjustmentUses": 2,
+      "bulletTimeUses": 0,
+      "rewindUses": 0,
+      "firstFailureFree": true
+    }
+  },
+  {
+    "name": "逆行回廊",
+    "chapter": "障碍区域",
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 3
+    },
+    "targets": [
+      {
+        "side": "S",
+        "index": 3
+      },
+      {
+        "side": "N",
+        "index": 3
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 3,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 0,
+        "fixed": false
+      }
+    ],
+    "hint": "先点亮一端，再使用技能旋转中央镜，让下一批光束照亮另一端。",
+    "chapterNo": 3,
+    "shots": 3,
+    "timeBoss": {
+      "adjustmentUses": 2,
+      "bulletTimeUses": 0,
+      "rewindUses": 2,
+      "rewindCells": 2,
+      "firstFailureFree": true
+    }
+  },
+  {
+    "name": "三相·延时门",
+    "chapter": "能源机关",
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 3
+    },
+    "targets": [
+      {
+        "side": "S",
+        "index": 3
+      },
+      {
+        "side": "N",
+        "index": 3
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 3,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 0,
+        "fixed": false
+      },
+      {
+        "type": "switch",
+        "x": 3,
+        "y": 5,
+        "id": "A"
+      },
+      {
+        "type": "door",
+        "x": 3,
+        "y": 1,
+        "id": "A",
+        "requires": [
+          "A"
+        ]
+      }
+    ],
+    "hint": "先让下行光束打开 A 门；后续光束需要转向门后的终点。",
+    "chapterNo": 4,
+    "shots": 3,
+    "timeBoss": {
+      "adjustmentUses": 1,
+      "bulletTimeUses": 0,
+      "rewindUses": 0,
+      "firstFailureFree": true
+    }
+  },
+  {
+    "name": "光域·跃迁回环",
+    "chapter": "空间谜题",
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 3
+    },
+    "targets": [
+      {
+        "side": "S",
+        "index": 3
+      },
+      {
+        "side": "N",
+        "index": 3
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 3,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 0,
+        "fixed": false
+      },
+      {
+        "type": "portal",
+        "x": 0,
+        "y": 5,
+        "pair": "time"
+      },
+      {
+        "type": "portal",
+        "x": 0,
+        "y": 2,
+        "pair": "time"
+      }
+    ],
+    "hint": "回环中的传送门缩短了间隔。先让第一束通过，再为返回的光换向。",
+    "chapterNo": 5,
+    "shots": 3,
+    "timeBoss": {
+      "adjustmentUses": 1,
+      "bulletTimeUses": 0,
+      "rewindUses": 0,
+      "firstFailureFree": true
+    }
+  },
+  {
+    "name": "双翼·错峰",
+    "chapter": "双源激光",
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 3
+    },
+    "targets": [
+      {
+        "side": "S",
+        "index": 3
+      },
+      {
+        "side": "N",
+        "index": 3
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 3,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 0,
+        "fixed": false
+      }
+    ],
+    "hint": "两束输入汇入同一条回路。保留第一次反射，再为后续光束换向。",
+    "chapterNo": 6,
+    "shots": 3,
+    "emitters": [
+      {
+        "side": "W",
+        "index": 3
+      },
+      {
+        "side": "S",
+        "index": 0
+      }
+    ],
+    "timeBoss": {
+      "adjustmentUses": 1,
+      "bulletTimeUses": 0,
+      "rewindUses": 0,
+      "firstFailureFree": true
+    }
+  },
+  {
+    "name": "双核·交叉充能",
+    "chapter": "双束终点",
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 3
+    },
+    "targets": [],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 3,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 0,
+        "fixed": false
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 1,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 5,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "focus",
+        "x": 5,
+        "y": 5,
+        "need": 2
+      }
+    ],
+    "hint": "中央镜要分别服务两批光，从左侧和上方为核心提供不同方向的输入。",
+    "chapterNo": 7,
+    "shots": 3,
+    "timeBoss": {
+      "adjustmentUses": 1,
+      "bulletTimeUses": 0,
+      "rewindUses": 0,
+      "firstFailureFree": true
+    }
+  },
+  {
+    "name": "聚合·二次点火",
+    "chapter": "聚合核心",
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 3
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 5
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 3,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 0,
+        "fixed": false
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 1,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 5,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "combiner",
+        "x": 5,
+        "y": 5,
+        "need": 2,
+        "dir": 0,
+        "fixed": true
+      }
+    ],
+    "hint": "中央镜要分别服务两批光，从左侧和上方为核心提供不同方向的输入。",
+    "chapterNo": 8,
+    "shots": 3,
+    "timeBoss": {
+      "adjustmentUses": 1,
+      "bulletTimeUses": 0,
+      "rewindUses": 1,
+      "rewindCells": 2,
+      "firstFailureFree": true
+    }
+  },
+  {
+    "name": "机关交响·变奏",
+    "chapter": "交错机关",
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 3
+    },
+    "targets": [
+      {
+        "side": "W",
+        "index": 4
+      },
+      {
+        "side": "E",
+        "index": 4
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 3,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 1,
+        "fixed": false
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 6,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 4,
+        "s": 0,
+        "fixed": false
+      },
+      {
+        "type": "switch",
+        "x": 3,
+        "y": 1,
+        "id": "A"
+      },
+      {
+        "type": "door",
+        "x": 6,
+        "y": 4,
+        "id": "A",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "focus",
+        "x": 3,
+        "y": 0,
+        "need": 2
+      },
+      {
+        "type": "combiner",
+        "x": 7,
+        "y": 4,
+        "need": 2,
+        "dir": 0,
+        "fixed": true
+      },
+      {
+        "type": "portal",
+        "x": 0,
+        "y": 5,
+        "pair": "time"
+      },
+      {
+        "type": "portal",
+        "x": 0,
+        "y": 2,
+        "pair": "time"
+      }
+    ],
+    "hint": "先完成上方目标，再把后续光束交给右侧镜面；右侧镜面也需要分两次服务出口。",
+    "chapterNo": 9,
+    "shots": 3,
+    "emitters": [
+      {
+        "side": "W",
+        "index": 3
+      },
+      {
+        "side": "E",
+        "index": 0
+      },
+      {
+        "side": "N",
+        "index": 7
+      }
+    ],
+    "timeBoss": {
+      "adjustmentUses": 2,
+      "bulletTimeUses": 0,
+      "rewindUses": 1,
+      "rewindCells": 3,
+      "firstFailureFree": true
+    }
+  },
+  {
+    "name": "终极光域·三幕",
+    "chapter": "终极光域",
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 3
+    },
+    "targets": [
+      {
+        "side": "N",
+        "index": 3
+      },
+      {
+        "side": "W",
+        "index": 4
+      },
+      {
+        "side": "W",
+        "index": 5
+      },
+      {
+        "side": "E",
+        "index": 5
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 3,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 1,
+        "fixed": false
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 4,
+        "s": 0,
+        "fixed": false
+      },
+      {
+        "type": "portal",
+        "x": 4,
+        "y": 6,
+        "pair": "relay"
+      },
+      {
+        "type": "portal",
+        "x": 4,
+        "y": 7,
+        "pair": "relay"
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 7,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 4,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 6,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 5,
+        "s": 0,
+        "fixed": false
+      },
+      {
+        "type": "combiner",
+        "x": 2,
+        "y": 5,
+        "need": 2,
+        "dir": 2,
+        "fixed": true
+      }
+    ],
+    "hint": "先完成上方目标，再把后续光束交给右侧镜面；右侧镜面也需要分两次服务出口。",
+    "chapterNo": 10,
+    "shots": 3,
+    "emitters": [
+      {
+        "side": "W",
+        "index": 3
+      },
+      {
+        "side": "N",
+        "index": 2
+      }
+    ],
+    "timeBoss": {
+      "adjustmentUses": 3,
+      "bulletTimeUses": 0,
+      "rewindUses": 1,
+      "rewindCells": 3,
+      "firstFailureFree": true
+    }
+  },
+  {
+    "name": "汇流岔道·三换轨",
+    "chapter": "岔路迷阵",
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 3
+    },
+    "targets": [
+      {
+        "side": "N",
+        "index": 3
+      },
+      {
+        "side": "W",
+        "index": 4
+      },
+      {
+        "side": "E",
+        "index": 4
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 3,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 1,
+        "fixed": false
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 6,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 4,
+        "s": 0,
+        "fixed": false
+      }
+    ],
+    "hint": "先完成上方目标，再把后续光束交给右侧镜面；右侧镜面也需要分两次服务出口。",
+    "chapterNo": 11,
+    "shots": 3,
+    "timeBoss": {
+      "adjustmentUses": 2,
+      "bulletTimeUses": 0,
+      "rewindUses": 0,
+      "firstFailureFree": true
+    }
+  },
+  {
+    "name": "三向合璧·时序",
+    "chapter": "机关织网",
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 3
+    },
+    "targets": [
+      {
+        "side": "W",
+        "index": 4
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 3,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 1,
+        "fixed": false
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 6,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 4,
+        "s": 0,
+        "fixed": false
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 5,
+        "s": 0,
+        "fixed": false
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 4,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 1,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 1,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 0,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 0,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 5,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 2,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 5,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 7,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 7,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "focus",
+        "x": 4,
+        "y": 2,
+        "need": 3
+      }
+    ],
+    "hint": "先从上方为三向晶体充能，再完成左侧出口；最后两批光需要从晶体左侧、右侧分别进入。",
+    "chapterNo": 12,
+    "shots": 3,
+    "timeBoss": {
+      "adjustmentUses": 3,
+      "bulletTimeUses": 0,
+      "rewindUses": 1,
+      "rewindCells": 4,
+      "firstFailureFree": true
+    }
+  },
+  {
+    "name": "光路终局·时间闭环",
+    "chapter": "光路博弈",
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 3
+    },
+    "targets": [
+      {
+        "side": "N",
+        "index": 3
+      },
+      {
+        "side": "W",
+        "index": 4
+      },
+      {
+        "side": "E",
+        "index": 5
+      },
+      {
+        "side": "N",
+        "index": 4
+      }
+    ],
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 3,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 1,
+        "fixed": false
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 4,
+        "s": 0,
+        "fixed": false
+      },
+      {
+        "type": "switch",
+        "x": 3,
+        "y": 1,
+        "id": "A"
+      },
+      {
+        "type": "door",
+        "x": 6,
+        "y": 4,
+        "id": "A",
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "type": "portal",
+        "x": 4,
+        "y": 6,
+        "pair": "relay"
+      },
+      {
+        "type": "portal",
+        "x": 4,
+        "y": 7,
+        "pair": "relay"
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 7,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 4,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 6,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 5,
+        "s": 1,
+        "fixed": false
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 5,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 1,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 1,
+        "s": 0,
+        "fixed": false
+      },
+      {
+        "type": "focus",
+        "x": 4,
+        "y": 3,
+        "need": 2
+      },
+      {
+        "type": "combiner",
+        "x": 4,
+        "y": 0,
+        "need": 2,
+        "dir": 3,
+        "fixed": true
+      },
+      {
+        "type": "switch",
+        "x": 3,
+        "y": 2,
+        "id": "B"
+      }
+    ],
+    "hint": "先完成上方目标，再把后续光束交给右侧镜面；右侧镜面也需要分两次服务出口。",
+    "chapterNo": 13,
+    "shots": 3,
+    "emitters": [
+      {
+        "side": "W",
+        "index": 3
+      },
+      {
+        "side": "E",
+        "index": 0
+      },
+      {
+        "side": "E",
+        "index": 3
+      }
+    ],
+    "timeBoss": {
+      "adjustmentUses": 4,
+      "bulletTimeUses": 0,
+      "rewindUses": 2,
+      "rewindCells": 4,
+      "firstFailureFree": true
+    }
+  }
+]

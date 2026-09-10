@@ -8,6 +8,7 @@ import { GameSession } from '@/gameplay/GameSession';
 import { TutorialDirector } from '@/gameplay/tutorial';
 import { loadTutorialProgress, saveTutorialProgress } from '@/progression/tutorialProgress';
 import type { LevelDefinition } from '@/gameplay/types';
+import { rewardLevelIndex, stageCompletionLabel, stageFileLabel, stageLabel } from '@/levels/campaign';
 import { LevelRepository } from '@/levels/LevelRepository';
 import { PerformanceManager } from '@/performance/PerformanceManager';
 import type { IPlatform } from '@/platform/IPlatform';
@@ -38,6 +39,7 @@ import {
 const AUDIO_STORAGE_KEY = 'laser-mirror-audio-enabled';
 const HAPTICS_STORAGE_KEY = 'laser-mirror-haptics-enabled';
 const THEME_STORAGE_KEY = 'laser-mirror-theme';
+const TIME_PROGRESS_KEY = 'laser-mirror-time-progress-v1';
 
 export class GameApplication {
   private app=new Application();
@@ -53,6 +55,7 @@ export class GameApplication {
   private completedLevels=new Set<number>();
   private allLevelsUnlocked=false;
   private coins=0;
+  private timeProgress={usedFailureProtection:new Set<number>(),seenTutorials:new Set<string>()};
   private totalLevels=0;
   private pendingResult:{kind:'win'|'lose';copy:{title:string;subtitle:string;tip:string;primary:string;secondary?:string;reward?:number};at:number}|null=null;
   private unresize=()=>{};
@@ -66,11 +69,16 @@ export class GameApplication {
     const repo=new LevelRepository();
     this.levels=repo.levels;
     this.totalLevels=this.levels.length;
-    this.completedLevels=loadCompletedLevels(platform,this.totalLevels);
+    this.completedLevels=loadCompletedLevels(platform,this.levels);
     this.allLevelsUnlocked=false;
     if(loadAllLevelsUnlocked(platform))saveAllLevelsUnlocked(platform,false);
-    const initialLevel=loadCurrentLevel(platform,this.totalLevels,this.completedLevels,false);
-    this.session=new GameSession(this.levels,loadHearts(platform),initialLevel);
+    const initialLevel=loadCurrentLevel(platform,this.levels,this.completedLevels,false);
+    try{
+      const saved=JSON.parse(platform.storage.get(TIME_PROGRESS_KEY)||'{}');
+      if(Array.isArray(saved.failures))this.timeProgress.usedFailureProtection=new Set(saved.failures.filter((n:unknown)=>Number.isInteger(n)));
+      if(Array.isArray(saved.tutorials))this.timeProgress.seenTutorials=new Set(saved.tutorials.filter((s:unknown)=>s==='bullet'||s==='rewind'));
+    }catch{/* Recover malformed local progress without dropping ordinary progress. */}
+    this.session=new GameSession(this.levels,loadHearts(platform),initialLevel,this.timeProgress);
     this.tutorial=new TutorialDirector(loadTutorialProgress(platform,this.levels,this.completedLevels),seen=>saveTutorialProgress(platform,seen));
     this.tutorial.enter(this.session.state);
     this.audio=new AudioManager(platform);
@@ -113,9 +121,17 @@ export class GameApplication {
     this.session.on(event=>{
       const now=nowMs();
       const state=this.session.state;
+      if(event.type==='first-failure-free')this.saveTimeProgress();
+      if(event.type==='timeline-rollback')this.view.rollbackEffects();
+      if(event.type==='skill-tutorial'){
+        this.view.showResult('lose',{
+          title:event.skill==='bullet'?'子弹时间':'时光回溯',subtitle:'章节挑战 · 技能教学',
+          tip:event.skill==='bullet'?'接下来 3 秒光束会减速。\n可连续旋转镜面，已走过的路线不会改变。':'所有光束一起后退，沿途机关随之回滚。\n倒退结束后可旋转镜面，光束将逐渐恢复速度。',primary:'明白了 · 启动技能',
+        },now);this.wake();
+      }
       if(event.type==='level'){
         this.collectPendingCoins();this.pendingResult=null;this.paidVictory=false;this.view.hideOverlays();
-        saveCurrentLevel(this.platform,state.levelIndex);
+        saveCurrentLevel(this.platform,state.levelIndex,this.levels);
         this.tutorial.enter(state);
         this.syncTutorial();
       }
@@ -179,14 +195,14 @@ export class GameApplication {
         this.syncTutorial();
         const newlyCompleted=!this.completedLevels.has(state.levelIndex);
         this.completedLevels.add(state.levelIndex);
-        saveCompletedLevels(this.platform,this.completedLevels);
-        if(newlyCompleted)saveCurrentLevel(this.platform,firstIncompleteLevel(this.totalLevels,this.completedLevels));
+        saveCompletedLevels(this.platform,this.completedLevels,this.levels);
+        if(newlyCompleted)saveCurrentLevel(this.platform,firstIncompleteLevel(this.totalLevels,this.completedLevels),this.levels);
         this.audio.play('win');
         this.view.victory(now,state);
-        const reward=this.paidVictory?0:winReward(state.levelIndex);
+        const reward=this.paidVictory?0:winReward(rewardLevelIndex(state.level,state.levelIndex));
         const copy={
           title:'通关成功',
-          subtitle:`第 ${state.levelIndex+1} 关已完成`,
+          subtitle:stageCompletionLabel(state.level,state.levelIndex),
           tip: state.comboCount>=2 ? `本次连击 ×${state.comboCount}` : '光路接通',
           primary: state.levelIndex < this.totalLevels - 1 ? '下一关' : '再来一轮',
           reward,
@@ -282,10 +298,12 @@ export class GameApplication {
   }
   private bindViewHandlers(){
     this.view.setHandlers({
+      bulletTime:()=>{if(!this.overlayLocked()){this.session.startBulletTime();this.wake();}},
+      rewindTime:()=>{if(!this.overlayLocked()){this.session.startRewind();this.wake();}},
       rotate:(x,y)=>this.rotate(x,y),
       fire:()=>this.fire(),
       reset:()=>{this.collectPendingCoins();this.pendingResult=null;this.audio.play('uiClick');this.session.reset();this.wake();},
-      openSettings:()=>{if(this.view.result.visible||this.view.poster.visible)return;this.audio.play('uiClick');this.view.showSettings(this.audioEnabled,this.hapticsEnabled,this.themeId);this.wake();},
+      openSettings:()=>{if(this.session.state.firing||this.view.result.visible||this.view.poster.visible)return;this.audio.play('uiClick');this.view.showSettings(this.audioEnabled,this.hapticsEnabled,this.themeId);this.wake();},
       closeSettings:()=>{this.audio.play('uiClick');this.view.closeSettings();this.wake();},
       toggleAudio:()=>{
         this.audioEnabled=!this.audioEnabled;this.audio.setEnabled(this.audioEnabled);
@@ -323,6 +341,7 @@ export class GameApplication {
       clearHistory:()=>this.clearHistory(),
       uiChanged:()=>this.wake(),
       resultPrimary:()=>{
+        if(this.session.state.timeSkill?.tutorial){this.view.result.hide();this.session.confirmSkillTutorial();this.saveTimeProgress();this.wake();return;}
         this.collectPendingCoins();this.pendingResult=null;this.audio.play('uiClick');
         if(this.view.result.kindValue==='win')this.session.next();
         else if(this.session.state.hearts<=0){
@@ -364,14 +383,16 @@ export class GameApplication {
     });
   }
   private rotate(x:number,y:number){
-    if(this.session.state.firing||this.session.state.won||this.overlayLocked()||!this.tutorial.allowsRotate(x,y))return;
+    if((this.session.state.firing&&!this.session.state.timeSkill?.canOperate)||this.session.state.won||this.overlayLocked()||(!this.session.state.firing&&!this.tutorial.allowsRotate(x,y)))return;
     this.session.rotateAt(x,y);
     this.view.mirrorRotateFeedback(x,y,nowMs());
     if(!this.app.ticker.started)this.renderOnce();
     this.wake();this.audio.play('mirrorRotate');this.vibrate('light');
   }
   private fire(){
-    if(this.overlayLocked()||!this.tutorial.allowsFire())return;
+    if(this.overlayLocked())return;
+    if(this.session.state.firing&&this.session.state.timeSkill){this.session.endTimeShot();this.wake();return;}
+    if(!this.session.state.firing&&!this.tutorial.allowsFire())return;
     if(this.session.state.hearts<=0){this.audio.play('uiClick');this.showHeartRefill(nowMs());this.wake();return;}
     try{this.session.fire();}
     catch(error){console.warn('[game] fire failed',error);this.session.abortFire();}
@@ -389,7 +410,7 @@ export class GameApplication {
     this.audio.play('uiClick');
     this.vibrate('heavy');
     const state=this.session.state;
-    const ok=this.view.showWinPreview({levelIndex:state.levelIndex,comboCount:state.comboCount},nowMs());
+    const ok=this.view.showWinPreview({stageLabel:stageLabel(state.level,state.levelIndex),comboCount:state.comboCount},nowMs());
     if(!ok) this.view.showToast('预览失败',nowMs());
     this.wake();
     this.renderOnce();
@@ -409,7 +430,7 @@ export class GameApplication {
       }
       const result=await this.platform.saveImageToAlbum({
         canvas,
-        filename:`光线急转弯-第${this.session.state.levelIndex+1}关.png`,
+        filename:`光线急转弯-${stageFileLabel(this.session.state.level,this.session.state.levelIndex)}.png`,
       });
       this.view.poster.setSaveStatus(result.ok?'saved':'error');
       this.view.showToast(result.message,nowMs());
@@ -422,6 +443,7 @@ export class GameApplication {
     }
   }
   private clearHistory(){
+    this.timeProgress.usedFailureProtection.clear();this.timeProgress.seenTutorials.clear();this.saveTimeProgress();
     this.audio.play('uiClick');
     this.completedLevels.clear();
     clearLevelProgress(this.platform);
@@ -431,6 +453,9 @@ export class GameApplication {
     this.session.load(0);
     this.view.showLevelSelect(0,this.completedLevels,this.allLevelsUnlocked);
     this.vibrate('medium');this.wake();
+  }
+  private saveTimeProgress(){
+    this.platform.storage.set(TIME_PROGRESS_KEY,JSON.stringify({failures:[...this.timeProgress.usedFailureProtection],tutorials:[...this.timeProgress.seenTutorials]}));
   }
   private unlockAllLevels(){
     this.allLevelsUnlocked=!this.allLevelsUnlocked;

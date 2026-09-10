@@ -15,9 +15,42 @@ export type LevelItem =
   | { type: 'focus'; x: number; y: number; need?: number }
   | { type: 'combiner'; x: number; y: number; dir: Direction; need?: number; fixed?: boolean };
 
+export interface TimeBossRules {
+  /** Rotations allowed after launch; one successful adjustment consumes one. */
+  adjustmentUses: number;
+  /** Retained for a later release. The current client does not expose it. */
+  bulletTimeUses: number;
+  rewindUses: number;
+  rewindCells?: 2 | 3 | 4;
+  firstFailureFree: true;
+}
+
+export interface TimeSkillState {
+  adjustmentUses: number;
+  bulletTimeUses: number;
+  rewindUses: number;
+  phase: 'idle' | 'bullet' | 'rewind' | 'recover';
+  remainingMs: number;
+  timeScale: number;
+  canOperate: boolean;
+  canRewind: boolean;
+  tutorial: 'bullet' | 'rewind' | null;
+}
+
+export interface CampaignStageMeta {
+  /** Stable persistence key; unlike the runtime array index this never shifts. */
+  id: string;
+  kind: 'normal' | 'boss';
+  /** The ordinary level number, or the level after which this boss appears. */
+  displayNumber: number;
+}
+
 export interface LevelDefinition {
   /** Travels with the board when levels are reordered. */
   mode?: 'campaign' | 'challenge';
+  /** Added by LevelRepository at runtime; level JSON stays portable. */
+  campaign?: CampaignStageMeta;
+  timeBoss?: TimeBossRules;
   name: string;
   chapter: string;
   chapterNo: number;
@@ -71,6 +104,8 @@ export interface CombinerPulse {
 }
 
 export interface LaserTrace {
+  /** Causally scheduled dynamic doors, in simulation milliseconds. */
+  doorReadyMs?: Record<string, number>;
   switches: Set<string>;
   exits: Port[];
   segments: LaserSegment[];
@@ -86,6 +121,7 @@ export interface LaserTrace {
 }
 
 export interface GameState {
+  timeSkill?: TimeSkillState;
   levelIndex: number;
   level: LevelDefinition;
   items: LevelItem[];

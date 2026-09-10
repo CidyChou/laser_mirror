@@ -1,10 +1,12 @@
 import assert from 'node:assert/strict';
 import { writeFileSync } from 'node:fs';
 import levelsRaw from '../src/levels/levels.json';
+import bossesRaw from '../src/levels/time-bosses.json';
 import handcrafted from '../src/levels/handcrafted.json';
 import { GameSession } from '../src/gameplay/GameSession';
 import type { LevelDefinition } from '../src/gameplay/types';
 import { inspectLevel, layoutSimilarity, valueOf } from './level-quality';
+import { verifyTimeBoss } from './verify-time-bosses';
 
 const levels = levelsRaw as LevelDefinition[];
 const errors: string[] = [];
@@ -46,8 +48,9 @@ const report = levels.map((level, index) => {
   console.log(`#${number} clicks=${metrics.minClicks} live=${metrics.live} retain=${metrics.correctLive} tempting=${metrics.temptingDecoys} solutions=${metrics.solutions}`);
   return { number, ...metrics, mostSimilar };
 });
+const bossReport=(bossesRaw as LevelDefinition[]).map((_,index)=>verifyTimeBoss(levels[index*10+9],(index+1)*10));
 writeFileSync('docs/level-audit-after.json', JSON.stringify(report, null, 2) + '\n');
 // Development-only review fixture; not imported by the shipped game.
 writeFileSync('tools/visual/campaign-solutions.json', JSON.stringify(solutions, null, 2) + '\n');
 if (errors.length) { console.error(errors.join('\n')); process.exit(1); }
-console.log('130 levels solved and played successfully; handcrafted boards and challenge quality checks passed.');
+console.log(`${report.length} original levels and ${bossReport.length} separate chapter challenges verified; handcrafted boards and challenge quality checks passed.`);

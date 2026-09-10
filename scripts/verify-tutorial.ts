@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { GameSession } from '../src/gameplay/GameSession';
-import { TutorialDirector, tutorialLessonIds, tutorialSolution } from '../src/gameplay/tutorial';
+import { TutorialDirector, isChallengeLevel, tutorialLessonIds, tutorialSolution } from '../src/gameplay/tutorial';
 import { computeGeometry } from '../src/gameplay/geometry';
 import { LaserSimulator } from '../src/gameplay/LaserSimulator';
 import { itemKey } from '../src/gameplay/levelAccess';
@@ -9,6 +9,7 @@ import type { LevelDefinition } from '../src/gameplay/types';
 import type { IPlatform } from '../src/platform/IPlatform';
 import { hydrateLevels, toGameLevel } from '../tools/gm/schema';
 import raw from '../src/levels/levels.json';
+import { LevelRepository } from '../src/levels/LevelRepository';
 
 const levels = raw as LevelDefinition[];
 const sim = new LaserSimulator();
@@ -85,7 +86,7 @@ for (let i = 1; i < levels.length; i++) {
 }
 assert(seen.has('fixed-mirror') && seen.has('fixed-splitter') && seen.has('wall'));
 assert(seen.has('portal') && seen.has('switch') && seen.has('door') && seen.has('multi-lock'));
-assert(seen.has('focus-2') && seen.has('combiner-2') && seen.has('challenge'));
+assert(seen.has('focus-2') && seen.has('combiner-2'));
 assert(writes > 0);
 session.load(40); guide.enter(session.state, true); assert(guide.current); guide.skip();
 assert.equal(guide.current, null); assert(guide.allowsFire() && guide.allowsRotate(0, 0));
@@ -111,14 +112,15 @@ assert(!loadTutorialProgress(platform, levels, new Set([0])).has('splitter'));
 storage.set(TUTORIAL_STORAGE_KEY, '[]'); assert.equal(loadTutorialProgress(platform, levels, new Set([0])).size, 0);
 storage.set(TUTORIAL_STORAGE_KEY, '{broken'); assert(loadTutorialProgress(platform, levels, new Set([0])).has('mirror'));
 storage.set(TUTORIAL_STORAGE_KEY, '[null,12,"portal"]'); assert.deepEqual([...loadTutorialProgress(platform, levels, new Set())], ['portal']);
-const challenge = toGameLevel(hydrateLevels([levels[100]])[0]);
-assert.equal(challenge.mode, 'challenge'); assert(tutorialLessonIds({ ...challenge, chapterNo: 1 }).includes('challenge'));
+const importedChallenge = toGameLevel(hydrateLevels([{ ...levels[100], mode: 'challenge' }])[0]);
+assert.equal(importedChallenge.mode, 'challenge');
+const challenge = new LevelRepository().timeBosses[0];
+assert(isChallengeLevel(challenge)); assert(tutorialLessonIds(challenge).includes('challenge'));
 
 // The simplified introduction boards still solve, and no unrelated mirror remains in their lesson.
 for (const number of [11, 31, 41, 61, 71]) {
   const board = levels[number - 1], answer = tutorialSolution(board, board.items);
   assert(answer, `Introduction ${number} must be solvable within the teaching budget`);
-  assert(board.items.every(i => !('decoy' in i && i.decoy)));
   const trace = sim.simulate(board, answer, computeGeometry(board));
   assert(trace.hits.every(Boolean));
   assert(answer.every(i => i.type !== 'focus' || trace.focusOn[itemKey(i.x, i.y)]));

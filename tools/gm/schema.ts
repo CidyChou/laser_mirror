@@ -33,6 +33,7 @@ export type PlaceableType = LevelItem['type'];
 
 export type GameLevel = {
   mode?: 'campaign' | 'challenge';
+  timeBoss?: import('../../src/gameplay/types').TimeBossRules;
   name: string;
   chapter: string;
   rows: number;
@@ -145,6 +146,7 @@ export function emptyLevel(partial: Partial<GmLevel> = {}): GmLevel {
   const chapter = partial.chapter ?? CHAPTERS.find(c => c.no === chapterNo)?.name ?? '未分类';
   return {
     id: partial.id ?? newId(),
+    timeBoss: partial.timeBoss ? {...partial.timeBoss} : undefined,
     name: partial.name ?? '新关卡',
     mode: partial.mode,
     chapter,
@@ -244,6 +246,7 @@ export function toGameItem(item: LevelItem): LevelItem {
 export function toGameLevel(level: GmLevel): GameLevel {
   const emitters = gmEmitters(level).map(port => ({ side: port.side, index: Math.floor(port.index) }));
   const next: GameLevel = {
+    ...(level.timeBoss ? {timeBoss:{...level.timeBoss}} : {}),
     name: String(level.name ?? ''),
     chapter: String(level.chapter ?? ''),
     rows: Math.floor(Number(level.rows)),
@@ -275,6 +278,7 @@ function normalizeIncoming(entry: unknown, index: number): GmLevel {
   const cols = clampInt(raw.cols ?? 5, 1, MAX_COLS);
   return {
     id: typeof raw.id === 'string' && raw.id ? raw.id : newId(),
+    timeBoss: raw.timeBoss ? {...raw.timeBoss} : undefined,
     name: String(raw.name ?? `关卡 ${index + 1}`),
     mode: raw.mode === 'challenge' ? 'challenge' : raw.mode === 'campaign' ? 'campaign' : undefined,
     chapter: String(raw.chapter ?? '未分类'),

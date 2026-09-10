@@ -462,6 +462,15 @@ function renderInspector(state: typeof app, force: boolean) {
       ),
       field('激光次数', input('number', String(level.shots), value => patchLevel(state, current => { current.shots = Math.max(1, Number(value) || 1); }))),
       field('提示', textarea(level.hint, value => patchLevel(state, current => { current.hint = value; }))),
+      h('button',{type:'button',onClick:()=>patchLevel(state,current=>{
+        if(current.timeBoss)delete current.timeBoss;
+        else current.timeBoss={adjustmentUses:1,bulletTimeUses:0,rewindUses:0,rewindCells:2,firstFailureFree:true};
+      },true)},level.timeBoss?'章节挑战：已启用（点击关闭）':'启用章节挑战'),
+      ...(level.timeBoss?[
+        field('神之手调整次数',input('number',String(level.timeBoss.adjustmentUses),value=>patchLevel(state,current=>{current.timeBoss!.adjustmentUses=Math.max(0,Math.min(9,Math.floor(Number(value)||0)));}))),
+        field('时光回溯次数',input('number',String(level.timeBoss.rewindUses),value=>patchLevel(state,current=>{current.timeBoss!.rewindUses=Math.max(0,Math.min(9,Math.floor(Number(value)||0)));}))),
+        field('回溯距离（2–4格）',input('number',String(level.timeBoss.rewindCells??2),value=>patchLevel(state,current=>{current.timeBoss!.rewindCells=Math.max(2,Math.min(4,Math.floor(Number(value)||2))) as 2|3|4;}))),
+      ]:[]),
     ),
     section('选中物体', renderSelection(state, level, selectedItem)),
     section('校验', renderIssues(level, state.levels.indexOf(level))),

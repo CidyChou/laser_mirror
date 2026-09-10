@@ -2,6 +2,8 @@
 
 正式工程底座：**Vite + TypeScript + PixiJS 8 + WebGL + Pixi UI + JSON Levels + Platform Adapter**。
 
+每章第10关之后会追加一个独立的章节挑战；原 1–130 关保持原编号和内容。规则与验证范围见 [章节挑战](docs/TIME_BOSSES.md)，本地试玩校验页为 `/tools/visual/time-bosses.html`。
+
 ## macOS 一键运行
 
 ```bash
@@ -68,6 +70,8 @@ npm run build:all
 
 启动开发服务器后打开 `/tools/visual/optics.html`，可查看集光、串联、传送、棋盘、多开关联锁和六组传送门的小格场景，切换三个主题及 GPU / Graphics 渲染，并定格收集、蓄力、释放、信号传递和门叶展开阶段。此页面复用正式玩法与渲染，不写入存档或关卡。
 
+渲染生命周期回归页 `/tools/visual/rendering-regression.html` 可复现和检查粒子贴图销毁后的重复发射，以及三套主题、GPU / Graphics 下的完整画面重建。`npm run verify:render-layout` 检查四边端口不遮挡格子、不被屏幕裁切，并验证外移后的可见光路与 130 关解法。
+
 聚合点采用切角光学舱、输入槽和输出箭头，集满后蓄力 1.5 秒，再释放 3 倍宽光束；粗光束通过镜子、传送门和分光器后仍保留宽度。聚能终点显示充能比例和进度槽，读数放在光束上方的独立标牌中。
 
 开关与门使用同色字母标签，多条件门逐项显示所需开关。开关触发后先传递 420 毫秒信号，再展开门叶 280 毫秒；提前到达的激光会等门完全打开再继续。传送门使用细边圆形入口，仅靠配对颜色区分，不显示编号；光效沿用配对颜色。
@@ -75,6 +79,7 @@ npm run build:all
 ```bash
 npm run verify:optics
 npm run verify:mechanisms
+npm run verify:render-layout
 npm run verify:expansion
 npm run typecheck
 ```

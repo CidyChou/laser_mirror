@@ -19,9 +19,10 @@ const fixtures:Record<string,LevelDefinition>={collector:collectorFixture,chain:
 campaign.forEach((level,index)=>{
   const number=index+1;
   fixtures[`level-${number}`]=level as LevelDefinition;
-  fixtures[`solved-${number}`]=(solvedCampaign as Record<string,LevelDefinition>)[number];
+  const solved=(solvedCampaign as Record<string,LevelDefinition>)[number];
+  if(solved)fixtures[`solved-${number}`]=solved;
   scene.add(new Option(`${number} · ${level.name} · 开局`,`level-${number}`));
-  scene.add(new Option(`${number} · ${level.name} · 解法`,`solved-${number}`));
+  if(solved)scene.add(new Option(`${number} · ${level.name} · 解法`,`solved-${number}`));
 });
 const preset=new URLSearchParams(location.search);
 for(const select of [scene,theme,renderer]){
@@ -54,7 +55,7 @@ function build(){
   session=new GameSession([level]);
   view=new PixiGameView(app.renderer,quality,theme.value as ThemeId,[level],renderer.value==='gpu');
   app.stage.addChild(view.root);session.on(event);view.sync(session.state);
-  view.setHandlers({rotate:(x,y)=>session.rotateAt(x,y),fire:()=>play(),reset:()=>reset(),openSettings:()=>showOverlay(),
+  view.setHandlers({rotate:(x,y)=>session.rotateAt(x,y),fire:()=>play(),bulletTime:()=>session.startBulletTime(),rewindTime:()=>session.startRewind(),reset:()=>reset(),openSettings:()=>showOverlay(),
     tutorialNext:()=>{},tutorialSkip:()=>{},tutorialTap:()=>{},replayTutorial:()=>{},
     toggleAudio:()=>{},toggleHaptics:()=>{},selectTheme:()=>{},closeSettings:()=>showOverlay(),openLevels:()=>{},
     selectLevel:()=>{},unlockAllLevels:()=>{},clearHistory:()=>{},uiChanged:()=>{},resultPrimary:()=>{},resultSecondary:()=>{},resultPreview:()=>{},resultLevels:()=>{},closePoster:()=>{},savePoster:()=>{},coinSound:()=>{}});
@@ -70,7 +71,8 @@ function seek(phase:string){
   const sw=trace.impactEvents.find(e=>e.type==='switch');
   const door=trace.impactEvents.find(e=>e.type==='door-open');
   let t:number;
-  if(phase==='signal'&&sw)t=laserMsAtDistance(sw.at)+GameConfig.laser.doorSignalMs*.5;
+  if(phase==='complete')t=laserMsAtDistance(trace.maxTravel)+800;
+  else if(phase==='signal'&&sw)t=laserMsAtDistance(sw.at)+GameConfig.laser.doorSignalMs*.5;
   else if(phase==='opening'&&door)t=laserMsAtDistance(door.at)-GameConfig.laser.doorOpenMs*.5;
   else if(phase==='open'&&door)t=laserMsAtDistance(door.at)+80;
   else if(pulse&&hits.length)t=phase==='partial'?laserMsAtDistance(hits[0].at)+90:phase==='charge'?pulse.readyMs+750:pulse.launchMs+210;

@@ -1,11 +1,13 @@
-import { Container, Graphics, Rectangle, Text, Texture, type Renderer } from 'pixi.js';
+import { Container, FillGradient, Graphics, Rectangle, Text, Texture, type Renderer } from 'pixi.js';
 import { DESIGN_HEIGHT, DESIGN_WIDTH, STAGE_HEIGHT, STAGE_TOP, UI_RECTS } from '@/config/GameConfig';
-import { beamScale, borderPoint, cellCenter, computeGeometry } from '@/gameplay/geometry';
-import type { BoardGeometry, Direction, GameState, ImpactEvent, LevelDefinition } from '@/gameplay/types';
+import { portMuzzle, portPosition, cellCenter, computeGeometry } from '@/gameplay/geometry';
+import { levelEmitters } from '@/gameplay/levelAccess';
+import type { BoardGeometry, Direction, GameState, ImpactEvent, LevelDefinition, Port } from '@/gameplay/types';
 import type { PerformanceManager } from '@/performance/PerformanceManager';
 import { BoardLayer } from './layers/BoardLayer';
 import { ObjectLayer } from './layers/ObjectLayer';
 import { HudLayer } from './layers/HudLayer';
+import { TimeSkillLayer } from './layers/TimeSkillLayer';
 import { ComboLayer } from './layers/ComboLayer';
 import { CoinLayer } from './layers/CoinLayer';
 import { ResultLayer, type ResultKind } from './layers/ResultLayer';
@@ -22,6 +24,8 @@ import type { TutorialStep } from '@/gameplay/tutorial';
 import { TutorialLayer } from './layers/TutorialLayer';
 
 export type ViewHandlers = {
+  bulletTime?:()=>void;
+  rewindTime?:()=>void;
   rotate:(x:number,y:number)=>void;
   fire:()=>void;
   reset:()=>void;
@@ -42,38 +46,49 @@ export type ViewHandlers = {
   closePoster:()=>void;
   savePoster:()=>void;
   coinSound:()=>void;
-  tutorialNext:()=>void;
-  tutorialSkip:()=>void;
-  tutorialTap:()=>void;
-  replayTutorial:()=>void;
+  tutorialNext?:()=>void;
+  tutorialSkip?:()=>void;
+  tutorialTap?:()=>void;
+  replayTutorial?:()=>void;
 };
 
 export class PixiGameView{
+  private timeSkills=new TimeSkillLayer();
   readonly root=new Container();
   private readonly tutorial=new TutorialLayer();
   private tutorialAvailable=false;
   private tutorialShotHidden=false;
   private bg=new Graphics();private stageBg=new Graphics();private board=new BoardLayer();private objects=new ObjectLayer();private laser:LaserEffect;private impacts=new ImpactSystem();private particles:ParticleSystem;private confetti=new WinConfetti();private hud=new HudLayer();private combo=new ComboLayer();readonly coins=new CoinLayer();readonly result=new ResultLayer();readonly poster=new PreviewPosterLayer();readonly settings:SettingsLayer;readonly levelSelect:LevelSelectLayer;private toastBg=new Graphics();private toast=new Text({text:'',style:uiText({fontSize:18,fill:Theme.text})});private toastUntil=0;private victoryUntil=0;private victoryWash=new Graphics();private currentLevel=-1;private lastGeometry:BoardGeometry|null=null;private comboActive=false;private resultActive=false;private posterActive=false;private coinsActive=false;private confettiActive=false;private hudOffset=0;
-  constructor(private readonly renderer:Renderer,private readonly performance:PerformanceManager,themeId:ThemeId,levels:readonly LevelDefinition[],gpuLaser=true){this.laser=new LaserEffect(renderer,gpuLaser);this.particles=new ParticleSystem(renderer);this.settings=new SettingsLayer(themeId);this.levelSelect=new LevelSelectLayer(levels);this.buildBackground();this.root.addChild(this.bg,this.stageBg,this.board,this.objects,this.laser,this.particles.container,this.impacts,this.objects.captions,this.victoryWash,this.hud,this.tutorial,this.combo,this.result,this.confetti,this.coins,this.poster,this.toastBg,this.toast,this.levelSelect,this.settings);this.toast.anchor.set(.5);this.toast.position.set(360,220);this.toast.visible=false;this.toastBg.visible=false;}
+  constructor(private readonly renderer:Renderer,private readonly performance:PerformanceManager,themeId:ThemeId,levels:readonly LevelDefinition[],gpuLaser=true){this.laser=new LaserEffect(renderer,gpuLaser);this.particles=new ParticleSystem(renderer);this.settings=new SettingsLayer(themeId);this.levelSelect=new LevelSelectLayer(levels);this.buildBackground();this.root.addChild(this.bg,this.stageBg,this.board,this.objects,this.laser,this.particles.container,this.impacts,this.objects.captions,this.victoryWash,this.hud,this.tutorial,this.timeSkills,this.combo,this.result,this.confetti,this.coins,this.poster,this.toastBg,this.toast,this.levelSelect,this.settings);this.toast.anchor.set(.5);this.toast.position.set(360,220);this.toast.visible=false;this.toastBg.visible=false;}
+  private targetPorts:Port[]=[];
+  private readonly ambientFills:FillGradient[]=[];
   private buildBackground(){
     this.bg.rect(0,0,DESIGN_WIDTH,DESIGN_HEIGHT).fill(Theme.bg);
-    // Broad ambient fields create depth without competing with the laser.
-    this.bg.ellipse(42,220,440,360).fill({color:Theme.beam,alpha:.022});
-    this.bg.ellipse(680,1010,520,460).fill({color:Theme.cyan,alpha:.018});
+    for(const [x,y,rx,ry,color] of [[70,390,460,660,Theme.cyan],[680,860,430,590,Theme.beam]]){
+      const hex=`#${color.toString(16).padStart(6,'0')}`;
+      const fill=new FillGradient({type:'radial',center:{x:.5,y:.5},outerRadius:.5,textureSize:128,
+        colorStops:[{offset:0,color:`${hex}24`},{offset:1,color:`${hex}00`}]});
+      this.ambientFills.push(fill);this.bg.ellipse(x,y,rx,ry).fill(fill);
+    }
+    for(let y=220;y<1160;y+=44)this.bg.moveTo(20,y).lineTo(700,y)
+      .stroke({color:Theme.cyan,width:.7,alpha:.025});
+    for(let x=20;x<720;x+=44)this.bg.moveTo(x,220).lineTo(x,1160)
+      .stroke({color:Theme.cyan,width:.7,alpha:.025});
+    for(let i=0;i<32;i++){
+      const x=24+(i*137)%672,y=210+(i*211)%946;
+      this.bg.circle(x,y,i%4===0?1.7:.8).fill({color:i%3===0?Theme.beamHot:Theme.cyanSoft,alpha:.15+(i%4)*.06});
+    }
     this.victoryWash.rect(0,STAGE_TOP,DESIGN_WIDTH,STAGE_HEIGHT).fill({color:Theme.victoryWash,alpha:1});
     this.victoryWash.alpha=0;
     this.victoryWash.visible=false;
-    this.stageBg.roundRect(4,STAGE_TOP+10,DESIGN_WIDTH-8,STAGE_HEIGHT,18).fill({color:Theme.shadow,alpha:.22});
-    this.stageBg.roundRect(0,STAGE_TOP,DESIGN_WIDTH,STAGE_HEIGHT,16).fill(Theme.bg1).stroke({color:Theme.surfaceLine,width:1.5,alpha:.22});
-    this.stageBg.roundRect(0,STAGE_TOP,DESIGN_WIDTH,280,16).fill({color:Theme.bg0,alpha:.42});
-    this.stageBg.ellipse(360,STAGE_TOP+70,560,220).fill({color:Theme.cyan,alpha:.024});
-    this.stageBg.moveTo(48,STAGE_TOP+1).lineTo(672,STAGE_TOP+1).stroke({color:Theme.cyan,width:2,alpha:.12,cap:'round'});
   }
   setHandlers(h:ViewHandlers){
-    this.tutorial.nextButton.on('pointertap',h.tutorialNext);
-    this.tutorial.skipButton.on('pointertap',h.tutorialSkip);
-    this.tutorial.setTapHandler(h.tutorialTap);
-    this.settings.tutorialButton.on('pointertap',h.replayTutorial);
+    this.tutorial.nextButton.on('pointertap',()=>h.tutorialNext?.());
+    this.tutorial.skipButton.on('pointertap',()=>h.tutorialSkip?.());
+    this.tutorial.setTapHandler(()=>h.tutorialTap?.());
+    this.settings.tutorialButton.on('pointertap',()=>h.replayTutorial?.());
+    this.timeSkills.bullet.on('pointertap',()=>h.bulletTime?.());
+    this.timeSkills.rewind.on('pointertap',()=>h.rewindTime?.());
     this.objects.setRotateHandler(h.rotate);
     this.hud.fireButton.on('pointertap',h.fire);
     this.hud.settingsButton.on('pointertap',h.openSettings);
@@ -113,7 +128,7 @@ export class PixiGameView{
       this.coins.setCoinTexture(texture);
     }
   }
-  sync(state:GameState){const g=computeGeometry(state.level);this.lastGeometry=g;if(this.currentLevel!==state.levelIndex){this.currentLevel=state.levelIndex;this.board.rebuild(state.level,g);this.hideOverlays();}if(!state.result&&!state.firing){this.particles.clear();this.impacts.clear();}this.objects.sync(state,g);this.laser.bind(state,g.cell);this.hud.sync(state);this.tutorialShotHidden=state.firing||state.won;this.syncTutorialVisibility();}
+  sync(state:GameState){this.targetPorts=state.level.targets;const g=computeGeometry(state.level);this.lastGeometry=g;if(this.currentLevel!==state.levelIndex){this.currentLevel=state.levelIndex;this.board.rebuild(state.level,g);this.hideOverlays();}if(!state.result&&!state.firing){this.particles.clear();this.impacts.clear();}this.objects.sync(state,g);this.laser.bind(state,g.cell);this.hud.sync(state);this.timeSkills.sync(state);this.tutorialShotHidden=state.firing||state.won;this.syncTutorialVisibility();}
   setTutorial(step:TutorialStep|null,state:GameState,progress:{current:number;total:number}){
     this.tutorialAvailable=!!step;
     this.tutorialShotHidden=state.firing||state.won;
@@ -123,6 +138,7 @@ export class PixiGameView{
   private syncTutorialVisibility(){
     this.tutorial.visible=this.tutorialAvailable&&!this.tutorialShotHidden&&!this.settings.visible&&!this.levelSelect.visible&&!this.result.visible&&!this.poster.visible;
   }
+  rollbackEffects(){this.particles.clear();this.impacts.clear();this.combo.clear();}
   rotateItem(x:number,y:number,s:0|1,dir?:Direction){this.objects.rotateItem(x,y,s,dir);}
   hideOverlays(){this.result.hide();this.poster.hide();this.settings.hide();this.levelSelect.hide();this.combo.clear();this.confetti.clear();this.coins.hide();this.hud.setHeartsVisible(true);this.syncTutorialVisibility();}
   showLevelSelectFromWin(currentIndex:number,completed:ReadonlySet<number>,allLevelsUnlocked=false){
@@ -215,6 +231,10 @@ export class PixiGameView{
   private emitScale(){return this.performance.quality==='high'?1:this.performance.quality==='medium'?.65:.4;}
   private directionAngle(direction:Direction){return direction*Math.PI/2;}
   impact(e:ImpactEvent,now:number){
+    // Receiver flashes land on the external lens, using the simulation's event time.
+    if(e.type==='target'&&e.targetIndex!==undefined&&this.lastGeometry&&this.targetPorts[e.targetIndex]){
+      const point=portPosition(this.lastGeometry,this.targetPorts[e.targetIndex]);e={...e,px:point.x,py:point.y};
+    }
     try{
       const feedbackColor=e.type==='portal'?this.objects.portalColor(e.pair??''):e.type==='focus'?this.objects.focusColor(e.x,e.y):undefined;
       this.impacts.triggerImpactEffect(e,now,feedbackColor);
@@ -253,18 +273,13 @@ export class PixiGameView{
     }catch(error){console.warn('[view] impact failed',error);}
   }
   private muzzles(state:GameState){
-    const segments=state.result?.segments??[];
-    const seen=new Set<number>();
-    const out:{x:number;y:number;ang:number}[]=[];
-    const s=this.lastGeometry?beamScale(this.lastGeometry.cell):1;
-    for(const p of segments){
-      if(p.startDist>0.5||seen.has(p.branch)) continue;
-      seen.add(p.branch);
-      const dx=p.x2-p.x1,dy=p.y2-p.y1,len=Math.hypot(dx,dy)||1;
-      out.push({x:p.x1+dx/len*18*s,y:p.y1+dy/len*18*s,ang:Math.atan2(dy,dx)});
-    }
-    return out;
+    if(!this.lastGeometry)return[];
+    return levelEmitters(state.level).map(port=>{
+      const p=portMuzzle(this.lastGeometry!,port),ang={W:0,E:Math.PI,N:Math.PI/2,S:-Math.PI/2}[port.side];
+      return{x:p.x,y:p.y,ang};
+    });
   }
+
   shotStart(state:GameState,now:number){
     try{
       for(const m of this.muzzles(state)){
@@ -284,7 +299,7 @@ export class PixiGameView{
       }
     }catch(error){console.warn('[view] laserLaunch failed',error);}
   }
-  victory(now:number,state:GameState){this.victoryUntil=now+900;this.confetti.start(now);const g=computeGeometry(state.level);const points=[...state.targets.map(t=>borderPoint(g,t)),...state.items.filter(item=>item.type==='focus').map(item=>cellCenter(g,item.x,item.y))];this.impacts.triggerVictory(points,now);for(const p of points)this.particles.emit(p.x,p.y,Theme.green,Math.round(22*this.emitScale()),this.performance.particleBudget);}
+  victory(now:number,state:GameState){this.victoryUntil=now+900;this.confetti.start(now);const g=computeGeometry(state.level);const points=[...state.targets.map(t=>portPosition(g,t)),...state.items.filter(item=>item.type==='focus').map(item=>cellCenter(g,item.x,item.y))];this.impacts.triggerVictory(points,now);for(const p of points)this.particles.emit(p.x,p.y,Theme.green,Math.round(22*this.emitScale()),this.performance.particleBudget);}
   showToast(text:string,now:number){this.toast.text=text;const pad=20,w=Math.max(180,this.toast.width+pad*2),y=198+this.hudOffset;this.toast.position.set(360,y+22);this.toastBg.clear().roundRect(360-w/2,y,w,40,20).fill({color:Theme.overlay,alpha:.92}).stroke({color:Theme.white,width:1,alpha:.10});this.toast.visible=true;this.toastBg.visible=true;this.toastUntil=now+1200;}
   update(state:GameState,now:number){
     this.tutorialShotHidden=state.firing||state.won;
@@ -321,5 +336,5 @@ export class PixiGameView{
     this.toast.position.set(360,220+extra);
   }
   get active(){return this.tutorial.active||this.laser.active||this.impacts.active||this.particles.active||this.objects.active||this.levelSelect.active||this.toastUntil>0||this.victoryUntil>0||this.comboActive||this.resultActive||this.posterActive||this.confettiActive||this.coinsActive;}
-  destroy(){this.poster.hide();this.particles.destroy();this.root.destroy({children:true});}
+  destroy(){this.poster.hide();this.particles.destroy();this.root.destroy({children:true});this.ambientFills.forEach(fill=>fill.destroy());}
 }

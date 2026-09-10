@@ -1,6 +1,7 @@
 import { Container, Graphics, Rectangle, Text, Texture, type FederatedPointerEvent } from 'pixi.js';
 import { DESIGN_HEIGHT, DESIGN_WIDTH, UI_RECTS, UI_TOKENS } from '@/config/GameConfig';
 import type { LevelDefinition } from '@/gameplay/types';
+import { isBossStage, stageLabel } from '@/levels/campaign';
 import { firstIncompleteLevel, isLevelUnlocked } from '@/progression/levelProgress';
 import { SettingsButton } from '../ui/SettingsButton';
 import { Theme, uiText } from '../theme';
@@ -187,11 +188,15 @@ export class LevelSelectLayer extends Container {
   sync(currentIndex: number, completed: ReadonlySet<number>, allLevelsUnlocked = false) {
     const total = this.levels.length;
     const done = [...completed].filter((index) => index >= 0 && index < total).length;
+    const normalTotal = this.levels.filter((level) => !isBossStage(level)).length;
+    const bossTotal = total - normalTotal;
+    const normalDone = [...completed].filter((index) => this.levels[index] && !isBossStage(this.levels[index])).length;
+    const bossDone = done - normalDone;
     const next = firstIncompleteLevel(total, completed);
-    const nextCopy = done >= total ? '全部完成 · 可再次挑战' : `下一关 · 第 ${next + 1} 关`;
+    const nextCopy = done >= total ? '全部完成 · 可再次挑战' : `下一关 · ${stageLabel(this.levels[next], next)}`;
     this.progressLabel.text = allLevelsUnlocked
-      ? `GM 已开启 · 全部关卡已解锁 · 已完成 ${done} / ${total}`
-      : `已完成 ${done} / ${total}  ·  ${nextCopy}`;
+      ? `GM 已开启 · 主线 ${normalDone}/${normalTotal} · 挑战 ${bossDone}/${bossTotal}`
+      : `主线 ${normalDone}/${normalTotal} · 挑战 ${bossDone}/${bossTotal}  ·  ${nextCopy}`;
     const fillW = total > 0 ? 480 * done / total : 0;
     this.progressFill.clear();
     if (fillW > 0) this.progressFill.roundRect(120, 211, Math.max(10, fillW), 10, 5).fill(Theme.accent);
@@ -361,7 +366,7 @@ class ChapterCard extends Container {
     this.progress = new Text({ text: '', style: uiText({ fontSize: 16, fill: Theme.inkSoft }) });
     this.progress.anchor.set(1, 0);
     this.progress.position.set(CARD_W - 24, 21);
-    this.tiles = entries.map(({ index }) => new ChapterLevelTile(index));
+    this.tiles = entries.map(({ index, level }) => new ChapterLevelTile(index, level));
     this.tiles.forEach((tile, order) => {
       tile.position.set(
         22 + (order % TILE_COLUMNS) * (TILE_W + TILE_GAP_X),
@@ -387,9 +392,12 @@ class ChapterCard extends Container {
     totalLevels: number,
     allLevelsUnlocked = false,
   ) {
-    const done = this.tiles.filter((tile) => completed.has(tile.levelIndex)).length;
-    this.progress.text = `${done} / ${this.tiles.length}`;
-    this.progress.style.fill = done === this.tiles.length ? Theme.success : Theme.inkSoft;
+    const normalTiles = this.tiles.filter((tile) => !tile.boss);
+    const bossTile = this.tiles.find((tile) => tile.boss);
+    const done = normalTiles.filter((tile) => completed.has(tile.levelIndex)).length;
+    const bossDone = bossTile ? completed.has(bossTile.levelIndex) : false;
+    this.progress.text = `${done} / ${normalTiles.length}  ·  挑战 ${bossDone ? '✓' : '—'}`;
+    this.progress.style.fill = done === normalTiles.length && bossDone ? Theme.success : Theme.inkSoft;
     for (const tile of this.tiles) {
       tile.sync({
         completed: completed.has(tile.levelIndex),
@@ -404,17 +412,30 @@ class ChapterLevelTile extends Container {
   private readonly chrome = new Graphics();
   private readonly status = new Graphics();
   private readonly numberText: Text;
+  private readonly bossCaption: Text | null;
+  readonly boss: boolean;
+  private readonly tileW: number;
   private unlocked = false;
   private pressPoint: { x: number; y: number } | null = null;
   private selectHandler: (index: number) => void = () => {};
 
-  constructor(readonly levelIndex: number) {
+  constructor(readonly levelIndex: number, level: LevelDefinition) {
     super();
+    this.boss = isBossStage(level);
+    this.tileW = this.boss ? TILE_W * 2 + TILE_GAP_X : TILE_W;
     this.eventMode = 'static';
-    this.hitArea = new Rectangle(0, 0, TILE_W, TILE_H);
-    this.numberText = new Text({ text: String(levelIndex + 1), style: uiText({ fontSize: 30, fill: Theme.ink }) });
+    this.hitArea = new Rectangle(0, 0, this.tileW, TILE_H);
+    const displayNumber = level.campaign?.displayNumber ?? levelIndex + 1;
+    this.numberText = new Text({ text: this.boss ? '挑战' : String(displayNumber), style: uiText({ fontSize: this.boss ? 24 : 30, fill: Theme.ink }) });
     this.numberText.anchor.set(0.5);
-    this.numberText.position.set(54, (TILE_H - 6) / 2);
+    this.numberText.position.set(this.boss ? 70 : 54, this.boss ? 29 : (TILE_H - 6) / 2);
+    this.bossCaption = this.boss
+      ? new Text({ text: '动态光路', style: uiText({ fontSize: 14, fill: Theme.inkSoft, letterSpacing: 1 }) })
+      : null;
+    if (this.bossCaption) {
+      this.bossCaption.anchor.set(0.5);
+      this.bossCaption.position.set(70, 55);
+    }
     this.on('pointerdown', (event: FederatedPointerEvent) => {
       this.pressPoint = { x: event.global.x, y: event.global.y };
     });
@@ -426,7 +447,9 @@ class ChapterLevelTile extends Container {
     });
     this.on('pointerupoutside', () => { this.pressPoint = null; });
     this.on('pointercancel', () => { this.pressPoint = null; });
-    this.addChild(this.chrome, this.numberText, this.status);
+    this.addChild(this.chrome, this.numberText);
+    if (this.bossCaption) this.addChild(this.bossCaption);
+    this.addChild(this.status);
   }
 
   setSelectHandler(handler: (index: number) => void) {
@@ -437,28 +460,33 @@ class ChapterLevelTile extends Container {
     this.unlocked = state.unlocked;
     this.cursor = state.unlocked ? 'pointer' : 'default';
     const faceH = TILE_H - 6;
-    const fill = state.completed ? Theme.accent : state.unlocked ? Theme.surfaceTop : Theme.surfaceMuted;
-    const edge = state.current ? Theme.cyan : state.completed ? Theme.accentDark : Theme.surfaceLine;
+    const fill = state.completed ? Theme.accent : state.unlocked ? (this.boss ? Theme.surface : Theme.surfaceTop) : Theme.surfaceMuted;
+    const edge = state.current ? Theme.cyan : state.completed ? Theme.accentDark : this.boss && state.unlocked ? Theme.gold : Theme.surfaceLine;
     this.chrome.clear()
-      .roundRect(1, 7, TILE_W - 2, TILE_H - 3, UI_TOKENS.radius.md)
+      .roundRect(1, 7, this.tileW - 2, TILE_H - 3, UI_TOKENS.radius.md)
       .fill({ color: Theme.shadow, alpha: state.unlocked ? 0.24 : 0.1 })
-      .roundRect(0, 6, TILE_W, faceH, UI_TOKENS.radius.md)
+      .roundRect(0, 6, this.tileW, faceH, UI_TOKENS.radius.md)
       .fill(state.completed ? Theme.accentDark : Theme.surfaceSide)
-      .roundRect(0, 0, TILE_W, faceH, UI_TOKENS.radius.md)
+      .roundRect(0, 0, this.tileW, faceH, UI_TOKENS.radius.md)
       .fill(fill)
-      .stroke({ color: edge, width: state.current ? 3 : 1.5, alpha: state.unlocked ? 1 : 0.5 });
+      .stroke({ color: edge, width: state.current ? 3 : this.boss ? 2 : 1.5, alpha: state.unlocked ? 1 : 0.5 });
     this.numberText.style.fill = state.completed ? Theme.textOnAccent : state.unlocked ? Theme.ink : Theme.inkSoft;
     this.numberText.alpha = state.unlocked ? 1 : 0.58;
+    if (this.bossCaption) {
+      this.bossCaption.style.fill = state.completed ? Theme.textOnAccent : state.unlocked ? Theme.inkSoft : Theme.inkSoft;
+      this.bossCaption.alpha = state.unlocked ? 1 : 0.58;
+    }
     this.status.clear();
+    const statusX = this.tileW - 28;
     if (state.completed) {
-      this.status.circle(108, 38, 16).fill({ color: Theme.accentDark, alpha: 0.8 });
-      this.status.moveTo(100, 38).lineTo(106, 44).lineTo(117, 31)
+      this.status.circle(statusX, 38, 16).fill({ color: Theme.accentDark, alpha: 0.8 });
+      this.status.moveTo(statusX - 8, 38).lineTo(statusX - 2, 44).lineTo(statusX + 9, 31)
         .stroke({ color: Theme.textOnAccent, width: 3.2, cap: 'round', join: 'round' });
     } else if (!state.unlocked) {
-      this.status.arc(108, 34, 8, Math.PI, Math.PI * 2).stroke({ color: Theme.inkSoft, width: 2.6 });
-      this.status.roundRect(98, 34, 20, 17, 4).fill(Theme.inkSoft);
+      this.status.arc(statusX, 34, 8, Math.PI, Math.PI * 2).stroke({ color: Theme.inkSoft, width: 2.6 });
+      this.status.roundRect(statusX - 10, 34, 20, 17, 4).fill(Theme.inkSoft);
     } else {
-      this.status.circle(108, 39, state.current ? 7 : 6).fill(state.current ? Theme.cyan : Theme.gold);
+      this.status.circle(statusX, 39, state.current ? 7 : 6).fill(state.current ? Theme.cyan : Theme.gold);
     }
   }
 }

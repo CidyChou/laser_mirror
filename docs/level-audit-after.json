@@ -1288,17 +1288,17 @@
     "cols": 7,
     "controls": 10,
     "bits": 10,
-    "solutions": 4,
-    "minClicks": 4,
-    "live": 8,
-    "correctLive": 4,
-    "wrongLive": 4,
-    "free": 2,
-    "decoys": 2,
-    "temptingDecoys": 1,
-    "nearMisses": 19,
+    "solutions": 1,
+    "minClicks": 5,
+    "live": 10,
+    "correctLive": 5,
+    "wrongLive": 5,
+    "free": 0,
+    "decoys": 0,
+    "temptingDecoys": 0,
+    "nearMisses": 5,
     "bypassableMechanics": [],
-    "effectiveBits": 8,
+    "effectiveBits": 10,
     "allFlipWins": false,
     "mirrorFlipWins": false,
     "startsSolved": false,
@@ -1308,8 +1308,8 @@
     ],
     "goals": 3,
     "mostSimilar": {
-      "number": 57,
-      "similarity": 0.2857142857142857
+      "number": 21,
+      "similarity": 0.21428571428571427
     }
   },
   {
@@ -1435,8 +1435,8 @@
     ],
     "goals": 1,
     "mostSimilar": {
-      "number": 44,
-      "similarity": 0.21052631578947367
+      "number": 9,
+      "similarity": 0.16666666666666666
     }
   },
   {
@@ -3052,7 +3052,7 @@
     ],
     "goals": 3,
     "mostSimilar": {
-      "number": 44,
+      "number": 77,
       "similarity": 0.25
     }
   },
