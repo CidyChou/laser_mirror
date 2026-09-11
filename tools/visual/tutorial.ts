@@ -3,18 +3,25 @@ import { WebPlatform } from '@/platform/web/WebPlatform';
 import type { GameSession } from '@/gameplay/GameSession';
 import type { TutorialDirector } from '@/gameplay/tutorial';
 import type { PixiGameView } from '@/rendering/PixiGameView';
+import { LevelRepository } from '@/levels/LevelRepository';
+import { stageId } from '@/levels/campaign';
+import { tutorialLessonIds } from '@/gameplay/tutorial';
 
 // Exercise the real application with isolated in-memory progress. Never touches the player's save.
 const params = new URLSearchParams(location.search);
-const index = Math.max(0, Math.min(129, Number(params.get('level') ?? 1) - 1));
+const levels = new LevelRepository().levels;
+const requestedStage = params.get('stage') ?? `level:${params.get('level') ?? 1}`;
+const index = Math.max(0, levels.findIndex(level => stageId(level) === requestedStage));
 const storage = new Map<string, string>([
-  ['laser-mirror-completed-levels', JSON.stringify(Array.from({ length: index }, (_, i) => i))],
-  ['laser-mirror-current-level', String(index)],
+  ['laser-mirror-completed-stages-v2', JSON.stringify(levels.slice(0, index).map(stageId))],
+  ['laser-mirror-current-stage-v2', stageId(levels[index])],
   ['laser-mirror-audio-enabled', '0'],
   ['laser-mirror-haptics-enabled', '0'],
   ['laser-mirror-theme', params.get('theme') ?? 'void'],
 ]);
+if (params.get('learned') === '1') storage.set('laser-mirror-tutorial-v1', JSON.stringify([...new Set(levels.flatMap(tutorialLessonIds))]));
 const platform = new WebPlatform();
+platform.safeTop = () => Math.max(0, Math.min(100, Number(params.get('safeTop')) || 0));
 platform.storage = { get: key => storage.get(key) ?? null, set: (key, value) => { storage.set(key, value); } };
 const game = new GameApplication(platform);
 await game.start();

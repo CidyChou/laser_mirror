@@ -24,6 +24,6 @@
 
 - `npm run verify:tutorial`：首关通关、130 关首次机制覆盖、移动棋盘、无解/复杂棋盘回退、配对和计数、存档迁移、跳过重看、GM 挑战标记往返、教学关可解性。
 - `npm run typecheck`、`npm run validate:levels`、`npm run verify:optics`、`npm run verify:mechanisms`。
-- `npm run dev` 后打开 `/tools/visual/tutorial.html?level=1&theme=void`。支持 `level=1…130` 及三种主题，使用正式应用和内存存档，不修改玩家存档。
+- `npm run dev` 后打开 `/tools/visual/tutorial.html?level=1&theme=void`。支持 `level=1…130` 及三种主题，使用正式应用和内存存档，不修改玩家存档。章节挑战使用 `stage=boss:1…boss:13`；界面适配参数见 [界面美化说明](UI_POLISH.md)。
 
 浏览器检查覆盖实际点击通关、提前发射拦截、跳过与重看、设置暂停、切换主题、补充爱心、发射中断和清理记录。对 130 关完整重看时生成的 1,241 个步骤，检查说明排版与高亮区域；另检查手机小屏和窄高屏。小游戏产物已构建，真机运行仍需在各平台开发者工具验证。

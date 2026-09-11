@@ -1,10 +1,11 @@
 import { Container, FillGradient, Graphics, Rectangle, Text } from 'pixi.js';
 import { UI_TOKENS } from '@/config/GameConfig';
-import { setUiFontSize, Theme, uiText } from '../theme';
+import { isLightTheme, setUiFontSize, Theme, uiText } from '../theme';
 
 export type ButtonKind = 'primary' | 'secondary' | 'icon' | 'fire' | 'danger';
 
 export class Button extends Container {
+  readonly content = new Container();
   private shadow = new Graphics();
   private body = new Graphics();
   private face = new Graphics();
@@ -14,6 +15,7 @@ export class Button extends Container {
   private pressedState = false;
   private labelOffsetY = 0;
   private cornerRadius: number | undefined;
+  private labelMaxWidth = Infinity;
   private readonly finishes = new Map<number, FillGradient>();
 
   constructor(
@@ -23,7 +25,8 @@ export class Button extends Container {
     private readonly kind: ButtonKind = 'primary',
   ) {
     super();
-    this.addChild(this.shadow, this.body, this.face, this.caption);
+    this.addChild(this.shadow, this.body, this.content);
+    this.content.addChild(this.face, this.caption);
     this.caption.anchor.set(0.5);
     this.eventMode = 'static';
     this.cursor = 'pointer';
@@ -39,6 +42,7 @@ export class Button extends Container {
   setText(text: string) {
     if (this.caption.text === text) return;
     this.caption.text = text;
+    this.fitLabel();
   }
 
   setDisabled(value: boolean) {
@@ -46,7 +50,7 @@ export class Button extends Container {
     this.disabledState = value;
     this.eventMode = value ? 'none' : 'static';
     this.cursor = value ? 'default' : 'pointer';
-    if (value) this.setPressed(false);
+    if (value) this.pressedState = false;
     this.redraw();
   }
 
@@ -58,6 +62,18 @@ export class Button extends Container {
 
   setLabelSize(size: number) {
     setUiFontSize(this.caption, size);
+    this.fitLabel();
+  }
+
+  setLabelMaxWidth(width: number) {
+    this.labelMaxWidth = width;
+    this.fitLabel();
+  }
+
+  private fitLabel() {
+    this.caption.scale.set(1);
+    const available = Math.min(this.labelMaxWidth, this.widthPx - (this.kind === 'fire' ? 156 : 32));
+    if (this.caption.width > available) this.caption.scale.set(available / this.caption.width);
   }
 
   setLabelOffsetY(offset: number) {
@@ -100,6 +116,7 @@ export class Button extends Container {
     if (this.kind === 'primary') {
       fill = Theme.accent;
       edge = Theme.accentDark;
+      label = Theme.textOnAccent;
     } else if (this.kind === 'fire') {
       fill = this.activeState ? Theme.beam2 : Theme.laserBody;
       edge = Theme.laserPlasma;
@@ -124,17 +141,17 @@ export class Button extends Container {
     let finish = this.finishes.get(fill);
     if (!finish) {
       finish = new FillGradient({start:{x:0,y:0},end:{x:0,y:1},textureSize:64,
-        colorStops:[{offset:0,color:fill},{offset:1,color:shade(fill,this.kind==='fire'?.88:.79)}]});
+        colorStops:[{offset:0,color:fill},{offset:1,color:shade(fill,this.kind==='fire'?.88:isLightTheme()?.96:.79)}]});
       this.finishes.set(fill,finish);
     }
     this.shadow.roundRect(0, 8, this.widthPx, faceH, radius)
       .fill({ color: Theme.shadow, alpha: disabled ? .10 : .20 });
-    this.body.roundRect(0, idleDepth, this.widthPx, faceH, radius).fill(shade(fill, .56));
-    this.face.y = faceY;
+    this.body.roundRect(0, idleDepth, this.widthPx, faceH, radius).fill(shade(fill, isLightTheme()?.82:.56));
+    this.content.y = faceY;
     this.face.roundRect(0, 0, this.widthPx, faceH, radius).fill(finish)
       .stroke({color:edge,width:this.kind==='fire'?1.8:1.4,alpha:this.kind==='fire'?.85:.84});
     if(this.kind==='fire'&&!disabled){
-      const playX=this.widthPx*.225;
+      const playX=48;
       this.face.poly([playX,faceH*.32,playX+22,faceH*.5,playX,faceH*.68],true)
         .fill({color:Theme.white,alpha:.97});
       for(let i=0;i<3;i++)this.face.roundRect(this.widthPx-56+i*7,faceH*.40,2,faceH*.20,1)
@@ -142,7 +159,7 @@ export class Button extends Container {
     }
     this.caption.style.fill = label;
     this.caption.alpha = disabled ? 0.62 : 1;
-    this.caption.position.set(this.widthPx / 2 + (this.kind==='fire'?18:0), faceY + faceH / 2 + this.labelOffsetY);
+    this.caption.position.set(this.widthPx / 2 + (this.kind==='fire'?8:0), faceH / 2 + this.labelOffsetY);
   }
 
   override destroy(options?: Parameters<Container['destroy']>[0]) {

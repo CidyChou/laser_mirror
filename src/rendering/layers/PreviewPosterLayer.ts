@@ -122,11 +122,17 @@ export class PreviewPosterLayer extends Container {
   }
 
   private drawChrome() {
-    this.dim.clear().rect(0, 0, DESIGN_WIDTH, DESIGN_HEIGHT).fill({ color: Theme.overlay, alpha: 0.82 });
-    this.flash.clear().rect(0, 0, DESIGN_WIDTH, DESIGN_HEIGHT).fill(Theme.white);
+    this.setViewport(this.hitArea as Rectangle);
     this.flash.alpha = 0;
     this.flash.visible = false;
     this.flash.eventMode = 'none';
+  }
+
+  setViewport(bounds: Rectangle) {
+    this.hitArea = bounds;
+    const { x, y, width, height } = bounds;
+    this.dim.clear().rect(x, y, width, height).fill({ color: Theme.overlay, alpha: .82 });
+    this.flash.clear().rect(x, y, width, height).fill(Theme.white);
   }
 
   private drawCard(photoH: number) {

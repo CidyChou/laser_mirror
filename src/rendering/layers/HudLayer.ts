@@ -29,6 +29,9 @@ export class HudLayer extends Container {
   private lastHearts = -1;
   private lastHint = '';
   private topOffset = 0;
+  private firing = false;
+  private previousAvailable = false;
+  private nextAvailable = false;
 
   constructor() {
     super();
@@ -61,7 +64,8 @@ export class HudLayer extends Container {
     this.levelButton.setCornerRadius(27);
     this.previousLevel.position.set(36,37);
     this.nextLevel.position.set(progress.w-36,37);
-    this.levelButton.addChild(this.previousLevel,this.nextLevel);
+    this.levelButton.content.addChild(this.previousLevel,this.nextLevel);
+    this.levelButton.setLabelMaxWidth(progress.w-128);
 
     const hearts = UI_RECTS.hearts;
     this.hearts.position.set(hearts.x, hearts.y);
@@ -80,6 +84,7 @@ export class HudLayer extends Container {
     tagline.anchor.set(1,0);tagline.position.set(678,46);
     const brandRule=new Graphics().moveTo(46,118).lineTo(63,118).stroke({color:Theme.cyan,width:1.8});
     this.guideButton.position.set(630,88);this.guideButton.setCornerRadius(23);this.guideButton.setLabelSize(24);
+    this.guideButton.hitArea=new Rectangle(-12,-12,72,70);
     this.status.anchor.set(.5);this.status.position.set(370,246);
     this.statusDot.position.set(246,246);
     const legend=new Container();legend.position.set(360,1018);
@@ -112,7 +117,8 @@ export class HudLayer extends Container {
     this.fireButton.setDisabled((state.firing&&!state.timeSkill) || state.won);
     this.levelButton.setDisabled(state.firing);
     this.guideButton.setDisabled(state.firing);
-    this.previousLevel.alpha=state.levelIndex===0?.25:1;
+    this.firing=state.firing;
+    this.syncArrows();
     this.fireButton.setActive(state.firing);
     this.fireButton.setText(state.hearts > 0 ? (state.firing?(state.timeSkill?'结束本次试射':'能量释放中'):'发射光束') : '补充爱心');
     this.status.text=state.won?'所有接收器已点亮':state.firing?'光束传输中':'将光束引导至所有接收器';
@@ -123,6 +129,22 @@ export class HudLayer extends Container {
   setHeartsVisible(visible: boolean) {
     this.hearts.visible = visible;
     this.heartsCount.visible = visible;
+  }
+
+  setLevelNavigation(previous: boolean, next: boolean) {
+    this.previousAvailable=previous;
+    this.nextAvailable=next;
+    this.syncArrows();
+  }
+
+  private syncArrows() {
+    for (const [arrow, available] of [[this.previousLevel,this.previousAvailable],[this.nextLevel,this.nextAvailable]] as const) {
+      const enabled=available&&!this.firing;
+      arrow.alpha=enabled?1:.25;
+      // Keep disabled taps from bubbling to the surrounding level-selection button.
+      arrow.eventMode='static';
+      arrow.cursor=enabled?'pointer':'default';
+    }
   }
 
   private drawHearts(left: number) {

@@ -5,6 +5,7 @@ import { isBossStage, stageLabel } from '@/levels/campaign';
 import { firstIncompleteLevel, isLevelUnlocked } from '@/progression/levelProgress';
 import { SettingsButton } from '../ui/SettingsButton';
 import { Theme, uiText } from '../theme';
+import { BackgroundLayer } from './BackgroundLayer';
 
 const CARD_X = 50;
 const CARD_W = 620;
@@ -23,14 +24,14 @@ const GM_TAP_WINDOW_MS = 2500;
 
 export class LevelSelectLayer extends Container {
   readonly settingsButton = new SettingsButton(UI_RECTS.settings.w, UI_RECTS.settings.h);
-  private readonly background = new Graphics();
+  private readonly background = new BackgroundLayer();
   private readonly header = new Container();
   private readonly title = new Text({ text: '选择关卡', style: uiText({ fontSize: 44, fill: Theme.ink }) });
   private readonly progressLabel = new Text({ text: '', style: uiText({ fontSize: 18, fill: Theme.inkSoft }) });
   private readonly progressTrack = new Graphics();
   private readonly progressFill = new Graphics();
   private readonly cards = new Container();
-  private readonly viewportCover = new Graphics();
+  private readonly viewportMask = new Graphics();
   private readonly scrollTrack = new Graphics();
   private readonly scrollThumb = new Graphics();
   private readonly chapterCards: ChapterCard[] = [];
@@ -57,8 +58,6 @@ export class LevelSelectLayer extends Container {
     this.visible = false;
     this.eventMode = 'static';
     this.hitArea = new Rectangle(0, 0, DESIGN_WIDTH, DESIGN_HEIGHT);
-    this.background.eventMode = 'static';
-    this.drawBackground();
 
     this.title.anchor.set(0.5);
     this.title.position.set(DESIGN_WIDTH / 2, 130);
@@ -91,11 +90,12 @@ export class LevelSelectLayer extends Container {
     this.addChild(
       this.background,
       this.cards,
-      this.viewportCover,
+      this.viewportMask,
       this.header,
       this.scrollTrack,
       this.scrollThumb,
     );
+    this.cards.mask=this.viewportMask;
     this.layoutViewport();
 
     this.on('pointerdown', (event: FederatedPointerEvent) => this.startDrag(event));
@@ -115,6 +115,15 @@ export class LevelSelectLayer extends Container {
 
   setGearTexture(texture: Texture) {
     this.settingsButton.setTexture(texture);
+  }
+
+  setBackgroundTexture(texture: Texture) {
+    this.background.setTexture(texture);
+  }
+
+  setViewport(bounds: Rectangle) {
+    this.hitArea=bounds;
+    this.background.setViewport(bounds);
   }
 
   setTopOffset(offset: number) {
@@ -247,6 +256,7 @@ export class LevelSelectLayer extends Container {
 
   private startDrag(event: FederatedPointerEvent) {
     const y = event.getLocalPosition(this).y;
+    if (y < this.viewportTop || y > this.viewportTop + this.viewportHeight) return;
     this.dragArmed = true;
     this.dragging = false;
     this.coasting = false;
@@ -305,9 +315,7 @@ export class LevelSelectLayer extends Container {
   }
 
   private layoutViewport() {
-    // Opaque header cover is more reliable than a stencil mask in mini-game WebGL1.
-    this.viewportCover.clear()
-      .rect(0, -DESIGN_HEIGHT, DESIGN_WIDTH, DESIGN_HEIGHT + this.viewportTop).fill(Theme.bg);
+    this.viewportMask.clear().rect(0,this.viewportTop,DESIGN_WIDTH,this.viewportHeight).fill(0xffffff);
     this.scrollTrack.clear().roundRect(696, this.viewportTop + 10, 5, this.viewportHeight - 20, 3)
       .fill({ color: Theme.surfaceLine, alpha: 0.46 });
     this.setScroll(this.scrollY, true);
@@ -326,11 +334,6 @@ export class LevelSelectLayer extends Container {
     this.scrollThumb.roundRect(695, y, 7, thumbH, 4).fill({ color: Theme.inkSoft, alpha: 0.72 });
   }
 
-  private drawBackground() {
-    this.background.rect(0, 0, DESIGN_WIDTH, DESIGN_HEIGHT).fill(Theme.bg);
-    this.background.ellipse(40, 180, 440, 320).fill({ color: Theme.beam, alpha: 0.02 });
-    this.background.ellipse(680, 1040, 500, 440).fill({ color: Theme.cyan, alpha: 0.016 });
-  }
 }
 
 class ChapterCard extends Container {

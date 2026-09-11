@@ -204,7 +204,14 @@ export class ResultLayer extends Container {
   private ensureDim() {
     if (this.dimDrawn) return;
     this.dimDrawn = true;
-    this.dim.clear().rect(0, 0, DESIGN_WIDTH, DESIGN_HEIGHT).fill({ color: Theme.overlay, alpha: 0.78 });
+    this.setViewport(this.hitArea as Rectangle);
+  }
+
+  setViewport(bounds: Rectangle) {
+    this.hitArea = bounds;
+    const { x, y, width, height } = bounds;
+    this.dim.clear().rect(x, y, width, height).fill({ color: Theme.overlay, alpha: .78 });
+    this.dimDrawn = true;
   }
 
   private syncMotion(now: number): boolean {

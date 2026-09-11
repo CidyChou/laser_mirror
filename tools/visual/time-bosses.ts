@@ -31,7 +31,7 @@ session.on(e=>{
   if(e.type==='rotate')view.rotateItem(e.x,e.y,e.s,e.dir);
 });
 const fire=()=>{if(session.state.firing)session.endTimeShot();else{session.fire();session.update(clock);}};
-view.setHandlers({rotate:(x,y)=>session.rotateAt(x,y),fire,bulletTime:()=>session.startBulletTime(),rewindTime:()=>session.startRewind(),reset:()=>{},openSettings:()=>{},closeSettings:()=>{},toggleAudio:()=>{},toggleHaptics:()=>{},selectTheme:()=>{},openLevels:()=>{},selectLevel:()=>{},unlockAllLevels:()=>{},clearHistory:()=>{},uiChanged:()=>{},resultPrimary:()=>{},resultSecondary:()=>{},resultPreview:()=>{},resultLevels:()=>{},closePoster:()=>{},savePoster:()=>{},coinSound:()=>{}});
+view.setHandlers({rotate:(x,y)=>session.rotateAt(x,y),fire,bulletTime:()=>session.startBulletTime(),rewindTime:()=>session.startRewind(),reset:()=>{},openSettings:()=>{},closeSettings:()=>{},toggleAudio:()=>{},toggleHaptics:()=>{},selectTheme:()=>{},openLevels:()=>{},selectLevel:()=>{},canSelectLevel:()=>false,unlockAllLevels:()=>{},clearHistory:()=>{},uiChanged:()=>{},resultPrimary:()=>{},resultSecondary:()=>{},resultPreview:()=>{},resultLevels:()=>{},closePoster:()=>{},savePoster:()=>{},coinSound:()=>{}});
 view.sync(session.state);view.resize(375,812);
 document.querySelector<HTMLButtonElement>('#play')!.onclick=()=>{session.reset();next=0;rotate=null;auto=true;paused=false;fire();};
 document.querySelector<HTMLButtonElement>('#pause')!.onclick=()=>{paused=!paused;};

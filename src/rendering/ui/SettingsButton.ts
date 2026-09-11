@@ -25,7 +25,7 @@ export class SettingsButton extends Button {
     this.spriteIcon.tint = Theme.settingsIcon;
     this.spriteIcon.eventMode = 'none';
     this.spriteIcon.visible = false;
-    this.addChild(this.fallbackIcon, this.spriteIcon);
+    this.content.addChild(this.fallbackIcon, this.spriteIcon);
   }
 
   setTexture(texture: Texture) {

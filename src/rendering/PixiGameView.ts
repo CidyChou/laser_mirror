@@ -1,10 +1,11 @@
-import { Container, Graphics, Rectangle, Sprite, Text, Texture, type Renderer } from 'pixi.js';
-import { DESIGN_HEIGHT, DESIGN_WIDTH, STAGE_HEIGHT, STAGE_TOP, UI_RECTS } from '@/config/GameConfig';
+import { Container, Graphics, Rectangle, Text, Texture, type Renderer } from 'pixi.js';
+import { DESIGN_HEIGHT, DESIGN_WIDTH, STAGE_HEIGHT, STAGE_TOP } from '@/config/GameConfig';
 import { portMuzzle, portPosition, cellCenter, computeGeometry } from '@/gameplay/geometry';
 import { levelEmitters } from '@/gameplay/levelAccess';
 import type { BoardGeometry, Direction, GameState, ImpactEvent, LevelDefinition, Port } from '@/gameplay/types';
 import type { PerformanceManager } from '@/performance/PerformanceManager';
 import { BoardLayer } from './layers/BoardLayer';
+import { BackgroundLayer } from './layers/BackgroundLayer';
 import { ObjectLayer } from './layers/ObjectLayer';
 import { HudLayer } from './layers/HudLayer';
 import { TimeSkillLayer } from './layers/TimeSkillLayer';
@@ -18,7 +19,7 @@ import { LaserEffect } from './effects/LaserEffect';
 import { ImpactSystem } from './effects/ImpactSystem';
 import { ParticleSystem } from './effects/ParticleSystem';
 import { WinConfetti } from './effects/WinConfetti';
-import { isLightTheme, Theme, type ThemeId, uiText } from './theme';
+import { Theme, type ThemeId, uiText } from './theme';
 import type { UiAssetKey } from './ui/assets';
 import type { TutorialStep } from '@/gameplay/tutorial';
 import { TutorialLayer } from './layers/TutorialLayer';
@@ -36,6 +37,7 @@ export type ViewHandlers = {
   closeSettings:()=>void;
   openLevels:()=>void;
   selectLevel:(index:number)=>void;
+  canSelectLevel:(index:number)=>boolean;
   unlockAllLevels:()=>void;
   clearHistory:()=>void;
   uiChanged:()=>void;
@@ -58,20 +60,18 @@ export class PixiGameView{
   private readonly tutorial=new TutorialLayer();
   private tutorialAvailable=false;
   private tutorialShotHidden=false;
-  private bg=new Graphics();private stageBg=new Graphics();private board=new BoardLayer();private objects=new ObjectLayer();private laser:LaserEffect;private impacts=new ImpactSystem();private particles:ParticleSystem;private confetti=new WinConfetti();private hud=new HudLayer();private combo=new ComboLayer();readonly coins=new CoinLayer();readonly result=new ResultLayer();readonly poster=new PreviewPosterLayer();readonly settings:SettingsLayer;readonly levelSelect:LevelSelectLayer;private toastBg=new Graphics();private toast=new Text({text:'',style:uiText({fontSize:18,fill:Theme.text})});private toastUntil=0;private victoryUntil=0;private victoryWash=new Graphics();private currentLevel=-1;private lastGeometry:BoardGeometry|null=null;private comboActive=false;private resultActive=false;private posterActive=false;private coinsActive=false;private confettiActive=false;private hudOffset=0;
+  private canSelectLevel:(index:number)=>boolean=()=>false;
+  private bg=new BackgroundLayer();private stageBg=new Graphics();private board=new BoardLayer();private objects=new ObjectLayer();private laser:LaserEffect;private impacts=new ImpactSystem();private particles:ParticleSystem;private confetti=new WinConfetti();private hud=new HudLayer();private combo=new ComboLayer();readonly coins=new CoinLayer();readonly result=new ResultLayer();readonly poster=new PreviewPosterLayer();readonly settings:SettingsLayer;readonly levelSelect:LevelSelectLayer;private toastBg=new Graphics();private toast=new Text({text:'',style:uiText({fontSize:18,fill:Theme.text})});private toastUntil=0;private victoryUntil=0;private victoryWash=new Graphics();private currentLevel=-1;private lastGeometry:BoardGeometry|null=null;private comboActive=false;private resultActive=false;private posterActive=false;private coinsActive=false;private confettiActive=false;private hudOffset=0;
   constructor(private readonly renderer:Renderer,private readonly performance:PerformanceManager,themeId:ThemeId,levels:readonly LevelDefinition[],gpuLaser=true){this.laser=new LaserEffect(renderer,gpuLaser);this.particles=new ParticleSystem(renderer);this.settings=new SettingsLayer(themeId);this.levelSelect=new LevelSelectLayer(levels);this.buildBackground();this.root.addChild(this.bg,this.stageBg,this.board,this.objects,this.laser,this.particles.container,this.impacts,this.objects.captions,this.victoryWash,this.hud,this.tutorial,this.timeSkills,this.combo,this.result,this.confetti,this.coins,this.poster,this.toastBg,this.toast,this.levelSelect,this.settings);this.toast.anchor.set(.5);this.toast.position.set(360,220);this.toast.visible=false;this.toastBg.visible=false;}
   private targetPorts:Port[]=[];
-  private readonly backgroundImage=new Sprite(Texture.EMPTY);
   private buildBackground(){
-    this.bg.rect(0,0,DESIGN_WIDTH,DESIGN_HEIGHT).fill(Theme.bg);
-    this.backgroundImage.eventMode='none';
-    this.backgroundImage.visible=false;
-    this.bg.addChild(this.backgroundImage);
     this.victoryWash.rect(0,STAGE_TOP,DESIGN_WIDTH,STAGE_HEIGHT).fill({color:Theme.victoryWash,alpha:1});
     this.victoryWash.alpha=0;
     this.victoryWash.visible=false;
   }
   setHandlers(h:ViewHandlers){
+    this.canSelectLevel=h.canSelectLevel;
+    this.syncLevelNavigation();
     this.tutorial.nextButton.on('pointertap',()=>h.tutorialNext?.());
     this.tutorial.skipButton.on('pointertap',()=>h.tutorialSkip?.());
     this.tutorial.setTapHandler(()=>h.tutorialTap?.());
@@ -110,13 +110,8 @@ export class PixiGameView{
   }
   setUiTexture(key:UiAssetKey, texture:Texture){
     if(key==='background'){
-      this.backgroundImage.texture=texture;
-      this.backgroundImage.visible=texture!==Texture.EMPTY&&texture.width>1&&!isLightTheme();
-      if(this.backgroundImage.visible){
-        const scale=Math.max(DESIGN_WIDTH/texture.width,DESIGN_HEIGHT/texture.height);
-        this.backgroundImage.scale.set(scale);
-        this.backgroundImage.position.set((DESIGN_WIDTH-texture.width*scale)/2,(DESIGN_HEIGHT-texture.height*scale)/2);
-      }
+      this.bg.setTexture(texture);
+      this.levelSelect.setBackgroundTexture(texture);
     }
     if(key==='finger') this.tutorial.setFingerTexture(texture);
     if(key==='settings'){
@@ -129,7 +124,10 @@ export class PixiGameView{
       this.coins.setCoinTexture(texture);
     }
   }
-  sync(state:GameState){this.targetPorts=state.level.targets;const g=computeGeometry(state.level);this.lastGeometry=g;if(this.currentLevel!==state.levelIndex){this.currentLevel=state.levelIndex;this.board.rebuild(state.level,g);this.hideOverlays();}if(!state.result&&!state.firing){this.particles.clear();this.impacts.clear();}this.objects.sync(state,g);this.laser.bind(state,g.cell);this.hud.sync(state);this.timeSkills.sync(state);this.tutorialShotHidden=state.firing||state.won;this.syncTutorialVisibility();}
+  sync(state:GameState){this.targetPorts=state.level.targets;const g=computeGeometry(state.level);this.lastGeometry=g;if(this.currentLevel!==state.levelIndex){this.currentLevel=state.levelIndex;this.board.rebuild(state.level,g);this.hideOverlays();}if(!state.result&&!state.firing){this.particles.clear();this.impacts.clear();}this.objects.sync(state,g);this.laser.bind(state,g.cell);this.hud.sync(state);this.syncLevelNavigation();this.timeSkills.sync(state);this.tutorialShotHidden=state.firing||state.won;this.syncTutorialVisibility();}
+  private syncLevelNavigation(){
+    this.hud.setLevelNavigation(this.canSelectLevel(this.currentLevel-1),this.canSelectLevel(this.currentLevel+1));
+  }
   setTutorial(step:TutorialStep|null,state:GameState,progress:{current:number;total:number}){
     this.tutorialAvailable=!!step;
     this.tutorialShotHidden=state.firing||state.won;
@@ -321,12 +319,20 @@ export class PixiGameView{
     else if(this.victoryUntil){this.victoryUntil=0;this.victoryWash.visible=false;this.victoryWash.alpha=0;}
   }
   resize(viewW:number,viewH:number,safeTopPx=0){
-    const scale=Math.min(viewW/DESIGN_WIDTH,viewH/DESIGN_HEIGHT);
+    // Fit the complete layout below native chrome instead of shifting the HUD into the board.
+    const safeTop=safeTopPx>0?safeTopPx+8:0;
+    const scale=Math.min(viewW/DESIGN_WIDTH,viewH/DESIGN_HEIGHT,(viewH-safeTop)/(DESIGN_HEIGHT-40));
     this.root.scale.set(scale);
-    const rootY=(viewH-DESIGN_HEIGHT*scale)/2;
+    const rootY=Math.max((viewH-DESIGN_HEIGHT*scale)/2,safeTop-40*scale);
     this.root.position.set((viewW-DESIGN_WIDTH*scale)/2,rootY);
-    const designSafe=(safeTopPx-rootY)/scale;
-    const extra=Math.max(0,Math.ceil(designSafe-UI_RECTS.settings.y+18));
+    const bounds=new Rectangle(-this.root.x/scale,-rootY/scale,viewW/scale,viewH/scale);
+    this.bg.setViewport(bounds);
+    this.levelSelect.setViewport(bounds);
+    this.settings.setViewport(bounds);
+    this.result.setViewport(bounds);
+    this.poster.setViewport(bounds);
+    this.tutorial.setViewport(bounds);
+    const extra=0;
     this.hudOffset=extra;
     this.tutorial.setTopOffset(extra);
     this.hud.setTopOffset(extra);

@@ -32,11 +32,18 @@ assert(Math.abs(speedProbe.distance-laserDistanceAtMs(800,TIME_BOSS_SPEED_SCALE)
 
 const items=fixture.items.map(i=>({...i}));
 const sim=new TimeLaserSimulator(fixture,items,computeGeometry(fixture));
-sim.advanceTo(9000);
+// Anchor the rewind to the second movable-mirror collision. A fixed wall-clock
+// time can fall in empty space when a UI layout changes the board's cell size.
+const referenceLoop=new TimeLaserSimulator(fixture,structuredClone(items),sim.geometry);
+referenceLoop.advanceTo(9000);
+const collision=referenceLoop.trace.impactEvents.filter(e=>e.type==='mirror'&&e.x===3&&e.y===3)[1];
+assert(collision,'the loop must revisit the movable mirror');
+sim.advanceTo(sim.timeAtDistance(collision.at+sim.geometry.cell*.25));
 assert(sim.trace.hits[0]);assert(!sim.trace.hits[1]);
 const before=sim.trace.impactEvents.length;
 sim.rewindTo(sim.timeAtDistance(Math.max(0,sim.distance-sim.geometry.cell*2)));
 assert(sim.trace.hits[0]);assert(sim.trace.impactEvents.length<before);
+assert(!sim.trace.impactEvents.some(e=>e.type==='mirror'&&e.x===3&&e.y===3&&Math.abs(e.at-collision.at)<1e-6),'the selected collision must be rolled back');
 (items.at(-1) as any).s=1;
 sim.advanceTo(13000);assert(sim.successful);
 assert.equal((items.at(-1) as any).s,1);

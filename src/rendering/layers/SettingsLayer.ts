@@ -88,6 +88,14 @@ export class SettingsLayer extends Container {
     this.themeHandler = handler;
   }
 
+  setViewport(bounds: Rectangle) {
+    this.hitArea = bounds;
+    this.confirmLayer.hitArea = bounds;
+    const { x, y, width, height } = bounds;
+    this.dim.clear().rect(x, y, width, height).fill({ color: Theme.overlay, alpha: .78 });
+    this.confirmDim.clear().rect(x, y, width, height).fill({ color: Theme.overlay, alpha: .82 });
+  }
+
   setCloseHandler(handler: () => void) {
     this.closeHandler = handler;
   }

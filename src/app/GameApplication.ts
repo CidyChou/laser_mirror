@@ -342,6 +342,7 @@ export class GameApplication {
         this.collectPendingCoins();this.pendingResult=null;this.audio.play('uiClick');
         this.session.load(index);this.wake();
       },
+      canSelectLevel:index=>isLevelUnlocked(index,this.totalLevels,this.completedLevels,this.allLevelsUnlocked),
       unlockAllLevels:()=>this.unlockAllLevels(),
       clearHistory:()=>this.clearHistory(),
       uiChanged:()=>this.wake(),

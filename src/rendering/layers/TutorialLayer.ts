@@ -1,10 +1,12 @@
 import { Container, Graphics, Rectangle, Sprite, Text, Texture } from 'pixi.js';
-import { DESIGN_HEIGHT, DESIGN_WIDTH, UI_RECTS } from '@/config/GameConfig';
-import { borderPoint, cellCenter, computeGeometry } from '@/gameplay/geometry';
+import { DESIGN_HEIGHT, DESIGN_WIDTH, STAGE_TOP, UI_RECTS } from '@/config/GameConfig';
+import { portPosition, portSize, cellCenter, computeGeometry } from '@/gameplay/geometry';
 import type { LevelDefinition } from '@/gameplay/types';
 import type { TutorialStep } from '@/gameplay/tutorial';
 import { Theme, uiText } from '../theme';
 import { Button } from '../ui/Button';
+
+const DIM_TOP = Math.max(STAGE_TOP - 10, UI_RECTS.settings.y + UI_RECTS.settings.h, UI_RECTS.progress.y + UI_RECTS.progress.h, UI_RECTS.hearts.y + UI_RECTS.hearts.h);
 
 /** A single spotlight layer. Geometry is rebuilt only when a step or layout changes. */
 export class TutorialLayer extends Container {
@@ -27,6 +29,7 @@ export class TutorialLayer extends Container {
   private level: LevelDefinition | null = null;
   private count = { current: 1, total: 1 };
   private topOffset = 0;
+  private viewport = new Rectangle(0, 0, DESIGN_WIDTH, DESIGN_HEIGHT);
   private tapHandler: () => void = () => {};
 
   constructor() {
@@ -35,7 +38,7 @@ export class TutorialLayer extends Container {
     this.eventMode = 'passive';
     this.dim.eventMode = 'static';
     // Keep navigation/settings reachable; every other board tap is captured by this layer.
-    this.dim.hitArea = { contains: (_x: number, y: number) => y >= 202 + this.topOffset };
+    this.dim.hitArea = { contains: (_x: number, y: number) => y >= DIM_TOP + this.topOffset };
     this.outlines.eventMode = 'none';
     this.target.eventMode = 'static';
     this.target.cursor = 'pointer';
@@ -52,6 +55,10 @@ export class TutorialLayer extends Container {
   }
 
   setTapHandler(handler: () => void) { this.tapHandler = handler; }
+  setViewport(bounds: Rectangle) {
+    this.viewport = bounds;
+    if (this.step) this.layout();
+  }
   setFingerTexture(texture: Texture) {
     this.finger.texture = texture;
     if (this.step) this.layout();
@@ -74,11 +81,19 @@ export class TutorialLayer extends Container {
     const g = computeGeometry(level);
     const rects = step.anchors.map(anchor => {
       if (anchor.kind === 'fire') return new Rectangle(UI_RECTS.fire.x - 8, UI_RECTS.fire.y - 8, UI_RECTS.fire.w + 16, UI_RECTS.fire.h + 16);
-      const p = anchor.kind === 'cell' ? cellCenter(g, anchor.x, anchor.y) : borderPoint(g, anchor.port);
-      const size = anchor.kind === 'cell' ? Math.min(g.cell * .85, 154) : Math.max(46, Math.min(g.cell * .64, 100));
-      return new Rectangle(Math.max(6, Math.min(DESIGN_WIDTH - size - 6, p.x - size / 2)), p.y - size / 2, size, size);
+      const p = anchor.kind === 'cell' ? cellCenter(g, anchor.x, anchor.y) : portPosition(g, anchor.port);
+      if (anchor.kind === 'cell') {
+        const size = Math.min(g.cell * .85, 154);
+        return new Rectangle(p.x - size / 2, p.y - size / 2, size, size);
+      }
+      const size = portSize(g.cell), horizontal = anchor.port.side === 'N' || anchor.port.side === 'S';
+      const width = horizontal ? size * .84 + 12 : size * .55 + 12;
+      const height = horizontal ? size * .55 + 12 : size * .84 + 12;
+      // Pixi holes must stay inside the dim shape, including ports near the screen edge.
+      return new Rectangle(Math.max(4, Math.min(DESIGN_WIDTH - width - 4, p.x - width / 2)), p.y - height / 2, width, height);
     });
-    this.dim.clear().rect(0, 202 + this.topOffset, DESIGN_WIDTH, DESIGN_HEIGHT - 202 - this.topOffset).fill({ color: Theme.overlay, alpha: .66 });
+    const dimTop = DIM_TOP + this.topOffset;
+    this.dim.clear().rect(this.viewport.x, dimTop, this.viewport.width, this.viewport.bottom - dimTop).fill({ color: Theme.overlay, alpha: .66 });
     this.outlines.clear();
     for (const rect of rects) {
       this.dim.roundRect(rect.x, rect.y, rect.width, rect.height, 16).cut();
@@ -105,16 +120,16 @@ export class TutorialLayer extends Container {
     // Informational cards may occupy the fire area while that button is intentionally blocked.
     const obstacles = [...rects];
     if (actionable && first) obstacles.push(new Rectangle(this.fingerX - (this.fingerX > 560 ? 88 : 24), this.fingerY, 112, 126));
-    let y = 220 + this.topOffset, width = 624, best = Infinity;
+    let y = dimTop + 8, width = 624, best = Infinity;
     for (const candidateWidth of [624, 560, 496]) {
       this.body.style.wordWrapWidth = candidateWidth - 56;
       const height = 220 + this.body.height, x = (DESIGN_WIDTH - candidateWidth) / 2;
-      for (let candidate = 220 + this.topOffset; candidate <= DESIGN_HEIGHT - 24 - height; candidate += 8) {
+      for (let candidate = dimTop + 8; candidate <= DESIGN_HEIGHT - 24 - height; candidate += 8) {
         const overlap = obstacles.reduce((sum, rect) => sum
           + Math.max(0, Math.min(candidate + height + 16, rect.bottom) - Math.max(candidate - 16, rect.top))
           * Math.max(0, Math.min(x + candidateWidth + 12, rect.right) - Math.max(x - 12, rect.left)), 0);
         const score = overlap + (624 - candidateWidth) * .1
-          + Math.abs(candidate - (first && first.y < 670 ? 1130 - height : 230 + this.topOffset)) * .01;
+          + Math.abs(candidate - (first && first.y < 670 ? 1130 - height : dimTop + 8)) * .01;
         if (score < best) { best = score; y = candidate; width = candidateWidth; }
       }
     }
