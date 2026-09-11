@@ -112,11 +112,10 @@ export class ObjectLayer extends Container{
   kick(x:number,y:number,now:number){this.kicks.set(`${x},${y}`,{start:now});}
   rotateFeedback(x:number,y:number,now:number,g:BoardGeometry){const c=cellCenter(g,x,y),fx=this.clickPool.find(v=>!v.active)??this.clickPool[0];fx.active=true;fx.start=now;fx.root.visible=true;fx.root.position.set(c.x,c.y);fx.root.scale.set(.7);fx.root.alpha=1;fx.ring.scale.set(.75);fx.flash.rotation=0;}
   update(now:number,ambient=true){
-    this.ambientActive=ambient&&(this.portals.length>0||this.portNodes.some(port=>port.emitter));
+    this.ambientActive=ambient&&this.portals.length>0;
     if(ambient)for(const portal of this.portals){
-      portal.flow.rotation=now*.0007+portal.phase;
-      portal.mist.alpha=.48+.18*Math.sin(now*.0017+portal.phase);
-      portal.mist.scale.set(1+.055*Math.sin(now*.0011+portal.phase));
+      portal.flow.rotation=now*.00022+portal.phase;
+      portal.mist.alpha=.36+.08*Math.sin(now*.0017+portal.phase);
     }
     const state=this.state;
     this.signalActive=false;
@@ -164,10 +163,10 @@ export class ObjectLayer extends Container{
     }
     for(const port of this.portNodes){
       const breath=.5+.5*Math.sin(now*.0025+port.phase);
-      port.halo.alpha=port.active?.6+breath*.12:port.emitter?.33+breath*.12:.20;
+      port.halo.alpha=port.active?.40+breath*.08:port.emitter?.15:.10;
       port.light.alpha=port.active?.96:port.emitter?.90:.93;
       port.core.alpha=port.active?.95:.78;
-      port.sparks.visible=ambient&&port.emitter;
+      port.sparks.visible=ambient&&port.emitter&&port.active;
       for(let i=0;i<port.sparks.children.length;i++){
         const phase=(now*(port.active?.0015:.00042)+i/5)%1,angle=i*2.4;
         const spark=port.sparks.children[i],r=port.cell*(.33-phase*.22);
@@ -251,23 +250,10 @@ export class ObjectLayer extends Container{
   }
 
   private mirrorSeat(cell:number,fixed:boolean){
-    const seat=new Graphics(),size=cell*.86,depth=cell*.085,radius=cell*.07;
-    this.blockShadow(seat,size,radius,depth);
-    seat.roundRect(-size/2,-size/2+depth,size,size-depth,radius).fill(Theme.boardShadow);
-    seat.roundRect(-size/2,-size/2,size,size-depth,radius)
+    const seat=new Graphics(),size=cell*.92,radius=cell*.095;
+    seat.roundRect(-size/2,-size/2,size,size,radius)
       .fill(fixed?this.fixedMirrorSeatFinish:this.mirrorSeatFinish)
-      .stroke({color:fixed?Theme.lock:Theme.cyan,width:1.5,alpha:fixed?.38:.65});
-    seat.moveTo(-size*.30,-size*.5+1).lineTo(size*.30,-size*.5+1)
-      .stroke({color:Theme.cyanSoft,width:1.4,alpha:.60});
-    if(!fixed){
-      this.light(seat,0,size*.41,size*.43,cell*.11,Theme.cyan,.4);
-      seat.moveTo(-size*.19,size*.43).lineTo(size*.19,size*.43)
-        .stroke({color:Theme.cyan,width:2.5,alpha:.95,cap:'round'});
-      // Two corner cuts distinguish rotatable optics from solid obstacles.
-      for(const side of [-1,1])seat.moveTo(side*size*.34,-size*.17)
-        .lineTo(side*size*.38,-size*.12).lineTo(side*size*.38,size*.02)
-        .stroke({color:Theme.cyan,width:1.7,alpha:.7});
-    }
+      .stroke({color:fixed?Theme.lock:Theme.cyan,width:1.3,alpha:fixed?.42:.52});
     return seat;
   }
 
@@ -275,44 +261,36 @@ export class ObjectLayer extends Container{
     const root=new Container(),motion=new Container();root.position.copyFrom(cellCenter(g,item.x,item.y));root.addChild(motion);const key=`${item.x},${item.y}`;
     if(item.type==='mirror'){
       root.addChildAt(this.mirrorSeat(g.cell,!!item.fixed),0);
-      const carrier=new Container();carrier.position.y=-g.cell*.035;carrier.rotation=item.s===0?Math.PI/4:-Math.PI/4;
-      const s=g.cell*.76,thickness=g.cell*.16,radius=thickness*.23;
+      const carrier=new Container();carrier.rotation=item.s===0?Math.PI/4:-Math.PI/4;
+      const s=g.cell*.73,thickness=g.cell*.145,radius=thickness*.40;
       const glow=new Graphics();
-      for(let i=4;i>=1;i--){
-        const spread=i*g.cell*.010;
-        glow.roundRect(-s/2-spread,-thickness/2-spread,s+spread*2,thickness+spread*2,radius+spread)
-          .fill({color:Theme.cyan,alpha:item.fixed?.025:.045});
-      }
+      const spread=g.cell*.035;
+      glow.roundRect(-s/2-spread,-thickness/2-spread,s+spread*2,thickness+spread*2,radius+spread)
+        .fill({color:Theme.cyan,alpha:item.fixed?.06:.13});
       glow.blendMode=this.energyBlend;
       const shadow=new Graphics().roundRect(-s/2+1,-thickness/2+g.cell*.026,s,thickness,radius)
         .fill({color:Theme.shadow,alpha:.30});
       const blade=new Graphics().roundRect(-s/2,-thickness/2,s,thickness,radius)
         .fill(this.mirrorFinish)
-        .stroke({color:Theme.white,width:1.35,alpha:.65});
-      blade.moveTo(-s*.40,-thickness*.22).lineTo(s*.40,-thickness*.22)
-        .stroke({color:Theme.white,width:g.cell*.028,alpha:.95});
-      blade.moveTo(-s*.39,thickness*.40).lineTo(s*.39,thickness*.40)
-        .stroke({color:Theme.cyan,width:g.cell*.024,alpha:.95});
-      for(const end of [-1,1])blade.roundRect(end*s*.43-thickness*.18,-thickness*.58,thickness*.36,thickness*1.16,2)
-        .fill(Theme.raisedFixed).stroke({color:Theme.cyan,width:1.3,alpha:.8});
+        .stroke({color:Theme.cyanSoft,width:1.25,alpha:.95});
       carrier.addChild(glow,shadow,blade);motion.addChild(carrier);
       if(item.fixed)motion.addChild(this.lockMark(g.cell));
       return{key,kind:item.type,root,motion,angleCarrier:carrier,phase:0};
     }
     if(item.type==='splitter'){
       root.addChildAt(this.mirrorSeat(g.cell,!!item.fixed),0);
-      const gem=new Container();gem.position.y=-g.cell*.025;gem.rotation=Math.PI/4;
-      const s=g.cell*.53,radius=g.cell*.035;
-      const halo=new Graphics();this.light(halo,0,0,s*.8,s*.8,Theme.cyan,.18);halo.blendMode=this.energyBlend;
+      const gem=new Container();gem.rotation=Math.PI/4;
+      const s=g.cell*.49,radius=g.cell*.025;
+      const halo=new Graphics();this.light(halo,0,0,s*.8,s*.8,Theme.cyan,.10);halo.blendMode=this.energyBlend;
       const shadow=new Graphics().roundRect(-s/2+1,-s/2+g.cell*.025,s,s,radius).fill({color:Theme.shadow,alpha:.30});
       const crystal=new Graphics().roundRect(-s/2,-s/2,s,s,radius)
         .fill(this.finish(mix(Theme.cyanSoft,Theme.white,.25),mix(Theme.splitterGem,Theme.boardBottom,.28)))
         .stroke({color:Theme.white,width:1.25,alpha:.42});
       // Facets share the crystal silhouette instead of adding an opaque tile.
       crystal.poly([-s*.43,-s*.40,s*.40,-s*.40,-s*.40,s*.40],true).fill({color:Theme.white,alpha:.15});
-      crystal.poly([s*.41,-s*.36,s*.41,s*.41,-s*.36,s*.41],true).fill({color:Theme.purple,alpha:.13});
+      crystal.poly([s*.41,-s*.36,s*.41,s*.41,-s*.36,s*.41],true).fill({color:Theme.cyan,alpha:.12});
       gem.addChild(halo,shadow,crystal);motion.addChild(gem);
-      const dir=new Container();dir.position.y=-g.cell*.025;dir.rotation=item.s===0?Math.PI/4:-Math.PI/4;
+      const dir=new Container();dir.rotation=item.s===0?Math.PI/4:-Math.PI/4;
       const rail=new Graphics().moveTo(-g.cell*.23,0).lineTo(g.cell*.23,0)
         .stroke({color:Theme.mirrorCore,width:Math.max(1.7,g.cell*.022),alpha:.92,cap:'round'});
       dir.addChild(rail);motion.addChild(dir);
@@ -320,30 +298,18 @@ export class ObjectLayer extends Container{
       return{key,kind:item.type,root,motion,angleCarrier:dir,phase:0};
     }
     if(item.type==='wall'){
-      const s=g.cell*.87,r=g.cell*.045,depth=g.cell*.17;
-      const block=new Graphics();this.blockShadow(block,s,r,depth);
-      // A tall, light titanium cap and a dark front face create real height.
-      block.roundRect(-s/2,-s/2+depth,s,s-depth*.45,r).fill(Theme.wallInset)
-        .stroke({color:Theme.boardShadow,width:2});
-      block.roundRect(-s/2,-s/2-g.cell*.035,s,s-depth,r)
-        .fill(this.finish(mix(Theme.wallFace,Theme.white,.23),Theme.wallFace))
-        .stroke({color:Theme.white,width:1.5,alpha:.55});
-      const top=-s/2-g.cell*.035,bottom=top+s-depth;
-      block.poly([-s/2,top,-s/2+s*.13,top+s*.13,-s/2+s*.13,bottom-s*.13,-s/2,bottom],true)
-        .fill({color:Theme.white,alpha:.13});
-      block.roundRect(-s*.31,top+s*.17,s*.62,s*.40,r)
-        .fill({color:Theme.wallInset,alpha:.36}).stroke({color:Theme.wallInset,width:1,alpha:.65});
-      // Recessed diagonal machining, with amber hazard strips on the front.
-      for(let i=0;i<3;i++)block.moveTo(-s*.19+i*s*.16,top+s*.26)
-        .lineTo(-s*.08+i*s*.16,top+s*.43).stroke({color:Theme.wallInset,width:g.cell*.035,alpha:.65});
-      block.moveTo(-s*.39,bottom+depth*.48).lineTo(s*.39,bottom+depth*.48)
-        .stroke({color:Theme.boardShadow,width:g.cell*.075});
-      for(let i=0;i<5;i++){
-        const x=-s*.34+i*s*.15;
-        block.poly([x,bottom+depth*.26,x+s*.075,bottom+depth*.26,x+s*.025,bottom+depth*.66,x-s*.05,bottom+depth*.66],true)
-          .fill(Theme.gold);
-      }
-      for(const side of [-1,1])block.circle(side*s*.39,top+s*.09,g.cell*.015).fill(Theme.wallInset);
+      const s=g.cell*.91,r=g.cell*.09,depth=g.cell*.10;
+      const block=new Graphics();
+      block.roundRect(-s/2,-s/2+depth,s,s-depth,r).fill(Theme.wallInset);
+      block.roundRect(-s/2,-s/2,s,s-depth,r)
+        .fill(this.finish(mix(Theme.wallFace,Theme.white,.13),Theme.wallFace))
+        .stroke({color:Theme.white,width:1.1,alpha:.38});
+      const faceCenter=-depth/2;
+      block.roundRect(-s*.29,faceCenter-s*.25,s*.58,s*.50,g.cell*.05)
+        .fill({color:Theme.wallInset,alpha:.32}).stroke({color:Theme.wallInset,width:1,alpha:.50});
+      for(let i=0;i<3;i++)block.moveTo(-s*.21+i*s*.15,faceCenter-s*.14)
+        .lineTo(-s*.04+i*s*.15,faceCenter+s*.14)
+        .stroke({color:Theme.wallInset,width:g.cell*.045,alpha:.80,cap:'round'});
       motion.addChild(block);return{key,kind:item.type,root,motion,phase:0};
     }
     if(item.type==='switch'){
@@ -415,16 +381,15 @@ export class ObjectLayer extends Container{
     this.light(portal,0,0,c*.25,c*.25,color,.19);
     for(let i=0;i<4;i++){
       const a=Math.PI/4+i*Math.PI/2,px=Math.cos(a)*c*.29,py=Math.sin(a)*c*.29;
-      portal.roundRect(px-c*.042,py-c*.042,c*.084,c*.084,c*.017)
-        .fill(Theme.raisedFixed).stroke({color,width:1.3,alpha:.8});
+      portal.circle(px,py,c*.025)
+        .fill(mix(color,Theme.boardBottom,.3)).stroke({color,width:1,alpha:.8});
     }
     const orbit=new Container();
     const flow=new Container();
-    const swirl=new Graphics().arc(0,0,c*.19,-.6,.1).stroke({color:mix(color,Theme.white,.5),width:Math.max(1,c*.014),alpha:.58,cap:'round'})
-      .arc(0,0,c*.145,2.1,2.65).stroke({color,width:Math.max(1,c*.012),alpha:.45,cap:'round'});
-    for(let i=0;i<2;i++){
-      const angle=i*Math.PI+.1,r=c*(i===0?.19:.145);
-      swirl.circle(Math.cos(angle)*r,Math.sin(angle)*r,c*.013).fill({color:Theme.white,alpha:.65});
+    const swirl=new Graphics().circle(0,0,c*.011).fill({color:Theme.white,alpha:.7});
+    for(let i=0;i<3;i++){
+      const angle=i*2.3+.1,r=c*(i===0?.13:.19);
+      swirl.circle(Math.cos(angle)*r,Math.sin(angle)*r,c*.008).fill({color:Theme.white,alpha:.4});
     }
     flow.addChild(swirl);orbit.addChild(flow);
     const mist=new Graphics();this.light(mist,0,0,c*.21,c*.21,color,.28);

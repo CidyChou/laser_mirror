@@ -1,4 +1,4 @@
-import { Container, Graphics, Rectangle, Text } from 'pixi.js';
+import { Container, FillGradient, Graphics, Rectangle, Text } from 'pixi.js';
 import { UI_TOKENS } from '@/config/GameConfig';
 import { setUiFontSize, Theme, uiText } from '../theme';
 
@@ -13,6 +13,8 @@ export class Button extends Container {
   private activeState = false;
   private pressedState = false;
   private labelOffsetY = 0;
+  private cornerRadius: number | undefined;
+  private readonly finishes = new Map<number, FillGradient>();
 
   constructor(
     public readonly widthPx: number,
@@ -64,6 +66,11 @@ export class Button extends Container {
     this.redraw();
   }
 
+  setCornerRadius(radius: number) {
+    this.cornerRadius = radius;
+    this.redraw();
+  }
+
   private setPressed(value: boolean) {
     if (this.disabledState || this.pressedState === value) return;
     this.pressedState = value;
@@ -75,7 +82,7 @@ export class Button extends Container {
     this.body.clear();
     this.face.clear();
 
-    const radius = this.kind === 'fire' ? 15 : this.kind === 'icon' ? UI_TOKENS.radius.md : 14;
+    const radius = this.cornerRadius ?? (this.kind === 'fire' ? 38 : this.kind === 'icon' ? UI_TOKENS.radius.md : 22);
     const pressed = this.pressedState;
     const disabled = this.disabledState;
     const depth = pressed
@@ -83,7 +90,9 @@ export class Button extends Container {
       : this.kind === 'icon'
         ? UI_TOKENS.button.chromeDepth
         : UI_TOKENS.button.idleDepth;
-    const faceH = this.heightPx - depth;
+    const idleDepth = this.kind === 'icon' ? UI_TOKENS.button.chromeDepth : UI_TOKENS.button.idleDepth;
+    const faceH = this.heightPx - idleDepth;
+    const faceY = idleDepth - depth;
 
     let fill = Theme.surface;
     let edge = Theme.surfaceLine;
@@ -112,25 +121,34 @@ export class Button extends Container {
       label = Theme.inkSoft;
     }
 
-    // Machined controls share a shallow bevel; launch carries the energy color.
-    this.shadow.roundRect(1, 7, this.widthPx - 2, this.heightPx - 2, radius)
-      .fill({ color: Theme.shadow, alpha: disabled ? 0.16 : 0.26 });
-    this.body.roundRect(0, depth, this.widthPx, faceH, radius).fill(shade(fill, 0.76));
-    this.face.roundRect(0, 0, this.widthPx, faceH, radius).fill(fill).stroke({ color: edge, width: 1.5, alpha: 0.95 });
-
-    this.face.moveTo(18,2).lineTo(this.widthPx-18,2)
-      .stroke({color:this.kind==='fire'?Theme.laserPlasma:Theme.cyanSoft,width:1.5,alpha:this.kind==='fire'?.8:.24});
+    let finish = this.finishes.get(fill);
+    if (!finish) {
+      finish = new FillGradient({start:{x:0,y:0},end:{x:0,y:1},textureSize:64,
+        colorStops:[{offset:0,color:fill},{offset:1,color:shade(fill,this.kind==='fire'?.88:.79)}]});
+      this.finishes.set(fill,finish);
+    }
+    this.shadow.roundRect(0, 8, this.widthPx, faceH, radius)
+      .fill({ color: Theme.shadow, alpha: disabled ? .10 : .20 });
+    this.body.roundRect(0, idleDepth, this.widthPx, faceH, radius).fill(shade(fill, .56));
+    this.face.y = faceY;
+    this.face.roundRect(0, 0, this.widthPx, faceH, radius).fill(finish)
+      .stroke({color:edge,width:this.kind==='fire'?1.8:1.4,alpha:this.kind==='fire'?.85:.84});
     if(this.kind==='fire'&&!disabled){
-      this.shadow.roundRect(-5,2,this.widthPx+10,this.heightPx+6,radius+5)
-        .fill({color:Theme.beam,alpha:.08});
-      this.face.poly([27,faceH*.30,47,faceH*.50,27,faceH*.70,32,faceH*.50],true)
-        .fill({color:Theme.white,alpha:.9});
-      for(let i=0;i<3;i++)this.face.roundRect(this.widthPx-38+i*6,faceH*.38,2,faceH*.24,1)
-        .fill({color:Theme.white,alpha:.3+i*.18});
+      const playX=this.widthPx*.225;
+      this.face.poly([playX,faceH*.32,playX+22,faceH*.5,playX,faceH*.68],true)
+        .fill({color:Theme.white,alpha:.97});
+      for(let i=0;i<3;i++)this.face.roundRect(this.widthPx-56+i*7,faceH*.40,2,faceH*.20,1)
+        .fill({color:Theme.white,alpha:.25});
     }
     this.caption.style.fill = label;
     this.caption.alpha = disabled ? 0.62 : 1;
-    this.caption.position.set(this.widthPx / 2, faceH / 2 + (pressed ? 1 : 0) + this.labelOffsetY);
+    this.caption.position.set(this.widthPx / 2 + (this.kind==='fire'?18:0), faceY + faceH / 2 + this.labelOffsetY);
+  }
+
+  override destroy(options?: Parameters<Container['destroy']>[0]) {
+    super.destroy(options);
+    this.finishes.forEach(finish=>finish.destroy());
+    this.finishes.clear();
   }
 }
 

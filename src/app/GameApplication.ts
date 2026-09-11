@@ -291,6 +291,7 @@ export class GameApplication {
   }
   private applyUiTextures(){
     if(!this.view)return;
+    this.view.setUiTexture('background',uiTexture(this.platform.kind,'background'));
     this.view.setUiTexture('settings',uiTexture(this.platform.kind,'settings'));
     this.view.setUiTexture('crown',uiTexture(this.platform.kind,'crown'));
     this.view.setUiTexture('coin',uiTexture(this.platform.kind,'coin'));
@@ -333,7 +334,11 @@ export class GameApplication {
         this.wake();
       },
       selectLevel:(index)=>{
-        if(!isLevelUnlocked(index,this.totalLevels,this.completedLevels,this.allLevelsUnlocked))return;
+        if(this.session.state.firing||this.view.result.visible||this.view.poster.visible)return;
+        if(index<0||index>=this.totalLevels)return;
+        if(!isLevelUnlocked(index,this.totalLevels,this.completedLevels,this.allLevelsUnlocked)){
+          this.view.showToast('通过当前关卡后解锁下一关',nowMs());this.wake();return;
+        }
         this.collectPendingCoins();this.pendingResult=null;this.audio.play('uiClick');
         this.session.load(index);this.wake();
       },

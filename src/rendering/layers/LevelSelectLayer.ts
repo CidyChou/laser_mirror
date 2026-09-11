@@ -67,7 +67,7 @@ export class LevelSelectLayer extends Container {
     this.title.on('pointertap', () => this.handleTitleTap());
     this.progressLabel.anchor.set(0.5);
     this.progressLabel.position.set(DESIGN_WIDTH / 2, 184);
-    this.settingsButton.position.set(UI_RECTS.settings.x, UI_RECTS.settings.y);
+    this.settingsButton.position.set(UI_RECTS.settings.x, 104);
     this.progressTrack.roundRect(120, 211, 480, 10, 5).fill(Theme.surfaceMuted);
     this.header.addChild(this.title, this.progressLabel, this.progressTrack, this.progressFill, this.settingsButton);
 

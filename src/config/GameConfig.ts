@@ -1,8 +1,8 @@
 export const DESIGN_WIDTH = 720;
-export const DESIGN_HEIGHT = 1400;
+export const DESIGN_HEIGHT = 1280;
 
-export const STAGE_TOP = 248;
-export const STAGE_HEIGHT = 880;
+export const STAGE_TOP = 278;
+export const STAGE_HEIGHT = 714;
 
 export const UI_TOKENS = {
   radius: { sm: 12, md: 18, lg: 26, xl: 36 },
@@ -10,15 +10,15 @@ export const UI_TOKENS = {
 } as const;
 
 export const UI_RECTS = {
-  settings: { x: 32, y: 104, w: 80, h: 80 },
-  progress: { x: 230, y: 104, w: 260, h: 80 },
-  hearts: { x: 572, y: 104, w: 116, h: 80 },
-  coinCounter: { x: 520, y: 104, w: 168, h: 72 },
-  fire: { x: 210, y: 1186, w: 300, h: 92 },
-  hint: { x: 360, y: 1292 },
+  settings: { x: 46, y: 152, w: 82, h: 76 },
+  progress: { x: 198, y: 147, w: 324, h: 80 },
+  hearts: { x: 554, y: 152, w: 124, h: 76 },
+  coinCounter: { x: 550, y: 152, w: 136, h: 76 },
+  fire: { x: 158, y: 1052, w: 404, h: 100 },
+  hint: { x: 360, y: 1180 },
   resultWin: { x: 80, y: 256, w: 560, h: 640 },
   resultLose: { x: 90, y: 318, w: 540, h: 540 },
-  settingsPanel: { x: 70, y: 210, w: 580, h: 960 },
+  settingsPanel: { x: 70, y: 160, w: 580, h: 960 },
 } as const;
 
 export const COMBO_MOTION = {

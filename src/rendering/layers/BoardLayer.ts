@@ -3,41 +3,35 @@ import { GameConfig } from '@/config/GameConfig';
 import type { BoardGeometry, LevelDefinition } from '@/gameplay/types';
 import { isLightTheme, Theme } from '../theme';
 
-/** A machined deck with narrow joints and a luminous lower chassis. */
+/** A quiet, uniform grid inside a single thin frame. */
 export class BoardLayer extends Container {
   private readonly cellFills=[Theme.cellA,Theme.cellB].map(color=>new FillGradient({
     start:{x:0,y:0},end:{x:0,y:1},textureSize:64,
-    colorStops:[{offset:0,color},{offset:1,color:shade(color,isLightTheme()?.90:.72)}],
+    colorStops:[{offset:0,color},{offset:1,color:shade(color,isLightTheme()?.96:.82)}],
   }));
   rebuild(level:LevelDefinition,g:BoardGeometry){
     this.cacheAsTexture(false);
     this.removeChildren().forEach(c=>c.destroy());
-    const depth=Math.max(9,g.cell*.075),shape=new Graphics();
+    const shape=new Graphics();
     const {ox:x,oy:y,boardW:w,boardH:h}=g;
-    shape.roundRect(x-5,y+12,w+16,h+depth,16).fill({color:Theme.boardShadow,alpha:.6});
-    shape.roundRect(x-4,y+depth,w+8,h,14).fill(Theme.boardDepthSide)
-      .stroke({color:Theme.cyan,width:1.5,alpha:.32});
-    shape.moveTo(x+22,y+h+depth).lineTo(x+w*.32,y+h+depth)
-      .moveTo(x+w*.68,y+h+depth).lineTo(x+w-22,y+h+depth)
-      .stroke({color:Theme.cyan,width:3,alpha:.75});
-    shape.roundRect(x-4,y-4,w+8,h+8,14).fill(Theme.cellShade)
-      .stroke({color:Theme.surfaceLine,width:2,alpha:.9});
+    shape.roundRect(x-10,y-6,w+20,h+20,17).fill({color:Theme.boardShadow,alpha:.24});
+    shape.roundRect(x-10,y-10,w+20,h+20,17).fill({color:Theme.cellShade,alpha:.64})
+      .stroke({color:Theme.cyan,width:1.7,alpha:.46});
     for(let row=0;row<level.rows;row++)for(let col=0;col<level.cols;col++){
-      const inset=Math.max(1.5,g.cell*.018),size=g.cell-inset*2;
-      const rx=x+col*g.cell+inset,ry=y+row*g.cell+inset,radius=Math.max(4,g.cell*.045);
-      shape.roundRect(rx,ry+3,size,size-3,radius).fill(Theme.boardShadow);
-      shape.roundRect(rx,ry,size,size-3,radius).fill(this.cellFills[(col+row)%2])
-        .stroke({color:Theme.cyanSoft,width:.8,alpha:.10});
-      shape.moveTo(rx+radius,ry+1).lineTo(rx+size-radius,ry+1)
-        .stroke({color:Theme.cyanSoft,width:1,alpha:.13});
+      const inset=Math.max(2,g.cell*.028),size=g.cell-inset*2;
+      const rx=x+col*g.cell+inset,ry=y+row*g.cell+inset,radius=Math.max(6,g.cell*.095);
+      shape.roundRect(rx,ry+1.5,size,size,radius).fill({color:Theme.boardShadow,alpha:.5});
+      shape.roundRect(rx,ry,size,size,radius).fill(this.cellFills[0])
+        .stroke({color:Theme.surfaceLine,width:1,alpha:.64});
       // A quiet registration cross keeps empty cells intentional and readable.
       const cx=rx+size/2,cy=ry+size/2;
       shape.moveTo(cx-3,cy).lineTo(cx+3,cy).moveTo(cx,cy-3).lineTo(cx,cy+3)
-        .stroke({color:Theme.cyanSoft,width:1,alpha:.09});
+        .stroke({color:Theme.cyanSoft,width:.8,alpha:.10});
     }
     for(const [cx,cy,sx,sy] of [[x,y,1,1],[x+w,y,-1,1],[x,y+h,1,-1],[x+w,y+h,-1,-1]]){
-      shape.moveTo(cx,cy+sy*17).lineTo(cx,cy).lineTo(cx+sx*17,cy)
-        .stroke({color:Theme.cyanSoft,width:2.5,alpha:.8});
+      shape.moveTo(cx+sx*3,cy+sy*15).lineTo(cx+sx*3,cy+sy*9)
+        .quadraticCurveTo(cx+sx*3,cy+sy*3,cx+sx*9,cy+sy*3).lineTo(cx+sx*15,cy+sy*3)
+        .stroke({color:Theme.cyanSoft,width:1.8,alpha:.94});
     }
     this.addChild(shape);
     this.cacheAsTexture({resolution:GameConfig.renderer.staticCacheResolution,antialias:true});

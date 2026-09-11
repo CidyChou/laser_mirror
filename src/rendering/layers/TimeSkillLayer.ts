@@ -15,10 +15,10 @@ export class TimeSkillLayer extends Container {
   private signature = '';
   constructor() {
     super();this.eventMode='passive';
-    this.adjustment.position.set(72,1290);this.bullet.position.set(72,1290);this.rewind.position.set(376,1290);
+    this.adjustment.position.set(72,1170);this.bullet.position.set(72,1170);this.rewind.position.set(376,1170);
     this.adjustment.setLabelSize(22);this.bullet.setLabelSize(22);this.rewind.setLabelSize(22);
     this.adjustment.eventMode='none';this.bullet.visible=false;
-    this.status.anchor.set(.5);this.status.position.set(360,1386);
+    this.status.anchor.set(.5);this.status.position.set(360,1262);
     this.outline.eventMode='none';this.status.eventMode='none';
     this.addChild(this.outline,this.adjustment,this.bullet,this.rewind,this.status);
   }

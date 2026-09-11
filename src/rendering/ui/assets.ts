@@ -2,6 +2,7 @@ import { Assets, DOMAdapter, ImageSource, Texture } from 'pixi.js';
 import type { PlatformKind } from '@/platform/IPlatform';
 
 const FILES = {
+  background: 'ui/space-background.webp',
   settings: 'ui/settings-gear.png',
   crown: 'ui/victory-crown.png',
   coin: 'ui/victory-coin.png',
