@@ -8,7 +8,7 @@ SFX:
 - laser_fire: laser launch impulse
 - mirror_hit: reflective impact / duang
 - splitter_hit: prism split impact
-- portal: teleport / warp
+- portal: shared warp sound at entry and again at exit after the 520 ms transit; entry plays slightly softer
 - target_hit: receiver lock-on
 - switch_on: switch activation
 - shot_fail: failed test shot

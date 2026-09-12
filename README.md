@@ -2,7 +2,7 @@
 
 正式工程底座：**Vite + TypeScript + PixiJS 8 + WebGL + Pixi UI + JSON Levels + Platform Adapter**。
 
-每章第10关之后会追加一个独立的章节挑战；原 1–130 关保持原编号和内容。规则与验证范围见 [章节挑战](docs/TIME_BOSSES.md)，本地试玩校验页为 `/tools/visual/time-bosses.html`。
+每章第10关之后会追加一个独立的章节挑战；主线保留 1–130 编号；最新聚合光、挑战难度与激光寿命调整见 [数值调整记录](docs/optics-rebalance.md)。规则与验证范围见 [章节挑战](docs/TIME_BOSSES.md)，本地试玩校验页为 `/tools/visual/time-bosses.html`。
 
 ## macOS 一键运行
 
@@ -74,11 +74,14 @@ npm run build:all
 
 聚合点采用切角光学舱、输入槽和输出箭头，集满后蓄力 1.5 秒，再释放 3 倍宽光束；粗光束通过镜子、传送门和分光器后仍保留宽度。聚能终点显示充能比例和进度槽，读数放在光束上方的独立标牌中。
 
-开关与门使用同色字母标签，多条件门逐项显示所需开关。开关触发后先传递 420 毫秒信号，再展开门叶 280 毫秒；提前到达的激光会等门完全打开再继续。传送门使用细边圆形入口，仅靠配对颜色区分，不显示编号；光效沿用配对颜色。
+开关与门使用同色字母标签，多条件门逐项显示所需开关。开关触发后先传递 420 毫秒信号，再展开门叶 280 毫秒；提前到达的激光会等门完全打开再继续。传送门使用细边圆形入口，仅靠配对颜色区分，不显示编号；光进入后停留 520 毫秒，入口收缩回弹，另一端逐渐蓄亮后弹出光束。进出分别播放音效，光束方向与宽度保持不变。
+
+首关引导缩为 3 步，后续新机关用短卡介绍，每次最多 3 步。学习记录与验证方式见 [新手引导](docs/tutorial.md)。
 
 ```bash
 npm run verify:optics
 npm run verify:mechanisms
+npm run verify:portals
 npm run verify:render-layout
 npm run verify:expansion
 npm run typecheck

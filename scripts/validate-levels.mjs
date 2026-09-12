@@ -37,10 +37,11 @@ validationEntries.forEach(({level, number, boss}) => {
     if(level.chapterNo!==number/10)errors.push(`BOSS after #${number} has invalid chapterNo`);
   }else if(time)errors.push(`#${number} ordinary level must not contain time boss rules`);
   if(time){
-    for(const name of ['adjustmentUses','bulletTimeUses','rewindUses'])if(!Number.isInteger(time[name])||time[name]<0||time[name]>9)errors.push(`#${number} invalid ${name}`);
+    for(const name of ['adjustmentUses','bulletTimeUses'])if(!Number.isInteger(time[name])||time[name]<0||time[name]>9)errors.push(`#${number} invalid ${name}`);
     if(time.adjustmentUses<1)errors.push(`#${number} no God Hand adjustments`);
     if(time.bulletTimeUses!==0)errors.push(`#${number} bullet time must stay hidden in this release`);
-    if(time.rewindUses>0&&![2,3,4].includes(time.rewindCells))errors.push(`#${number} invalid rewindCells`);
+    if('rewindUses' in time || 'rewindCells' in time)errors.push(`#${number} obsolete rewind rule`);
+    if(!Number.isFinite(time.lifetimeMs)||time.lifetimeMs<8000||time.lifetimeMs>60000)errors.push(`#${number} invalid lifetimeMs`);
     if(time.firstFailureFree!==true)errors.push(`#${number} missing first failure protection`);
   }
   if (!Number.isInteger(level.rows) || !Number.isInteger(level.cols) || level.rows < 1 || level.cols < 1) {

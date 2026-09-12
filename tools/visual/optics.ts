@@ -55,7 +55,7 @@ function build(){
   session=new GameSession([level]);
   view=new PixiGameView(app.renderer,quality,theme.value as ThemeId,[level],renderer.value==='gpu');
   app.stage.addChild(view.root);session.on(event);view.sync(session.state);
-  view.setHandlers({rotate:(x,y)=>session.rotateAt(x,y),fire:()=>play(),bulletTime:()=>session.startBulletTime(),rewindTime:()=>session.startRewind(),reset:()=>reset(),openSettings:()=>showOverlay(),
+  view.setHandlers({rotate:(x,y)=>session.rotateAt(x,y),fire:()=>play(),bulletTime:()=>session.startBulletTime(),reset:()=>reset(),openSettings:()=>showOverlay(),
     tutorialNext:()=>{},tutorialSkip:()=>{},tutorialTap:()=>{},replayTutorial:()=>{},canSelectLevel:()=>false,
     toggleAudio:()=>{},toggleHaptics:()=>{},selectTheme:()=>{},closeSettings:()=>showOverlay(),openLevels:()=>{},
     selectLevel:()=>{},unlockAllLevels:()=>{},clearHistory:()=>{},uiChanged:()=>{},resultPrimary:()=>{},resultSecondary:()=>{},resultPreview:()=>{},resultLevels:()=>{},closePoster:()=>{},savePoster:()=>{},coinSound:()=>{}});
@@ -70,8 +70,10 @@ function seek(phase:string){
   const hits=trace.impactEvents.filter(e=>e.type==='combiner');
   const sw=trace.impactEvents.find(e=>e.type==='switch');
   const door=trace.impactEvents.find(e=>e.type==='door-open');
+  const portal=trace.impactEvents.find(e=>e.type==='portal');
   let t:number;
-  if(phase==='complete')t=laserMsAtDistance(trace.maxTravel)+800;
+  if(portal&&phase.startsWith('portal-'))t=laserMsAtDistance(portal.at)+(phase==='portal-enter'?80:phase==='portal-wait'?360:GameConfig.laser.portalTransitMs+80);
+  else if(phase==='complete')t=laserMsAtDistance(trace.maxTravel)+800;
   else if(phase==='signal'&&sw)t=laserMsAtDistance(sw.at)+GameConfig.laser.doorSignalMs*.5;
   else if(phase==='opening'&&door)t=laserMsAtDistance(door.at)-GameConfig.laser.doorOpenMs*.5;
   else if(phase==='open'&&door)t=laserMsAtDistance(door.at)+80;

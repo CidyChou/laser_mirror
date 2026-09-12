@@ -1,16 +1,16 @@
 import { Container, FillGradient, Graphics, Rectangle, Text } from 'pixi.js';
 import { portPosition, portSize, cellCenter, computeGeometry } from '@/gameplay/geometry';
 import { combinerNeed, focusNeed, itemKey, levelEmitters } from '@/gameplay/levelAccess';
-import type { BoardGeometry, Direction, GameState, LevelItem, Port } from '@/gameplay/types';
+import type { BoardGeometry, Direction, GameState, ImpactEvent, LevelItem, Port } from '@/gameplay/types';
 import { isLightTheme, Theme, uiText } from '../theme';
 import { GameConfig } from '@/config/GameConfig';
 import { CollectorVisual } from '../effects/CollectorVisual';
 import { mechanismIdentities, type MechanismIdentity } from '../mechanismIdentity';
-import { laserMsAtDistance } from '@/gameplay/laserTiming';
+import { laserMsAtDistance, TIME_BOSS_SPEED_SCALE } from '@/gameplay/laserTiming';
 
 type ItemNode={key:string;kind:LevelItem['type'];root:Container;motion:Container;angleCarrier?:Container;face?:Graphics;core?:Graphics;phase:number;lastLit?:boolean;lastOpen?:boolean;lastCharge?:number;pips?:Graphics;collector?:CollectorVisual;identity?:MechanismIdentity;counter?:Text;panels?:Container[];doorId?:string;badges?:{id:string;root:Container;check:Graphics}[]};
 type SignalLink={id:string;root:Container;dot:Graphics;from:{x:number;y:number};to:{x:number;y:number};bend:{x:number;y:number}};
-type PortalMotion={flow:Container;mist:Graphics;phase:number};
+type PortalMotion={key:string;pair:string;motion:Container;flow:Container;mist:Graphics;energy:Graphics;phase:number;hitAt:number|null;receiveAt:number|null;exiting:boolean;horizontal:boolean};
 type Kick={start:number};
 type ClickFx={root:Container;ring:Graphics;flash:Graphics;start:number;active:boolean};
 type PortNode={port:Port;emitter:boolean;targetIndex?:number;root:Container;halo:Graphics;light:Graphics;core:Graphics;pips:Graphics;required:number;phase:number;active:boolean;lastActive:boolean|null;lastCharge:number;sparks:Container;cell:number};
@@ -80,6 +80,9 @@ export class ObjectLayer extends Container{
     this.state=state;
     if(this.levelIndex!==state.levelIndex){this.levelIndex=state.levelIndex;this.rebuild(state,g);}
     this.refresh(state,g);
+    if(!state.firing&&!state.result)for(const portal of this.portals){
+      portal.hitAt=null;portal.receiveAt=null;portal.energy.visible=false;portal.motion.scale.set(1);
+    }
   }
   private rebuild(state:GameState,g:BoardGeometry){
     this.captions.eventMode='none';
@@ -111,11 +114,39 @@ export class ObjectLayer extends Container{
 
   kick(x:number,y:number,now:number){this.kicks.set(`${x},${y}`,{start:now});}
   rotateFeedback(x:number,y:number,now:number,g:BoardGeometry){const c=cellCenter(g,x,y),fx=this.clickPool.find(v=>!v.active)??this.clickPool[0];fx.active=true;fx.start=now;fx.root.visible=true;fx.root.position.set(c.x,c.y);fx.root.scale.set(.7);fx.root.alpha=1;fx.ring.scale.set(.75);fx.flash.rotation=0;}
+  portalImpact(event:ImpactEvent,now:number){
+    const key=`${event.x},${event.y}`;
+    const portal=this.portals.find(p=>p.key===key);
+    if(!portal)return;
+    portal.hitAt=now;portal.exiting=event.type==='portal-exit';
+    portal.horizontal=(event.incomingDir??0)%2===0;
+    if(portal.exiting)portal.receiveAt=null;
+    else {
+      const destination=this.portals.find(p=>p.pair===portal.pair&&p.key!==key);
+      if(destination)destination.receiveAt=now;
+    }
+  }
   update(now:number,ambient=true){
     this.ambientActive=ambient&&this.portals.length>0;
-    if(ambient)for(const portal of this.portals){
-      portal.flow.rotation=now*.00022+portal.phase;
-      portal.mist.alpha=.36+.08*Math.sin(now*.0017+portal.phase);
+    for(const portal of this.portals){
+      if(ambient)portal.flow.rotation=now*.00022+portal.phase;
+      portal.mist.alpha=.36+(ambient?.08*Math.sin(now*.0017+portal.phase):0);
+      portal.energy.visible=false;portal.motion.scale.set(1);
+      const receiving=portal.receiveAt===null?-1:(now-portal.receiveAt)/GameConfig.laser.portalTransitMs;
+      if(receiving>=0&&receiving<1.5){
+        const charge=Math.max(0,Math.min(1,(receiving-.4)/.6));
+        portal.energy.visible=true;portal.energy.alpha=charge*charge*.5;
+        portal.energy.scale.set(.55+charge*.7);portal.mist.alpha+=charge*.3;
+      }else if(receiving>=1.5)portal.receiveAt=null;
+      if(portal.hitAt===null)continue;
+      const t=(now-portal.hitAt)/(portal.exiting?420:360);
+      if(t>=1){portal.hitAt=null;continue;}
+      const bounce=Math.sin(t*Math.PI*2)*Math.exp(-t*3);
+      const stretch=portal.exiting?1+bounce*.24:1-bounce*.23;
+      portal.motion.scale.set(portal.horizontal?stretch:2-stretch,portal.horizontal?2-stretch:stretch);
+      portal.energy.visible=true;portal.energy.alpha=Math.max(0,1-t*2.6)*.9;
+      portal.energy.scale.set(portal.exiting?.8+t*1.8:1.2-t*.9);
+      portal.flow.rotation+=(portal.exiting?1:-1)*bounce*.5;
     }
     const state=this.state;
     this.signalActive=false;
@@ -123,7 +154,7 @@ export class ObjectLayer extends Container{
       if(this.trace!==state.result){
         this.trace=state.result;this.switchTimes.clear();this.doorTimes.clear();
         for(const e of state.result?.impactEvents??[]){
-          const at=state.timeSkill?e.at/(computeGeometry(state.level).cell*.002):laserMsAtDistance(e.at);
+          const at=laserMsAtDistance(e.at,state.timeSkill?TIME_BOSS_SPEED_SCALE:1);
           if(e.type==='switch'&&e.id&&!this.switchTimes.has(e.id))this.switchTimes.set(e.id,at);
           if(e.type==='door-open'&&e.id)this.doorTimes.set(e.id,at);
         }
@@ -177,7 +208,7 @@ export class ObjectLayer extends Container{
     for(const [key,k] of [...this.kicks]){const n=this.itemNodes.get(key);if(!n){this.kicks.delete(key);continue;}const t=(now-k.start)/280;if(t>=1){n.motion.scale.set(1);n.motion.position.set(0,0);n.motion.rotation=0;this.kicks.delete(key);continue;}const hit=Math.sin(t*Math.PI)*Math.exp(-t*1.55);n.motion.scale.set(1+hit*.12);n.motion.position.set(0,-hit*6);n.motion.rotation=hit*.028*Math.sin(now*.08);}
     for(const fx of this.clickPool){if(!fx.active)continue;const t=(now-fx.start)/300;if(t>=1){fx.active=false;fx.root.visible=false;continue;}const ease=1-Math.pow(1-t,3);fx.root.scale.set(.7+ease*.65);fx.root.alpha=1-t;fx.ring.scale.set(.75+ease*.85);fx.flash.rotation=t*.22;fx.flash.alpha=(1-t)*.62;}
   }
-  get active(){return this.ambientActive||this.signalActive||this.kicks.size>0||this.clickPool.some(x=>x.active);}
+  get active(){return this.ambientActive||this.signalActive||this.kicks.size>0||this.portals.some(p=>p.hitAt!==null||p.receiveAt!==null)||this.clickPool.some(x=>x.active);}
 
   portalColor(pair:string){return this.portalIdentities.get(pair)?.color??Theme.purple;}
   focusColor(x?:number,y?:number){return this.itemNodes.get(`${x},${y}`)?.lastLit?Theme.green:Theme.gold;}
@@ -393,8 +424,10 @@ export class ObjectLayer extends Container{
     }
     flow.addChild(swirl);orbit.addChild(flow);
     const mist=new Graphics();this.light(mist,0,0,c*.21,c*.21,color,.28);
-    motion.addChild(portal,mist,orbit);
-    this.portals.push({flow,mist,phase:item.x*.9+item.y*.5});
+    const energy=new Graphics().circle(0,0,c*.12).fill({color:mix(color,Theme.white,.6),alpha:.9});
+    energy.blendMode=this.energyBlend;energy.visible=false;
+    motion.addChild(portal,mist,orbit,energy);
+    this.portals.push({key,pair:item.pair,motion,flow,mist,energy,phase:item.x*.9+item.y*.5,hitAt:null,receiveAt:null,exiting:false,horizontal:true});
     return{key,kind:item.type,root,motion,phase:0};
   }
 

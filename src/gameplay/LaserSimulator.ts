@@ -213,8 +213,10 @@ export class LaserSimulator {
           if (pair.length === 2) {
             const other = pair[0] === item ? pair[1] : pair[0];
             const oc = cellCenter(g, other.x, other.y);
-            impacts.push({type:'portal',x,y,px,py,at:travel,pair:item.pair,toX:oc.x,toY:oc.y,incomingDir:dir,outgoingDirs:[dir]});
-            travel += GameConfig.laser.portalPauseDistance; maxTravel = Math.max(maxTravel, travel);
+            impacts.push({type:'portal',x,y,px,py,at:travel,pair:item.pair,toX:oc.x,toY:oc.y,incomingDir:dir,outgoingDirs:[]});
+            travel = laserDistanceAtMs(laserMsAtDistance(travel)+GameConfig.laser.portalTransitMs);
+            maxTravel = Math.max(maxTravel, travel);
+            impacts.push({type:'portal-exit',x:other.x,y:other.y,px:oc.x,py:oc.y,at:travel,pair:item.pair,incomingDir:dir,outgoingDirs:[dir]});
             x = other.x; y = other.y; px = oc.x; py = oc.y;
           }
         }

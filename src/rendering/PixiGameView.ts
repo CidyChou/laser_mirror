@@ -26,7 +26,6 @@ import { TutorialLayer } from './layers/TutorialLayer';
 
 export type ViewHandlers = {
   bulletTime?:()=>void;
-  rewindTime?:()=>void;
   rotate:(x:number,y:number)=>void;
   fire:()=>void;
   reset:()=>void;
@@ -77,7 +76,6 @@ export class PixiGameView{
     this.tutorial.setTapHandler(()=>h.tutorialTap?.());
     this.settings.tutorialButton.on('pointertap',()=>h.replayTutorial?.());
     this.timeSkills.bullet.on('pointertap',()=>h.bulletTime?.());
-    this.timeSkills.rewind.on('pointertap',()=>h.rewindTime?.());
     this.objects.setRotateHandler(h.rotate);
     this.hud.fireButton.on('pointertap',h.fire);
     this.hud.settingsButton.on('pointertap',h.openSettings);
@@ -137,7 +135,6 @@ export class PixiGameView{
   private syncTutorialVisibility(){
     this.tutorial.visible=this.tutorialAvailable&&!this.tutorialShotHidden&&!this.settings.visible&&!this.levelSelect.visible&&!this.result.visible&&!this.poster.visible;
   }
-  rollbackEffects(){this.particles.clear();this.impacts.clear();this.combo.clear();}
   rotateItem(x:number,y:number,s:0|1,dir?:Direction){this.objects.rotateItem(x,y,s,dir);}
   hideOverlays(){this.result.hide();this.poster.hide();this.settings.hide();this.levelSelect.hide();this.combo.clear();this.confetti.clear();this.coins.hide();this.hud.setHeartsVisible(true);this.syncTutorialVisibility();}
   showLevelSelectFromWin(currentIndex:number,completed:ReadonlySet<number>,allLevelsUnlocked=false){
@@ -235,7 +232,7 @@ export class PixiGameView{
       const point=portPosition(this.lastGeometry,this.targetPorts[e.targetIndex]);e={...e,px:point.x,py:point.y};
     }
     try{
-      const feedbackColor=e.type==='portal'?this.objects.portalColor(e.pair??''):e.type==='focus'?this.objects.focusColor(e.x,e.y):undefined;
+      const feedbackColor=e.type==='portal'||e.type==='portal-exit'?this.objects.portalColor(e.pair??''):e.type==='focus'?this.objects.focusColor(e.x,e.y):undefined;
       this.impacts.triggerImpactEffect(e,now,feedbackColor);
       if(e.type==='combiner-fire'){
         if(e.x!==undefined&&e.y!==undefined)this.objects.kick(e.x,e.y,now);
@@ -248,13 +245,12 @@ export class PixiGameView{
       const count=Math.max(2,Math.round((e.type==='target'||e.type==='focus'?16:e.type==='splitter'||e.type==='combiner'?12:e.type==='mirror'?10:e.type==='portal'?10:7)*this.emitScale()));
       const color=feedbackColor??(e.type==='target'||e.type==='switch'||e.type==='door-open'?Theme.green:e.type==='combiner'||e.type==='splitter'?Theme.cyan:e.type==='mirror'?Theme.beamHot:Theme.beam);
       const budget=this.performance.particleBudget;
-      if(e.type==='portal'){
-        const incoming=e.incomingDir===undefined?0:this.directionAngle(e.incomingDir)+Math.PI;
-        this.particles.emit(e.px,e.py,color,Math.ceil(count/2),budget,{angle:incoming,spread:1.7,speedMin:.8,speedMax:3.2,shape:'mixed',stretch:1.1});
-        if(e.toX!==undefined&&e.toY!==undefined){
-          const outgoing=e.outgoingDirs?.[0]===undefined?incoming:this.directionAngle(e.outgoingDirs[0]);
-          this.particles.emit(e.toX,e.toY,color,Math.ceil(count/2),budget,{angle:outgoing,spread:1.1,speedMin:1.2,speedMax:4.1,shape:'mixed',stretch:1.2});
-        }
+      if(e.type==='portal'||e.type==='portal-exit'){
+        this.objects.portalImpact(e,now);
+        const exiting=e.type==='portal-exit';
+        const angle=this.directionAngle(e.incomingDir??0)+(exiting?0:Math.PI);
+        this.particles.emit(e.px,e.py,color,Math.ceil((exiting?8:5)*this.emitScale()),budget,
+          {angle,spread:exiting?.75:1.4,speedMin:exiting?1.8:.6,speedMax:exiting?4.5:2.2,shape:'spark',stretch:exiting?1.4:.8});
         return;
       }
       if((e.type==='mirror'||e.type==='splitter')&&e.outgoingDirs?.length){

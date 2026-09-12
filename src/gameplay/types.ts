@@ -20,21 +20,22 @@ export interface TimeBossRules {
   adjustmentUses: number;
   /** Retained for a later release. The current client does not expose it. */
   bulletTimeUses: number;
-  rewindUses: number;
-  rewindCells?: 2 | 3 | 4;
+  /** Foreground milliseconds of beam life, starting after emitter charge. */
+  lifetimeMs: number;
   firstFailureFree: true;
 }
 
 export interface TimeSkillState {
   adjustmentUses: number;
   bulletTimeUses: number;
-  rewindUses: number;
-  phase: 'idle' | 'bullet' | 'rewind' | 'recover';
+  phase: 'idle' | 'bullet';
   remainingMs: number;
   timeScale: number;
   canOperate: boolean;
-  canRewind: boolean;
-  tutorial: 'bullet' | 'rewind' | null;
+  lifetimeRemainingMs: number;
+  /** Fraction of the initial six-cell tail that remains visible. */
+  beamLife: number;
+  tutorial: 'bullet' | null;
 }
 
 export interface CampaignStageMeta {
@@ -82,7 +83,7 @@ export interface LaserSegment {
   widthScale?: number;
 }
 
-export type ImpactType = 'mirror' | 'splitter' | 'portal' | 'switch' | 'door' | 'door-open' | 'wall' | 'target' | 'focus' | 'combiner' | 'combiner-fire';
+export type ImpactType = 'mirror' | 'splitter' | 'portal' | 'portal-exit' | 'switch' | 'door' | 'door-open' | 'wall' | 'target' | 'focus' | 'combiner' | 'combiner-fire';
 export interface ImpactEvent {
   type: ImpactType;
   at: number;

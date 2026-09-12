@@ -76,7 +76,7 @@ export class GameApplication {
     try{
       const saved=JSON.parse(platform.storage.get(TIME_PROGRESS_KEY)||'{}');
       if(Array.isArray(saved.failures))this.timeProgress.usedFailureProtection=new Set(saved.failures.filter((n:unknown)=>Number.isInteger(n)));
-      if(Array.isArray(saved.tutorials))this.timeProgress.seenTutorials=new Set(saved.tutorials.filter((s:unknown)=>s==='bullet'||s==='rewind'));
+      if(Array.isArray(saved.tutorials))this.timeProgress.seenTutorials=new Set(saved.tutorials.filter((s:unknown)=>s==='bullet'));
     }catch{/* Recover malformed local progress without dropping ordinary progress. */}
     this.session=new GameSession(this.levels,loadHearts(platform),initialLevel,this.timeProgress);
     this.tutorial=new TutorialDirector(loadTutorialProgress(platform,this.levels,this.completedLevels),seen=>saveTutorialProgress(platform,seen));
@@ -122,11 +122,10 @@ export class GameApplication {
       const now=nowMs();
       const state=this.session.state;
       if(event.type==='first-failure-free')this.saveTimeProgress();
-      if(event.type==='timeline-rollback')this.view.rollbackEffects();
       if(event.type==='skill-tutorial'){
         this.view.showResult('lose',{
-          title:event.skill==='bullet'?'子弹时间':'时光回溯',subtitle:'章节挑战 · 技能教学',
-          tip:event.skill==='bullet'?'接下来 3 秒光束会减速。\n可连续旋转镜面，已走过的路线不会改变。':'所有光束一起后退，沿途机关随之回滚。\n倒退结束后可旋转镜面，光束将逐渐恢复速度。',primary:'明白了 · 启动技能',
+          title:'子弹时间',subtitle:'章节挑战 · 技能教学',
+          tip:'接下来 3 秒光束会减速。\n旋转镜面消耗神之手次数，激光寿命继续减少。',primary:'明白了 · 启动技能',
         },now);this.wake();
       }
       if(event.type==='level'){
@@ -150,7 +149,8 @@ export class GameApplication {
         switch(event.impact.type){
           case 'mirror': this.audio.play('mirrorHit'); break;
           case 'splitter': this.audio.play('splitterHit'); break;
-          case 'portal': this.audio.play('portal'); break;
+          case 'portal': this.audio.play('portal',.8); break;
+          case 'portal-exit': this.audio.play('portal'); break;
           case 'target': this.audio.play('targetHit'); break;
           case 'switch': this.audio.play('switchOn'); break;
           case 'focus': this.audio.play('targetHit'); break;
@@ -161,7 +161,7 @@ export class GameApplication {
           case 'wall': this.audio.play('mirrorHit',.42); break;
         }
         if(event.impact.type==='target')this.vibrate('medium');
-        else if(event.impact.type==='mirror'||event.impact.type==='splitter'||event.impact.type==='portal')this.vibrate('light');
+        else if(event.impact.type==='mirror'||event.impact.type==='splitter'||event.impact.type==='portal'||event.impact.type==='portal-exit')this.vibrate('light');
         this.wake();
       }
       if(event.type==='combo'){
@@ -300,7 +300,6 @@ export class GameApplication {
   private bindViewHandlers(){
     this.view.setHandlers({
       bulletTime:()=>{if(!this.overlayLocked()){this.session.startBulletTime();this.wake();}},
-      rewindTime:()=>{if(!this.overlayLocked()){this.session.startRewind();this.wake();}},
       rotate:(x,y)=>this.rotate(x,y),
       fire:()=>this.fire(),
       reset:()=>{this.collectPendingCoins();this.pendingResult=null;this.audio.play('uiClick');this.session.reset();this.wake();},

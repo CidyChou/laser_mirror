@@ -12,9 +12,10 @@ export interface TutorialStep {
   action: 'next' | 'rotate' | 'fire';
   button?: string;
   desired?: number;
-  completes?: string;
+  completes?: string | string[];
 }
-interface Lesson { id: string; title: string; body: string; anchors: TutorialAnchor[]; control?: LevelItem }
+interface Lesson { id: string; title: string; body: string; anchors: TutorialAnchor[]; completes?: string[] }
+export const MAX_TUTORIAL_STEPS = 3;
 const cell = (item: LevelItem): TutorialAnchor => ({ kind: 'cell', x: item.x, y: item.y });
 const port = (value: Port): TutorialAnchor => ({ kind: 'port', port: value });
 const movable = (item: LevelItem) => ['mirror', 'splitter', 'combiner'].includes(item.type) && !('fixed' in item && item.fixed);
@@ -30,41 +31,36 @@ export function isChallengeLevel(level: LevelDefinition) {
 function lessonsFor(level: LevelDefinition, items: LevelItem[]): Lesson[] {
   const lessons: Lesson[] = [];
   const sorted = [...items].sort((a, b) => Number('decoy' in a && !!a.decoy) - Number('decoy' in b && !!b.decoy) || a.y - b.y || a.x - b.x);
-  const add = (id: string, title: string, body: string, anchors: TutorialAnchor[], control?: LevelItem) => lessons.push({ id, title, body, anchors, control });
-  const mirror = sorted.find(i => i.type === 'mirror' && !i.fixed);
-  if (mirror) add('mirror', '镜子让光转弯', '点按镜子，切换镜面的倾斜方向。\n旋转不消耗爱心，可以反复调整。', [cell(mirror)], mirror);
-  for (const type of ['mirror', 'splitter', 'combiner'] as const) {
-    const fixed = sorted.find(i => i.type === type && i.fixed);
-    if (fixed) add(`fixed-${type}`, `固定${type === 'mirror' ? '镜' : type === 'splitter' ? '分光镜' : '聚合核心'}`, '带锁的底座不能旋转。\n利用它现有的方向，调整其他镜子接通光路。', [cell(fixed)]);
+  const add = (id: string, title: string, body: string, anchors: TutorialAnchor[], completes?: string[]) => lessons.push({id,title,body,anchors,completes});
+  for (const need of new Set(sorted.filter(i => i.type === 'combiner').map(combinerNeed))) {
+    const core = sorted.find(i => i.type === 'combiner' && combinerNeed(i) === need)!;
+    add(`combiner-${need}`, '汇光，再出发', `${need} 个方向的光汇入后，沿箭头发射。${movable(core) ? '\n点按核心可转动箭头。' : ''}`, [cell(core)]);
   }
-  const splitter = sorted.find(i => i.type === 'splitter');
-  if (splitter) add('splitter', '一束光，分成两路', '分光镜让一束光继续直行，另一束反射转弯。\n用两条分支连接不同的目标或机关。', [cell(splitter)], movable(splitter) ? splitter : undefined);
-  const wall = sorted.find(i => i.type === 'wall');
-  if (wall) add('wall', '遇到墙，就要绕路', '墙会挡住激光，也不能移动。\n利用镜子改变方向，从空出的格子绕过去。', [cell(wall)]);
-  const sw = sorted.find(i => i.type === 'switch');
-  if (sw) add('switch', '用激光点亮开关', '光穿过圆形开关时，会点亮它。\n信号会传到对应的光门，让光路继续前进。', [cell(sw), ...sorted.filter(i => i.type === 'door' && i.requires.includes(sw.id)).map(cell)]);
-  const door = sorted.find(i => i.type === 'door');
-  if (door) add('door', '先开锁，再通行', '沿光门的连线找到对应开关。\n本次发射点亮所需开关后，光门自动打开。', [cell(door), ...sorted.filter(i => i.type === 'switch' && door.requires.includes(i.id)).map(cell)]);
-  const multiDoor = sorted.find(i => i.type === 'door' && i.requires.length > 1);
-  if (multiDoor?.type === 'door') add('multi-lock', '一扇门，多把钥匙', `这扇光门需要 ${multiDoor.requires.length} 个开关全部点亮。\n同一次发射中，每条开关支路都要接通。`, [cell(multiDoor), ...sorted.filter(i => i.type === 'switch' && multiDoor.requires.includes(i.id)).map(cell)]);
   const portal = sorted.find(i => i.type === 'portal');
-  if (portal) add('portal', '同色传送，方向不变', '光会从同色、同标记的另一端出现。\n传送前后的前进方向保持不变。', sorted.filter(i => i.type === 'portal' && i.pair === portal.pair).map(cell));
-  const emitters = levelEmitters(level);
-  if (emitters.length > 1) add('multi-source', '多个光源，一起出发', `本关有 ${emitters.length} 个光源，点击发射会同时启动。\n分别追踪每束光，安排它们各自的路线。`, emitters.map(port));
-  if (level.targets.length > 1) add('multi-target', '每个终点都要亮', `本关有 ${level.targets.length} 个边缘终点。\n一次发射中全部点亮，才算接通光路。`, level.targets.map(port));
+  if (portal) add('portal', '同色传送', '光稍作停留，从同色另一端射出，方向不变。', sorted.filter(i => i.type === 'portal' && i.pair === portal.pair).map(cell));
+  const door = sorted.find(i => i.type === 'door' && i.requires.length > 1) ?? sorted.find(i => i.type === 'door');
+  const sw = sorted.find(i => i.type === 'switch');
+  if (door?.type === 'door') {
+    const multi = door.requires.length > 1;
+    add(multi ? 'multi-lock' : 'door', multi ? '集齐开关，再开门' : '点亮开关，打开光门',
+      multi ? `同一次发射，点亮这扇门的 ${door.requires.length} 个开关。` : '用光点亮同字母开关，光门就会打开。',
+      [cell(door), ...sorted.filter(i => i.type === 'switch' && door.requires.includes(i.id)).map(cell)], multi ? ['switch','door','multi-lock'] : ['switch','door']);
+  } else if (sw) add('switch', '点亮开关', '让光穿过开关，打开对应光门。', [cell(sw)]);
   for (const need of new Set(sorted.filter(i => i.type === 'focus').map(focusNeed))) {
     const focus = sorted.find(i => i.type === 'focus' && focusNeed(i) === need)!;
-    add(`focus-${need}`, `${need} 束光，充满终点`, `这个菱形终点需要来自 ${need} 个不同方向的光。\n填满它的能量格，也别漏掉其他终点。`, [cell(focus)]);
+    add(`focus-${need}`, '从不同方向充能', `接入 ${need} 个方向的光，充满这颗晶体。`, [cell(focus)]);
   }
-  for (const need of new Set(sorted.filter(i => i.type === 'combiner').map(combinerNeed))) {
-    const combiner = sorted.find(i => i.type === 'combiner' && combinerNeed(i) === need)!;
-    add(`combiner-${need}`, '聚合后，再次出发', `先从${need}个不同方向，把光送入核心。\n${movable(combiner) ? '蓄力后沿箭头发射，点按可旋转箭头。' : '蓄力后沿固定箭头发射，继续接通光路。'}`, [cell(combiner)], movable(combiner) ? combiner : undefined);
-  }
+  const splitter = sorted.find(i => i.type === 'splitter');
+  if (splitter) add('splitter', '一束分两路', '一束直行，一束转弯。用它连接两条路线。', [cell(splitter)]);
+  const emitters = levelEmitters(level);
+  if (emitters.length > 1) add('multi-source', '多束光，一起出发', '所有光源同时发射，分别安排好路线。', emitters.map(port));
+  const fixed = sorted.find(i => ['mirror','splitter','combiner'].includes(i.type) && 'fixed' in i && i.fixed);
+  if (fixed) add('fixed-mirror', '带锁的不能转', '保留它的方向，调整其他镜子接通光路。', [cell(fixed)], ['fixed-mirror','fixed-splitter','fixed-combiner']);
   return lessons;
 }
 
 export function tutorialLessonIds(level: LevelDefinition): string[] {
-  return ['basics', ...lessonsFor(level, level.items).map(l => l.id), ...(isChallengeLevel(level) ? ['challenge'] : [])];
+  return ['basics','mirror', ...lessonsFor(level, level.items).flatMap(l => l.completes ?? [l.id]), ...(level.timeBoss ? ['challenge'] : [])];
 }
 
 /** A small, bounded search helps teach simple boards without storing an answer or coordinates.
@@ -107,52 +103,40 @@ export class TutorialDirector {
   get progress() { return { current: this.index + 1, total: this.steps.length }; }
 
   enter(state: GameState, replay = false) {
-    const { level, items } = state;
+    const {level,items} = state;
+    // Earlier releases taught fixed optics separately; any of those lessons
+    // already explains the shared lock symbol.
+    if(['fixed-mirror','fixed-splitter','fixed-combiner'].some(id=>this.seen.has(id)))this.seen.add('fixed-mirror');
     const unseen = (id: string) => replay || !this.seen.has(id);
     const basics = unseen('basics');
-    const lessons = lessonsFor(level, items).filter(l => unseen(l.id));
-    this.steps = []; this.index = 0;
-    if (state.won || (!basics && !lessons.length && !(isChallengeLevel(level) && unseen('challenge')))) return;
-    const solution = (basics || lessons.some(l => l.control)) ? tutorialSolution(level, items) : null;
-    const addInfo = (id: string, title: string, body: string, anchors: TutorialAnchor[], completes?: string) =>
-      this.steps.push({ id, title, body, anchors, action: 'next', completes });
-    if (basics) {
-      addInfo('source', '从这里，发出第一束光', '这是激光发射器。\n先规划路线，再点击下方的「发射」。', levelEmitters(level).map(port));
-      addInfo('goals', '让光到达所有终点', '高亮的位置就是本关的目标。\n用镜子连接光源和目标，一次发射全部点亮。', goalAnchors(level));
-    }
-    if (isChallengeLevel(level) && unseen('challenge')) {
-      addInfo('challenge', '进入挑战关卡', `本关有 ${levelEmitters(level).length} 个光源、${goalAnchors(level).length} 个目标。\n先从终点倒推路线，再检查每条分支上的机关。`, goalAnchors(level));
-      addInfo('challenge-plan', '先观察，再动手', '有些镜面已经朝向正确方向，无需全部旋转。\n旋转不扣爱心；发射失败才扣 1 颗。', items.filter(movable).slice(0, 3).map(cell), 'challenge');
-    }
-    for (const lesson of lessons) {
-      const target = lesson.control;
-      const solvedItem = target && solution?.find(i => i.x === target.x && i.y === target.y);
-      const practice = target && solvedItem && value(target) !== value(solvedItem);
-      addInfo(lesson.id, lesson.title, lesson.body, lesson.anchors, practice ? undefined : lesson.id);
-      if (practice) this.steps.push({
-        id: `${lesson.id}-practice`, title: target.type === 'combiner' ? '试着转动输出箭头' : '点一下，让光转弯',
-        body: target.type === 'combiner' ? '跟着手指点按核心，调整箭头方向。' : '跟着手指点按高亮的镜面，调整这段光路。',
-        anchors: [cell(target)], action: 'rotate', desired: value(solvedItem), completes: lesson.id,
-      });
-    }
-    if (basics) {
-      // Lessons may already rotate a control. Track their desired values to avoid stale/redundant steps.
-      if (solution) {
-        const planned = new Map(this.steps.filter(s => s.action === 'rotate').map(s => {
-          const a = s.anchors[0] as Extract<TutorialAnchor, { kind: 'cell' }>;
-          return [itemKey(a.x, a.y), s.desired];
-        }));
-        for (const item of items.filter(movable)) {
-          const solved = solution.find(i => i.x === item.x && i.y === item.y)!;
-          if ((planned.get(itemKey(item.x, item.y)) ?? value(item)) === value(solved)) continue;
-          this.steps.push({ id: `route-${itemKey(item.x, item.y)}`, title: '接上下一段光路', body: '继续点按高亮的镜面，连接通往终点的路线。', anchors: [cell(item)], action: 'rotate', desired: value(solved) });
+    const lessons = lessonsFor(level,items).filter(l=>unseen(l.id));
+    this.steps=[];this.index=0;
+    if(state.won)return;
+    const addInfo=(id:string,title:string,body:string,anchors:TutorialAnchor[],completes:string|string[]=id)=>
+      this.steps.push({id,title,body,anchors,action:'next',completes});
+    if(basics){
+      const solution=!level.timeBoss&&lessons.length===0?tutorialSolution(level,items):null;
+      const changed=solution?items.filter(movable).filter(item=>value(item)!==value(solution.find(i=>i.x===item.x&&i.y===item.y)!)):[];
+      const guided=!!solution&&changed.length<=1;
+      addInfo('source','接通光路','转动镜子，让光到达所有终点。',[...levelEmitters(level).map(port),...goalAnchors(level)],guided?[]:['basics','mirror']);
+      if(guided){
+        for(const item of changed){
+          const answer=solution!.find(i=>i.x===item.x&&i.y===item.y)!;
+          this.steps.push({id:'mirror-practice',title:'点一下镜子',body:'让光朝终点转弯。',anchors:[cell(item)],action:'rotate',desired:value(answer),completes:'mirror'});
         }
-        this.steps.push({ id: 'fire', title: '路线就绪，发射！', body: '点击「发射」，看看光如何到达终点。\n旋转不扣爱心；发射失败才扣 1 颗。', anchors: [{ kind: 'fire' }], action: 'fire', completes: 'basics' });
-      } else {
-        addInfo('explore', '现在，试着接通光路', '点按镜面可以反复调整方向。\n确认所有目标都有光到达，再点击「发射」。', [{ kind: 'fire' }], 'basics');
-        this.steps[this.steps.length - 1].button = '开始游玩';
+        this.steps.push({id:'fire',title:'发射试试',body:'点亮终点就过关。失败才扣爱心。',anchors:[{kind:'fire'}],action:'fire',completes:['basics','mirror']});
+        return;
       }
     }
+    if(level.timeBoss&&unseen('challenge')){
+      addInfo('challenge','边走，边换向',`发射后可换向 ${level.timeBoss.adjustmentUses} 次。\n激光逐渐缩短，消失即失败。`,items.filter(movable).slice(0,3).map(cell));
+    }
+    // New mechanics get one short card. Unshown lessons remain unseen and can
+    // appear on a later board, instead of stacking a long introduction now.
+    for(const lesson of lessons.slice(0,MAX_TUTORIAL_STEPS-this.steps.length)){
+      addInfo(lesson.id,lesson.title,lesson.body,lesson.anchors,lesson.completes??lesson.id);
+    }
+    if(this.steps.length)this.steps[this.steps.length-1].button='开始玩';
   }
 
   next() { if (this.current?.action === 'next') this.advance(); }
@@ -169,13 +153,15 @@ export class TutorialDirector {
   }
   allowsFire() { return !this.current || this.current.action === 'fire'; }
   skip() {
-    for (const step of this.steps) if (step.completes) this.seen.add(step.completes);
+    for (const step of this.steps) for (const id of completionIds(step)) this.seen.add(id);
     this.index = this.steps.length; this.save(this.seen);
   }
   clear() { this.seen.clear(); this.steps = []; this.index = 0; this.save(this.seen); }
   private advance() {
-    const completed = this.current?.completes;
-    if (completed) { this.seen.add(completed); this.save(this.seen); }
+    const completed=this.current?completionIds(this.current):[];
+    if(completed.length){for(const id of completed)this.seen.add(id);this.save(this.seen);}
     this.index++;
   }
 }
+
+function completionIds(step:TutorialStep):string[]{return Array.isArray(step.completes)?step.completes:step.completes?[step.completes]:[];}

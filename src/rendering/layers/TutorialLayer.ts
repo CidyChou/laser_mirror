@@ -11,7 +11,7 @@ const DIM_TOP = Math.max(STAGE_TOP - 10, UI_RECTS.settings.y + UI_RECTS.settings
 /** A single spotlight layer. Geometry is rebuilt only when a step or layout changes. */
 export class TutorialLayer extends Container {
   readonly nextButton = new Button(174, 60, '继续', 'primary');
-  readonly skipButton = new Button(128, 48, '跳过引导', 'secondary');
+  readonly skipButton = new Button(128, 48, '跳过', 'secondary');
   private readonly dim = new Graphics();
   private readonly outlines = new Graphics();
   private readonly target = new Container();
@@ -19,7 +19,7 @@ export class TutorialLayer extends Container {
   private readonly chrome = new Graphics();
   private readonly progress = new Text({ text: '', style: uiText({ fontSize: 18, fill: Theme.inkSoft }) });
   private readonly titleText = new Text({ text: '', style: uiText({ fontSize: 30, fill: Theme.ink }) });
-  private readonly body = new Text({ text: '', style: uiText({ fontSize: 26, lineHeight: 38, fill: Theme.inkSoft, wordWrap: true, breakWords: true, wordWrapWidth: 568 }) });
+  private readonly body = new Text({ text: '', style: uiText({ fontSize: 26, lineHeight: 36, fill: Theme.inkSoft, wordWrap: true, breakWords: true, wordWrapWidth: 568 }) });
   private readonly instruction = new Text({ text: '', style: uiText({ fontSize: 20, fill: Theme.inkSoft }) });
   private readonly finger = new Sprite(Texture.EMPTY);
   private readonly fallback = new Graphics();
@@ -113,7 +113,7 @@ export class TutorialLayer extends Container {
       this.finger.position.set(this.fingerX, this.fingerY);
       this.fallback.position.copyFrom(this.finger.position);
     }
-    this.progress.text = `玩法引导  ${this.count.current} / ${this.count.total}`;
+    this.progress.text = this.count.total===1?'玩法提示':`玩法提示  ${this.count.current} / ${this.count.total}`;
     this.titleText.text = step.title;
     this.body.text = step.body;
     // Search both position and width. A narrower card can sit between edge ports on dense boards.
@@ -123,7 +123,7 @@ export class TutorialLayer extends Container {
     let y = dimTop + 8, width = 624, best = Infinity;
     for (const candidateWidth of [624, 560, 496]) {
       this.body.style.wordWrapWidth = candidateWidth - 56;
-      const height = 220 + this.body.height, x = (DESIGN_WIDTH - candidateWidth) / 2;
+      const height = 202 + this.body.height, x = (DESIGN_WIDTH - candidateWidth) / 2;
       for (let candidate = dimTop + 8; candidate <= DESIGN_HEIGHT - 24 - height; candidate += 8) {
         const overlap = obstacles.reduce((sum, rect) => sum
           + Math.max(0, Math.min(candidate + height + 16, rect.bottom) - Math.max(candidate - 16, rect.top))
@@ -134,7 +134,7 @@ export class TutorialLayer extends Container {
       }
     }
     this.body.style.wordWrapWidth = width - 56;
-    const height = 220 + this.body.height, x = (DESIGN_WIDTH - width) / 2;
+    const height = 202 + this.body.height, x = (DESIGN_WIDTH - width) / 2;
     this.card.position.set(x, y);
     this.card.hitArea = new Rectangle(0, 0, width, height);
     this.chrome.clear().roundRect(0, 6, width, height, 26).fill({ color: Theme.shadow, alpha: .3 })
@@ -147,7 +147,7 @@ export class TutorialLayer extends Container {
     this.nextButton.position.set(width - 202, height - 80);
     this.nextButton.setText(step.button ?? (this.count.current === this.count.total ? '知道了' : '继续'));
     this.instruction.visible = actionable;
-    this.instruction.text = step.action === 'fire' ? '点击下方「发射」' : '点击手指所指的位置';
+    this.instruction.text = step.action === 'fire' ? '点击「发射」' : '点按高亮镜面';
     this.instruction.position.set(28, height - 55);
   }
 

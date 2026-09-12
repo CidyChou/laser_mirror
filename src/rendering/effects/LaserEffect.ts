@@ -400,9 +400,11 @@ export class LaserEffect extends Container{
     for(const visual of this.fallbackRuns){
       const span=Math.max(.001,visual.run.endDist-visual.run.startDist);
       const t=Math.min(1,Math.max(0,(dist-visual.run.startDist)/span));
-      visual.root.visible=t>.001;
-      visual.root.alpha=smoothstep(this.tailDistance,this.tailDistance+this.tailFade,visual.run.endDist);
-      visual.root.scale.set(t,breathe);
+      const from=Math.max(0,Math.min(t,(this.tailDistance-visual.run.startDist)/span));
+      visual.root.visible=t-from>.001;
+      visual.root.position.set(visual.run.x1+(visual.run.x2-visual.run.x1)*from,visual.run.y1+(visual.run.y2-visual.run.y1)*from);
+      visual.root.alpha=smoothstep(this.tailDistance,this.tailDistance+this.tailFade,Math.min(dist,visual.run.endDist));
+      visual.root.scale.set(t-from,breathe);
       const breathPhase=.5+.5*Math.sin(now*.00315-visual.run.startDist*.012);
       visual.halo.alpha=.91+breathPhase*.09;
     }
@@ -422,6 +424,7 @@ export class LaserEffect extends Container{
       for(let i=0;i<count;i++){
         const spacing=240,offset=((now*.19+48+i*120-visual.run.startDist)%spacing+spacing)%spacing;
         for(let path=offset;path<visible*span&&used<64;path+=spacing){
+          if(visual.run.startDist+path<this.tailDistance+this.tailFade)continue;
           const t=path/span,s=this.cellScale*visual.run.widthScale;
           const fade=smoothstep(0,22*s,Math.min(t,visible-t)*visual.length);
           if(fade<.01)continue;
@@ -572,8 +575,11 @@ export class LaserEffect extends Container{
     else this.chargeRoot.visible=false;
 
     const dist=this.smoothDistance(state,now);
-    this.tailFade=state.timeSkill?computeGeometry(state.level).cell:1;
-    this.tailDistance=state.timeSkill?dist-this.tailFade*6:-1e9;
+    const life=state.timeSkill?.beamLife??1;
+    const tailLength=computeGeometry(state.level).cell*GameConfig.laser.challengeTailCells*life;
+    this.tailFade=state.timeSkill?Math.max(.01,Math.min(computeGeometry(state.level).cell,tailLength*.35)):1;
+    this.tailDistance=state.timeSkill?dist-tailLength:-1e9;
+    this.head.alpha=state.timeSkill?Math.min(1,life*8):1;
     if(!state.result||dist<=0){
       this.beamRoot.visible=false;
       if(this.jointSignature){this.joints.clear();this.jointSignature='';}

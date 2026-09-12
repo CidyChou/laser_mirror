@@ -6,6 +6,7 @@ import handcrafted from '../src/levels/handcrafted.json';
 import { GameSession } from '../src/gameplay/GameSession';
 import type { LevelDefinition } from '../src/gameplay/types';
 import { inspectLevel, layoutSimilarity, valueOf } from './level-quality';
+import { opticalRevisions } from './optical-recipes';
 import { verifyTimeBoss } from './verify-time-bosses';
 
 const levels = levelsRaw as LevelDefinition[];
@@ -21,6 +22,11 @@ const report = levels.map((level, index) => {
   const check = (condition: boolean, message: string) => { if (!condition) errors.push(`#${number}: ${message}`); };
   check(level.rows <= 8 && level.cols <= 8, 'board exceeds 8 × 8');
   check(!!best && !metrics.startsSolved, 'no solution or already solved start');
+  if (opticalRevisions.includes(number)) {
+    check(metrics.mechanics.includes('combiner'), 'optical revision lost its collector');
+    check(!metrics.bypassableMechanics.length, 'new collector can be bypassed');
+    check((metrics.minClicks??0)>=(number<31?4:5), 'optical revision is too easy');
+  }
   if (number >= 101) {
     check(metrics.live >= 8, 'fewer than 8 live controls');
     check((metrics.minClicks ?? 0) >= 5, 'fewer than 5 clicks');
@@ -48,6 +54,11 @@ const report = levels.map((level, index) => {
   console.log(`#${number} clicks=${metrics.minClicks} live=${metrics.live} retain=${metrics.correctLive} tempting=${metrics.temptingDecoys} solutions=${metrics.solutions}`);
   return { number, ...metrics, mostSimilar };
 });
+for(let chapter=0;chapter<13;chapter++){
+  const peak=report.slice(chapter*10,chapter*10+10).some(level=>(level.minClicks??0)>=(chapter<3?4:5)&&level.live>=(chapter===0?6:7));
+  if(!peak)errors.push(`Chapter ${chapter+1}: missing difficulty peak`);
+}
+if(report.filter(level=>level.mechanics.includes('combiner')).length<50)errors.push('Campaign needs at least 50 collector levels');
 const bossReport=(bossesRaw as LevelDefinition[]).map((_,index)=>verifyTimeBoss(levels[index*10+9],(index+1)*10));
 writeFileSync('docs/level-audit-after.json', JSON.stringify(report, null, 2) + '\n');
 // Development-only review fixture; not imported by the shipped game.

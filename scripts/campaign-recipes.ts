@@ -1,8 +1,9 @@
 import type { Recipe } from './puzzle-foundry';
+import { opticalRecipes } from './optical-recipes';
 
 // Different objectives/branches/source counts are intentional; no level is a
 // rotated copy or an added entry corridor around a previous board.
-export const newRecipes:Recipe[]=[
+const originalNewRecipes:Recipe[]=[
   {number:101,name:'岔口留镜',hint:'先追两条出口，再决定哪些镜面应当保留。',sources:2,splitters:2,fixed:true},
   {number:102,name:'隔墙取钥',hint:'开门的支路藏在墙的另一边。',sources:2,splitters:2,keys:2,doors:2},
   {number:103,name:'折返航道',hint:'跃迁前后的光仍然沿同一方向行进。',sources:2,splitters:2,portals:1},
@@ -35,7 +36,7 @@ export const newRecipes:Recipe[]=[
   {number:130,name:'光路终局',hint:'取钥、聚合与晶体充能，三件事需要同时成立。',sources:4,splitters:3,combiners:1,focus:[2],keys:2,doors:1,andLock:true},
 ];
 
-export const repairRecipes:Recipe[]=[
+const originalRepairRecipes:Recipe[]=[
   {number:12,name:'照亮两边',hint:'先找公共路段，再分配两条出口。',sources:1,splitters:1,size:6,minLive:5,maxLive:7,minClicks:3},
   {number:13,name:'固定分支',hint:'固定镜提供线索，可动镜仍需要取舍。',sources:1,splitters:1,size:6,minLive:6,maxLive:8,minClicks:3,fixed:true},
   {number:32,name:'保持通电',hint:'保留供能支路，同时寻找门后的出口。',sources:1,splitters:1,size:6,minLive:5,maxLive:7,minClicks:3,keys:1,doors:1},
@@ -66,3 +67,7 @@ export const repairRecipes:Recipe[]=[
   {number:99,name:'光域迷城',hint:'跃迁、取钥和充能交织在同一片紧凑镜阵中。',sources:3,splitters:2,portals:2,focus:[2],keys:2,doors:1,andLock:true},
   {number:100,name:'终极光域',hint:'两座核心共享支路，最终还要把晶体充满。',sources:4,splitters:3,combiners:2,focus:[2]},
 ];
+
+const updated = new Map(opticalRecipes.map(recipe=>[recipe.number,recipe]));
+export const newRecipes = originalNewRecipes.map(recipe=>updated.get(recipe.number)??recipe);
+export const repairRecipes = [...originalRepairRecipes.filter(recipe=>!updated.has(recipe.number)),...opticalRecipes.filter(recipe=>recipe.number<=100)].sort((a,b)=>a.number-b.number);

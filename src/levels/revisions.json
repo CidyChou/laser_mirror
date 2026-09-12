@@ -1,4 +1,93 @@
 {
+  "10": {
+    "name": "镜阵",
+    "chapter": "光的方向",
+    "rows": 6,
+    "cols": 7,
+    "emitter": {
+      "side": "S",
+      "index": 6
+    },
+    "targets": [
+      {
+        "side": "W",
+        "index": 0
+      }
+    ],
+    "items": [
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 5,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 1,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 0
+      }
+    ],
+    "hint": "",
+    "chapterNo": 1,
+    "shots": 4
+  },
   "12": {
     "name": "照亮两边",
     "chapter": "分光实验",
@@ -211,6 +300,509 @@
         "type": "wall",
         "x": 0,
         "y": 0
+      }
+    ]
+  },
+  "18": {
+    "name": "双源汇光",
+    "chapter": "分光实验",
+    "chapterNo": 2,
+    "rows": 7,
+    "cols": 7,
+    "emitter": {
+      "side": "W",
+      "index": 1
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "N",
+        "index": 6
+      }
+    ],
+    "targets": [
+      {
+        "side": "S",
+        "index": 6
+      },
+      {
+        "side": "S",
+        "index": 0
+      }
+    ],
+    "shots": 3,
+    "hint": "先确认每座核心的不同方向输入，再沿粗光束检查输出与出口。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 4,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 6
+      },
+      {
+        "type": "combiner",
+        "x": 6,
+        "y": 0,
+        "dir": 1,
+        "need": 2
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 6
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 0
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 5
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 6
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 4,
+        "s": 0
+      }
+    ]
+  },
+  "20": {
+    "name": "汇光折返",
+    "chapter": "分光实验",
+    "chapterNo": 2,
+    "rows": 7,
+    "cols": 7,
+    "emitter": {
+      "side": "E",
+      "index": 3
+    },
+    "emitters": [
+      {
+        "side": "E",
+        "index": 3
+      },
+      {
+        "side": "S",
+        "index": 0
+      }
+    ],
+    "targets": [
+      {
+        "side": "N",
+        "index": 1
+      },
+      {
+        "side": "W",
+        "index": 6
+      }
+    ],
+    "shots": 3,
+    "hint": "先确认每座核心的不同方向输入，再沿粗光束检查输出与出口。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 0,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 6
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "combiner",
+        "x": 4,
+        "y": 3,
+        "dir": 2,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 1
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 1
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 1
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 6,
+        "s": 0,
+        "decoy": true
+      }
+    ]
+  },
+  "28": {
+    "name": "交叉汇流",
+    "chapter": "障碍区域",
+    "chapterNo": 3,
+    "rows": 7,
+    "cols": 7,
+    "emitter": {
+      "side": "S",
+      "index": 3
+    },
+    "emitters": [
+      {
+        "side": "S",
+        "index": 3
+      },
+      {
+        "side": "W",
+        "index": 3
+      }
+    ],
+    "targets": [
+      {
+        "side": "W",
+        "index": 4
+      },
+      {
+        "side": "N",
+        "index": 2
+      }
+    ],
+    "shots": 3,
+    "hint": "先确认每座核心的不同方向输入，再沿粗光束检查输出与出口。",
+    "items": [
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 4
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 6,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 4
+      },
+      {
+        "type": "splitter",
+        "x": 0,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 6,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 2
+      },
+      {
+        "type": "combiner",
+        "x": 0,
+        "y": 6,
+        "dir": 3,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 6,
+        "s": 1
+      }
+    ]
+  },
+  "30": {
+    "name": "汇光迷阵",
+    "chapter": "障碍区域",
+    "chapterNo": 3,
+    "rows": 7,
+    "cols": 7,
+    "emitter": {
+      "side": "W",
+      "index": 4
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 4
+      },
+      {
+        "side": "S",
+        "index": 3
+      }
+    ],
+    "targets": [
+      {
+        "side": "N",
+        "index": 1
+      },
+      {
+        "side": "E",
+        "index": 4
+      }
+    ],
+    "shots": 3,
+    "hint": "先确认每座核心的不同方向输入，再沿粗光束检查输出与出口。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 5,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 5
+      },
+      {
+        "type": "combiner",
+        "x": 3,
+        "y": 4,
+        "dir": 0,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 5,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 0
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 6
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 6
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 2
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 3
       }
     ]
   },
@@ -730,142 +1322,165 @@
     ]
   },
   "38": {
-    "name": "双节点认证",
+    "name": "聚能取钥",
     "chapter": "能源机关",
     "chapterNo": 4,
-    "rows": 7,
-    "cols": 7,
+    "rows": 8,
+    "cols": 8,
     "emitter": {
-      "side": "W",
-      "index": 2
+      "side": "S",
+      "index": 5
     },
     "emitters": [
       {
-        "side": "W",
-        "index": 2
+        "side": "S",
+        "index": 5
+      },
+      {
+        "side": "S",
+        "index": 7
+      },
+      {
+        "side": "S",
+        "index": 6
       }
     ],
     "targets": [
-      {
-        "side": "S",
-        "index": 3
-      },
       {
         "side": "W",
         "index": 3
       },
       {
         "side": "N",
-        "index": 2
+        "index": 6
+      },
+      {
+        "side": "W",
+        "index": 0
+      },
+      {
+        "side": "S",
+        "index": 4
       }
     ],
     "shots": 3,
-    "hint": "两条支路各有职责，不要只顾其中一枚钥匙。",
+    "hint": "聚合输入与钥匙支路都要接通，再追踪门后的粗光束。",
     "items": [
       {
-        "type": "wall",
-        "x": 3,
-        "y": 3
-      },
-      {
         "type": "mirror",
-        "x": 0,
-        "y": 1,
-        "s": 1
-      },
-      {
-        "type": "mirror",
-        "x": 3,
-        "y": 1,
-        "s": 0
-      },
-      {
-        "type": "mirror",
-        "x": 5,
+        "x": 2,
         "y": 2,
         "s": 1
       },
       {
         "type": "mirror",
-        "x": 2,
+        "x": 1,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
         "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 3,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 5,
         "s": 1,
         "decoy": true
       },
       {
         "type": "switch",
-        "x": 2,
-        "y": 2,
+        "x": 0,
+        "y": 3,
         "id": "A"
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 1
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 0
       },
       {
         "type": "mirror",
         "x": 3,
-        "y": 4,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
         "s": 1
       },
       {
         "type": "door",
         "x": 5,
-        "y": 3,
+        "y": 5,
         "id": "D1",
         "requires": [
-          "A",
-          "B"
+          "A"
         ]
       },
       {
-        "type": "mirror",
-        "x": 6,
-        "y": 4,
-        "s": 0,
-        "decoy": true
-      },
-      {
-        "type": "splitter",
-        "x": 3,
-        "y": 2,
-        "s": 1
-      },
-      {
-        "type": "wall",
-        "x": 2,
-        "y": 6
-      },
-      {
-        "type": "mirror",
-        "x": 2,
-        "y": 1,
-        "s": 0
-      },
-      {
-        "type": "mirror",
+        "type": "combiner",
         "x": 5,
         "y": 4,
-        "s": 0
-      },
-      {
-        "type": "wall",
-        "x": 0,
-        "y": 0
-      },
-      {
-        "type": "splitter",
-        "x": 0,
-        "y": 3,
-        "s": 1
-      },
-      {
-        "type": "mirror",
-        "x": 2,
-        "y": 3,
-        "s": 0
-      },
-      {
-        "type": "switch",
-        "x": 0,
-        "y": 2,
-        "id": "B"
+        "dir": 2,
+        "need": 2
       }
     ]
   },
@@ -1027,175 +1642,155 @@
     ]
   },
   "40": {
-    "name": "三相供能",
+    "name": "双钥汇核",
     "chapter": "能源机关",
     "chapterNo": 4,
     "rows": 8,
     "cols": 8,
     "emitter": {
       "side": "E",
-      "index": 4
+      "index": 5
     },
     "emitters": [
       {
         "side": "E",
-        "index": 4
-      }
-    ],
-    "targets": [
-      {
-        "side": "N",
-        "index": 2
-      },
-      {
-        "side": "S",
-        "index": 4
-      },
-      {
-        "side": "W",
         "index": 5
       },
       {
         "side": "E",
-        "index": 3
+        "index": 0
+      },
+      {
+        "side": "S",
+        "index": 6
+      }
+    ],
+    "targets": [
+      {
+        "side": "W",
+        "index": 7
+      },
+      {
+        "side": "N",
+        "index": 6
+      },
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "N",
+        "index": 7
       }
     ],
     "shots": 3,
-    "hint": "三路供能需要兼顾，只有出口亮起还不够。",
+    "hint": "聚合输入与钥匙支路都要接通，再追踪门后的粗光束。",
     "items": [
       {
-        "type": "mirror",
-        "x": 4,
-        "y": 5,
-        "s": 1
-      },
-      {
-        "type": "mirror",
-        "x": 2,
-        "y": 4,
-        "s": 0
-      },
-      {
-        "type": "mirror",
-        "x": 2,
-        "y": 5,
-        "s": 0
-      },
-      {
-        "type": "splitter",
-        "x": 2,
-        "y": 2,
-        "s": 1
-      },
-      {
-        "type": "mirror",
-        "x": 3,
-        "y": 3,
-        "s": 0
-      },
-      {
-        "type": "mirror",
-        "x": 3,
-        "y": 7,
-        "s": 1
-      },
-      {
         "type": "switch",
-        "x": 6,
+        "x": 7,
         "y": 4,
         "id": "B"
       },
       {
-        "type": "wall",
-        "x": 6,
-        "y": 1
-      },
-      {
-        "type": "mirror",
-        "x": 2,
-        "y": 6,
-        "s": 0
-      },
-      {
-        "type": "mirror",
-        "x": 0,
+        "type": "switch",
+        "x": 7,
         "y": 2,
-        "s": 0
-      },
-      {
-        "type": "wall",
-        "x": 4,
-        "y": 0
-      },
-      {
-        "type": "door",
-        "x": 2,
-        "y": 0,
-        "id": "D1",
-        "requires": [
-          "A",
-          "B",
-          "C"
-        ]
-      },
-      {
-        "type": "switch",
-        "x": 3,
-        "y": 4,
-        "id": "C"
-      },
-      {
-        "type": "wall",
-        "x": 1,
-        "y": 7
-      },
-      {
-        "type": "splitter",
-        "x": 4,
-        "y": 6,
-        "s": 1
-      },
-      {
-        "type": "wall",
-        "x": 1,
-        "y": 1
-      },
-      {
-        "type": "switch",
-        "x": 4,
-        "y": 3,
         "id": "A"
       },
       {
         "type": "splitter",
-        "x": 4,
+        "x": 7,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 2
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 6
+      },
+      {
+        "type": "mirror",
+        "x": 1,
         "y": 7,
         "s": 0
       },
       {
         "type": "mirror",
-        "x": 0,
-        "y": 4,
+        "x": 4,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 7,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "combiner",
+        "x": 4,
+        "y": 3,
+        "dir": 3,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 7,
+        "y": 5,
         "s": 0
       },
       {
         "type": "wall",
         "x": 0,
-        "y": 7
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 4,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "door",
+        "x": 2,
+        "y": 5,
+        "id": "D1",
+        "requires": [
+          "A",
+          "B"
+        ]
       },
       {
         "type": "mirror",
         "x": 6,
-        "y": 2,
-        "s": 1,
-        "decoy": true
-      },
-      {
-        "type": "mirror",
-        "x": 7,
-        "y": 2,
-        "s": 1,
-        "decoy": true
+        "y": 6,
+        "s": 1
       }
     ]
   },
@@ -1744,33 +2339,37 @@
       }
     ]
   },
-  "50": {
-    "name": "光域核心",
+  "48": {
+    "name": "跃迁汇光",
     "chapter": "空间谜题",
     "chapterNo": 5,
     "rows": 8,
     "cols": 8,
     "emitter": {
-      "side": "S",
-      "index": 0
+      "side": "N",
+      "index": 4
     },
     "emitters": [
       {
-        "side": "S",
+        "side": "N",
+        "index": 4
+      },
+      {
+        "side": "E",
         "index": 0
       },
       {
-        "side": "N",
-        "index": 4
+        "side": "W",
+        "index": 0
       }
     ],
     "targets": [
       {
-        "side": "W",
-        "index": 7
+        "side": "N",
+        "index": 0
       },
       {
-        "side": "S",
+        "side": "N",
         "index": 1
       },
       {
@@ -1778,43 +2377,59 @@
         "index": 3
       },
       {
-        "side": "W",
-        "index": 4
+        "side": "N",
+        "index": 3
       }
     ],
     "shots": 3,
-    "hint": "双重跃迁与门锁共用光路，逐个确认关键分支。",
+    "hint": "传送前后的方向保持不变，把缺少的一束光送入核心。",
     "items": [
       {
-        "type": "mirror",
-        "x": 6,
-        "y": 4,
-        "s": 1,
-        "decoy": true
-      },
-      {
-        "type": "switch",
-        "x": 1,
-        "y": 4,
-        "id": "A"
+        "type": "portal",
+        "x": 0,
+        "y": 1,
+        "pair": "P1"
       },
       {
         "type": "splitter",
+        "x": 3,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 2
+      },
+      {
+        "type": "combiner",
+        "x": 0,
+        "y": 5,
+        "dir": 1,
+        "need": 2
+      },
+      {
+        "type": "mirror",
         "x": 6,
-        "y": 2,
+        "y": 1,
         "s": 1
       },
       {
-        "type": "mirror",
+        "type": "wall",
         "x": 7,
-        "y": 3,
-        "s": 1
-      },
-      {
-        "type": "mirror",
-        "x": 7,
-        "y": 2,
-        "s": 1
+        "y": 4
       },
       {
         "type": "wall",
@@ -1822,121 +2437,227 @@
         "y": 7
       },
       {
-        "type": "portal",
-        "x": 5,
-        "y": 0,
-        "pair": "P1"
-      },
-      {
-        "type": "portal",
-        "x": 6,
-        "y": 0,
-        "pair": "P2"
-      },
-      {
-        "type": "mirror",
-        "x": 5,
-        "y": 2,
-        "s": 0
-      },
-      {
-        "type": "mirror",
-        "x": 3,
-        "y": 4,
-        "s": 0
-      },
-      {
-        "type": "portal",
-        "x": 6,
-        "y": 3,
-        "pair": "P1"
-      },
-      {
-        "type": "door",
-        "x": 1,
-        "y": 6,
-        "id": "D1",
-        "requires": [
-          "A"
-        ]
-      },
-      {
-        "type": "portal",
-        "x": 7,
-        "y": 7,
-        "pair": "P2"
-      },
-      {
-        "type": "wall",
-        "x": 2,
-        "y": 0
-      },
-      {
-        "type": "mirror",
-        "x": 4,
-        "y": 0,
-        "s": 0
-      },
-      {
-        "type": "splitter",
-        "x": 3,
-        "y": 3,
-        "s": 0
-      },
-      {
         "type": "mirror",
         "x": 1,
         "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 7,
         "s": 0,
         "decoy": true
       },
       {
         "type": "mirror",
-        "x": 0,
-        "y": 7,
-        "s": 0
+        "x": 3,
+        "y": 2,
+        "s": 0,
+        "decoy": true
       },
       {
-        "type": "door",
-        "x": 7,
-        "y": 5,
-        "id": "D2",
-        "requires": [
-          "B"
-        ]
-      },
-      {
-        "type": "mirror",
-        "x": 5,
-        "y": 3,
+        "type": "splitter",
+        "x": 4,
+        "y": 1,
         "s": 1
       },
       {
         "type": "wall",
-        "x": 2,
-        "y": 2
-      },
-      {
-        "type": "switch",
         "x": 1,
-        "y": 5,
-        "id": "B"
+        "y": 4
       },
       {
         "type": "wall",
-        "x": 6,
+        "x": 7,
+        "y": 5
+      },
+      {
+        "type": "portal",
+        "x": 4,
+        "y": 2,
+        "pair": "P1"
+      },
+      {
+        "type": "wall",
+        "x": 5,
         "y": 5
       },
       {
         "type": "mirror",
-        "x": 1,
+        "x": 6,
+        "y": 3,
+        "s": 1
+      }
+    ]
+  },
+  "50": {
+    "name": "远端聚能",
+    "chapter": "空间谜题",
+    "chapterNo": 5,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 3
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 3
+      },
+      {
+        "side": "W",
+        "index": 4
+      },
+      {
+        "side": "W",
+        "index": 6
+      }
+    ],
+    "targets": [
+      {
+        "side": "W",
+        "index": 2
+      },
+      {
+        "side": "W",
+        "index": 7
+      },
+      {
+        "side": "S",
+        "index": 4
+      },
+      {
+        "side": "E",
+        "index": 3
+      }
+    ],
+    "shots": 3,
+    "hint": "传送前后的方向保持不变，把缺少的一束光送入核心。",
+    "items": [
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 4,
         "y": 3,
         "s": 1
       },
       {
         "type": "wall",
+        "x": 7,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 7,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 0
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "mirror",
         "x": 0,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 0
+      },
+      {
+        "type": "combiner",
+        "x": 3,
+        "y": 3,
+        "dir": 0,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "portal",
+        "x": 7,
+        "y": 4,
+        "pair": "P1"
+      },
+      {
+        "type": "splitter",
+        "x": 0,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 2,
+        "pair": "P1"
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 7,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 4,
         "y": 1
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 0
       }
     ]
   },
@@ -2178,138 +2899,132 @@
     ]
   },
   "58": {
-    "name": "回廊双源",
+    "name": "双翼汇流",
     "chapter": "双源激光",
     "chapterNo": 6,
-    "rows": 7,
-    "cols": 7,
+    "rows": 8,
+    "cols": 8,
     "emitter": {
-      "side": "S",
+      "side": "E",
       "index": 1
     },
     "emitters": [
       {
-        "side": "S",
+        "side": "E",
         "index": 1
       },
       {
-        "side": "S",
-        "index": 4
+        "side": "N",
+        "index": 5
+      },
+      {
+        "side": "N",
+        "index": 6
       }
     ],
     "targets": [
       {
-        "side": "W",
-        "index": 6
+        "side": "E",
+        "index": 4
       },
       {
         "side": "N",
+        "index": 3
+      },
+      {
+        "side": "E",
         "index": 2
       },
       {
-        "side": "S",
-        "index": 2
-      },
-      {
-        "side": "S",
-        "index": 5
+        "side": "E",
+        "index": 0
       }
     ],
     "shots": 3,
-    "hint": "折回来的光不一定走错，看看它是否通往另一个出口。",
+    "hint": "先确认每座核心的不同方向输入，再沿粗光束检查输出与出口。",
     "items": [
       {
         "type": "mirror",
-        "x": 3,
-        "y": 6,
-        "s": 0
-      },
-      {
-        "type": "mirror",
-        "x": 1,
-        "y": 1,
-        "s": 0,
-        "decoy": true
+        "x": 6,
+        "y": 2,
+        "s": 1
       },
       {
         "type": "mirror",
         "x": 5,
-        "y": 1,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 6
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 0,
         "s": 1,
         "decoy": true
       },
       {
         "type": "wall",
-        "x": 4,
-        "y": 2
+        "x": 2,
+        "y": 7
       },
       {
         "type": "wall",
-        "x": 6,
-        "y": 1
-      },
-      {
-        "type": "splitter",
-        "x": 1,
-        "y": 5,
-        "s": 1
-      },
-      {
-        "type": "wall",
-        "x": 1,
-        "y": 2
+        "x": 0,
+        "y": 6
       },
       {
         "type": "mirror",
-        "x": 2,
-        "y": 3,
+        "x": 7,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 0,
         "s": 1
       },
       {
         "type": "mirror",
         "x": 3,
-        "y": 3,
+        "y": 1,
         "s": 1
       },
       {
-        "type": "mirror",
-        "x": 4,
-        "y": 4,
-        "s": 0
+        "type": "combiner",
+        "x": 6,
+        "y": 1,
+        "dir": 2,
+        "need": 2
       },
       {
         "type": "splitter",
-        "x": 2,
-        "y": 4,
-        "s": 1
-      },
-      {
-        "type": "mirror",
-        "x": 1,
-        "y": 6,
+        "x": 7,
+        "y": 1,
         "s": 0
       },
       {
-        "type": "mirror",
-        "x": 1,
-        "y": 4,
-        "s": 1
-      },
-      {
         "type": "wall",
-        "x": 0,
-        "y": 5
-      },
-      {
-        "type": "wall",
-        "x": 6,
-        "y": 4
-      },
-      {
-        "type": "mirror",
-        "x": 5,
-        "y": 5,
-        "s": 1
+        "x": 2,
+        "y": 6
       }
     ]
   },
@@ -2448,80 +3163,104 @@
     ]
   },
   "60": {
-    "name": "双翼终章",
+    "name": "错峰合光",
     "chapter": "双源激光",
     "chapterNo": 6,
     "rows": 8,
     "cols": 8,
     "emitter": {
-      "side": "N",
-      "index": 5
+      "side": "W",
+      "index": 2
     },
     "emitters": [
       {
-        "side": "N",
-        "index": 5
+        "side": "W",
+        "index": 2
       },
       {
         "side": "N",
-        "index": 1
+        "index": 3
+      },
+      {
+        "side": "N",
+        "index": 6
       }
     ],
     "targets": [
       {
-        "side": "S",
-        "index": 4
+        "side": "E",
+        "index": 0
       },
       {
-        "side": "E",
-        "index": 1
+        "side": "S",
+        "index": 3
       },
       {
         "side": "W",
-        "index": 4
+        "index": 7
       },
       {
         "side": "S",
-        "index": 2
+        "index": 1
       }
     ],
     "shots": 3,
-    "hint": "出口分布在不同方向，不能只按一条光路调整。",
+    "hint": "先确认每座核心的不同方向输入，再沿粗光束检查输出与出口。",
     "items": [
       {
         "type": "mirror",
-        "x": 3,
-        "y": 3,
-        "s": 0
-      },
-      {
-        "type": "mirror",
-        "x": 4,
-        "y": 7,
-        "s": 1
-      },
-      {
-        "type": "wall",
-        "x": 1,
-        "y": 3
-      },
-      {
-        "type": "mirror",
         "x": 5,
-        "y": 7,
-        "s": 0
+        "y": 3,
+        "s": 1
       },
       {
         "type": "splitter",
         "x": 1,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "combiner",
+        "x": 3,
+        "y": 3,
+        "dir": 3,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
         "y": 0,
         "s": 0
       },
       {
         "type": "mirror",
+        "x": 7,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
         "x": 1,
-        "y": 1,
-        "s": 1
+        "y": 6,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 4
       },
       {
         "type": "wall",
@@ -2529,56 +3268,38 @@
         "y": 3
       },
       {
-        "type": "mirror",
-        "x": 2,
-        "y": 0,
-        "s": 0
-      },
-      {
-        "type": "mirror",
-        "x": 6,
-        "y": 4,
-        "s": 1,
-        "decoy": true
-      },
-      {
         "type": "wall",
-        "x": 1,
-        "y": 6
-      },
-      {
-        "type": "splitter",
-        "x": 5,
-        "y": 3,
-        "s": 1
+        "x": 4,
+        "y": 7
       },
       {
         "type": "mirror",
-        "x": 4,
-        "y": 0,
+        "x": 5,
+        "y": 7,
         "s": 0,
         "decoy": true
       },
       {
         "type": "wall",
-        "x": 3,
-        "y": 2
+        "x": 7,
+        "y": 4
       },
       {
         "type": "mirror",
-        "x": 3,
+        "x": 6,
         "y": 4,
-        "s": 0
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 3,
+        "y": 7,
+        "s": 1
       },
       {
         "type": "wall",
-        "x": 7,
-        "y": 2
-      },
-      {
-        "type": "wall",
-        "x": 4,
-        "y": 2
+        "x": 6,
+        "y": 5
       }
     ]
   },
@@ -2840,6 +3561,313 @@
         "x": 6,
         "y": 5,
         "s": 0
+      }
+    ]
+  },
+  "68": {
+    "name": "晶核协作",
+    "chapter": "双束终点",
+    "chapterNo": 7,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 0
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 0
+      },
+      {
+        "side": "N",
+        "index": 4
+      },
+      {
+        "side": "S",
+        "index": 7
+      },
+      {
+        "side": "S",
+        "index": 4
+      }
+    ],
+    "targets": [
+      {
+        "side": "W",
+        "index": 7
+      },
+      {
+        "side": "E",
+        "index": 1
+      },
+      {
+        "side": "E",
+        "index": 5
+      }
+    ],
+    "shots": 3,
+    "hint": "聚合核心负责出光，晶体负责充能，两边都需要不同方向的输入。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 7
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 6
+      },
+      {
+        "type": "splitter",
+        "x": 0,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 5
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 4
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 4
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "combiner",
+        "x": 2,
+        "y": 0,
+        "dir": 0,
+        "need": 2
+      },
+      {
+        "type": "splitter",
+        "x": 0,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "focus",
+        "x": 4,
+        "y": 0,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 4,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 7,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 7,
+        "s": 1
+      }
+    ]
+  },
+  "70": {
+    "name": "双晶汇核",
+    "chapter": "双束终点",
+    "chapterNo": 7,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 4
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 4
+      },
+      {
+        "side": "N",
+        "index": 0
+      },
+      {
+        "side": "E",
+        "index": 1
+      },
+      {
+        "side": "N",
+        "index": 2
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 2
+      },
+      {
+        "side": "E",
+        "index": 0
+      },
+      {
+        "side": "E",
+        "index": 4
+      }
+    ],
+    "shots": 3,
+    "hint": "聚合核心负责出光，晶体负责充能，两边都需要不同方向的输入。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 2,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 7
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 2
+      },
+      {
+        "type": "combiner",
+        "x": 2,
+        "y": 0,
+        "dir": 1,
+        "need": 2
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 6
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 5,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 1
+      },
+      {
+        "type": "splitter",
+        "x": 0,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 0,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "focus",
+        "x": 0,
+        "y": 4,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 4,
+        "s": 1
       }
     ]
   },
@@ -3246,29 +4274,19 @@
       }
     ]
   },
-  "92": {
-    "name": "双门互锁",
-    "chapter": "终极光域",
-    "chapterNo": 10,
+  "82": {
+    "name": "双核接力",
+    "chapter": "交错机关",
+    "chapterNo": 9,
     "rows": 8,
     "cols": 8,
     "emitter": {
-      "side": "W",
-      "index": 3
+      "side": "S",
+      "index": 2
     },
     "emitters": [
       {
-        "side": "W",
-        "index": 3
-      },
-      {
-        "side": "W",
-        "index": 5
-      }
-    ],
-    "targets": [
-      {
-        "side": "N",
+        "side": "S",
         "index": 2
       },
       {
@@ -3276,34 +4294,73 @@
         "index": 5
       },
       {
-        "side": "N",
-        "index": 6
+        "side": "E",
+        "index": 2
       },
       {
         "side": "S",
+        "index": 5
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 0
+      },
+      {
+        "side": "N",
         "index": 2
+      },
+      {
+        "side": "E",
+        "index": 1
+      },
+      {
+        "side": "N",
+        "index": 6
       }
     ],
     "shots": 3,
-    "hint": "两条供能路线控制不同的门，先确认字母配对。",
+    "hint": "第一座核心输出的粗光束，是第二座核心缺少的一路输入。",
     "items": [
       {
         "type": "mirror",
-        "x": 6,
-        "y": 6,
-        "s": 1
-      },
-      {
-        "type": "mirror",
-        "x": 5,
-        "y": 4,
+        "x": 3,
+        "y": 0,
         "s": 0,
         "decoy": true
       },
       {
-        "type": "wall",
-        "x": 5,
-        "y": 3
+        "type": "combiner",
+        "x": 2,
+        "y": 5,
+        "dir": 3,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "combiner",
+        "x": 2,
+        "y": 2,
+        "dir": 2,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 0,
+        "s": 0
       },
       {
         "type": "wall",
@@ -3312,20 +4369,128 @@
       },
       {
         "type": "mirror",
-        "x": 4,
-        "y": 4,
-        "s": 1
+        "x": 6,
+        "y": 7,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 7
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 1
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 7
       },
       {
         "type": "mirror",
         "x": 7,
         "y": 3,
-        "s": 0,
-        "decoy": true
+        "s": 0
       },
       {
         "type": "mirror",
-        "x": 1,
+        "x": 5,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 3
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 2,
+        "s": 0
+      }
+    ]
+  },
+  "88": {
+    "name": "聚光暗巷",
+    "chapter": "交错机关",
+    "chapterNo": 9,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "S",
+      "index": 5
+    },
+    "emitters": [
+      {
+        "side": "S",
+        "index": 5
+      },
+      {
+        "side": "E",
+        "index": 3
+      },
+      {
+        "side": "E",
+        "index": 7
+      }
+    ],
+    "targets": [
+      {
+        "side": "W",
+        "index": 5
+      },
+      {
+        "side": "W",
+        "index": 2
+      },
+      {
+        "side": "S",
+        "index": 4
+      },
+      {
+        "side": "E",
+        "index": 6
+      }
+    ],
+    "shots": 3,
+    "hint": "先确认每座核心的不同方向输入，再沿粗光束检查输出与出口。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 6,
         "y": 6,
         "s": 0
       },
@@ -3335,97 +4500,262 @@
         "y": 4
       },
       {
+        "type": "wall",
+        "x": 0,
+        "y": 0
+      },
+      {
         "type": "mirror",
-        "x": 6,
+        "x": 4,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 3,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 1
+      },
+      {
+        "type": "combiner",
+        "x": 4,
+        "y": 7,
+        "dir": 0,
+        "need": 2
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
         "y": 5,
         "s": 1
       },
       {
         "type": "splitter",
+        "x": 6,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 1,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 7,
+        "s": 0
+      }
+    ]
+  },
+  "92": {
+    "name": "汇光联锁",
+    "chapter": "终极光域",
+    "chapterNo": 10,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "N",
+      "index": 2
+    },
+    "emitters": [
+      {
+        "side": "N",
+        "index": 2
+      },
+      {
+        "side": "E",
+        "index": 7
+      },
+      {
+        "side": "S",
+        "index": 5
+      }
+    ],
+    "targets": [
+      {
+        "side": "W",
+        "index": 7
+      },
+      {
+        "side": "W",
+        "index": 2
+      },
+      {
+        "side": "S",
+        "index": 1
+      },
+      {
+        "side": "N",
+        "index": 0
+      }
+    ],
+    "shots": 3,
+    "hint": "聚合输入与钥匙支路都要接通，再追踪门后的粗光束。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 1
+      },
+      {
+        "type": "combiner",
         "x": 1,
         "y": 5,
+        "dir": 2,
+        "need": 2
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 2
+      },
+      {
+        "type": "splitter",
+        "x": 2,
+        "y": 1,
         "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 2
       },
       {
         "type": "mirror",
         "x": 2,
         "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 5,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 4,
         "s": 0
       },
       {
         "type": "wall",
-        "x": 1,
-        "y": 7
+        "x": 7,
+        "y": 1
       },
       {
         "type": "door",
-        "x": 4,
-        "y": 0,
+        "x": 5,
+        "y": 7,
         "id": "D1",
         "requires": [
-          "A"
-        ]
-      },
-      {
-        "type": "wall",
-        "x": 0,
-        "y": 7
-      },
-      {
-        "type": "wall",
-        "x": 0,
-        "y": 6
-      },
-      {
-        "type": "door",
-        "x": 3,
-        "y": 4,
-        "id": "D2",
-        "requires": [
+          "A",
           "B"
         ]
       },
       {
-        "type": "switch",
-        "x": 3,
-        "y": 5,
-        "id": "B"
-      },
-      {
-        "type": "mirror",
-        "x": 4,
-        "y": 5,
-        "s": 0
-      },
-      {
-        "type": "mirror",
-        "x": 2,
-        "y": 3,
-        "s": 0
-      },
-      {
         "type": "mirror",
         "x": 6,
-        "y": 0,
-        "s": 1
+        "y": 5,
+        "s": 0,
+        "decoy": true
       },
       {
-        "type": "splitter",
-        "x": 2,
-        "y": 0,
-        "s": 1
+        "type": "mirror",
+        "x": 5,
+        "y": 4,
+        "s": 0
       },
       {
         "type": "switch",
         "x": 1,
-        "y": 3,
+        "y": 1,
         "id": "A"
+      },
+      {
+        "type": "switch",
+        "x": 7,
+        "y": 7,
+        "id": "B"
       },
       {
         "type": "mirror",
         "x": 2,
-        "y": 6,
+        "y": 3,
         "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 6
       }
     ]
   },
@@ -3749,7 +5079,7 @@
     ]
   },
   "99": {
-    "name": "光域迷城",
+    "name": "光域合奏",
     "chapter": "终极光域",
     "chapterNo": 10,
     "rows": 8,
@@ -3764,154 +5094,79 @@
         "index": 4
       },
       {
-        "side": "N",
-        "index": 2
+        "side": "S",
+        "index": 1
       },
       {
         "side": "E",
-        "index": 1
+        "index": 2
       }
     ],
     "targets": [
-      {
-        "side": "N",
-        "index": 3
-      },
       {
         "side": "E",
         "index": 6
       },
       {
+        "side": "N",
+        "index": 6
+      },
+      {
+        "side": "W",
+        "index": 4
+      },
+      {
         "side": "S",
-        "index": 7
+        "index": 5
       }
     ],
     "shots": 3,
-    "hint": "跃迁、取钥和充能交织在同一片紧凑镜阵中。",
+    "hint": "聚合输入与钥匙支路都要接通，再追踪门后的粗光束。",
     "items": [
       {
-        "type": "portal",
-        "x": 4,
-        "y": 3,
-        "pair": "P2"
-      },
-      {
-        "type": "splitter",
-        "x": 7,
+        "type": "mirror",
+        "x": 6,
         "y": 6,
         "s": 0
       },
       {
-        "type": "portal",
-        "x": 1,
-        "y": 5,
-        "pair": "P1"
+        "type": "switch",
+        "x": 6,
+        "y": 3,
+        "id": "A"
       },
       {
-        "type": "focus",
-        "x": 4,
-        "y": 6,
-        "need": 2
+        "type": "splitter",
+        "x": 5,
+        "y": 7,
+        "s": 1
       },
       {
         "type": "wall",
-        "x": 7,
+        "x": 0,
         "y": 0
       },
       {
         "type": "mirror",
-        "x": 2,
-        "y": 5,
-        "s": 1
-      },
-      {
-        "type": "wall",
-        "x": 3,
-        "y": 7
-      },
-      {
-        "type": "portal",
-        "x": 5,
-        "y": 6,
-        "pair": "P1"
-      },
-      {
-        "type": "mirror",
-        "x": 1,
-        "y": 6,
-        "s": 1
-      },
-      {
-        "type": "mirror",
         "x": 6,
-        "y": 2,
+        "y": 4,
         "s": 0
-      },
-      {
-        "type": "mirror",
-        "x": 0,
-        "y": 5,
-        "s": 1
-      },
-      {
-        "type": "portal",
-        "x": 6,
-        "y": 0,
-        "pair": "P2"
-      },
-      {
-        "type": "mirror",
-        "x": 3,
-        "y": 2,
-        "s": 0
-      },
-      {
-        "type": "mirror",
-        "x": 2,
-        "y": 2,
-        "s": 0
-      },
-      {
-        "type": "door",
-        "x": 7,
-        "y": 7,
-        "id": "D1",
-        "requires": [
-          "A",
-          "B"
-        ]
-      },
-      {
-        "type": "mirror",
-        "x": 0,
-        "y": 6,
-        "s": 1,
-        "decoy": true
-      },
-      {
-        "type": "switch",
-        "x": 3,
-        "y": 6,
-        "id": "B"
       },
       {
         "type": "splitter",
-        "x": 2,
-        "y": 6,
-        "s": 1
-      },
-      {
-        "type": "switch",
-        "x": 6,
-        "y": 6,
-        "id": "A"
-      },
-      {
-        "type": "mirror",
         "x": 7,
-        "y": 4,
-        "s": 1,
-        "decoy": true
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 1
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 0
       },
       {
         "type": "wall",
@@ -3920,21 +5175,79 @@
       },
       {
         "type": "mirror",
+        "x": 0,
+        "y": 3,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "door",
+        "x": 6,
+        "y": 0,
+        "id": "D1",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 4
+      },
+      {
+        "type": "mirror",
         "x": 3,
+        "y": 4,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "combiner",
+        "x": 1,
+        "y": 7,
+        "dir": 2,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 4
+      },
+      {
+        "type": "mirror",
+        "x": 4,
         "y": 4,
         "s": 1
       },
       {
         "type": "mirror",
-        "x": 5,
-        "y": 4,
-        "s": 0
-      },
-      {
-        "type": "mirror",
         "x": 0,
-        "y": 1,
-        "s": 0
+        "y": 4,
+        "s": 1
       }
     ]
   },

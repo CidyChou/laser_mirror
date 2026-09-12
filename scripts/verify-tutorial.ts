@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { GameSession } from '../src/gameplay/GameSession';
-import { TutorialDirector, isChallengeLevel, tutorialLessonIds, tutorialSolution } from '../src/gameplay/tutorial';
+import { TutorialDirector, isChallengeLevel, tutorialLessonIds, tutorialSolution, MAX_TUTORIAL_STEPS } from '../src/gameplay/tutorial';
 import { computeGeometry } from '../src/gameplay/geometry';
 import { LaserSimulator } from '../src/gameplay/LaserSimulator';
 import { itemKey } from '../src/gameplay/levelAccess';
@@ -26,6 +26,8 @@ function completeGuide() {
   while (guide.current) {
     assert(++count < 100, 'Every guide must have a reachable end');
     const step = guide.current;
+    assert(guide.progress.total<=MAX_TUTORIAL_STEPS,'Introduction must stay short');
+    assert(step.body.length<=50,'Tutorial copy must fit a short card');
     if (step.action === 'next') guide.next();
     else if (step.action === 'rotate') {
       const a = step.anchors[0]; assert(a.kind === 'cell');
@@ -42,7 +44,7 @@ function completeGuide() {
     }
   }
 }
-guide.enter(session.state); completeGuide();
+guide.enter(session.state); assert.equal(guide.progress.total,3); completeGuide();
 assert(seen.has('basics') && seen.has('mirror'));
 session.reset(); guide.enter(session.state); assert.equal(guide.current, null);
 
@@ -84,13 +86,13 @@ for (let i = 1; i < levels.length; i++) {
   session.load(i); guide.enter(session.state); completeGuide();
   for (const id of tutorialLessonIds(levels[i])) assert(seen.has(id), `Missing ${id} at ${i + 1}`);
 }
-assert(seen.has('fixed-mirror') && seen.has('fixed-splitter') && seen.has('wall'));
+assert(seen.has('fixed-mirror') && seen.has('fixed-splitter') && !seen.has('wall'));
 assert(seen.has('portal') && seen.has('switch') && seen.has('door') && seen.has('multi-lock'));
 assert(seen.has('focus-2') && seen.has('combiner-2'));
 assert(writes > 0);
 session.load(40); guide.enter(session.state, true); assert(guide.current); guide.skip();
 assert.equal(guide.current, null); assert(guide.allowsFire() && guide.allowsRotate(0, 0));
-guide.clear(); guide.enter(session.state); assert.equal(guide.current?.id, 'source');
+guide.clear(); guide.enter(session.state); assert.equal((guide as TutorialDirector).current?.id, 'source');
 
 // Paired anchors are matched by ID, not by item order or proximity. Counts teach new variants.
 const portals = new TutorialDirector(new Set(['basics', 'mirror']), () => {});
@@ -125,4 +127,24 @@ for (const number of [11, 31, 41, 61, 71]) {
   assert(trace.hits.every(Boolean));
   assert(answer.every(i => i.type !== 'focus' || trace.focusOn[itemKey(i.x, i.y)]));
 }
-console.log('Tutorial verified: guided victory, all 130 boards, adaptive positions, solved/unsolvable/large fallbacks, new mechanisms/counts, persistence/replay, GM challenge round-trip and simplified introductions.');
+
+
+// Mechanic cards no longer force an extra practice tap after explaining the rule.
+for(const number of [11,31,41,61,71]){
+  const director=new TutorialDirector(new Set(['basics','mirror']),()=>{});
+  director.enter(new GameSession([levels[number-1]]).state);
+  assert(director.progress.total<=MAX_TUTORIAL_STEPS,`#${number}: mechanic tutorial too long`);
+  while(director.current){assert.equal(director.current.action,'next');director.next();}
+}
+const compact=new TutorialDirector(new Set(['basics','mirror']),()=>{});
+const complex=new GameSession([levels[129]]).state;
+compact.enter(complex);assert(compact.progress.total<=3);
+const learned=new Set<string>();const deferred=new TutorialDirector(learned,()=>{});
+deferred.enter(complex);deferred.skip();
+assert(learned.has('basics'));assert(!learned.has('multi-source'),'Unshown cards must remain unseen');
+deferred.enter(complex);assert(deferred.current,'Deferred mechanics remain teachable');
+const fixedKnown=new TutorialDirector(new Set(['basics','mirror','fixed-splitter']),()=>{});
+fixedKnown.enter(new GameSession([{...levels[0],items:[{type:'mirror',x:1,y:1,s:0,fixed:true}]}]).state);
+assert.equal(fixedKnown.current,null,'Old fixed-optic lesson should not repeat');
+
+console.log('Tutorial verified: 3-step first level, short copy, merged lessons, guided victory, all 130 boards, adaptive positions, solved/unsolvable/large fallbacks, new mechanisms/counts, persistence/replay, GM challenge round-trip and simplified introductions.');
