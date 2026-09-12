@@ -2,7 +2,8 @@ import { Assets, DOMAdapter, ImageSource, Texture } from 'pixi.js';
 import type { PlatformKind } from '@/platform/IPlatform';
 
 const FILES = {
-  background: 'ui/space-background.webp',
+  // Local WebP decodes in WeChat DevTools but fails on many real devices.
+  background: 'ui/space-background.jpg',
   settings: 'ui/settings-gear.png',
   crown: 'ui/victory-crown.png',
   coin: 'ui/victory-coin.png',
@@ -22,8 +23,9 @@ export async function loadUiAssets(kind: PlatformKind): Promise<void> {
     await Promise.all((Object.entries(FILES) as [UiAssetKey, string][]).map(async ([key, file]) => {
       try {
         nativeTextures.set(key, await loadNativeTexture(file));
-      } catch {
+      } catch (error) {
         nativeTextures.delete(key);
+        console.warn(`[ui] failed to load ${file}`, error);
       }
     }));
     return;

@@ -46,6 +46,19 @@ function formatMb(bytes) {
   return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 }
 
+async function assertNoLocalWebp(directory) {
+  const entries = await readdir(directory, { withFileTypes: true });
+  for (const entry of entries) {
+    const fullPath = join(directory, entry.name);
+    if (entry.isDirectory()) await assertNoLocalWebp(fullPath);
+    else if (entry.name.toLowerCase().endsWith('.webp')) {
+      throw new Error(
+        `WeChat package contains local WebP (${fullPath}). DevTools can decode it, but many real devices cannot. Use PNG or JPEG.`,
+      );
+    }
+  }
+}
+
 const configBackup = {};
 for (const name of configNames) {
   const path = join(outputDirectory, name);
@@ -75,7 +88,7 @@ const requiredFiles = [
   'audio/level-victory.mp3',
   'audio/game-over.mp3',
   'ui/settings-gear.png',
-  'ui/space-background.webp',
+  'ui/space-background.jpg',
   'ui/victory-crown.png',
   'ui/victory-coin.png',
   'ui/tutorial/finger.png',
@@ -87,6 +100,8 @@ for (const relativePath of requiredFiles) {
     throw new Error(`WeChat package is missing required file: ${resolve(filePath)}`);
   }
 }
+
+await assertNoLocalWebp(join(outputDirectory, 'ui'));
 
 const [packageBytes, audioBytes, uiBytes, scriptBytes] = await Promise.all([
   directorySize(outputDirectory),
