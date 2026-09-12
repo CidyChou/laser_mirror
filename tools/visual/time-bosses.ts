@@ -11,7 +11,7 @@ const params=new URLSearchParams(location.search),number=Number(params.get('leve
 const theme=(params.get('theme')||'void') as ThemeId,renderer=params.get('renderer')||'gpu';
 for(const id of ['level','theme','renderer']){
   const select=document.querySelector<HTMLSelectElement>(`#${id}`)!;
-  if(id==='level')for(let n=10;n<=130;n+=10)select.add(new Option(`第${n}关`,String(n)));
+  if(id==='level')for(let n=10;n<=campaign.length;n+=10)select.add(new Option(`第${n/10}章挑战`,String(n)));
   select.value=id==='level'?String(number):id==='theme'?theme:renderer;
   select.onchange=()=>{params.set(id,select.value);location.search=params.toString();};
 }

@@ -141,12 +141,12 @@ export class LevelSelectLayer extends Container {
     this.unlockAllHandler = handler;
   }
 
-  show(currentIndex: number, completed: ReadonlySet<number>, allLevelsUnlocked = false) {
+  show(currentIndex: number, completed: ReadonlySet<number>, allLevelsUnlocked = false, unlockedThrough = -1) {
     this.visible = true;
     this.stopDrag();
     this.coasting = false;
     this.velocity = 0;
-    this.sync(currentIndex, completed, allLevelsUnlocked);
+    this.sync(currentIndex, completed, allLevelsUnlocked, unlockedThrough);
     this.scrollToLevel(firstIncompleteLevel(this.levels.length, completed));
   }
 
@@ -194,7 +194,7 @@ export class LevelSelectLayer extends Container {
     }
   }
 
-  sync(currentIndex: number, completed: ReadonlySet<number>, allLevelsUnlocked = false) {
+  sync(currentIndex: number, completed: ReadonlySet<number>, allLevelsUnlocked = false, unlockedThrough = -1) {
     const total = this.levels.length;
     const done = [...completed].filter((index) => index >= 0 && index < total).length;
     const normalTotal = this.levels.filter((level) => !isBossStage(level)).length;
@@ -209,7 +209,7 @@ export class LevelSelectLayer extends Container {
     const fillW = total > 0 ? 480 * done / total : 0;
     this.progressFill.clear();
     if (fillW > 0) this.progressFill.roundRect(120, 211, Math.max(10, fillW), 10, 5).fill(Theme.accent);
-    for (const card of this.chapterCards) card.sync(currentIndex, completed, total, allLevelsUnlocked);
+    for (const card of this.chapterCards) card.sync(currentIndex, completed, total, allLevelsUnlocked, unlockedThrough);
   }
 
   private handleTitleTap() {
@@ -394,6 +394,7 @@ class ChapterCard extends Container {
     completed: ReadonlySet<number>,
     totalLevels: number,
     allLevelsUnlocked = false,
+    unlockedThrough = -1,
   ) {
     const normalTiles = this.tiles.filter((tile) => !tile.boss);
     const bossTile = this.tiles.find((tile) => tile.boss);
@@ -404,7 +405,7 @@ class ChapterCard extends Container {
     for (const tile of this.tiles) {
       tile.sync({
         completed: completed.has(tile.levelIndex),
-        unlocked: isLevelUnlocked(tile.levelIndex, totalLevels, completed, allLevelsUnlocked),
+        unlocked: isLevelUnlocked(tile.levelIndex, totalLevels, completed, allLevelsUnlocked, unlockedThrough),
         current: tile.levelIndex === currentIndex,
       });
     }

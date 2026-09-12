@@ -7,6 +7,7 @@ import type { LevelDefinition } from '../src/gameplay/types';
 // Reviewed replacements are persisted so retries and future generation agree.
 const read = (name:string) => JSON.parse(readFileSync(`src/levels/${name}.json`, 'utf8'));
 const levels = read('levels') as LevelDefinition[];
+if(levels.length!==130)throw new Error('Historical 130-level revision script. Edit the expanded campaign in GM instead.');
 const revisions = read('revisions') as Record<string,LevelDefinition>;
 const saved = process.argv.includes('--resume') ? JSON.parse(readFileSync('src/levels/optical-revisions.json','utf8')) as Record<string,LevelDefinition> : {};
 for (const recipe of opticalRecipes) {

@@ -10,8 +10,9 @@ import { tutorialLessonIds } from '@/gameplay/tutorial';
 // Exercise the real application with isolated in-memory progress. Never touches the player's save.
 const params = new URLSearchParams(location.search);
 const levels = new LevelRepository().levels;
-const requestedStage = params.get('stage') ?? `level:${params.get('level') ?? 1}`;
-const index = Math.max(0, levels.findIndex(level => stageId(level) === requestedStage));
+const requestedStage = params.get('stage');
+const number = Number(params.get('level') ?? 1);
+const index = Math.max(0, levels.findIndex(level => requestedStage ? stageId(level) === requestedStage : level.campaign?.kind === 'normal' && level.campaign.displayNumber === number));
 const storage = new Map<string, string>([
   ['laser-mirror-completed-stages-v2', JSON.stringify(levels.slice(0, index).map(stageId))],
   ['laser-mirror-current-stage-v2', stageId(levels[index])],

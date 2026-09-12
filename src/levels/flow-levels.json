@@ -1,0 +1,10588 @@
+[
+  {
+    "name": "晴湾·汇流",
+    "chapter": "光路博弈",
+    "chapterNo": 101,
+    "rows": 7,
+    "cols": 7,
+    "emitter": {
+      "side": "E",
+      "index": 5
+    },
+    "emitters": [
+      {
+        "side": "E",
+        "index": 5
+      },
+      {
+        "side": "S",
+        "index": 4
+      },
+      {
+        "side": "N",
+        "index": 1
+      }
+    ],
+    "targets": [
+      {
+        "side": "N",
+        "index": 0
+      },
+      {
+        "side": "E",
+        "index": 4
+      },
+      {
+        "side": "E",
+        "index": 6
+      },
+      {
+        "side": "W",
+        "index": 1
+      }
+    ],
+    "shots": 3,
+    "hint": "先接齐核心的两路输入，再沿粗光束安排出口。",
+    "items": [
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 0,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "combiner",
+        "x": 5,
+        "y": 4,
+        "dir": 0,
+        "need": 2
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 0
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 0,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 2,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 5
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 4,
+        "s": 1
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:1"
+  },
+  {
+    "name": "晴湾·流光",
+    "chapter": "光路博弈",
+    "chapterNo": 101,
+    "rows": 7,
+    "cols": 7,
+    "emitter": {
+      "side": "E",
+      "index": 5
+    },
+    "emitters": [
+      {
+        "side": "E",
+        "index": 5
+      },
+      {
+        "side": "E",
+        "index": 0
+      }
+    ],
+    "targets": [
+      {
+        "side": "N",
+        "index": 1
+      },
+      {
+        "side": "N",
+        "index": 2
+      },
+      {
+        "side": "W",
+        "index": 3
+      },
+      {
+        "side": "S",
+        "index": 1
+      }
+    ],
+    "shots": 3,
+    "hint": "沿固定镜分配支路，让几个终点接连亮起。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 4,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 4,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 6
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 6,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 6
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 6
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 5
+      },
+      {
+        "type": "splitter",
+        "x": 3,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 3,
+        "y": 0,
+        "s": 1
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:2"
+  },
+  {
+    "name": "晴湾·折返",
+    "chapter": "光路博弈",
+    "chapterNo": 101,
+    "rows": 7,
+    "cols": 7,
+    "emitter": {
+      "side": "S",
+      "index": 1
+    },
+    "emitters": [
+      {
+        "side": "S",
+        "index": 1
+      },
+      {
+        "side": "W",
+        "index": 2
+      },
+      {
+        "side": "S",
+        "index": 4
+      }
+    ],
+    "targets": [
+      {
+        "side": "W",
+        "index": 4
+      },
+      {
+        "side": "S",
+        "index": 3
+      },
+      {
+        "side": "E",
+        "index": 6
+      },
+      {
+        "side": "S",
+        "index": 0
+      }
+    ],
+    "shots": 3,
+    "hint": "先接齐核心的两路输入，再沿粗光束安排出口。",
+    "items": [
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 0
+      },
+      {
+        "type": "combiner",
+        "x": 2,
+        "y": 5,
+        "dir": 0,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 0
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 0
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 1
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 5,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 4,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "splitter",
+        "x": 2,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 5
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 1
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 1,
+        "s": 1,
+        "decoy": true
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:3"
+  },
+  {
+    "name": "晴湾·交织",
+    "chapter": "光路博弈",
+    "chapterNo": 101,
+    "rows": 7,
+    "cols": 7,
+    "emitter": {
+      "side": "N",
+      "index": 3
+    },
+    "emitters": [
+      {
+        "side": "N",
+        "index": 3
+      },
+      {
+        "side": "W",
+        "index": 6
+      },
+      {
+        "side": "W",
+        "index": 1
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 1
+      },
+      {
+        "side": "S",
+        "index": 2
+      },
+      {
+        "side": "S",
+        "index": 0
+      },
+      {
+        "side": "W",
+        "index": 3
+      }
+    ],
+    "shots": 3,
+    "hint": "先接齐核心的两路输入，再沿粗光束安排出口。",
+    "items": [
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 4,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "combiner",
+        "x": 3,
+        "y": 3,
+        "dir": 1,
+        "need": 2
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 3,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 4,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 1
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:4"
+  },
+  {
+    "name": "晴湾·双翼",
+    "chapter": "光路博弈",
+    "chapterNo": 101,
+    "rows": 7,
+    "cols": 7,
+    "emitter": {
+      "side": "W",
+      "index": 2
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 2
+      },
+      {
+        "side": "S",
+        "index": 2
+      },
+      {
+        "side": "E",
+        "index": 1
+      }
+    ],
+    "targets": [
+      {
+        "side": "S",
+        "index": 1
+      },
+      {
+        "side": "N",
+        "index": 1
+      },
+      {
+        "side": "W",
+        "index": 4
+      },
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "W",
+        "index": 0
+      }
+    ],
+    "shots": 3,
+    "hint": "先接齐核心的两路输入，再沿粗光束安排出口。",
+    "items": [
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 4,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 4
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 0,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 0
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 6
+      },
+      {
+        "type": "combiner",
+        "x": 0,
+        "y": 3,
+        "dir": 2,
+        "need": 2
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 5
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 2,
+        "s": 0,
+        "fixed": true
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:5"
+  },
+  {
+    "name": "晴湾·合光",
+    "chapter": "光路博弈",
+    "chapterNo": 101,
+    "rows": 7,
+    "cols": 7,
+    "emitter": {
+      "side": "N",
+      "index": 1
+    },
+    "emitters": [
+      {
+        "side": "N",
+        "index": 1
+      },
+      {
+        "side": "S",
+        "index": 6
+      },
+      {
+        "side": "N",
+        "index": 4
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 6
+      },
+      {
+        "side": "N",
+        "index": 0
+      },
+      {
+        "side": "E",
+        "index": 2
+      },
+      {
+        "side": "E",
+        "index": 5
+      }
+    ],
+    "shots": 3,
+    "hint": "先接齐核心的两路输入，再沿粗光束安排出口。",
+    "items": [
+      {
+        "type": "splitter",
+        "x": 3,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 4,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "combiner",
+        "x": 3,
+        "y": 2,
+        "dir": 0,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 1,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 6
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 5
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 5
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 3,
+        "s": 1,
+        "fixed": true
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:6"
+  },
+  {
+    "name": "晴湾·分送",
+    "chapter": "光路博弈",
+    "chapterNo": 101,
+    "rows": 7,
+    "cols": 7,
+    "emitter": {
+      "side": "S",
+      "index": 3
+    },
+    "emitters": [
+      {
+        "side": "S",
+        "index": 3
+      },
+      {
+        "side": "N",
+        "index": 2
+      },
+      {
+        "side": "E",
+        "index": 0
+      }
+    ],
+    "targets": [
+      {
+        "side": "S",
+        "index": 1
+      },
+      {
+        "side": "E",
+        "index": 4
+      },
+      {
+        "side": "E",
+        "index": 2
+      },
+      {
+        "side": "W",
+        "index": 3
+      }
+    ],
+    "shots": 3,
+    "hint": "沿固定镜分配支路，让几个终点接连亮起。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 4,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 4
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 2,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 6,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 3,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 0,
+        "s": 1
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:7"
+  },
+  {
+    "name": "晴湾·合流",
+    "chapter": "光路博弈",
+    "chapterNo": 101,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 4
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 4
+      },
+      {
+        "side": "W",
+        "index": 7
+      },
+      {
+        "side": "N",
+        "index": 2
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 4
+      },
+      {
+        "side": "E",
+        "index": 3
+      },
+      {
+        "side": "S",
+        "index": 7
+      },
+      {
+        "side": "W",
+        "index": 5
+      }
+    ],
+    "shots": 3,
+    "hint": "先接齐核心的两路输入，再沿粗光束安排出口。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 2,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 1
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "combiner",
+        "x": 1,
+        "y": 4,
+        "dir": 2,
+        "need": 2
+      },
+      {
+        "type": "splitter",
+        "x": 7,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 2,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 5,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 1
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:8"
+  },
+  {
+    "name": "晴湾·合奏",
+    "chapter": "光路博弈",
+    "chapterNo": 101,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "E",
+      "index": 0
+    },
+    "emitters": [
+      {
+        "side": "E",
+        "index": 0
+      },
+      {
+        "side": "N",
+        "index": 3
+      },
+      {
+        "side": "N",
+        "index": 2
+      },
+      {
+        "side": "N",
+        "index": 5
+      }
+    ],
+    "targets": [
+      {
+        "side": "N",
+        "index": 1
+      },
+      {
+        "side": "W",
+        "index": 2
+      },
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "E",
+        "index": 2
+      },
+      {
+        "side": "E",
+        "index": 5
+      }
+    ],
+    "shots": 3,
+    "hint": "几束光各有去处，先保留已经接通的部分。",
+    "items": [
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 5
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 7,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 5,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "combiner",
+        "x": 6,
+        "y": 4,
+        "dir": 1,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 3,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 5
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:9"
+  },
+  {
+    "name": "晴湾·回响",
+    "chapter": "光路博弈",
+    "chapterNo": 101,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "N",
+      "index": 7
+    },
+    "emitters": [
+      {
+        "side": "N",
+        "index": 7
+      },
+      {
+        "side": "E",
+        "index": 7
+      }
+    ],
+    "targets": [
+      {
+        "side": "S",
+        "index": 3
+      },
+      {
+        "side": "E",
+        "index": 6
+      },
+      {
+        "side": "W",
+        "index": 0
+      },
+      {
+        "side": "N",
+        "index": 4
+      }
+    ],
+    "shots": 3,
+    "hint": "顺着固定镜的线索，让聚合光转过最后几个弯。",
+    "items": [
+      {
+        "type": "splitter",
+        "x": 3,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 5,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 4,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 0,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "combiner",
+        "x": 6,
+        "y": 7,
+        "dir": 3,
+        "need": 2
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 6
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 7
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 6
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:10"
+  },
+  {
+    "name": "竹径·汇流",
+    "chapter": "光路博弈",
+    "chapterNo": 102,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "N",
+      "index": 3
+    },
+    "emitters": [
+      {
+        "side": "N",
+        "index": 3
+      },
+      {
+        "side": "W",
+        "index": 7
+      },
+      {
+        "side": "W",
+        "index": 3
+      }
+    ],
+    "targets": [
+      {
+        "side": "S",
+        "index": 1
+      },
+      {
+        "side": "S",
+        "index": 4
+      },
+      {
+        "side": "W",
+        "index": 6
+      },
+      {
+        "side": "E",
+        "index": 6
+      }
+    ],
+    "shots": 3,
+    "hint": "先接齐核心的两路输入，再沿粗光束安排出口。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 4,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 5
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 1
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "combiner",
+        "x": 3,
+        "y": 1,
+        "dir": 1,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 1,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 5,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 2,
+        "s": 1
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:11"
+  },
+  {
+    "name": "竹径·流光",
+    "chapter": "光路博弈",
+    "chapterNo": 102,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 5
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 5
+      },
+      {
+        "side": "W",
+        "index": 4
+      }
+    ],
+    "targets": [
+      {
+        "side": "W",
+        "index": 3
+      },
+      {
+        "side": "E",
+        "index": 0
+      },
+      {
+        "side": "N",
+        "index": 2
+      },
+      {
+        "side": "N",
+        "index": 4
+      }
+    ],
+    "shots": 3,
+    "hint": "沿固定镜分配支路，让几个终点接连亮起。",
+    "items": [
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 1,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "splitter",
+        "x": 3,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 1
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 6
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 7
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 7
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 4,
+        "s": 1,
+        "fixed": true
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:12"
+  },
+  {
+    "name": "竹径·折返",
+    "chapter": "光路博弈",
+    "chapterNo": 102,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 1
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "N",
+        "index": 1
+      },
+      {
+        "side": "E",
+        "index": 5
+      }
+    ],
+    "targets": [
+      {
+        "side": "S",
+        "index": 6
+      },
+      {
+        "side": "W",
+        "index": 3
+      },
+      {
+        "side": "E",
+        "index": 4
+      },
+      {
+        "side": "S",
+        "index": 5
+      }
+    ],
+    "shots": 3,
+    "hint": "先接齐核心的两路输入，再沿粗光束安排出口。",
+    "items": [
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 6
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 7
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 4,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 1
+      },
+      {
+        "type": "combiner",
+        "x": 7,
+        "y": 5,
+        "dir": 1,
+        "need": 2
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 7
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 5,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 4,
+        "s": 0
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:13"
+  },
+  {
+    "name": "竹径·启门",
+    "chapter": "光路博弈",
+    "chapterNo": 102,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "E",
+      "index": 4
+    },
+    "emitters": [
+      {
+        "side": "E",
+        "index": 4
+      },
+      {
+        "side": "N",
+        "index": 3
+      },
+      {
+        "side": "N",
+        "index": 1
+      }
+    ],
+    "targets": [
+      {
+        "side": "S",
+        "index": 6
+      },
+      {
+        "side": "E",
+        "index": 1
+      },
+      {
+        "side": "W",
+        "index": 0
+      },
+      {
+        "side": "E",
+        "index": 7
+      }
+    ],
+    "shots": 3,
+    "hint": "一条支路取钥，另一条完成聚合，再穿过光门。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 6
+      },
+      {
+        "type": "combiner",
+        "x": 1,
+        "y": 0,
+        "dir": 0,
+        "need": 2
+      },
+      {
+        "type": "splitter",
+        "x": 2,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "door",
+        "x": 4,
+        "y": 1,
+        "id": "D1",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "switch",
+        "x": 3,
+        "y": 0,
+        "id": "A"
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 1
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 7,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 4
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 1,
+        "s": 1,
+        "fixed": true
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:14"
+  },
+  {
+    "name": "竹径·双翼",
+    "chapter": "光路博弈",
+    "chapterNo": 102,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "S",
+      "index": 3
+    },
+    "emitters": [
+      {
+        "side": "S",
+        "index": 3
+      },
+      {
+        "side": "W",
+        "index": 6
+      },
+      {
+        "side": "E",
+        "index": 3
+      }
+    ],
+    "targets": [
+      {
+        "side": "N",
+        "index": 0
+      },
+      {
+        "side": "S",
+        "index": 4
+      },
+      {
+        "side": "N",
+        "index": 2
+      },
+      {
+        "side": "E",
+        "index": 7
+      }
+    ],
+    "shots": 3,
+    "hint": "先接齐核心的两路输入，再沿粗光束安排出口。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 5,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 3,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 6,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 4
+      },
+      {
+        "type": "splitter",
+        "x": 3,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 6
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 7
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 4
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "combiner",
+        "x": 2,
+        "y": 1,
+        "dir": 0,
+        "need": 2
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 7
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 0,
+        "s": 0
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:15"
+  },
+  {
+    "name": "竹径·合光",
+    "chapter": "光路博弈",
+    "chapterNo": 102,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "S",
+      "index": 5
+    },
+    "emitters": [
+      {
+        "side": "S",
+        "index": 5
+      },
+      {
+        "side": "E",
+        "index": 7
+      },
+      {
+        "side": "N",
+        "index": 2
+      }
+    ],
+    "targets": [
+      {
+        "side": "S",
+        "index": 7
+      },
+      {
+        "side": "N",
+        "index": 6
+      },
+      {
+        "side": "S",
+        "index": 2
+      },
+      {
+        "side": "W",
+        "index": 5
+      }
+    ],
+    "shots": 3,
+    "hint": "先接齐核心的两路输入，再沿粗光束安排出口。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 2
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 2
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 7,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 1
+      },
+      {
+        "type": "combiner",
+        "x": 2,
+        "y": 4,
+        "dir": 3,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 4,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:16"
+  },
+  {
+    "name": "竹径·远送",
+    "chapter": "光路博弈",
+    "chapterNo": 102,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 1
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "W",
+        "index": 2
+      },
+      {
+        "side": "W",
+        "index": 5
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 1
+      },
+      {
+        "side": "N",
+        "index": 4
+      },
+      {
+        "side": "S",
+        "index": 5
+      },
+      {
+        "side": "S",
+        "index": 2
+      }
+    ],
+    "shots": 3,
+    "hint": "先确认传送出口，再沿分光支路接通各个终点。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 7
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 0,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 3,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 6,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 2
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 2,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "portal",
+        "x": 0,
+        "y": 6,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 0,
+        "y": 0,
+        "pair": "P1"
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:17"
+  },
+  {
+    "name": "竹径·双钥",
+    "chapter": "光路博弈",
+    "chapterNo": 102,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "S",
+      "index": 3
+    },
+    "emitters": [
+      {
+        "side": "S",
+        "index": 3
+      },
+      {
+        "side": "W",
+        "index": 3
+      },
+      {
+        "side": "W",
+        "index": 7
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 5
+      },
+      {
+        "side": "W",
+        "index": 6
+      },
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "S",
+        "index": 2
+      }
+    ],
+    "shots": 3,
+    "hint": "找齐两枚钥匙，再接通门后的聚合光路。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 3,
+        "id": "A"
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 0
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 6,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 2
+      },
+      {
+        "type": "splitter",
+        "x": 2,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 4,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 0,
+        "y": 1,
+        "id": "B"
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 1,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 2
+      },
+      {
+        "type": "combiner",
+        "x": 3,
+        "y": 1,
+        "dir": 2,
+        "need": 2
+      },
+      {
+        "type": "door",
+        "x": 2,
+        "y": 6,
+        "id": "D1",
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 4
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:18"
+  },
+  {
+    "name": "竹径·合奏",
+    "chapter": "光路博弈",
+    "chapterNo": 102,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 2
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 2
+      },
+      {
+        "side": "S",
+        "index": 7
+      },
+      {
+        "side": "W",
+        "index": 6
+      },
+      {
+        "side": "E",
+        "index": 2
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 3
+      },
+      {
+        "side": "N",
+        "index": 1
+      },
+      {
+        "side": "W",
+        "index": 0
+      },
+      {
+        "side": "W",
+        "index": 4
+      },
+      {
+        "side": "N",
+        "index": 3
+      }
+    ],
+    "shots": 3,
+    "hint": "几束光各有去处，先保留已经接通的部分。",
+    "items": [
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 7
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 7
+      },
+      {
+        "type": "combiner",
+        "x": 0,
+        "y": 4,
+        "dir": 2,
+        "need": 2
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 6
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 6,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 1,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 7
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 4
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 7
+      },
+      {
+        "type": "splitter",
+        "x": 3,
+        "y": 0,
+        "s": 1
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:19"
+  },
+  {
+    "name": "竹径·回响",
+    "chapter": "光路博弈",
+    "chapterNo": 102,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "E",
+      "index": 0
+    },
+    "emitters": [
+      {
+        "side": "E",
+        "index": 0
+      },
+      {
+        "side": "S",
+        "index": 1
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 1
+      },
+      {
+        "side": "S",
+        "index": 0
+      },
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "W",
+        "index": 3
+      }
+    ],
+    "shots": 3,
+    "hint": "顺着固定镜的线索，让聚合光转过最后几个弯。",
+    "items": [
+      {
+        "type": "splitter",
+        "x": 0,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 6
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 5
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 4
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 2,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 5
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 7,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "combiner",
+        "x": 5,
+        "y": 2,
+        "dir": 2,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 3,
+        "s": 1
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:20"
+  },
+  {
+    "name": "云阶·汇流",
+    "chapter": "光路博弈",
+    "chapterNo": 103,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "S",
+      "index": 0
+    },
+    "emitters": [
+      {
+        "side": "S",
+        "index": 0
+      },
+      {
+        "side": "E",
+        "index": 2
+      },
+      {
+        "side": "E",
+        "index": 7
+      }
+    ],
+    "targets": [
+      {
+        "side": "N",
+        "index": 3
+      },
+      {
+        "side": "S",
+        "index": 6
+      },
+      {
+        "side": "W",
+        "index": 6
+      },
+      {
+        "side": "W",
+        "index": 3
+      },
+      {
+        "side": "N",
+        "index": 5
+      }
+    ],
+    "shots": 3,
+    "hint": "先接齐核心的两路输入，再沿粗光束安排出口。",
+    "items": [
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 4
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 6,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 7
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 0
+      },
+      {
+        "type": "combiner",
+        "x": 0,
+        "y": 7,
+        "dir": 0,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 7,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 5
+      },
+      {
+        "type": "splitter",
+        "x": 0,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 1
+      },
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 3,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 5
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:21"
+  },
+  {
+    "name": "云阶·流光",
+    "chapter": "光路博弈",
+    "chapterNo": 103,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "E",
+      "index": 3
+    },
+    "emitters": [
+      {
+        "side": "E",
+        "index": 3
+      },
+      {
+        "side": "S",
+        "index": 2
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 5
+      },
+      {
+        "side": "E",
+        "index": 0
+      },
+      {
+        "side": "S",
+        "index": 3
+      },
+      {
+        "side": "N",
+        "index": 6
+      }
+    ],
+    "shots": 3,
+    "hint": "沿固定镜分配支路，让几个终点接连亮起。",
+    "items": [
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 7
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 2,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 2,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 2
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 1
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 6,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 3,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 3,
+        "s": 1
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:22"
+  },
+  {
+    "name": "云阶·跃迁",
+    "chapter": "光路博弈",
+    "chapterNo": 103,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 2
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 2
+      },
+      {
+        "side": "E",
+        "index": 6
+      },
+      {
+        "side": "E",
+        "index": 1
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 7
+      },
+      {
+        "side": "W",
+        "index": 5
+      },
+      {
+        "side": "N",
+        "index": 6
+      },
+      {
+        "side": "N",
+        "index": 4
+      }
+    ],
+    "shots": 3,
+    "hint": "同色传送保持方向，把远处的光送回核心。",
+    "items": [
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 7
+      },
+      {
+        "type": "combiner",
+        "x": 7,
+        "y": 2,
+        "dir": 2,
+        "need": 2
+      },
+      {
+        "type": "portal",
+        "x": 0,
+        "y": 5,
+        "pair": "P1"
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 3,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 5,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 2,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "portal",
+        "x": 1,
+        "y": 1,
+        "pair": "P1"
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 7,
+        "s": 1
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:23"
+  },
+  {
+    "name": "云阶·启门",
+    "chapter": "光路博弈",
+    "chapterNo": 103,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "E",
+      "index": 4
+    },
+    "emitters": [
+      {
+        "side": "E",
+        "index": 4
+      },
+      {
+        "side": "S",
+        "index": 5
+      },
+      {
+        "side": "E",
+        "index": 2
+      }
+    ],
+    "targets": [
+      {
+        "side": "N",
+        "index": 1
+      },
+      {
+        "side": "N",
+        "index": 5
+      },
+      {
+        "side": "S",
+        "index": 1
+      },
+      {
+        "side": "W",
+        "index": 6
+      }
+    ],
+    "shots": 3,
+    "hint": "一条支路取钥，另一条完成聚合，再穿过光门。",
+    "items": [
+      {
+        "type": "switch",
+        "x": 7,
+        "y": 3,
+        "id": "A"
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 3
+      },
+      {
+        "type": "splitter",
+        "x": 2,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "combiner",
+        "x": 7,
+        "y": 2,
+        "dir": 0,
+        "need": 2
+      },
+      {
+        "type": "splitter",
+        "x": 2,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 7,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 2,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 5
+      },
+      {
+        "type": "door",
+        "x": 4,
+        "y": 2,
+        "id": "D1",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 0
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 5
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 7
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:24"
+  },
+  {
+    "name": "云阶·双翼",
+    "chapter": "光路博弈",
+    "chapterNo": 103,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "S",
+      "index": 4
+    },
+    "emitters": [
+      {
+        "side": "S",
+        "index": 4
+      },
+      {
+        "side": "S",
+        "index": 7
+      },
+      {
+        "side": "N",
+        "index": 7
+      }
+    ],
+    "targets": [
+      {
+        "side": "N",
+        "index": 4
+      },
+      {
+        "side": "E",
+        "index": 0
+      },
+      {
+        "side": "E",
+        "index": 1
+      },
+      {
+        "side": "E",
+        "index": 5
+      }
+    ],
+    "shots": 3,
+    "hint": "先接齐核心的两路输入，再沿粗光束安排出口。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "combiner",
+        "x": 6,
+        "y": 4,
+        "dir": 2,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "splitter",
+        "x": 7,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 4,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 6,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 1
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 1
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:25"
+  },
+  {
+    "name": "云阶·合光",
+    "chapter": "光路博弈",
+    "chapterNo": 103,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "S",
+      "index": 0
+    },
+    "emitters": [
+      {
+        "side": "S",
+        "index": 0
+      },
+      {
+        "side": "E",
+        "index": 2
+      },
+      {
+        "side": "W",
+        "index": 7
+      }
+    ],
+    "targets": [
+      {
+        "side": "W",
+        "index": 2
+      },
+      {
+        "side": "N",
+        "index": 0
+      },
+      {
+        "side": "N",
+        "index": 6
+      },
+      {
+        "side": "W",
+        "index": 3
+      }
+    ],
+    "shots": 3,
+    "hint": "先接齐核心的两路输入，再沿粗光束安排出口。",
+    "items": [
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 4
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 7,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "combiner",
+        "x": 6,
+        "y": 0,
+        "dir": 1,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 1
+      },
+      {
+        "type": "splitter",
+        "x": 7,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 5
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 2,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 3,
+        "s": 1
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:26"
+  },
+  {
+    "name": "云阶·远送",
+    "chapter": "光路博弈",
+    "chapterNo": 103,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "S",
+      "index": 2
+    },
+    "emitters": [
+      {
+        "side": "S",
+        "index": 2
+      },
+      {
+        "side": "S",
+        "index": 6
+      },
+      {
+        "side": "E",
+        "index": 1
+      }
+    ],
+    "targets": [
+      {
+        "side": "S",
+        "index": 3
+      },
+      {
+        "side": "E",
+        "index": 0
+      },
+      {
+        "side": "N",
+        "index": 1
+      },
+      {
+        "side": "W",
+        "index": 6
+      },
+      {
+        "side": "E",
+        "index": 3
+      }
+    ],
+    "shots": 3,
+    "hint": "先确认传送出口，再沿分光支路接通各个终点。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 5,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "splitter",
+        "x": 3,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "portal",
+        "x": 6,
+        "y": 5,
+        "pair": "P1"
+      },
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 6
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 7
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 7,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "portal",
+        "x": 7,
+        "y": 1,
+        "pair": "P1"
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 3
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:27"
+  },
+  {
+    "name": "云阶·双钥",
+    "chapter": "光路博弈",
+    "chapterNo": 103,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "E",
+      "index": 1
+    },
+    "emitters": [
+      {
+        "side": "E",
+        "index": 1
+      },
+      {
+        "side": "E",
+        "index": 0
+      },
+      {
+        "side": "E",
+        "index": 6
+      }
+    ],
+    "targets": [
+      {
+        "side": "N",
+        "index": 7
+      },
+      {
+        "side": "S",
+        "index": 1
+      },
+      {
+        "side": "N",
+        "index": 6
+      },
+      {
+        "side": "S",
+        "index": 5
+      }
+    ],
+    "shots": 3,
+    "hint": "找齐两枚钥匙，再接通门后的聚合光路。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 0,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 7,
+        "y": 6,
+        "id": "A"
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 7
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "door",
+        "x": 5,
+        "y": 0,
+        "id": "D1",
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "combiner",
+        "x": 6,
+        "y": 6,
+        "dir": 0,
+        "need": 2
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "switch",
+        "x": 6,
+        "y": 4,
+        "id": "B"
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 4
+      },
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 1,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 4
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:28"
+  },
+  {
+    "name": "云阶·合奏",
+    "chapter": "光路博弈",
+    "chapterNo": 103,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "E",
+      "index": 2
+    },
+    "emitters": [
+      {
+        "side": "E",
+        "index": 2
+      },
+      {
+        "side": "N",
+        "index": 6
+      },
+      {
+        "side": "N",
+        "index": 3
+      },
+      {
+        "side": "W",
+        "index": 4
+      }
+    ],
+    "targets": [
+      {
+        "side": "N",
+        "index": 1
+      },
+      {
+        "side": "E",
+        "index": 4
+      },
+      {
+        "side": "W",
+        "index": 5
+      }
+    ],
+    "shots": 3,
+    "hint": "几束光各有去处，先保留已经接通的部分。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 2,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 5,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "focus",
+        "x": 6,
+        "y": 0,
+        "need": 2
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 7
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 0
+      },
+      {
+        "type": "combiner",
+        "x": 7,
+        "y": 2,
+        "dir": 3,
+        "need": 2
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 5
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 2
+      },
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 1
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 0,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 3,
+        "s": 1
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:29"
+  },
+  {
+    "name": "云阶·回响",
+    "chapter": "光路博弈",
+    "chapterNo": 103,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "S",
+      "index": 5
+    },
+    "emitters": [
+      {
+        "side": "S",
+        "index": 5
+      },
+      {
+        "side": "S",
+        "index": 7
+      }
+    ],
+    "targets": [
+      {
+        "side": "S",
+        "index": 4
+      },
+      {
+        "side": "W",
+        "index": 5
+      },
+      {
+        "side": "S",
+        "index": 6
+      }
+    ],
+    "shots": 3,
+    "hint": "顺着固定镜的线索，让聚合光转过最后几个弯。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 2,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 3,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 1
+      },
+      {
+        "type": "splitter",
+        "x": 7,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 7,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "splitter",
+        "x": 7,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "combiner",
+        "x": 2,
+        "y": 5,
+        "dir": 3,
+        "need": 2
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 1
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 1
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:30"
+  },
+  {
+    "name": "星桥·汇流",
+    "chapter": "光路博弈",
+    "chapterNo": 104,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "S",
+      "index": 2
+    },
+    "emitters": [
+      {
+        "side": "S",
+        "index": 2
+      },
+      {
+        "side": "W",
+        "index": 7
+      },
+      {
+        "side": "S",
+        "index": 4
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 5
+      },
+      {
+        "side": "E",
+        "index": 4
+      },
+      {
+        "side": "N",
+        "index": 4
+      },
+      {
+        "side": "N",
+        "index": 3
+      }
+    ],
+    "shots": 3,
+    "hint": "先接齐核心的两路输入，再沿粗光束安排出口。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 2
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 3
+      },
+      {
+        "type": "combiner",
+        "x": 2,
+        "y": 6,
+        "dir": 3,
+        "need": 2
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 6,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 2,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 2
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 1
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 6,
+        "s": 0
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:31"
+  },
+  {
+    "name": "星桥·流光",
+    "chapter": "光路博弈",
+    "chapterNo": 104,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "E",
+      "index": 7
+    },
+    "emitters": [
+      {
+        "side": "E",
+        "index": 7
+      },
+      {
+        "side": "S",
+        "index": 0
+      }
+    ],
+    "targets": [
+      {
+        "side": "W",
+        "index": 3
+      },
+      {
+        "side": "S",
+        "index": 3
+      },
+      {
+        "side": "W",
+        "index": 1
+      }
+    ],
+    "shots": 3,
+    "hint": "沿固定镜分配支路，让几个终点接连亮起。",
+    "items": [
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 5,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 3,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 1
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 5
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 7,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 4,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 4
+      },
+      {
+        "type": "splitter",
+        "x": 3,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 2
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:32"
+  },
+  {
+    "name": "星桥·跃迁",
+    "chapter": "光路博弈",
+    "chapterNo": 104,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 0
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 0
+      },
+      {
+        "side": "N",
+        "index": 5
+      },
+      {
+        "side": "E",
+        "index": 1
+      }
+    ],
+    "targets": [
+      {
+        "side": "N",
+        "index": 2
+      },
+      {
+        "side": "E",
+        "index": 6
+      },
+      {
+        "side": "N",
+        "index": 6
+      },
+      {
+        "side": "S",
+        "index": 2
+      }
+    ],
+    "shots": 3,
+    "hint": "同色传送保持方向，把远处的光送回核心。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 3
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "portal",
+        "x": 5,
+        "y": 4,
+        "pair": "P1"
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 4
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 1
+      },
+      {
+        "type": "combiner",
+        "x": 6,
+        "y": 0,
+        "dir": 2,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "portal",
+        "x": 0,
+        "y": 6,
+        "pair": "P1"
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 4,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 7,
+        "s": 0
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:33"
+  },
+  {
+    "name": "星桥·启门",
+    "chapter": "光路博弈",
+    "chapterNo": 104,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "N",
+      "index": 7
+    },
+    "emitters": [
+      {
+        "side": "N",
+        "index": 7
+      },
+      {
+        "side": "W",
+        "index": 0
+      },
+      {
+        "side": "E",
+        "index": 4
+      }
+    ],
+    "targets": [
+      {
+        "side": "N",
+        "index": 5
+      },
+      {
+        "side": "S",
+        "index": 4
+      },
+      {
+        "side": "E",
+        "index": 1
+      },
+      {
+        "side": "S",
+        "index": 3
+      }
+    ],
+    "shots": 3,
+    "hint": "一条支路取钥，另一条完成聚合，再穿过光门。",
+    "items": [
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 7,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 5,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "splitter",
+        "x": 7,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "combiner",
+        "x": 7,
+        "y": 1,
+        "dir": 1,
+        "need": 2
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 6,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 6
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "door",
+        "x": 2,
+        "y": 0,
+        "id": "D1",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 5
+      },
+      {
+        "type": "switch",
+        "x": 3,
+        "y": 6,
+        "id": "A"
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 4
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:34"
+  },
+  {
+    "name": "星桥·接棒",
+    "chapter": "光路博弈",
+    "chapterNo": 104,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "S",
+      "index": 2
+    },
+    "emitters": [
+      {
+        "side": "S",
+        "index": 2
+      },
+      {
+        "side": "W",
+        "index": 3
+      },
+      {
+        "side": "E",
+        "index": 4
+      },
+      {
+        "side": "E",
+        "index": 3
+      }
+    ],
+    "targets": [
+      {
+        "side": "S",
+        "index": 4
+      },
+      {
+        "side": "N",
+        "index": 7
+      },
+      {
+        "side": "S",
+        "index": 6
+      },
+      {
+        "side": "S",
+        "index": 5
+      }
+    ],
+    "shots": 3,
+    "hint": "前一座核心的粗光束，接着为下一座核心供光。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 1
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 5
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 1,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 4,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "combiner",
+        "x": 2,
+        "y": 3,
+        "dir": 0,
+        "need": 2
+      },
+      {
+        "type": "combiner",
+        "x": 7,
+        "y": 1,
+        "dir": 2,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 7,
+        "y": 2,
+        "s": 1
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:35"
+  },
+  {
+    "name": "星桥·晶光",
+    "chapter": "光路博弈",
+    "chapterNo": 104,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "E",
+      "index": 7
+    },
+    "emitters": [
+      {
+        "side": "E",
+        "index": 7
+      },
+      {
+        "side": "W",
+        "index": 7
+      },
+      {
+        "side": "S",
+        "index": 0
+      },
+      {
+        "side": "N",
+        "index": 6
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 5
+      },
+      {
+        "side": "S",
+        "index": 4
+      },
+      {
+        "side": "N",
+        "index": 4
+      }
+    ],
+    "shots": 3,
+    "hint": "为晶体补齐方向，再把剩下的光送往出口。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 5,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 0,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 2
+      },
+      {
+        "type": "focus",
+        "x": 6,
+        "y": 6,
+        "need": 2
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "combiner",
+        "x": 3,
+        "y": 5,
+        "dir": 0,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 4,
+        "s": 1,
+        "decoy": true
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:36"
+  },
+  {
+    "name": "星桥·远送",
+    "chapter": "光路博弈",
+    "chapterNo": 104,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "S",
+      "index": 2
+    },
+    "emitters": [
+      {
+        "side": "S",
+        "index": 2
+      },
+      {
+        "side": "N",
+        "index": 5
+      },
+      {
+        "side": "W",
+        "index": 0
+      }
+    ],
+    "targets": [
+      {
+        "side": "N",
+        "index": 2
+      },
+      {
+        "side": "S",
+        "index": 1
+      },
+      {
+        "side": "N",
+        "index": 0
+      },
+      {
+        "side": "W",
+        "index": 4
+      },
+      {
+        "side": "E",
+        "index": 5
+      }
+    ],
+    "shots": 3,
+    "hint": "先确认传送出口，再沿分光支路接通各个终点。",
+    "items": [
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 2,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "portal",
+        "x": 6,
+        "y": 2,
+        "pair": "P1"
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 1
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 5,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 6,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "portal",
+        "x": 1,
+        "y": 7,
+        "pair": "P1"
+      },
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 1,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 7
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:37"
+  },
+  {
+    "name": "星桥·双钥",
+    "chapter": "光路博弈",
+    "chapterNo": 104,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 3
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 3
+      },
+      {
+        "side": "W",
+        "index": 5
+      },
+      {
+        "side": "N",
+        "index": 1
+      }
+    ],
+    "targets": [
+      {
+        "side": "S",
+        "index": 0
+      },
+      {
+        "side": "E",
+        "index": 6
+      },
+      {
+        "side": "W",
+        "index": 2
+      },
+      {
+        "side": "N",
+        "index": 0
+      }
+    ],
+    "shots": 3,
+    "hint": "找齐两枚钥匙，再接通门后的聚合光路。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 6,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 4,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "splitter",
+        "x": 0,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "switch",
+        "x": 0,
+        "y": 7,
+        "id": "B"
+      },
+      {
+        "type": "door",
+        "x": 6,
+        "y": 5,
+        "id": "D1",
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 4
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 5,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "combiner",
+        "x": 1,
+        "y": 3,
+        "dir": 2,
+        "need": 2
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 1,
+        "y": 0,
+        "id": "A"
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:38"
+  },
+  {
+    "name": "星桥·合奏",
+    "chapter": "光路博弈",
+    "chapterNo": 104,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "S",
+      "index": 4
+    },
+    "emitters": [
+      {
+        "side": "S",
+        "index": 4
+      },
+      {
+        "side": "S",
+        "index": 1
+      },
+      {
+        "side": "E",
+        "index": 5
+      },
+      {
+        "side": "E",
+        "index": 7
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 6
+      },
+      {
+        "side": "N",
+        "index": 5
+      },
+      {
+        "side": "E",
+        "index": 2
+      }
+    ],
+    "shots": 3,
+    "hint": "几束光各有去处，先保留已经接通的部分。",
+    "items": [
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "combiner",
+        "x": 5,
+        "y": 1,
+        "dir": 1,
+        "need": 2
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 5
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 0,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "focus",
+        "x": 5,
+        "y": 7,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 1,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 2,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 0
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:39"
+  },
+  {
+    "name": "星桥·回响",
+    "chapter": "光路博弈",
+    "chapterNo": 104,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "S",
+      "index": 3
+    },
+    "emitters": [
+      {
+        "side": "S",
+        "index": 3
+      },
+      {
+        "side": "E",
+        "index": 0
+      }
+    ],
+    "targets": [
+      {
+        "side": "S",
+        "index": 2
+      },
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "S",
+        "index": 7
+      }
+    ],
+    "shots": 3,
+    "hint": "顺着固定镜的线索，让聚合光转过最后几个弯。",
+    "items": [
+      {
+        "type": "splitter",
+        "x": 3,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 5,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 6,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 3
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "combiner",
+        "x": 7,
+        "y": 7,
+        "dir": 2,
+        "need": 2
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 7
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 5,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 5
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 4
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:40"
+  },
+  {
+    "name": "长廊·汇流",
+    "chapter": "光路博弈",
+    "chapterNo": 105,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 1
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "N",
+        "index": 2
+      },
+      {
+        "side": "W",
+        "index": 0
+      }
+    ],
+    "targets": [
+      {
+        "side": "N",
+        "index": 1
+      },
+      {
+        "side": "S",
+        "index": 7
+      },
+      {
+        "side": "E",
+        "index": 0
+      },
+      {
+        "side": "N",
+        "index": 5
+      }
+    ],
+    "shots": 3,
+    "hint": "先接齐核心的两路输入，再沿粗光束安排出口。",
+    "items": [
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 5
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 0
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 4
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 2,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "combiner",
+        "x": 1,
+        "y": 1,
+        "dir": 0,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 5,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 7
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 3,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 3
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:41"
+  },
+  {
+    "name": "长廊·流光",
+    "chapter": "光路博弈",
+    "chapterNo": 105,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "S",
+      "index": 5
+    },
+    "emitters": [
+      {
+        "side": "S",
+        "index": 5
+      },
+      {
+        "side": "S",
+        "index": 4
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 6
+      },
+      {
+        "side": "W",
+        "index": 7
+      },
+      {
+        "side": "N",
+        "index": 0
+      }
+    ],
+    "shots": 3,
+    "hint": "沿固定镜分配支路，让几个终点接连亮起。",
+    "items": [
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 0
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 3,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 4,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 5
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 5,
+        "s": 0,
+        "fixed": true
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:42"
+  },
+  {
+    "name": "长廊·跃迁",
+    "chapter": "光路博弈",
+    "chapterNo": 105,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "S",
+      "index": 3
+    },
+    "emitters": [
+      {
+        "side": "S",
+        "index": 3
+      },
+      {
+        "side": "N",
+        "index": 1
+      },
+      {
+        "side": "N",
+        "index": 0
+      }
+    ],
+    "targets": [
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "S",
+        "index": 1
+      },
+      {
+        "side": "W",
+        "index": 2
+      },
+      {
+        "side": "S",
+        "index": 2
+      }
+    ],
+    "shots": 3,
+    "hint": "同色传送保持方向，把远处的光送回核心。",
+    "items": [
+      {
+        "type": "portal",
+        "x": 7,
+        "y": 3,
+        "pair": "P1"
+      },
+      {
+        "type": "combiner",
+        "x": 3,
+        "y": 3,
+        "dir": 1,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 0
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 0
+      },
+      {
+        "type": "splitter",
+        "x": 2,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 0
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 1,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 3,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "portal",
+        "x": 4,
+        "y": 7,
+        "pair": "P1"
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 4
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:43"
+  },
+  {
+    "name": "长廊·启门",
+    "chapter": "光路博弈",
+    "chapterNo": 105,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 7
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 7
+      },
+      {
+        "side": "S",
+        "index": 3
+      },
+      {
+        "side": "S",
+        "index": 1
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 7
+      },
+      {
+        "side": "W",
+        "index": 5
+      },
+      {
+        "side": "W",
+        "index": 4
+      },
+      {
+        "side": "W",
+        "index": 6
+      },
+      {
+        "side": "S",
+        "index": 4
+      }
+    ],
+    "shots": 3,
+    "hint": "一条支路取钥，另一条完成聚合，再穿过光门。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "door",
+        "x": 1,
+        "y": 6,
+        "id": "D1",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 3,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "combiner",
+        "x": 2,
+        "y": 2,
+        "dir": 2,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 1
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 1
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 0
+      },
+      {
+        "type": "switch",
+        "x": 0,
+        "y": 7,
+        "id": "A"
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 4,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "splitter",
+        "x": 3,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 2
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 1,
+        "s": 0,
+        "decoy": true
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:44"
+  },
+  {
+    "name": "长廊·接棒",
+    "chapter": "光路博弈",
+    "chapterNo": 105,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "E",
+      "index": 4
+    },
+    "emitters": [
+      {
+        "side": "E",
+        "index": 4
+      },
+      {
+        "side": "W",
+        "index": 7
+      },
+      {
+        "side": "N",
+        "index": 7
+      },
+      {
+        "side": "W",
+        "index": 6
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 6
+      },
+      {
+        "side": "S",
+        "index": 0
+      },
+      {
+        "side": "E",
+        "index": 7
+      },
+      {
+        "side": "E",
+        "index": 5
+      }
+    ],
+    "shots": 3,
+    "hint": "前一座核心的粗光束，接着为下一座核心供光。",
+    "items": [
+      {
+        "type": "combiner",
+        "x": 2,
+        "y": 6,
+        "dir": 1,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "splitter",
+        "x": 7,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 5
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 3,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "combiner",
+        "x": 2,
+        "y": 7,
+        "dir": 1,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 7,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 6,
+        "s": 1,
+        "fixed": true
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:45"
+  },
+  {
+    "name": "长廊·晶光",
+    "chapter": "光路博弈",
+    "chapterNo": 105,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 1
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "W",
+        "index": 4
+      },
+      {
+        "side": "N",
+        "index": 2
+      },
+      {
+        "side": "S",
+        "index": 2
+      }
+    ],
+    "targets": [
+      {
+        "side": "N",
+        "index": 3
+      },
+      {
+        "side": "E",
+        "index": 2
+      },
+      {
+        "side": "E",
+        "index": 4
+      }
+    ],
+    "shots": 3,
+    "hint": "为晶体补齐方向，再把剩下的光送往出口。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 2,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 5
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 7
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 7
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 6,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 2,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "focus",
+        "x": 2,
+        "y": 2,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 5,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "combiner",
+        "x": 5,
+        "y": 5,
+        "dir": 3,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 4,
+        "s": 0
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:46"
+  },
+  {
+    "name": "长廊·远送",
+    "chapter": "光路博弈",
+    "chapterNo": 105,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "N",
+      "index": 1
+    },
+    "emitters": [
+      {
+        "side": "N",
+        "index": 1
+      },
+      {
+        "side": "S",
+        "index": 5
+      },
+      {
+        "side": "N",
+        "index": 7
+      }
+    ],
+    "targets": [
+      {
+        "side": "W",
+        "index": 0
+      },
+      {
+        "side": "N",
+        "index": 0
+      },
+      {
+        "side": "E",
+        "index": 3
+      },
+      {
+        "side": "N",
+        "index": 2
+      },
+      {
+        "side": "N",
+        "index": 5
+      }
+    ],
+    "shots": 3,
+    "hint": "先确认传送出口，再沿分光支路接通各个终点。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 6
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 4
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "portal",
+        "x": 5,
+        "y": 6,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 0,
+        "y": 2,
+        "pair": "P1"
+      },
+      {
+        "type": "splitter",
+        "x": 0,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 5
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 4,
+        "s": 0,
+        "decoy": true
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:47"
+  },
+  {
+    "name": "长廊·双钥",
+    "chapter": "光路博弈",
+    "chapterNo": 105,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "E",
+      "index": 7
+    },
+    "emitters": [
+      {
+        "side": "E",
+        "index": 7
+      },
+      {
+        "side": "N",
+        "index": 5
+      },
+      {
+        "side": "S",
+        "index": 1
+      }
+    ],
+    "targets": [
+      {
+        "side": "W",
+        "index": 7
+      },
+      {
+        "side": "S",
+        "index": 5
+      },
+      {
+        "side": "W",
+        "index": 3
+      },
+      {
+        "side": "N",
+        "index": 6
+      }
+    ],
+    "shots": 3,
+    "hint": "找齐两枚钥匙，再接通门后的聚合光路。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "combiner",
+        "x": 0,
+        "y": 4,
+        "dir": 0,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 5,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 3,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 6
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 2
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 4
+      },
+      {
+        "type": "door",
+        "x": 7,
+        "y": 7,
+        "id": "D1",
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "type": "switch",
+        "x": 2,
+        "y": 3,
+        "id": "B"
+      },
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 1
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "switch",
+        "x": 5,
+        "y": 0,
+        "id": "A"
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:48"
+  },
+  {
+    "name": "长廊·合奏",
+    "chapter": "光路博弈",
+    "chapterNo": 105,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "N",
+      "index": 5
+    },
+    "emitters": [
+      {
+        "side": "N",
+        "index": 5
+      },
+      {
+        "side": "E",
+        "index": 4
+      },
+      {
+        "side": "N",
+        "index": 1
+      },
+      {
+        "side": "E",
+        "index": 3
+      }
+    ],
+    "targets": [
+      {
+        "side": "S",
+        "index": 7
+      },
+      {
+        "side": "E",
+        "index": 7
+      }
+    ],
+    "shots": 3,
+    "hint": "几束光各有去处，先保留已经接通的部分。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 6
+      },
+      {
+        "type": "splitter",
+        "x": 7,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 2,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "focus",
+        "x": 5,
+        "y": 2,
+        "need": 2
+      },
+      {
+        "type": "combiner",
+        "x": 7,
+        "y": 6,
+        "dir": 1,
+        "need": 2
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 7,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 7,
+        "s": 1
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:49"
+  },
+  {
+    "name": "长廊·回响",
+    "chapter": "光路博弈",
+    "chapterNo": 105,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "E",
+      "index": 7
+    },
+    "emitters": [
+      {
+        "side": "E",
+        "index": 7
+      },
+      {
+        "side": "N",
+        "index": 0
+      }
+    ],
+    "targets": [
+      {
+        "side": "S",
+        "index": 3
+      },
+      {
+        "side": "W",
+        "index": 0
+      },
+      {
+        "side": "S",
+        "index": 7
+      }
+    ],
+    "shots": 3,
+    "hint": "顺着固定镜的线索，让聚合光转过最后几个弯。",
+    "items": [
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 3,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 1
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 5
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 7,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "combiner",
+        "x": 0,
+        "y": 0,
+        "dir": 0,
+        "need": 2
+      },
+      {
+        "type": "splitter",
+        "x": 3,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 6,
+        "s": 1,
+        "decoy": true
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:50"
+  },
+  {
+    "name": "月庭·汇流",
+    "chapter": "光路博弈",
+    "chapterNo": 106,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "S",
+      "index": 6
+    },
+    "emitters": [
+      {
+        "side": "S",
+        "index": 6
+      },
+      {
+        "side": "W",
+        "index": 2
+      },
+      {
+        "side": "W",
+        "index": 5
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 4
+      },
+      {
+        "side": "S",
+        "index": 0
+      },
+      {
+        "side": "W",
+        "index": 4
+      },
+      {
+        "side": "W",
+        "index": 3
+      }
+    ],
+    "shots": 3,
+    "hint": "先接齐核心的两路输入，再沿粗光束安排出口。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 5
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 6
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 4,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 3,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 0,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "combiner",
+        "x": 2,
+        "y": 4,
+        "dir": 2,
+        "need": 2
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 7
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 0,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 5,
+        "s": 0
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:51"
+  },
+  {
+    "name": "月庭·流光",
+    "chapter": "光路博弈",
+    "chapterNo": 106,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "E",
+      "index": 6
+    },
+    "emitters": [
+      {
+        "side": "E",
+        "index": 6
+      },
+      {
+        "side": "S",
+        "index": 0
+      }
+    ],
+    "targets": [
+      {
+        "side": "W",
+        "index": 7
+      },
+      {
+        "side": "W",
+        "index": 6
+      },
+      {
+        "side": "S",
+        "index": 2
+      }
+    ],
+    "shots": 3,
+    "hint": "沿固定镜分配支路，让几个终点接连亮起。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 3
+      },
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 4
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 2,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 0,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 4,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 7
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 0
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 7
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:52"
+  },
+  {
+    "name": "月庭·跃迁",
+    "chapter": "光路博弈",
+    "chapterNo": 106,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 4
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 4
+      },
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "W",
+        "index": 0
+      }
+    ],
+    "targets": [
+      {
+        "side": "W",
+        "index": 5
+      },
+      {
+        "side": "W",
+        "index": 2
+      },
+      {
+        "side": "S",
+        "index": 3
+      },
+      {
+        "side": "S",
+        "index": 6
+      }
+    ],
+    "shots": 3,
+    "hint": "同色传送保持方向，把远处的光送回核心。",
+    "items": [
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 2,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "splitter",
+        "x": 3,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "portal",
+        "x": 6,
+        "y": 4,
+        "pair": "P1"
+      },
+      {
+        "type": "combiner",
+        "x": 0,
+        "y": 1,
+        "dir": 1,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "portal",
+        "x": 5,
+        "y": 7,
+        "pair": "P1"
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 1
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 1
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "splitter",
+        "x": 3,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 5,
+        "s": 0
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:53"
+  },
+  {
+    "name": "月庭·启门",
+    "chapter": "光路博弈",
+    "chapterNo": 106,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "E",
+      "index": 7
+    },
+    "emitters": [
+      {
+        "side": "E",
+        "index": 7
+      },
+      {
+        "side": "S",
+        "index": 1
+      },
+      {
+        "side": "E",
+        "index": 6
+      }
+    ],
+    "targets": [
+      {
+        "side": "S",
+        "index": 7
+      },
+      {
+        "side": "N",
+        "index": 7
+      },
+      {
+        "side": "S",
+        "index": 3
+      }
+    ],
+    "shots": 3,
+    "hint": "一条支路取钥，另一条完成聚合，再穿过光门。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "combiner",
+        "x": 6,
+        "y": 6,
+        "dir": 1,
+        "need": 2
+      },
+      {
+        "type": "switch",
+        "x": 0,
+        "y": 6,
+        "id": "A"
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 2
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 0
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 2
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 7,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "door",
+        "x": 1,
+        "y": 5,
+        "id": "D1",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 3
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 0
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:54"
+  },
+  {
+    "name": "月庭·接棒",
+    "chapter": "光路博弈",
+    "chapterNo": 106,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "N",
+      "index": 1
+    },
+    "emitters": [
+      {
+        "side": "N",
+        "index": 1
+      },
+      {
+        "side": "S",
+        "index": 1
+      },
+      {
+        "side": "S",
+        "index": 5
+      },
+      {
+        "side": "N",
+        "index": 0
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 4
+      },
+      {
+        "side": "N",
+        "index": 6
+      },
+      {
+        "side": "W",
+        "index": 2
+      },
+      {
+        "side": "N",
+        "index": 2
+      }
+    ],
+    "shots": 3,
+    "hint": "前一座核心的粗光束，接着为下一座核心供光。",
+    "items": [
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 7
+      },
+      {
+        "type": "combiner",
+        "x": 1,
+        "y": 1,
+        "dir": 1,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 0,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 5
+      },
+      {
+        "type": "combiner",
+        "x": 3,
+        "y": 0,
+        "dir": 2,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "splitter",
+        "x": 3,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 2,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 2,
+        "s": 1,
+        "decoy": true
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:55"
+  },
+  {
+    "name": "月庭·晶光",
+    "chapter": "光路博弈",
+    "chapterNo": 106,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "N",
+      "index": 5
+    },
+    "emitters": [
+      {
+        "side": "N",
+        "index": 5
+      },
+      {
+        "side": "W",
+        "index": 4
+      },
+      {
+        "side": "W",
+        "index": 7
+      },
+      {
+        "side": "S",
+        "index": 7
+      }
+    ],
+    "targets": [
+      {
+        "side": "S",
+        "index": 6
+      },
+      {
+        "side": "E",
+        "index": 6
+      },
+      {
+        "side": "E",
+        "index": 5
+      }
+    ],
+    "shots": 3,
+    "hint": "为晶体补齐方向，再把剩下的光送往出口。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 7,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 4,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "focus",
+        "x": 3,
+        "y": 0,
+        "need": 2
+      },
+      {
+        "type": "splitter",
+        "x": 2,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 1,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "combiner",
+        "x": 4,
+        "y": 5,
+        "dir": 0,
+        "need": 2
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 3
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 1,
+        "s": 0
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:56"
+  },
+  {
+    "name": "月庭·远送",
+    "chapter": "光路博弈",
+    "chapterNo": 106,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "S",
+      "index": 4
+    },
+    "emitters": [
+      {
+        "side": "S",
+        "index": 4
+      },
+      {
+        "side": "W",
+        "index": 6
+      },
+      {
+        "side": "E",
+        "index": 2
+      }
+    ],
+    "targets": [
+      {
+        "side": "S",
+        "index": 5
+      },
+      {
+        "side": "S",
+        "index": 2
+      },
+      {
+        "side": "E",
+        "index": 1
+      },
+      {
+        "side": "N",
+        "index": 3
+      },
+      {
+        "side": "E",
+        "index": 3
+      }
+    ],
+    "shots": 3,
+    "hint": "先确认传送出口，再沿分光支路接通各个终点。",
+    "items": [
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 7,
+        "pair": "P1"
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 7,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 5
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 0
+      },
+      {
+        "type": "splitter",
+        "x": 2,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "portal",
+        "x": 6,
+        "y": 3,
+        "pair": "P1"
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 5,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 1,
+        "s": 1
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:57"
+  },
+  {
+    "name": "月庭·双钥",
+    "chapter": "光路博弈",
+    "chapterNo": 106,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "N",
+      "index": 7
+    },
+    "emitters": [
+      {
+        "side": "N",
+        "index": 7
+      },
+      {
+        "side": "S",
+        "index": 5
+      },
+      {
+        "side": "E",
+        "index": 4
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 5
+      },
+      {
+        "side": "W",
+        "index": 4
+      },
+      {
+        "side": "S",
+        "index": 7
+      },
+      {
+        "side": "N",
+        "index": 3
+      }
+    ],
+    "shots": 3,
+    "hint": "找齐两枚钥匙，再接通门后的聚合光路。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 7
+      },
+      {
+        "type": "switch",
+        "x": 5,
+        "y": 2,
+        "id": "A"
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 2
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 3,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 7,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 3,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "switch",
+        "x": 0,
+        "y": 4,
+        "id": "B"
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 7
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 5
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 6
+      },
+      {
+        "type": "door",
+        "x": 7,
+        "y": 3,
+        "id": "D1",
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "type": "combiner",
+        "x": 5,
+        "y": 4,
+        "dir": 3,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 5,
+        "s": 1
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:58"
+  },
+  {
+    "name": "月庭·合奏",
+    "chapter": "光路博弈",
+    "chapterNo": 106,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "S",
+      "index": 4
+    },
+    "emitters": [
+      {
+        "side": "S",
+        "index": 4
+      },
+      {
+        "side": "W",
+        "index": 3
+      },
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "E",
+        "index": 0
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 5
+      },
+      {
+        "side": "N",
+        "index": 4
+      },
+      {
+        "side": "E",
+        "index": 1
+      }
+    ],
+    "shots": 3,
+    "hint": "几束光各有去处，先保留已经接通的部分。",
+    "items": [
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 7
+      },
+      {
+        "type": "splitter",
+        "x": 7,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 5
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 7,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "combiner",
+        "x": 1,
+        "y": 3,
+        "dir": 3,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 3,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 7,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "focus",
+        "x": 2,
+        "y": 7,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 3,
+        "y": 7,
+        "s": 1
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:59"
+  },
+  {
+    "name": "月庭·回响",
+    "chapter": "光路博弈",
+    "chapterNo": 106,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "S",
+      "index": 1
+    },
+    "emitters": [
+      {
+        "side": "S",
+        "index": 1
+      },
+      {
+        "side": "W",
+        "index": 3
+      }
+    ],
+    "targets": [
+      {
+        "side": "W",
+        "index": 4
+      },
+      {
+        "side": "E",
+        "index": 5
+      },
+      {
+        "side": "W",
+        "index": 7
+      },
+      {
+        "side": "S",
+        "index": 4
+      }
+    ],
+    "shots": 3,
+    "hint": "顺着固定镜的线索，让聚合光转过最后几个弯。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 7,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 5,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 4,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "combiner",
+        "x": 0,
+        "y": 3,
+        "dir": 2,
+        "need": 2
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 3
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 4
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:60"
+  },
+  {
+    "name": "虹港·汇流",
+    "chapter": "光路博弈",
+    "chapterNo": 107,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 2
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 2
+      },
+      {
+        "side": "N",
+        "index": 6
+      },
+      {
+        "side": "N",
+        "index": 3
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 3
+      },
+      {
+        "side": "N",
+        "index": 7
+      },
+      {
+        "side": "S",
+        "index": 0
+      },
+      {
+        "side": "S",
+        "index": 5
+      }
+    ],
+    "shots": 3,
+    "hint": "先接齐核心的两路输入，再沿粗光束安排出口。",
+    "items": [
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 5
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 7
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 0,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "splitter",
+        "x": 0,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 1,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "combiner",
+        "x": 0,
+        "y": 1,
+        "dir": 1,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 7
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 4,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 0
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 0,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 0
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:61"
+  },
+  {
+    "name": "虹港·流光",
+    "chapter": "光路博弈",
+    "chapterNo": 107,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "S",
+      "index": 3
+    },
+    "emitters": [
+      {
+        "side": "S",
+        "index": 3
+      },
+      {
+        "side": "E",
+        "index": 1
+      }
+    ],
+    "targets": [
+      {
+        "side": "N",
+        "index": 2
+      },
+      {
+        "side": "W",
+        "index": 3
+      },
+      {
+        "side": "E",
+        "index": 3
+      }
+    ],
+    "shots": 3,
+    "hint": "沿固定镜分配支路，让几个终点接连亮起。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 1
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 2
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 7
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 4,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 5,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "splitter",
+        "x": 3,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 3,
+        "y": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 0,
+        "fixed": true
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:62"
+  },
+  {
+    "name": "虹港·跃迁",
+    "chapter": "光路博弈",
+    "chapterNo": 107,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "E",
+      "index": 3
+    },
+    "emitters": [
+      {
+        "side": "E",
+        "index": 3
+      },
+      {
+        "side": "N",
+        "index": 5
+      },
+      {
+        "side": "S",
+        "index": 1
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 7
+      },
+      {
+        "side": "W",
+        "index": 6
+      },
+      {
+        "side": "S",
+        "index": 0
+      },
+      {
+        "side": "E",
+        "index": 2
+      },
+      {
+        "side": "S",
+        "index": 4
+      }
+    ],
+    "shots": 3,
+    "hint": "同色传送保持方向，把远处的光送回核心。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 0
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 3
+      },
+      {
+        "type": "portal",
+        "x": 6,
+        "y": 5,
+        "pair": "P1"
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 0
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 5
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "combiner",
+        "x": 6,
+        "y": 1,
+        "dir": 2,
+        "need": 2
+      },
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 7,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 4
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 2,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "portal",
+        "x": 5,
+        "y": 0,
+        "pair": "P1"
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 0
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:63"
+  },
+  {
+    "name": "虹港·启门",
+    "chapter": "光路博弈",
+    "chapterNo": 107,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "S",
+      "index": 5
+    },
+    "emitters": [
+      {
+        "side": "S",
+        "index": 5
+      },
+      {
+        "side": "N",
+        "index": 4
+      },
+      {
+        "side": "E",
+        "index": 6
+      }
+    ],
+    "targets": [
+      {
+        "side": "S",
+        "index": 4
+      },
+      {
+        "side": "S",
+        "index": 6
+      },
+      {
+        "side": "S",
+        "index": 1
+      },
+      {
+        "side": "W",
+        "index": 7
+      }
+    ],
+    "shots": 3,
+    "hint": "一条支路取钥，另一条完成聚合，再穿过光门。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 7,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "switch",
+        "x": 6,
+        "y": 7,
+        "id": "A"
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 7,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "door",
+        "x": 6,
+        "y": 5,
+        "id": "D1",
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 2
+      },
+      {
+        "type": "combiner",
+        "x": 6,
+        "y": 6,
+        "dir": 2,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 2,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 0
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 0
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 2
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:64"
+  },
+  {
+    "name": "虹港·接棒",
+    "chapter": "光路博弈",
+    "chapterNo": 107,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 7
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 7
+      },
+      {
+        "side": "W",
+        "index": 2
+      },
+      {
+        "side": "S",
+        "index": 5
+      },
+      {
+        "side": "W",
+        "index": 5
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 6
+      },
+      {
+        "side": "S",
+        "index": 4
+      },
+      {
+        "side": "N",
+        "index": 6
+      },
+      {
+        "side": "S",
+        "index": 2
+      }
+    ],
+    "shots": 3,
+    "hint": "前一座核心的粗光束，接着为下一座核心供光。",
+    "items": [
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "combiner",
+        "x": 1,
+        "y": 4,
+        "dir": 0,
+        "need": 2
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 3
+      },
+      {
+        "type": "combiner",
+        "x": 3,
+        "y": 4,
+        "dir": 2,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 6,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 5,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 1
+      },
+      {
+        "type": "splitter",
+        "x": 2,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 7,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 1
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 6,
+        "s": 0
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:65"
+  },
+  {
+    "name": "虹港·晶光",
+    "chapter": "光路博弈",
+    "chapterNo": 107,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "N",
+      "index": 3
+    },
+    "emitters": [
+      {
+        "side": "N",
+        "index": 3
+      },
+      {
+        "side": "W",
+        "index": 3
+      },
+      {
+        "side": "S",
+        "index": 4
+      },
+      {
+        "side": "E",
+        "index": 3
+      }
+    ],
+    "targets": [
+      {
+        "side": "S",
+        "index": 3
+      },
+      {
+        "side": "E",
+        "index": 0
+      },
+      {
+        "side": "W",
+        "index": 4
+      }
+    ],
+    "shots": 3,
+    "hint": "为晶体补齐方向，再把剩下的光送往出口。",
+    "items": [
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 5
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 6,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "combiner",
+        "x": 3,
+        "y": 0,
+        "dir": 0,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 4,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 1
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 3,
+        "y": 7,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 4
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 7
+      },
+      {
+        "type": "focus",
+        "x": 1,
+        "y": 2,
+        "need": 2
+      },
+      {
+        "type": "splitter",
+        "x": 0,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 4
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 5,
+        "s": 0
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:66"
+  },
+  {
+    "name": "虹港·远送",
+    "chapter": "光路博弈",
+    "chapterNo": 107,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 7
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 7
+      },
+      {
+        "side": "E",
+        "index": 1
+      },
+      {
+        "side": "E",
+        "index": 3
+      }
+    ],
+    "targets": [
+      {
+        "side": "W",
+        "index": 1
+      },
+      {
+        "side": "E",
+        "index": 6
+      },
+      {
+        "side": "N",
+        "index": 3
+      },
+      {
+        "side": "N",
+        "index": 6
+      }
+    ],
+    "shots": 3,
+    "hint": "先确认传送出口，再沿分光支路接通各个终点。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 7,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 1,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "portal",
+        "x": 7,
+        "y": 2,
+        "pair": "P1"
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 3,
+        "y": 1,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 7
+      },
+      {
+        "type": "portal",
+        "x": 7,
+        "y": 6,
+        "pair": "P1"
+      },
+      {
+        "type": "splitter",
+        "x": 6,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 5
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 7,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 4
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 7
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 3,
+        "s": 0
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:67"
+  },
+  {
+    "name": "虹港·双钥",
+    "chapter": "光路博弈",
+    "chapterNo": 107,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "S",
+      "index": 5
+    },
+    "emitters": [
+      {
+        "side": "S",
+        "index": 5
+      },
+      {
+        "side": "S",
+        "index": 2
+      },
+      {
+        "side": "W",
+        "index": 6
+      }
+    ],
+    "targets": [
+      {
+        "side": "N",
+        "index": 5
+      },
+      {
+        "side": "E",
+        "index": 4
+      },
+      {
+        "side": "N",
+        "index": 3
+      },
+      {
+        "side": "W",
+        "index": 1
+      }
+    ],
+    "shots": 3,
+    "hint": "找齐两枚钥匙，再接通门后的聚合光路。",
+    "items": [
+      {
+        "type": "splitter",
+        "x": 2,
+        "y": 3,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 0,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "combiner",
+        "x": 2,
+        "y": 6,
+        "dir": 0,
+        "need": 2
+      },
+      {
+        "type": "wall",
+        "x": 7,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 2
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 5,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 6,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 3,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "switch",
+        "x": 5,
+        "y": 1,
+        "id": "B"
+      },
+      {
+        "type": "door",
+        "x": 3,
+        "y": 7,
+        "id": "D1",
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 3,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 6
+      },
+      {
+        "type": "switch",
+        "x": 0,
+        "y": 6,
+        "id": "A"
+      },
+      {
+        "type": "splitter",
+        "x": 2,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 1,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 7,
+        "s": 1
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:68"
+  },
+  {
+    "name": "虹港·合奏",
+    "chapter": "光路博弈",
+    "chapterNo": 107,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 4
+    },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 4
+      },
+      {
+        "side": "E",
+        "index": 7
+      },
+      {
+        "side": "E",
+        "index": 5
+      },
+      {
+        "side": "W",
+        "index": 3
+      }
+    ],
+    "targets": [
+      {
+        "side": "W",
+        "index": 6
+      },
+      {
+        "side": "W",
+        "index": 2
+      },
+      {
+        "side": "N",
+        "index": 0
+      }
+    ],
+    "shots": 3,
+    "hint": "几束光各有去处，先保留已经接通的部分。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 7,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 2,
+        "s": 1
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 4,
+        "s": 1
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 1
+      },
+      {
+        "type": "mirror",
+        "x": 2,
+        "y": 3,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "focus",
+        "x": 1,
+        "y": 5,
+        "need": 2
+      },
+      {
+        "type": "splitter",
+        "x": 4,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 4
+      },
+      {
+        "type": "wall",
+        "x": 4,
+        "y": 7
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 3,
+        "s": 1,
+        "fixed": true
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 3,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 7,
+        "y": 6,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 5,
+        "y": 3
+      },
+      {
+        "type": "wall",
+        "x": 2,
+        "y": 1
+      },
+      {
+        "type": "combiner",
+        "x": 4,
+        "y": 4,
+        "dir": 0,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 2,
+        "s": 0,
+        "decoy": true
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:69"
+  },
+  {
+    "name": "虹港·回响",
+    "chapter": "光路博弈",
+    "chapterNo": 107,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "N",
+      "index": 1
+    },
+    "emitters": [
+      {
+        "side": "N",
+        "index": 1
+      },
+      {
+        "side": "W",
+        "index": 4
+      }
+    ],
+    "targets": [
+      {
+        "side": "E",
+        "index": 4
+      },
+      {
+        "side": "N",
+        "index": 5
+      },
+      {
+        "side": "S",
+        "index": 4
+      }
+    ],
+    "shots": 3,
+    "hint": "顺着固定镜的线索，让聚合光转过最后几个弯。",
+    "items": [
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 2,
+        "s": 0,
+        "fixed": true
+      },
+      {
+        "type": "wall",
+        "x": 0,
+        "y": 3
+      },
+      {
+        "type": "splitter",
+        "x": 1,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 6,
+        "y": 5,
+        "s": 0
+      },
+      {
+        "type": "wall",
+        "x": 6,
+        "y": 1
+      },
+      {
+        "type": "mirror",
+        "x": 5,
+        "y": 7,
+        "s": 0,
+        "decoy": true
+      },
+      {
+        "type": "wall",
+        "x": 1,
+        "y": 7
+      },
+      {
+        "type": "combiner",
+        "x": 5,
+        "y": 2,
+        "dir": 3,
+        "need": 2
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 0,
+        "s": 0
+      },
+      {
+        "type": "splitter",
+        "x": 5,
+        "y": 5,
+        "s": 1
+      },
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 5,
+        "s": 0,
+        "fixed": true
+      }
+    ],
+    "mode": "campaign",
+    "stageKey": "flow:70"
+  }
+]

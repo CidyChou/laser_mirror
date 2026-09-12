@@ -18,6 +18,7 @@ import {
   firstIncompleteLevel,
   isLevelUnlocked,
   loadAllLevelsUnlocked,
+  loadCampaignAccess,
   loadCompletedLevels,
   loadCurrentLevel,
   saveAllLevelsUnlocked,
@@ -54,6 +55,7 @@ export class GameApplication {
   private readonly levels:readonly LevelDefinition[];
   private completedLevels=new Set<number>();
   private allLevelsUnlocked=false;
+  private unlockedThrough=0;
   private coins=0;
   private timeProgress={usedFailureProtection:new Set<number>(),seenTutorials:new Set<string>()};
   private totalLevels=0;
@@ -70,6 +72,7 @@ export class GameApplication {
     this.levels=repo.levels;
     this.totalLevels=this.levels.length;
     this.completedLevels=loadCompletedLevels(platform,this.levels);
+    this.unlockedThrough=loadCampaignAccess(platform,this.levels,this.completedLevels);
     this.allLevelsUnlocked=false;
     if(loadAllLevelsUnlocked(platform))saveAllLevelsUnlocked(platform,false);
     const initialLevel=loadCurrentLevel(platform,this.levels,this.completedLevels,false);
@@ -282,7 +285,7 @@ export class GameApplication {
     this.applyUiTextures();
     this.bindViewHandlers();
     this.syncTutorial();
-    if(reopenLevels)this.view.showLevelSelect(this.session.state.levelIndex,this.completedLevels,this.allLevelsUnlocked);
+    if(reopenLevels)this.view.showLevelSelect(this.session.state.levelIndex,this.completedLevels,this.allLevelsUnlocked,this.unlockedThrough);
     if(reopenSettings)this.view.showSettings(this.audioEnabled,this.hapticsEnabled,this.themeId);
     const renderer=this.app.renderer as any;
     if(renderer.background)renderer.background.color=Theme.bg;
@@ -329,19 +332,19 @@ export class GameApplication {
       openLevels:()=>{
         if(this.session.state.firing||this.view.result.visible||this.view.poster.visible)return;
         this.audio.play('uiClick');
-        this.view.showLevelSelect(this.session.state.levelIndex,this.completedLevels,this.allLevelsUnlocked);
+        this.view.showLevelSelect(this.session.state.levelIndex,this.completedLevels,this.allLevelsUnlocked,this.unlockedThrough);
         this.wake();
       },
       selectLevel:(index)=>{
         if(this.session.state.firing||this.view.result.visible||this.view.poster.visible)return;
         if(index<0||index>=this.totalLevels)return;
-        if(!isLevelUnlocked(index,this.totalLevels,this.completedLevels,this.allLevelsUnlocked)){
+        if(!isLevelUnlocked(index,this.totalLevels,this.completedLevels,this.allLevelsUnlocked,this.unlockedThrough)){
           this.view.showToast('通过当前关卡后解锁下一关',nowMs());this.wake();return;
         }
         this.collectPendingCoins();this.pendingResult=null;this.audio.play('uiClick');
         this.session.load(index);this.wake();
       },
-      canSelectLevel:index=>isLevelUnlocked(index,this.totalLevels,this.completedLevels,this.allLevelsUnlocked),
+      canSelectLevel:index=>isLevelUnlocked(index,this.totalLevels,this.completedLevels,this.allLevelsUnlocked,this.unlockedThrough),
       unlockAllLevels:()=>this.unlockAllLevels(),
       clearHistory:()=>this.clearHistory(),
       uiChanged:()=>this.wake(),
@@ -364,7 +367,7 @@ export class GameApplication {
       resultPreview:()=>this.openWinPreview(),
       resultLevels:()=>{
         this.collectPendingCoins();this.pendingResult=null;this.audio.play('uiClick');
-        this.view.showLevelSelectFromWin(this.session.state.levelIndex,this.completedLevels,this.allLevelsUnlocked);
+        this.view.showLevelSelectFromWin(this.session.state.levelIndex,this.completedLevels,this.allLevelsUnlocked,this.unlockedThrough);
         this.wake();
       },
       closePoster:()=>{this.audio.play('uiClick');this.view.poster.hide();this.wake();},
@@ -451,12 +454,13 @@ export class GameApplication {
     this.timeProgress.usedFailureProtection.clear();this.timeProgress.seenTutorials.clear();this.saveTimeProgress();
     this.audio.play('uiClick');
     this.completedLevels.clear();
+    this.unlockedThrough=0;
     clearLevelProgress(this.platform);
     this.tutorial.clear();
     this.coins=0;saveCoins(this.platform,0);
     this.session.restoreHearts(MAX_HEARTS);saveHearts(this.platform,MAX_HEARTS);
     this.session.load(0);
-    this.view.showLevelSelect(0,this.completedLevels,this.allLevelsUnlocked);
+    this.view.showLevelSelect(0,this.completedLevels,this.allLevelsUnlocked,this.unlockedThrough);
     this.vibrate('medium');this.wake();
   }
   private saveTimeProgress(){
@@ -466,7 +470,7 @@ export class GameApplication {
     this.allLevelsUnlocked=!this.allLevelsUnlocked;
     this.audio.play('uiClick');
     this.vibrate(this.allLevelsUnlocked?'success':'medium');
-    this.view.showLevelSelect(this.session.state.levelIndex,this.completedLevels,this.allLevelsUnlocked);
+    this.view.showLevelSelect(this.session.state.levelIndex,this.completedLevels,this.allLevelsUnlocked,this.unlockedThrough);
     this.wake();
   }
   private showHeartRefill(now:number){

@@ -18,13 +18,20 @@ function emittersOf(level) {
   return [level.emitter];
 }
 
-if (levels.length !== 130) errors.push(`levels.json should contain 130 levels, got ${levels.length}`);
-if (bosses.length !== 13) errors.push(`time-bosses.json should contain 13 challenges, got ${bosses.length}`);
+if (levels.length !== 200) errors.push(`levels.json should contain 200 levels, got ${levels.length}`);
+if (bosses.length !== 20) errors.push(`time-bosses.json should contain 20 challenges, got ${bosses.length}`);
+const boardOnly=({stageKey,chapter,chapterNo,...board})=>board;
 Object.entries(handcrafted).forEach(([number, level]) => {
-  if (JSON.stringify(levels[Number(number) - 1] ?? {}) !== JSON.stringify(level)) {
+  if (JSON.stringify(boardOnly(levels.find(l=>l.stageKey===`level:${number}`) ?? {})) !== JSON.stringify(boardOnly(level))) {
     errors.push(`#${number} diverged from handcrafted.json`);
   }
 });
+const identities=new Set();
+for(const level of [...levels,...bosses]){
+  if(!level.stageKey||identities.has(level.stageKey))errors.push(`Missing or duplicate stageKey: ${level.stageKey}`);
+  identities.add(level.stageKey);
+}
+levels.forEach((level,index)=>{if(level.chapterNo!==Math.floor(index/10)+1)errors.push(`#${index+1}: wrong chapter`);});
 
 const validationEntries = [
   ...levels.map((level, index) => ({ level, number: index + 1, boss: false })),
@@ -99,4 +106,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`Validated ${levels.length} original levels and ${bosses.length} separate challenges (max ${MAX_COLS} columns × ${MAX_ROWS} rows).`);
+console.log(`Validated ${levels.length} main levels and ${bosses.length} separate challenges (max ${MAX_COLS} columns × ${MAX_ROWS} rows).`);

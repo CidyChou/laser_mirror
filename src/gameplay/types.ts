@@ -47,6 +47,8 @@ export interface CampaignStageMeta {
 }
 
 export interface LevelDefinition {
+  /** Persistent board identity, independent of its position in the campaign. */
+  stageKey?: string;
   /** Travels with the board when levels are reordered. */
   mode?: 'campaign' | 'challenge';
   /** Added by LevelRepository at runtime; level JSON stays portable. */

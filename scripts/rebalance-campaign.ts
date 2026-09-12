@@ -5,7 +5,9 @@ import { scramble } from './puzzle-foundry';
 import { newRecipes, repairRecipes } from './campaign-recipes';
 
 const read = (path: string) => JSON.parse(readFileSync(path, 'utf8'));
-const levels = read('src/levels/levels.json').slice(0, 100) as LevelDefinition[];
+const current = read('src/levels/levels.json') as LevelDefinition[];
+if(current.length!==130)throw new Error('Historical 130-level rebalance script. Edit the expanded campaign in GM instead.');
+const levels = current.slice(0, 100);
 const revisions = read('src/levels/revisions.json') as Record<string, LevelDefinition>;
 const handcrafted = read('src/levels/handcrafted.json') as Record<string, LevelDefinition>;
 for (const recipe of repairRecipes) {

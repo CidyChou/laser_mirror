@@ -12,6 +12,7 @@ import raw from '../src/levels/levels.json';
 import { LevelRepository } from '../src/levels/LevelRepository';
 
 const levels = raw as LevelDefinition[];
+const original=(number:number)=>levels.find(l=>l.stageKey===`level:${number}`)!;
 const sim = new LaserSimulator();
 let writes = 0;
 const seen = new Set<string>();
@@ -70,7 +71,7 @@ assert(planned.some(s => s.action === 'rotate'));
 
 // A board already aimed correctly has no forced rotation; an impossible/large board has no forced shot.
 const solved = { ...levels[0], items: [{ type: 'mirror', x: 1, y: 1, s: 1 }] } as LevelDefinition;
-for (const board of [solved, { ...levels[0], items: [] }, levels[100]]) {
+for (const board of [solved, { ...levels[0], items: [] }, original(101)]) {
   const director = new TutorialDirector(new Set(), () => {});
   director.enter(new GameSession([board]).state);
   let steps = 0;
@@ -96,10 +97,10 @@ guide.clear(); guide.enter(session.state); assert.equal((guide as TutorialDirect
 
 // Paired anchors are matched by ID, not by item order or proximity. Counts teach new variants.
 const portals = new TutorialDirector(new Set(['basics', 'mirror']), () => {});
-const portalState = new GameSession([levels[40]]).state;
+const portalState = new GameSession([original(41)]).state;
 portalState.items.reverse(); portals.enter(portalState);
 assert.equal(portals.current?.id, 'portal'); assert.equal(portals.current?.anchors.length, 2);
-const variant: LevelDefinition = { ...levels[60], items: levels[60].items.map(i => i.type === 'focus' ? { ...i, need: 3 } : i) };
+const variant: LevelDefinition = { ...original(61), items: original(61).items.map(i => i.type === 'focus' ? { ...i, need: 3 } : i) };
 assert(tutorialLessonIds(variant).includes('focus-3'));
 const focusOnly: LevelDefinition = { ...levels[0], targets: [], items: [{ type: 'focus', x: 1, y: 1 }] };
 const focusGuide = new TutorialDirector(new Set(), () => {});
@@ -114,14 +115,14 @@ assert(!loadTutorialProgress(platform, levels, new Set([0])).has('splitter'));
 storage.set(TUTORIAL_STORAGE_KEY, '[]'); assert.equal(loadTutorialProgress(platform, levels, new Set([0])).size, 0);
 storage.set(TUTORIAL_STORAGE_KEY, '{broken'); assert(loadTutorialProgress(platform, levels, new Set([0])).has('mirror'));
 storage.set(TUTORIAL_STORAGE_KEY, '[null,12,"portal"]'); assert.deepEqual([...loadTutorialProgress(platform, levels, new Set())], ['portal']);
-const importedChallenge = toGameLevel(hydrateLevels([{ ...levels[100], mode: 'challenge' }])[0]);
+const importedChallenge = toGameLevel(hydrateLevels([{ ...original(101), mode: 'challenge' }])[0]);
 assert.equal(importedChallenge.mode, 'challenge');
 const challenge = new LevelRepository().timeBosses[0];
 assert(isChallengeLevel(challenge)); assert(tutorialLessonIds(challenge).includes('challenge'));
 
 // The simplified introduction boards still solve, and no unrelated mirror remains in their lesson.
 for (const number of [11, 31, 41, 61, 71]) {
-  const board = levels[number - 1], answer = tutorialSolution(board, board.items);
+  const board = original(number), answer = tutorialSolution(board, board.items);
   assert(answer, `Introduction ${number} must be solvable within the teaching budget`);
   const trace = sim.simulate(board, answer, computeGeometry(board));
   assert(trace.hits.every(Boolean));
@@ -132,12 +133,12 @@ for (const number of [11, 31, 41, 61, 71]) {
 // Mechanic cards no longer force an extra practice tap after explaining the rule.
 for(const number of [11,31,41,61,71]){
   const director=new TutorialDirector(new Set(['basics','mirror']),()=>{});
-  director.enter(new GameSession([levels[number-1]]).state);
+  director.enter(new GameSession([original(number)]).state);
   assert(director.progress.total<=MAX_TUTORIAL_STEPS,`#${number}: mechanic tutorial too long`);
   while(director.current){assert.equal(director.current.action,'next');director.next();}
 }
 const compact=new TutorialDirector(new Set(['basics','mirror']),()=>{});
-const complex=new GameSession([levels[129]]).state;
+const complex=new GameSession([original(130)]).state;
 compact.enter(complex);assert(compact.progress.total<=3);
 const learned=new Set<string>();const deferred=new TutorialDirector(learned,()=>{});
 deferred.enter(complex);deferred.skip();
@@ -147,4 +148,4 @@ const fixedKnown=new TutorialDirector(new Set(['basics','mirror','fixed-splitter
 fixedKnown.enter(new GameSession([{...levels[0],items:[{type:'mirror',x:1,y:1,s:0,fixed:true}]}]).state);
 assert.equal(fixedKnown.current,null,'Old fixed-optic lesson should not repeat');
 
-console.log('Tutorial verified: 3-step first level, short copy, merged lessons, guided victory, all 130 boards, adaptive positions, solved/unsolvable/large fallbacks, new mechanisms/counts, persistence/replay, GM challenge round-trip and simplified introductions.');
+console.log('Tutorial verified: 3-step first level, short copy, merged lessons, guided victory, all 200 boards, adaptive positions, solved/unsolvable/large fallbacks, new mechanisms/counts, persistence/replay, GM challenge round-trip and simplified introductions.');

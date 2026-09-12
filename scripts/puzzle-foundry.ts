@@ -3,7 +3,7 @@ import { itemKey } from '../src/gameplay/levelAccess';
 import type { Direction, LaserTrace, LevelDefinition, LevelItem, Port } from '../src/gameplay/types';
 import { controlsOf, inspectLevel, isControl, layoutSimilarity, seedRandom, setValue, shuffle, simulator, solved, valueOf } from './level-quality';
 
-export type Recipe={number:number;name:string;hint:string;sources:number;splitters:number;portals?:number;focus?:number[];combiners?:number;chain?:boolean;keys?:number;doors?:number;andLock?:boolean;size?:number;minLive?:number;maxLive?:number;minClicks?:number;fixed?:boolean};
+export type Recipe={number:number;name:string;hint:string;sources:number;splitters:number;portals?:number;focus?:number[];combiners?:number;chain?:boolean;keys?:number;doors?:number;andLock?:boolean;size?:number;minLive?:number;maxLive?:number;minClicks?:number;maxClicks?:number;fixed?:boolean;fixedCount?:number;decoys?:number};
 type Cell={x:number;y:number;dirs:Set<number>;wide:boolean};
 function crossed(level:LevelDefinition,trace:LaserTrace){
   const g=computeGeometry(level),cells=new Map<string,Cell>();
@@ -122,18 +122,20 @@ export function forge(recipe:Recipe,others:LevelDefinition[]){
       }
     }
     const candidates=shuffle([...temptations.values()],random);
-    if(candidates.length<2)continue;
-    for(const cell of candidates.slice(0,2))level.items.push({type:'mirror',...cell,s:random()<.5?0:1,decoy:true});
+    const decoyCount=recipe.decoys??2;
+    if(candidates.length<decoyCount)continue;
+    for(const cell of candidates.slice(0,decoyCount))level.items.push({type:'mirror',...cell,s:random()<.5?0:1,decoy:true});
     const walls=shuffle(cells.filter(c=>!used.has(itemKey(c.x,c.y))&&!occupied(level,c.x,c.y)),random);
     for(const cell of walls.slice(0,3+Math.floor(random()*4)))level.items.push({type:'wall',...cell});
-    if(recipe.fixed){const mirror=shuffle(level.items.filter(i=>i.type==='mirror'&&!i.decoy),random)[0];if(mirror&&mirror.type==='mirror')mirror.fixed=true;}
+    const fixedCount=recipe.fixedCount??(recipe.fixed?1:0);
+    for(const mirror of shuffle(level.items.filter(i=>i.type==='mirror'&&!i.decoy),random).slice(0,fixedCount))if(mirror.type==='mirror')mirror.fixed=true;
     if(others.some(other=>layoutSimilarity(level,other)>.48))continue;
     const audit=inspectLevel(level);
-    if(!audit.best||audit.live<minLive-(recipe.fixed?1:0)||audit.temptingDecoys<1||audit.solutions>32||(audit.effectiveBits??0)<minLive-2||audit.bypassableMechanics.length)continue;
+    if(!audit.best||audit.live<minLive-fixedCount||audit.temptingDecoys<Math.min(1,decoyCount)||audit.solutions>32||(audit.effectiveBits??0)<minLive-fixedCount-2||audit.bypassableMechanics.length)continue;
     try{
       const result=scramble(level,recipe.number*65537,recipe.minClicks??5);
       const final=inspectLevel(result);
-      if(final.bypassableMechanics.length||final.temptingDecoys<1)continue;
+      if(final.bypassableMechanics.length||final.temptingDecoys<Math.min(1,decoyCount)||(final.minClicks??Infinity)>(recipe.maxClicks??Infinity)||(recipe.decoys!==undefined&&final.decoys>recipe.decoys))continue;
       console.log(`Forged #${recipe.number} ${recipe.name}, attempts=${attempt+1}, live=${audit.live}, decoys=${audit.temptingDecoys}, solutions=${audit.solutions}`);
       return result;
     }catch{continue;}

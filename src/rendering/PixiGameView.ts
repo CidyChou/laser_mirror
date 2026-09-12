@@ -137,9 +137,9 @@ export class PixiGameView{
   }
   rotateItem(x:number,y:number,s:0|1,dir?:Direction){this.objects.rotateItem(x,y,s,dir);}
   hideOverlays(){this.result.hide();this.poster.hide();this.settings.hide();this.levelSelect.hide();this.combo.clear();this.confetti.clear();this.coins.hide();this.hud.setHeartsVisible(true);this.syncTutorialVisibility();}
-  showLevelSelectFromWin(currentIndex:number,completed:ReadonlySet<number>,allLevelsUnlocked=false){
+  showLevelSelectFromWin(currentIndex:number,completed:ReadonlySet<number>,allLevelsUnlocked=false,unlockedThrough=-1){
     this.result.hide();this.poster.hide();this.confetti.clear();this.coins.hide();this.hud.setHeartsVisible(true);
-    this.levelSelect.show(currentIndex,completed,allLevelsUnlocked);this.syncTutorialVisibility();
+    this.levelSelect.show(currentIndex,completed,allLevelsUnlocked,unlockedThrough);this.syncTutorialVisibility();
   }
   showWinPreview(meta:PosterMeta,now:number){
     const texture=this.captureBoardTexture();
@@ -214,7 +214,7 @@ export class PixiGameView{
   setAudioEnabled(enabled:boolean){this.settings.setAudioEnabled(enabled);}
   setHapticsEnabled(enabled:boolean){this.settings.setHapticsEnabled(enabled);}
   closeSettings(){this.settings.hide();this.syncTutorialVisibility();}
-  showLevelSelect(currentIndex:number,completed:ReadonlySet<number>,allLevelsUnlocked=false){this.levelSelect.show(currentIndex,completed,allLevelsUnlocked);this.syncTutorialVisibility();}
+  showLevelSelect(currentIndex:number,completed:ReadonlySet<number>,allLevelsUnlocked=false,unlockedThrough=-1){this.levelSelect.show(currentIndex,completed,allLevelsUnlocked,unlockedThrough);this.syncTutorialVisibility();}
   showResult(kind:ResultKind, copy:{title:string;subtitle:string;tip:string;primary:string;secondary?:string;reward?:number}, now:number){this.result.show(kind,copy,now);this.syncTutorialVisibility();}
   startWinCoins(now:number, balance:number, reward:number){
     this.coins.show(now, balance);

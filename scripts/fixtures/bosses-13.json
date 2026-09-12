@@ -65,7 +65,6 @@
     "hint": "先让第一束光通过中央镜，再旋转一次，接住回环返回的光。激光缩短至消失时失败。",
     "chapterNo": 1,
     "shots": 4,
-    "stageKey": "boss:1",
     "mode": "challenge",
     "timeBoss": {
       "adjustmentUses": 2,
@@ -183,7 +182,6 @@
         "fixed": true
       }
     ],
-    "stageKey": "boss:2",
     "mode": "challenge",
     "timeBoss": {
       "adjustmentUses": 2,
@@ -194,7 +192,7 @@
   },
   {
     "name": "三源·合流",
-    "chapter": "汇光小径",
+    "chapter": "障碍区域",
     "chapterNo": 3,
     "rows": 8,
     "cols": 8,
@@ -314,7 +312,6 @@
       }
     ],
     "mode": "challenge",
-    "stageKey": "boss:3",
     "timeBoss": {
       "adjustmentUses": 2,
       "bulletTimeUses": 0,
@@ -324,7 +321,7 @@
   },
   {
     "name": "聚能·双钥",
-    "chapter": "折返长廊",
+    "chapter": "能源机关",
     "chapterNo": 4,
     "rows": 8,
     "cols": 8,
@@ -454,7 +451,6 @@
       }
     ],
     "mode": "challenge",
-    "stageKey": "boss:4",
     "timeBoss": {
       "adjustmentUses": 2,
       "bulletTimeUses": 0,
@@ -464,7 +460,7 @@
   },
   {
     "name": "跃迁·汇流",
-    "chapter": "能源机关",
+    "chapter": "空间谜题",
     "chapterNo": 5,
     "rows": 8,
     "cols": 8,
@@ -584,7 +580,6 @@
       }
     ],
     "mode": "challenge",
-    "stageKey": "boss:5",
     "timeBoss": {
       "adjustmentUses": 2,
       "bulletTimeUses": 0,
@@ -594,13 +589,28 @@
   },
   {
     "name": "双核·分工",
-    "chapter": "光门接力",
+    "chapter": "双源激光",
+    "chapterNo": 6,
     "rows": 8,
     "cols": 8,
     "emitter": {
       "side": "W",
       "index": 3
     },
+    "emitters": [
+      {
+        "side": "W",
+        "index": 3
+      },
+      {
+        "side": "E",
+        "index": 1
+      },
+      {
+        "side": "N",
+        "index": 7
+      }
+    ],
     "targets": [
       {
         "side": "N",
@@ -615,6 +625,8 @@
         "index": 4
       }
     ],
+    "shots": 3,
+    "hint": "横向光源先为核心充能。中央镜先向上、再向下；右侧镜先向左、再向右，两次换向都要等前一束通过。",
     "items": [
       {
         "type": "splitter",
@@ -711,11 +723,24 @@
         ]
       }
     ],
-    "hint": "横向光源先为核心充能。中央镜先向上、再向下；右侧镜先向左、再向右，两次换向都要等前一束通过。",
-    "chapterNo": 6,
-    "shots": 3,
-    "stageKey": "boss:6",
     "mode": "challenge",
+    "timeBoss": {
+      "adjustmentUses": 2,
+      "bulletTimeUses": 0,
+      "lifetimeMs": 20000,
+      "firstFailureFree": true
+    }
+  },
+  {
+    "name": "三向·聚能",
+    "chapter": "双束终点",
+    "chapterNo": 7,
+    "rows": 8,
+    "cols": 8,
+    "emitter": {
+      "side": "W",
+      "index": 3
+    },
     "emitters": [
       {
         "side": "W",
@@ -728,24 +753,12 @@
       {
         "side": "N",
         "index": 7
+      },
+      {
+        "side": "S",
+        "index": 7
       }
     ],
-    "timeBoss": {
-      "adjustmentUses": 2,
-      "bulletTimeUses": 0,
-      "lifetimeMs": 20000,
-      "firstFailureFree": true
-    }
-  },
-  {
-    "name": "三向·聚能",
-    "chapter": "空间谜题",
-    "rows": 8,
-    "cols": 8,
-    "emitter": {
-      "side": "W",
-      "index": 3
-    },
     "targets": [
       {
         "side": "N",
@@ -760,6 +773,8 @@
         "index": 4
       }
     ],
+    "shots": 3,
+    "hint": "横向光源先为核心充能。中央镜先向上、再向下；右侧镜先向左、再向右，两次换向都要等前一束通过。",
     "items": [
       {
         "type": "splitter",
@@ -841,28 +856,6 @@
         "fixed": true
       }
     ],
-    "hint": "横向光源先为核心充能。中央镜先向上、再向下；右侧镜先向左、再向右，两次换向都要等前一束通过。",
-    "chapterNo": 7,
-    "shots": 3,
-    "emitters": [
-      {
-        "side": "W",
-        "index": 3
-      },
-      {
-        "side": "E",
-        "index": 1
-      },
-      {
-        "side": "N",
-        "index": 7
-      },
-      {
-        "side": "S",
-        "index": 7
-      }
-    ],
-    "stageKey": "boss:7",
     "mode": "challenge",
     "timeBoss": {
       "adjustmentUses": 2,
@@ -873,7 +866,7 @@
   },
   {
     "name": "聚合·三换轨",
-    "chapter": "跃迁航道",
+    "chapter": "聚合核心",
     "rows": 8,
     "cols": 8,
     "emitter": {
@@ -1024,7 +1017,6 @@
         "index": 2
       }
     ],
-    "stageKey": "boss:8",
     "mode": "challenge",
     "timeBoss": {
       "adjustmentUses": 3,
@@ -1035,7 +1027,7 @@
   },
   {
     "name": "晶核·交响",
-    "chapter": "双源激光",
+    "chapter": "交错机关",
     "rows": 8,
     "cols": 8,
     "emitter": {
@@ -1207,7 +1199,6 @@
         "index": 2
       }
     ],
-    "stageKey": "boss:9",
     "mode": "challenge",
     "timeBoss": {
       "adjustmentUses": 3,
@@ -1218,7 +1209,7 @@
   },
   {
     "name": "跃迁·三幕",
-    "chapter": "群光汇流",
+    "chapter": "终极光域",
     "rows": 8,
     "cols": 8,
     "emitter": {
@@ -1381,7 +1372,6 @@
         "index": 2
       }
     ],
-    "stageKey": "boss:10",
     "mode": "challenge",
     "timeBoss": {
       "adjustmentUses": 3,
@@ -1392,7 +1382,7 @@
   },
   {
     "name": "双核·错峰",
-    "chapter": "双束终点",
+    "chapter": "岔路迷阵",
     "rows": 8,
     "cols": 8,
     "emitter": {
@@ -1555,7 +1545,6 @@
         "index": 2
       }
     ],
-    "stageKey": "boss:11",
     "mode": "challenge",
     "timeBoss": {
       "adjustmentUses": 3,
@@ -1566,32 +1555,13 @@
   },
   {
     "name": "三核·接力",
-    "chapter": "晶光合奏",
-    "chapterNo": 12,
+    "chapter": "机关织网",
     "rows": 8,
     "cols": 8,
     "emitter": {
       "side": "W",
       "index": 3
     },
-    "emitters": [
-      {
-        "side": "W",
-        "index": 3
-      },
-      {
-        "side": "E",
-        "index": 1
-      },
-      {
-        "side": "S",
-        "index": 2
-      },
-      {
-        "side": "N",
-        "index": 2
-      }
-    ],
     "targets": [
       {
         "side": "N",
@@ -1610,8 +1580,6 @@
         "index": 5
       }
     ],
-    "shots": 3,
-    "hint": "三座核心各有独立输入。依次完成上方、左侧和左下聚合，再给最终出口换向。",
     "items": [
       {
         "type": "splitter",
@@ -1744,8 +1712,28 @@
         ]
       }
     ],
+    "hint": "三座核心各有独立输入。依次完成上方、左侧和左下聚合，再给最终出口换向。",
+    "chapterNo": 12,
+    "shots": 3,
+    "emitters": [
+      {
+        "side": "W",
+        "index": 3
+      },
+      {
+        "side": "E",
+        "index": 1
+      },
+      {
+        "side": "S",
+        "index": 2
+      },
+      {
+        "side": "N",
+        "index": 2
+      }
+    ],
     "mode": "challenge",
-    "stageKey": "boss:12",
     "timeBoss": {
       "adjustmentUses": 3,
       "bulletTimeUses": 0,
@@ -1755,1467 +1743,6 @@
   },
   {
     "name": "光路终局·合奏",
-    "chapter": "聚合核心",
-    "chapterNo": 13,
-    "rows": 8,
-    "cols": 8,
-    "emitter": {
-      "side": "W",
-      "index": 3
-    },
-    "emitters": [
-      {
-        "side": "W",
-        "index": 3
-      },
-      {
-        "side": "E",
-        "index": 0
-      },
-      {
-        "side": "E",
-        "index": 3
-      },
-      {
-        "side": "S",
-        "index": 4
-      }
-    ],
-    "targets": [
-      {
-        "side": "N",
-        "index": 3
-      },
-      {
-        "side": "W",
-        "index": 4
-      },
-      {
-        "side": "E",
-        "index": 5
-      },
-      {
-        "side": "N",
-        "index": 4
-      }
-    ],
-    "shots": 3,
-    "hint": "四次换向依次服务不同目标；先给晶体补光，再让最后一束上行光完成顶端聚合。",
-    "items": [
-      {
-        "type": "splitter",
-        "x": 1,
-        "y": 3,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 1,
-        "y": 6,
-        "s": 1,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 0,
-        "y": 6,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 0,
-        "y": 0,
-        "s": 1,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 1,
-        "y": 0,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 3,
-        "y": 3,
-        "s": 1,
-        "fixed": false
-      },
-      {
-        "type": "mirror",
-        "x": 3,
-        "y": 6,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 5,
-        "y": 6,
-        "s": 1,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 5,
-        "y": 4,
-        "s": 0,
-        "fixed": false
-      },
-      {
-        "type": "mirror",
-        "x": 7,
-        "y": 4,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 7,
-        "y": 6,
-        "s": 1,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 6,
-        "y": 6,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 6,
-        "y": 5,
-        "s": 1,
-        "fixed": false
-      },
-      {
-        "type": "mirror",
-        "x": 2,
-        "y": 5,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 2,
-        "y": 1,
-        "s": 1,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 4,
-        "y": 1,
-        "s": 0,
-        "fixed": false
-      },
-      {
-        "type": "focus",
-        "x": 4,
-        "y": 3,
-        "need": 2
-      },
-      {
-        "type": "combiner",
-        "x": 4,
-        "y": 0,
-        "dir": 3,
-        "need": 2,
-        "fixed": true
-      },
-      {
-        "type": "combiner",
-        "x": 4,
-        "y": 4,
-        "dir": 2,
-        "need": 2,
-        "fixed": true
-      },
-      {
-        "type": "switch",
-        "x": 3,
-        "y": 2,
-        "id": "A"
-      },
-      {
-        "type": "switch",
-        "x": 5,
-        "y": 5,
-        "id": "B"
-      },
-      {
-        "type": "door",
-        "x": 6,
-        "y": 4,
-        "id": "AB",
-        "requires": [
-          "A",
-          "B"
-        ]
-      }
-    ],
-    "mode": "challenge",
-    "stageKey": "boss:13",
-    "timeBoss": {
-      "adjustmentUses": 4,
-      "bulletTimeUses": 0,
-      "lifetimeMs": 24000,
-      "firstFailureFree": true
-    }
-  },
-  {
-    "name": "三核·回环取钥",
-    "chapter": "双核接棒",
-    "chapterNo": 14,
-    "rows": 8,
-    "cols": 8,
-    "emitter": {
-      "side": "W",
-      "index": 3
-    },
-    "emitters": [
-      {
-        "side": "W",
-        "index": 3
-      },
-      {
-        "side": "E",
-        "index": 1
-      },
-      {
-        "side": "S",
-        "index": 2
-      },
-      {
-        "side": "N",
-        "index": 2
-      }
-    ],
-    "targets": [
-      {
-        "side": "N",
-        "index": 3
-      },
-      {
-        "side": "W",
-        "index": 4
-      },
-      {
-        "side": "W",
-        "index": 5
-      },
-      {
-        "side": "E",
-        "index": 5
-      }
-    ],
-    "shots": 3,
-    "hint": "先取得上方钥匙，再让回环光依次完成左侧与左下的聚合。",
-    "items": [
-      {
-        "type": "splitter",
-        "x": 1,
-        "y": 3,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 1,
-        "y": 6,
-        "s": 1,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 0,
-        "y": 6,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 0,
-        "y": 0,
-        "s": 1,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 1,
-        "y": 0,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 3,
-        "y": 3,
-        "s": 1,
-        "fixed": false
-      },
-      {
-        "type": "mirror",
-        "x": 3,
-        "y": 6,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 5,
-        "y": 6,
-        "s": 1,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 5,
-        "y": 4,
-        "s": 0,
-        "fixed": false
-      },
-      {
-        "type": "combiner",
-        "x": 3,
-        "y": 1,
-        "dir": 3,
-        "need": 2,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 7,
-        "y": 4,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 7,
-        "y": 6,
-        "s": 1,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 6,
-        "y": 6,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 6,
-        "y": 5,
-        "s": 0,
-        "fixed": false
-      },
-      {
-        "type": "combiner",
-        "x": 2,
-        "y": 5,
-        "dir": 2,
-        "need": 2,
-        "fixed": true
-      },
-      {
-        "type": "combiner",
-        "x": 2,
-        "y": 4,
-        "dir": 2,
-        "need": 2,
-        "fixed": true
-      },
-      {
-        "type": "portal",
-        "x": 0,
-        "y": 2,
-        "pair": "loop"
-      },
-      {
-        "type": "portal",
-        "x": 0,
-        "y": 1,
-        "pair": "loop"
-      },
-      {
-        "type": "switch",
-        "x": 3,
-        "y": 2,
-        "id": "A"
-      },
-      {
-        "type": "door",
-        "x": 5,
-        "y": 5,
-        "id": "A",
-        "requires": [
-          "A"
-        ]
-      }
-    ],
-    "mode": "challenge",
-    "stageKey": "boss:14",
-    "timeBoss": {
-      "adjustmentUses": 3,
-      "bulletTimeUses": 0,
-      "lifetimeMs": 26000,
-      "firstFailureFree": true
-    }
-  },
-  {
-    "name": "晶光·远端接棒",
-    "chapter": "交错机关",
-    "rows": 8,
-    "cols": 8,
-    "emitter": {
-      "side": "W",
-      "index": 3
-    },
-    "targets": [
-      {
-        "side": "N",
-        "index": 3
-      },
-      {
-        "side": "W",
-        "index": 5
-      },
-      {
-        "side": "E",
-        "index": 5
-      }
-    ],
-    "items": [
-      {
-        "type": "splitter",
-        "x": 1,
-        "y": 3,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 1,
-        "y": 6,
-        "s": 1,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 0,
-        "y": 6,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 0,
-        "y": 0,
-        "s": 1,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 1,
-        "y": 0,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 3,
-        "y": 3,
-        "s": 1,
-        "fixed": false
-      },
-      {
-        "type": "mirror",
-        "x": 3,
-        "y": 6,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 5,
-        "y": 4,
-        "s": 0,
-        "fixed": false
-      },
-      {
-        "type": "combiner",
-        "x": 3,
-        "y": 1,
-        "dir": 3,
-        "need": 2,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 7,
-        "y": 4,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 7,
-        "y": 6,
-        "s": 1,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 6,
-        "y": 6,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 6,
-        "y": 5,
-        "s": 0,
-        "fixed": false
-      },
-      {
-        "type": "combiner",
-        "x": 2,
-        "y": 5,
-        "dir": 2,
-        "need": 2,
-        "fixed": true
-      },
-      {
-        "type": "focus",
-        "x": 2,
-        "y": 4,
-        "need": 2
-      },
-      {
-        "type": "portal",
-        "x": 4,
-        "y": 6,
-        "pair": "relay"
-      },
-      {
-        "type": "portal",
-        "x": 4,
-        "y": 7,
-        "pair": "relay"
-      },
-      {
-        "type": "mirror",
-        "x": 5,
-        "y": 7,
-        "s": 1,
-        "fixed": true
-      }
-    ],
-    "hint": "远端传送先送光到晶体，再换向把后续光送进左下核心。",
-    "chapterNo": 15,
-    "shots": 3,
-    "emitters": [
-      {
-        "side": "W",
-        "index": 3
-      },
-      {
-        "side": "E",
-        "index": 1
-      },
-      {
-        "side": "S",
-        "index": 2
-      },
-      {
-        "side": "N",
-        "index": 2
-      }
-    ],
-    "stageKey": "boss:15",
-    "mode": "challenge",
-    "timeBoss": {
-      "adjustmentUses": 3,
-      "bulletTimeUses": 0,
-      "lifetimeMs": 26000,
-      "firstFailureFree": true
-    }
-  },
-  {
-    "name": "双钥·连环聚能",
-    "chapter": "远端回响",
-    "rows": 8,
-    "cols": 8,
-    "emitter": {
-      "side": "W",
-      "index": 3
-    },
-    "targets": [
-      {
-        "side": "N",
-        "index": 3
-      },
-      {
-        "side": "W",
-        "index": 4
-      },
-      {
-        "side": "W",
-        "index": 5
-      },
-      {
-        "side": "E",
-        "index": 5
-      }
-    ],
-    "items": [
-      {
-        "type": "splitter",
-        "x": 1,
-        "y": 3,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 1,
-        "y": 6,
-        "s": 1,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 0,
-        "y": 6,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 0,
-        "y": 0,
-        "s": 1,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 1,
-        "y": 0,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 3,
-        "y": 3,
-        "s": 1,
-        "fixed": false
-      },
-      {
-        "type": "mirror",
-        "x": 3,
-        "y": 6,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 5,
-        "y": 6,
-        "s": 1,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 5,
-        "y": 4,
-        "s": 0,
-        "fixed": false
-      },
-      {
-        "type": "combiner",
-        "x": 3,
-        "y": 1,
-        "dir": 3,
-        "need": 2,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 7,
-        "y": 4,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 7,
-        "y": 6,
-        "s": 1,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 6,
-        "y": 6,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 6,
-        "y": 5,
-        "s": 0,
-        "fixed": false
-      },
-      {
-        "type": "combiner",
-        "x": 2,
-        "y": 5,
-        "dir": 2,
-        "need": 2,
-        "fixed": true
-      },
-      {
-        "type": "combiner",
-        "x": 4,
-        "y": 5,
-        "dir": 2,
-        "need": 2,
-        "fixed": true
-      },
-      {
-        "type": "switch",
-        "x": 3,
-        "y": 2,
-        "id": "A"
-      },
-      {
-        "type": "switch",
-        "x": 2,
-        "y": 4,
-        "id": "B"
-      },
-      {
-        "type": "door",
-        "x": 7,
-        "y": 5,
-        "id": "AB",
-        "requires": [
-          "A",
-          "B"
-        ]
-      }
-    ],
-    "hint": "上行与左行各取一枚钥匙，左下双核接力，最后送光穿过双钥门。",
-    "chapterNo": 16,
-    "shots": 3,
-    "stageKey": "boss:16",
-    "mode": "challenge",
-    "emitters": [
-      {
-        "side": "W",
-        "index": 3
-      },
-      {
-        "side": "E",
-        "index": 1
-      },
-      {
-        "side": "S",
-        "index": 2
-      },
-      {
-        "side": "S",
-        "index": 4
-      }
-    ],
-    "timeBoss": {
-      "adjustmentUses": 3,
-      "bulletTimeUses": 0,
-      "lifetimeMs": 26000,
-      "firstFailureFree": true
-    }
-  },
-  {
-    "name": "四路·阶梯汇流",
-    "chapter": "终极光域",
-    "chapterNo": 17,
-    "rows": 8,
-    "cols": 8,
-    "emitter": {
-      "side": "W",
-      "index": 3
-    },
-    "emitters": [
-      {
-        "side": "W",
-        "index": 3
-      },
-      {
-        "side": "E",
-        "index": 0
-      },
-      {
-        "side": "E",
-        "index": 3
-      },
-      {
-        "side": "S",
-        "index": 4
-      },
-      {
-        "side": "E",
-        "index": 2
-      }
-    ],
-    "targets": [
-      {
-        "side": "N",
-        "index": 3
-      },
-      {
-        "side": "W",
-        "index": 4
-      },
-      {
-        "side": "E",
-        "index": 5
-      },
-      {
-        "side": "N",
-        "index": 4
-      }
-    ],
-    "shots": 3,
-    "hint": "先汇聚上行光取得钥匙，再依次完成左侧、晶体与顶端的接力。",
-    "items": [
-      {
-        "type": "splitter",
-        "x": 1,
-        "y": 3,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 1,
-        "y": 6,
-        "s": 1,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 0,
-        "y": 6,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 0,
-        "y": 0,
-        "s": 1,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 1,
-        "y": 0,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 3,
-        "y": 3,
-        "s": 1,
-        "fixed": false
-      },
-      {
-        "type": "mirror",
-        "x": 3,
-        "y": 6,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 5,
-        "y": 6,
-        "s": 1,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 5,
-        "y": 4,
-        "s": 0,
-        "fixed": false
-      },
-      {
-        "type": "mirror",
-        "x": 7,
-        "y": 4,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 7,
-        "y": 6,
-        "s": 1,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 6,
-        "y": 6,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 6,
-        "y": 5,
-        "s": 1,
-        "fixed": false
-      },
-      {
-        "type": "mirror",
-        "x": 2,
-        "y": 5,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 2,
-        "y": 1,
-        "s": 1,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 4,
-        "y": 1,
-        "s": 0,
-        "fixed": false
-      },
-      {
-        "type": "focus",
-        "x": 4,
-        "y": 3,
-        "need": 2
-      },
-      {
-        "type": "combiner",
-        "x": 4,
-        "y": 0,
-        "dir": 3,
-        "need": 2,
-        "fixed": true
-      },
-      {
-        "type": "combiner",
-        "x": 4,
-        "y": 4,
-        "dir": 2,
-        "need": 2,
-        "fixed": true
-      },
-      {
-        "type": "switch",
-        "x": 3,
-        "y": 1,
-        "id": "A"
-      },
-      {
-        "type": "switch",
-        "x": 5,
-        "y": 5,
-        "id": "B"
-      },
-      {
-        "type": "door",
-        "x": 6,
-        "y": 4,
-        "id": "AB",
-        "requires": [
-          "A",
-          "B"
-        ]
-      },
-      {
-        "type": "combiner",
-        "x": 3,
-        "y": 2,
-        "dir": 3,
-        "need": 2,
-        "fixed": true
-      },
-      {
-        "type": "portal",
-        "x": 0,
-        "y": 2,
-        "pair": "loop"
-      },
-      {
-        "type": "portal",
-        "x": 0,
-        "y": 1,
-        "pair": "loop"
-      }
-    ],
-    "mode": "challenge",
-    "stageKey": "boss:17",
-    "timeBoss": {
-      "adjustmentUses": 4,
-      "bulletTimeUses": 0,
-      "lifetimeMs": 26000,
-      "firstFailureFree": true
-    }
-  },
-  {
-    "name": "三向·合光开门",
-    "chapter": "岔路迷阵",
-    "chapterNo": 18,
-    "rows": 8,
-    "cols": 8,
-    "emitter": {
-      "side": "W",
-      "index": 3
-    },
-    "emitters": [
-      {
-        "side": "W",
-        "index": 3
-      },
-      {
-        "side": "E",
-        "index": 1
-      },
-      {
-        "side": "S",
-        "index": 2
-      },
-      {
-        "side": "N",
-        "index": 2
-      }
-    ],
-    "targets": [
-      {
-        "side": "N",
-        "index": 3
-      },
-      {
-        "side": "W",
-        "index": 4
-      },
-      {
-        "side": "W",
-        "index": 5
-      },
-      {
-        "side": "E",
-        "index": 5
-      }
-    ],
-    "shots": 3,
-    "hint": "上下光源先准备两路输入，换向后的第三束才能激活左下核心。",
-    "items": [
-      {
-        "type": "splitter",
-        "x": 1,
-        "y": 3,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 1,
-        "y": 6,
-        "s": 1,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 0,
-        "y": 6,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 0,
-        "y": 0,
-        "s": 1,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 1,
-        "y": 0,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 3,
-        "y": 3,
-        "s": 1,
-        "fixed": false
-      },
-      {
-        "type": "mirror",
-        "x": 3,
-        "y": 6,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 5,
-        "y": 6,
-        "s": 1,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 5,
-        "y": 4,
-        "s": 0,
-        "fixed": false
-      },
-      {
-        "type": "combiner",
-        "x": 3,
-        "y": 1,
-        "dir": 3,
-        "need": 2,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 7,
-        "y": 4,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 7,
-        "y": 6,
-        "s": 1,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 6,
-        "y": 6,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 6,
-        "y": 5,
-        "s": 0,
-        "fixed": false
-      },
-      {
-        "type": "combiner",
-        "x": 2,
-        "y": 5,
-        "dir": 2,
-        "need": 3,
-        "fixed": true
-      },
-      {
-        "type": "switch",
-        "x": 3,
-        "y": 2,
-        "id": "A"
-      },
-      {
-        "type": "switch",
-        "x": 2,
-        "y": 4,
-        "id": "B"
-      },
-      {
-        "type": "door",
-        "x": 6,
-        "y": 4,
-        "id": "AB",
-        "requires": [
-          "A",
-          "B"
-        ]
-      }
-    ],
-    "mode": "challenge",
-    "stageKey": "boss:18",
-    "timeBoss": {
-      "adjustmentUses": 3,
-      "bulletTimeUses": 0,
-      "lifetimeMs": 26000,
-      "firstFailureFree": true
-    }
-  },
-  {
-    "name": "跃迁·晶门接力",
-    "chapter": "机关织网",
-    "chapterNo": 19,
-    "rows": 8,
-    "cols": 8,
-    "emitter": {
-      "side": "W",
-      "index": 3
-    },
-    "emitters": [
-      {
-        "side": "W",
-        "index": 3
-      },
-      {
-        "side": "E",
-        "index": 0
-      },
-      {
-        "side": "E",
-        "index": 3
-      },
-      {
-        "side": "S",
-        "index": 4
-      }
-    ],
-    "targets": [
-      {
-        "side": "N",
-        "index": 3
-      },
-      {
-        "side": "W",
-        "index": 4
-      },
-      {
-        "side": "E",
-        "index": 5
-      },
-      {
-        "side": "N",
-        "index": 4
-      }
-    ],
-    "shots": 3,
-    "hint": "横向光先打开晶门，传送接力再送光进入晶体，最后换向点亮顶端。",
-    "items": [
-      {
-        "type": "splitter",
-        "x": 1,
-        "y": 3,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 1,
-        "y": 6,
-        "s": 1,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 0,
-        "y": 6,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 0,
-        "y": 0,
-        "s": 1,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 1,
-        "y": 0,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 3,
-        "y": 3,
-        "s": 1,
-        "fixed": false
-      },
-      {
-        "type": "mirror",
-        "x": 3,
-        "y": 6,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 5,
-        "y": 4,
-        "s": 0,
-        "fixed": false
-      },
-      {
-        "type": "mirror",
-        "x": 7,
-        "y": 4,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 7,
-        "y": 6,
-        "s": 1,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 6,
-        "y": 6,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 6,
-        "y": 5,
-        "s": 1,
-        "fixed": false
-      },
-      {
-        "type": "mirror",
-        "x": 2,
-        "y": 5,
-        "s": 0,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 2,
-        "y": 1,
-        "s": 1,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 4,
-        "y": 1,
-        "s": 0,
-        "fixed": false
-      },
-      {
-        "type": "focus",
-        "x": 4,
-        "y": 3,
-        "need": 2
-      },
-      {
-        "type": "combiner",
-        "x": 4,
-        "y": 0,
-        "dir": 3,
-        "need": 2,
-        "fixed": true
-      },
-      {
-        "type": "combiner",
-        "x": 4,
-        "y": 4,
-        "dir": 2,
-        "need": 2,
-        "fixed": true
-      },
-      {
-        "type": "switch",
-        "x": 3,
-        "y": 2,
-        "id": "A"
-      },
-      {
-        "type": "switch",
-        "x": 5,
-        "y": 5,
-        "id": "B"
-      },
-      {
-        "type": "door",
-        "x": 6,
-        "y": 4,
-        "id": "AB",
-        "requires": [
-          "A",
-          "B"
-        ]
-      },
-      {
-        "type": "portal",
-        "x": 4,
-        "y": 6,
-        "pair": "relay"
-      },
-      {
-        "type": "portal",
-        "x": 4,
-        "y": 7,
-        "pair": "relay"
-      },
-      {
-        "type": "switch",
-        "x": 5,
-        "y": 3,
-        "id": "C"
-      },
-      {
-        "type": "door",
-        "x": 4,
-        "y": 2,
-        "id": "C",
-        "requires": [
-          "C"
-        ]
-      },
-      {
-        "type": "mirror",
-        "x": 5,
-        "y": 7,
-        "s": 1,
-        "fixed": true
-      }
-    ],
-    "mode": "challenge",
-    "stageKey": "boss:19",
-    "timeBoss": {
-      "adjustmentUses": 4,
-      "bulletTimeUses": 0,
-      "lifetimeMs": 26000,
-      "firstFailureFree": true
-    }
-  },
-  {
-    "name": "群光·终场合奏",
     "chapter": "光路博弈",
     "rows": 8,
     "cols": 8,
@@ -3365,7 +1892,7 @@
         "x": 4,
         "y": 0,
         "dir": 3,
-        "need": 3,
+        "need": 2,
         "fixed": true
       },
       {
@@ -3379,7 +1906,7 @@
       {
         "type": "switch",
         "x": 3,
-        "y": 1,
+        "y": 2,
         "id": "A"
       },
       {
@@ -3397,25 +1924,10 @@
           "A",
           "B"
         ]
-      },
-      {
-        "type": "combiner",
-        "x": 3,
-        "y": 2,
-        "dir": 3,
-        "need": 2,
-        "fixed": true
-      },
-      {
-        "type": "mirror",
-        "x": 2,
-        "y": 0,
-        "s": 0,
-        "fixed": true
       }
     ],
-    "hint": "六束光分工供能，四次换向接通晶体与光门，最后用三路聚合收尾。",
-    "chapterNo": 20,
+    "hint": "四次换向依次服务不同目标；先给晶体补光，再让最后一束上行光完成顶端聚合。",
+    "chapterNo": 13,
     "shots": 3,
     "emitters": [
       {
@@ -3433,22 +1945,13 @@
       {
         "side": "S",
         "index": 4
-      },
-      {
-        "side": "E",
-        "index": 2
-      },
-      {
-        "side": "N",
-        "index": 2
       }
     ],
-    "stageKey": "boss:20",
     "mode": "challenge",
     "timeBoss": {
       "adjustmentUses": 4,
       "bulletTimeUses": 0,
-      "lifetimeMs": 26000,
+      "lifetimeMs": 24000,
       "firstFailureFree": true
     }
   }

@@ -3,6 +3,7 @@ import { writeFileSync } from 'node:fs';
 import levelsRaw from '../src/levels/levels.json';
 import bossesRaw from '../src/levels/time-bosses.json';
 import handcrafted from '../src/levels/handcrafted.json';
+import originals from './fixtures/campaign-130.json';
 import { GameSession } from '../src/gameplay/GameSession';
 import type { LevelDefinition } from '../src/gameplay/types';
 import { inspectLevel, layoutSimilarity, valueOf } from './level-quality';
@@ -12,22 +13,25 @@ import { verifyTimeBoss } from './verify-time-bosses';
 const levels = levelsRaw as LevelDefinition[];
 const errors: string[] = [];
 const solutions: Record<number, LevelDefinition> = {};
-assert.equal(levels.length, 130);
-for (const [number, level] of Object.entries(handcrafted)) assert.deepEqual(levels[Number(number) - 1], level);
+assert.equal(levels.length, 200);
+const boardOnly=({stageKey,chapter,chapterNo,...board}:LevelDefinition)=>board;
+for (const [number, level] of Object.entries(handcrafted)) assert.deepEqual(boardOnly(levels.find(l=>l.stageKey===`level:${number}`)!), boardOnly(level as LevelDefinition));
+for(const [index,level]of (originals as LevelDefinition[]).entries())assert.deepEqual(boardOnly(levels.find(l=>l.stageKey===`level:${index+1}`)!),boardOnly(level),`Original #${index+1} was changed`);
 const report = levels.map((level, index) => {
   const number = index + 1;
+  const originalNumber=level.stageKey?.startsWith('level:')?Number(level.stageKey.slice(6)):0;
   const { best, states, controlIndexes, freeIndexes, liveIndexes, ...metrics } = inspectLevel(level);
   const mostSimilar = levels.flatMap((other, j) => j === index ? [] : [{ number: j + 1, similarity: layoutSimilarity(level, other) }])
     .sort((a, b) => b.similarity - a.similarity)[0];
   const check = (condition: boolean, message: string) => { if (!condition) errors.push(`#${number}: ${message}`); };
   check(level.rows <= 8 && level.cols <= 8, 'board exceeds 8 × 8');
   check(!!best && !metrics.startsSolved, 'no solution or already solved start');
-  if (opticalRevisions.includes(number)) {
+  if (opticalRevisions.includes(originalNumber)) {
     check(metrics.mechanics.includes('combiner'), 'optical revision lost its collector');
     check(!metrics.bypassableMechanics.length, 'new collector can be bypassed');
-    check((metrics.minClicks??0)>=(number<31?4:5), 'optical revision is too easy');
+    check((metrics.minClicks??0)>=(originalNumber<31?4:5), 'optical revision is too easy');
   }
-  if (number >= 101) {
+  if (originalNumber >= 101) {
     check(metrics.live >= 8, 'fewer than 8 live controls');
     check((metrics.minClicks ?? 0) >= 5, 'fewer than 5 clicks');
     check(metrics.correctLive >= 3 && metrics.wrongLive >= 3, 'start must mix retained and changed controls');
@@ -36,6 +40,16 @@ const report = levels.map((level, index) => {
     check(mostSimilar.similarity <= .48, 'layout too similar to another board');
     check((metrics.effectiveBits ?? 0) >= 7, 'too many unconstrained settings');
     check(!metrics.bypassableMechanics.length, 'a featured mechanism can be blocked without breaking the closest solution');
+  }
+  if(level.stageKey?.startsWith('flow:')){
+    check((metrics.minClicks??0)>=4&&(metrics.minClicks??99)<=6,'new medium board must need 4–6 clicks');
+    check(metrics.live>=7&&metrics.live<=10,'new medium board must keep 7–10 useful controls');
+    check(metrics.correctLive>=2,'new board needs retained directions as clues');
+    check(metrics.decoys<=1,'too many distractions for a medium board');
+    check(!metrics.bypassableMechanics.length,'featured mechanism can be bypassed');
+    check(!metrics.allFlipWins&&!metrics.mirrorFlipWins,'flip-all shortcut');
+    check(mostSimilar.similarity<=.48,'new board too similar to an existing layout');
+    check(level.items.filter(i=>i.type==='mirror'&&i.fixed).length>=2,'missing fixed route clues');
   }
   if (best) {
     // Play the exact minimum-click solution through the actual session, including
@@ -52,16 +66,16 @@ const report = levels.map((level, index) => {
     solutions[number] = { ...level, items: best };
   }
   console.log(`#${number} clicks=${metrics.minClicks} live=${metrics.live} retain=${metrics.correctLive} tempting=${metrics.temptingDecoys} solutions=${metrics.solutions}`);
-  return { number, ...metrics, mostSimilar };
+  return { number, id:level.stageKey, ...metrics, mostSimilar };
 });
-for(let chapter=0;chapter<13;chapter++){
+for(let chapter=0;chapter<20;chapter++){
   const peak=report.slice(chapter*10,chapter*10+10).some(level=>(level.minClicks??0)>=(chapter<3?4:5)&&level.live>=(chapter===0?6:7));
   if(!peak)errors.push(`Chapter ${chapter+1}: missing difficulty peak`);
 }
-if(report.filter(level=>level.mechanics.includes('combiner')).length<50)errors.push('Campaign needs at least 50 collector levels');
+if(report.filter(level=>level.mechanics.includes('combiner')).length<100)errors.push('Campaign needs at least 100 collector levels');
 const bossReport=(bossesRaw as LevelDefinition[]).map((_,index)=>verifyTimeBoss(levels[index*10+9],(index+1)*10));
 writeFileSync('docs/level-audit-after.json', JSON.stringify(report, null, 2) + '\n');
 // Development-only review fixture; not imported by the shipped game.
 writeFileSync('tools/visual/campaign-solutions.json', JSON.stringify(solutions, null, 2) + '\n');
 if (errors.length) { console.error(errors.join('\n')); process.exit(1); }
-console.log(`${report.length} original levels and ${bossReport.length} separate chapter challenges verified; handcrafted boards and challenge quality checks passed.`);
+console.log(`${report.length} main levels and ${bossReport.length} chapter challenges verified; all 130 original boards preserved, medium additions and difficulty peaks checked.`);

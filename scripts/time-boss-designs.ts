@@ -11,9 +11,10 @@ export type BossDesign={level:LevelDefinition;actions:BossAction[]};
 /** Pulses revisit shared controls; each control must serve both directions.
  * Additional sources charge indispensable collectors on the output branches. */
 export function designBoss(number:number,original:LevelDefinition):BossDesign {
-  const chapter=number/10,stages=chapter===1?1:chapter<8?2:chapter<13?3:4;
-  const names=['镜阵·换轨','双源·接棒','三源·合流','聚能·双钥','跃迁·汇流','双核·分工','三向·聚能','聚合·三换轨','晶核·交响','跃迁·三幕','双核·错峰','三核·接力','光路终局·合奏'];
-  const level:LevelDefinition={...original,mode:'challenge',rows:8,cols:chapter===1?5:8,emitter:{side:'W',index:3},emitters:undefined,
+  const chapter=number/10,stages=chapter===1?1:chapter<8?2:chapter<13||[14,15,16,18].includes(chapter)?3:4;
+  const names=['镜阵·换轨','双源·接棒','三源·合流','聚能·双钥','跃迁·汇流','双核·分工','三向·聚能','聚合·三换轨','晶核·交响','跃迁·三幕','双核·错峰','三核·接力','光路终局·合奏',
+    '三核·回环取钥','晶光·远端接棒','双钥·连环聚能','四路·阶梯汇流','三向·合光开门','跃迁·晶门接力','群光·终场合奏'];
+  const level:LevelDefinition={...original,stageKey:`boss:${chapter}`,mode:'challenge',rows:8,cols:chapter===1?5:8,emitter:{side:'W',index:3},emitters:undefined,
     targets:[{side:'N',index:3},{side:'S',index:3}],
     items:[split(1,3,0),mirror(1,6,1),mirror(0,6,0),mirror(0,0,1),mirror(1,0,0),mirror(3,3,chapter===1?0:1,false)],
     timeBoss:rules(chapter===1?2:stages,chapter===1?16000:stages===2?20000:24000),name:names[chapter-1],
@@ -74,6 +75,51 @@ export function designBoss(number:number,original:LevelDefinition):BossDesign {
     level.items.push({type:'switch',x:3,y:2,id:'A'},{type:'switch',x:5,y:5,id:'B'},{type:'door',x:6,y:4,id:'AB',requires:['A','B']});
     level.hint='四次换向依次服务不同目标；先给晶体补光，再让最后一束上行光完成顶端聚合。';
   }
+  if(chapter===14){
+    collect(2,4,2,{side:'N',index:2});
+    level.items.push({type:'portal',x:0,y:2,pair:'loop'},{type:'portal',x:0,y:1,pair:'loop'},
+      {type:'switch',x:3,y:2,id:'A'},{type:'door',x:5,y:5,id:'A',requires:['A']});
+    level.hint='先取得上方钥匙，再让回环光依次完成左侧与左下的聚合。';
+  }
+  if(chapter===15){
+    level.targets=level.targets.filter(p=>!(p.side==='W'&&p.index===4));
+    level.items.push({type:'focus',x:2,y:4,need:2},{type:'portal',x:4,y:6,pair:'relay'},{type:'portal',x:4,y:7,pair:'relay'});
+    sources.push({side:'N',index:2});
+    level.items=level.items.filter(i=>!(i.x===5&&i.y===6));level.items.push(mirror(5,7,1));
+    level.hint='远端传送先送光到晶体，再换向把后续光送进左下核心。';
+  }
+  if(chapter===16){
+    collect(4,5,2,{side:'S',index:4});
+    level.items.push({type:'switch',x:3,y:2,id:'A'},{type:'switch',x:2,y:4,id:'B'},
+      {type:'door',x:7,y:5,id:'AB',requires:['A','B']});
+    level.hint='上行与左行各取一枚钥匙，左下双核接力，最后送光穿过双钥门。';
+  }
+  if(chapter===17||chapter===20){
+    const key=level.items.find(i=>i.type==='switch'&&i.id==='A')!;key.y=1;
+    collect(3,2,3,{side:'E',index:2});
+    if(chapter===17)level.items.push({type:'portal',x:0,y:2,pair:'loop'},{type:'portal',x:0,y:1,pair:'loop'});
+    level.hint='先汇聚上行光取得钥匙，再依次完成左侧、晶体与顶端的接力。';
+  }
+  if(chapter===18){
+    const core=level.items.find(i=>i.type==='combiner'&&i.x===2&&i.y===5);
+    if(core?.type==='combiner')core.need=3;sources.push({side:'N',index:2});
+    level.items.push({type:'switch',x:3,y:2,id:'A'},{type:'switch',x:2,y:4,id:'B'},
+      {type:'door',x:6,y:4,id:'AB',requires:['A','B']});
+    level.hint='上下光源先准备两路输入，换向后的第三束才能激活左下核心。';
+  }
+  if(chapter===19){
+    level.items.push({type:'portal',x:4,y:6,pair:'relay'},{type:'portal',x:4,y:7,pair:'relay'},
+      {type:'switch',x:5,y:3,id:'C'},{type:'door',x:4,y:2,id:'C',requires:['C']});
+    level.items=level.items.filter(i=>!(i.x===5&&i.y===6));level.items.push(mirror(5,7,1));
+    level.hint='横向光先打开晶门，传送接力再送光进入晶体，最后换向点亮顶端。';
+  }
+  if(chapter===20){
+    const core=level.items.find(i=>i.type==='combiner'&&i.x===4&&i.y===0);
+    if(core?.type==='combiner')core.need=3;
+    level.items.push(mirror(2,0,0));sources.push({side:'N',index:2});
+    level.hint='六束光分工供能，四次换向接通晶体与光门，最后用三路聚合收尾。';
+  }
+  if(chapter>13)level.timeBoss!.lifetimeMs=26000;
   if(sources.length>1)level.emitters=sources;
   return {level,actions:planActions(level)};
 }

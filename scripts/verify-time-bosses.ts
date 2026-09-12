@@ -82,7 +82,7 @@ export function verifyTimeBoss(original:LevelDefinition,number:number,candidates
 }
 if(process.argv[1]?.endsWith('verify-time-bosses.ts')){
   const candidates=process.argv.includes('--candidates');
-  assert.equal(levelsRaw.length,130,'The ordinary campaign must keep all 130 levels');
-  assert.equal(bossesRaw.length,13,'Expected one challenge after each chapter');
-  for(let number=10;number<=130;number+=10)verifyTimeBoss(levelsRaw[number-1] as LevelDefinition,number,candidates);
+  assert.equal(levelsRaw.length,200,'Expected 200 main levels');
+  assert.equal(bossesRaw.length,20,'Expected one challenge after each chapter');
+  for(let number=10;number<=levelsRaw.length;number+=10)verifyTimeBoss(levelsRaw[number-1] as LevelDefinition,number,candidates);
 }

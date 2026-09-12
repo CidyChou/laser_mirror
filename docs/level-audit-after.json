@@ -1,6 +1,7 @@
 [
   {
     "number": 1,
+    "id": "level:1",
     "name": "第一束光",
     "rows": 3,
     "cols": 3,
@@ -29,6 +30,7 @@
   },
   {
     "number": 2,
+    "id": "level:2",
     "name": "连续反射",
     "rows": 4,
     "cols": 4,
@@ -57,6 +59,7 @@
   },
   {
     "number": 3,
+    "id": "level:3",
     "name": "镜阵试炼",
     "rows": 6,
     "cols": 6,
@@ -79,12 +82,13 @@
     "mechanics": [],
     "goals": 1,
     "mostSimilar": {
-      "number": 51,
+      "number": 70,
       "similarity": 0.4444444444444444
     }
   },
   {
     "number": 4,
+    "id": "level:4",
     "name": "不要被迷惑",
     "rows": 4,
     "cols": 4,
@@ -113,6 +117,7 @@
   },
   {
     "number": 5,
+    "id": "level:5",
     "name": "固定镜",
     "rows": 5,
     "cols": 5,
@@ -141,6 +146,7 @@
   },
   {
     "number": 6,
+    "id": "level:6",
     "name": "折返训练",
     "rows": 4,
     "cols": 4,
@@ -169,6 +175,7 @@
   },
   {
     "number": 7,
+    "id": "level:7",
     "name": "蛇形光路",
     "rows": 5,
     "cols": 5,
@@ -197,6 +204,7 @@
   },
   {
     "number": 8,
+    "id": "level:8",
     "name": "逆向思考",
     "rows": 5,
     "cols": 6,
@@ -219,12 +227,13 @@
     "mechanics": [],
     "goals": 1,
     "mostSimilar": {
-      "number": 25,
+      "number": 28,
       "similarity": 0.42857142857142855
     }
   },
   {
     "number": 9,
+    "id": "level:9",
     "name": "长折线",
     "rows": 6,
     "cols": 6,
@@ -247,12 +256,13 @@
     "mechanics": [],
     "goals": 1,
     "mostSimilar": {
-      "number": 25,
+      "number": 28,
       "similarity": 0.3333333333333333
     }
   },
   {
     "number": 10,
+    "id": "level:10",
     "name": "镜阵",
     "rows": 6,
     "cols": 7,
@@ -275,12 +285,13 @@
     "mechanics": [],
     "goals": 1,
     "mostSimilar": {
-      "number": 25,
-      "similarity": 0.2727272727272727
+      "number": 151,
+      "similarity": 0.3125
     }
   },
   {
     "number": 11,
+    "id": "level:11",
     "name": "一分为二",
     "rows": 4,
     "cols": 4,
@@ -305,12 +316,13 @@
     ],
     "goals": 2,
     "mostSimilar": {
-      "number": 31,
+      "number": 38,
       "similarity": 0.3333333333333333
     }
   },
   {
     "number": 12,
+    "id": "level:12",
     "name": "照亮两边",
     "rows": 6,
     "cols": 6,
@@ -335,12 +347,13 @@
     ],
     "goals": 2,
     "mostSimilar": {
-      "number": 60,
+      "number": 85,
       "similarity": 0.3333333333333333
     }
   },
   {
     "number": 13,
+    "id": "level:13",
     "name": "固定分支",
     "rows": 6,
     "cols": 6,
@@ -371,6 +384,7 @@
   },
   {
     "number": 14,
+    "id": "level:14",
     "name": "双面折返",
     "rows": 6,
     "cols": 6,
@@ -401,6 +415,7 @@
   },
   {
     "number": 15,
+    "id": "level:15",
     "name": "三路接通",
     "rows": 6,
     "cols": 6,
@@ -431,6 +446,7 @@
   },
   {
     "number": 16,
+    "id": "level:16",
     "name": "固定分光阵",
     "rows": 6,
     "cols": 7,
@@ -455,12 +471,13 @@
     ],
     "goals": 2,
     "mostSimilar": {
-      "number": 71,
+      "number": 103,
       "similarity": 0.375
     }
   },
   {
     "number": 17,
+    "id": "level:17",
     "name": "分光链",
     "rows": 7,
     "cols": 7,
@@ -485,12 +502,13 @@
     ],
     "goals": 3,
     "mostSimilar": {
-      "number": 24,
+      "number": 26,
       "similarity": 0.375
     }
   },
   {
     "number": 18,
+    "id": "level:18",
     "name": "双源汇光",
     "rows": 7,
     "cols": 7,
@@ -522,6 +540,7 @@
   },
   {
     "number": 19,
+    "id": "level:19",
     "name": "三束同调",
     "rows": 7,
     "cols": 7,
@@ -546,12 +565,13 @@
     ],
     "goals": 3,
     "mostSimilar": {
-      "number": 57,
+      "number": 80,
       "similarity": 0.4
     }
   },
   {
     "number": 20,
+    "id": "level:20",
     "name": "汇光折返",
     "rows": 7,
     "cols": 7,
@@ -577,12 +597,13 @@
     ],
     "goals": 2,
     "mostSimilar": {
-      "number": 104,
+      "number": 157,
       "similarity": 0.26666666666666666
     }
   },
   {
     "number": 21,
+    "id": "level:21",
     "name": "墙与固定镜",
     "rows": 6,
     "cols": 6,
@@ -611,6 +632,39 @@
   },
   {
     "number": 22,
+    "id": "flow:1",
+    "name": "晴湾·汇流",
+    "rows": 7,
+    "cols": 7,
+    "controls": 8,
+    "bits": 9,
+    "solutions": 2,
+    "minClicks": 4,
+    "live": 7,
+    "correctLive": 3,
+    "wrongLive": 4,
+    "free": 1,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 14,
+    "bypassableMechanics": [],
+    "effectiveBits": 8,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 108,
+      "similarity": 0.23076923076923078
+    }
+  },
+  {
+    "number": 23,
+    "id": "level:22",
     "name": "窄路",
     "rows": 6,
     "cols": 5,
@@ -638,7 +692,8 @@
     }
   },
   {
-    "number": 23,
+    "number": 24,
+    "id": "level:23",
     "name": "迷宫光路",
     "rows": 6,
     "cols": 6,
@@ -663,12 +718,44 @@
     ],
     "goals": 2,
     "mostSimilar": {
-      "number": 64,
+      "number": 92,
       "similarity": 0.625
     }
   },
   {
-    "number": 24,
+    "number": 25,
+    "id": "flow:2",
+    "name": "晴湾·流光",
+    "rows": 7,
+    "cols": 7,
+    "controls": 10,
+    "bits": 10,
+    "solutions": 30,
+    "minClicks": 5,
+    "live": 9,
+    "correctLive": 4,
+    "wrongLive": 5,
+    "free": 7,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 19,
+    "bypassableMechanics": [],
+    "effectiveBits": 5.1,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 159,
+      "similarity": 0.29411764705882354
+    }
+  },
+  {
+    "number": 26,
+    "id": "level:24",
     "name": "分流绕障碍",
     "rows": 6,
     "cols": 6,
@@ -698,7 +785,40 @@
     }
   },
   {
-    "number": 25,
+    "number": 27,
+    "id": "flow:3",
+    "name": "晴湾·折返",
+    "rows": 7,
+    "cols": 7,
+    "controls": 8,
+    "bits": 9,
+    "solutions": 4,
+    "minClicks": 4,
+    "live": 7,
+    "correctLive": 4,
+    "wrongLive": 3,
+    "free": 2,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 22,
+    "bypassableMechanics": [],
+    "effectiveBits": 7,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 106,
+      "similarity": 0.25
+    }
+  },
+  {
+    "number": 28,
+    "id": "level:25",
     "name": "绕开墙壁",
     "rows": 5,
     "cols": 5,
@@ -726,7 +846,8 @@
     }
   },
   {
-    "number": 26,
+    "number": 29,
+    "id": "level:26",
     "name": "封锁网络",
     "rows": 8,
     "cols": 8,
@@ -756,7 +877,40 @@
     }
   },
   {
-    "number": 27,
+    "number": 30,
+    "id": "flow:4",
+    "name": "晴湾·交织",
+    "rows": 7,
+    "cols": 7,
+    "controls": 11,
+    "bits": 12,
+    "solutions": 4,
+    "minClicks": 5,
+    "live": 10,
+    "correctLive": 5,
+    "wrongLive": 5,
+    "free": 3,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 39,
+    "bypassableMechanics": [],
+    "effectiveBits": 10,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 36,
+      "similarity": 0.46153846153846156
+    }
+  },
+  {
+    "number": 31,
+    "id": "level:27",
     "name": "回廊",
     "rows": 6,
     "cols": 6,
@@ -784,7 +938,40 @@
     }
   },
   {
-    "number": 28,
+    "number": 32,
+    "id": "flow:5",
+    "name": "晴湾·双翼",
+    "rows": 7,
+    "cols": 7,
+    "controls": 8,
+    "bits": 9,
+    "solutions": 4,
+    "minClicks": 4,
+    "live": 7,
+    "correctLive": 4,
+    "wrongLive": 3,
+    "free": 2,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 8,
+    "bypassableMechanics": [],
+    "effectiveBits": 7,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "splitter"
+    ],
+    "goals": 5,
+    "mostSimilar": {
+      "number": 68,
+      "similarity": 0.3125
+    }
+  },
+  {
+    "number": 33,
+    "id": "level:28",
     "name": "交叉汇流",
     "rows": 7,
     "cols": 7,
@@ -810,12 +997,13 @@
     ],
     "goals": 2,
     "mostSimilar": {
-      "number": 73,
+      "number": 106,
       "similarity": 0.2727272727272727
     }
   },
   {
-    "number": 29,
+    "number": 34,
+    "id": "level:29",
     "name": "分流回廊",
     "rows": 7,
     "cols": 7,
@@ -845,7 +1033,40 @@
     }
   },
   {
-    "number": 30,
+    "number": 35,
+    "id": "flow:6",
+    "name": "晴湾·合光",
+    "rows": 7,
+    "cols": 7,
+    "controls": 10,
+    "bits": 11,
+    "solutions": 2,
+    "minClicks": 5,
+    "live": 9,
+    "correctLive": 4,
+    "wrongLive": 5,
+    "free": 1,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 25,
+    "bypassableMechanics": [],
+    "effectiveBits": 10,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 16,
+      "similarity": 0.2857142857142857
+    }
+  },
+  {
+    "number": 36,
+    "id": "level:30",
     "name": "汇光迷阵",
     "rows": 7,
     "cols": 7,
@@ -871,12 +1092,44 @@
     ],
     "goals": 2,
     "mostSimilar": {
-      "number": 84,
-      "similarity": 0.4
+      "number": 30,
+      "similarity": 0.46153846153846156
     }
   },
   {
-    "number": 31,
+    "number": 37,
+    "id": "flow:7",
+    "name": "晴湾·分送",
+    "rows": 7,
+    "cols": 7,
+    "controls": 10,
+    "bits": 10,
+    "solutions": 6,
+    "minClicks": 5,
+    "live": 9,
+    "correctLive": 4,
+    "wrongLive": 5,
+    "free": 3,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 34,
+    "bypassableMechanics": [],
+    "effectiveBits": 7.4,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 80,
+      "similarity": 0.35714285714285715
+    }
+  },
+  {
+    "number": 38,
+    "id": "level:31",
     "name": "点亮机关",
     "rows": 5,
     "cols": 5,
@@ -908,7 +1161,8 @@
     }
   },
   {
-    "number": 32,
+    "number": 39,
+    "id": "level:32",
     "name": "保持通电",
     "rows": 6,
     "cols": 6,
@@ -935,12 +1189,45 @@
     ],
     "goals": 2,
     "mostSimilar": {
-      "number": 29,
+      "number": 34,
       "similarity": 0.2727272727272727
     }
   },
   {
-    "number": 33,
+    "number": 40,
+    "id": "flow:8",
+    "name": "晴湾·合流",
+    "rows": 8,
+    "cols": 8,
+    "controls": 11,
+    "bits": 12,
+    "solutions": 8,
+    "minClicks": 5,
+    "live": 10,
+    "correctLive": 7,
+    "wrongLive": 3,
+    "free": 3,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 20,
+    "bypassableMechanics": [],
+    "effectiveBits": 9,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 163,
+      "similarity": 0.3333333333333333
+    }
+  },
+  {
+    "number": 41,
+    "id": "level:33",
     "name": "双重验证",
     "rows": 6,
     "cols": 6,
@@ -972,7 +1259,8 @@
     }
   },
   {
-    "number": 34,
+    "number": 42,
+    "id": "level:34",
     "name": "连锁门",
     "rows": 7,
     "cols": 7,
@@ -999,12 +1287,45 @@
     ],
     "goals": 3,
     "mostSimilar": {
-      "number": 13,
-      "similarity": 0.2
+      "number": 30,
+      "similarity": 0.21052631578947367
     }
   },
   {
-    "number": 35,
+    "number": 43,
+    "id": "flow:9",
+    "name": "晴湾·合奏",
+    "rows": 8,
+    "cols": 8,
+    "controls": 10,
+    "bits": 11,
+    "solutions": 4,
+    "minClicks": 5,
+    "live": 9,
+    "correctLive": 4,
+    "wrongLive": 5,
+    "free": 2,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 19,
+    "bypassableMechanics": [],
+    "effectiveBits": 9,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "splitter"
+    ],
+    "goals": 5,
+    "mostSimilar": {
+      "number": 9,
+      "similarity": 0.26666666666666666
+    }
+  },
+  {
+    "number": 44,
+    "id": "level:35",
     "name": "核心联锁",
     "rows": 8,
     "cols": 8,
@@ -1031,12 +1352,45 @@
     ],
     "goals": 2,
     "mostSimilar": {
-      "number": 60,
+      "number": 85,
       "similarity": 0.2
     }
   },
   {
-    "number": 36,
+    "number": 45,
+    "id": "flow:10",
+    "name": "晴湾·回响",
+    "rows": 8,
+    "cols": 8,
+    "controls": 10,
+    "bits": 11,
+    "solutions": 6,
+    "minClicks": 5,
+    "live": 9,
+    "correctLive": 4,
+    "wrongLive": 5,
+    "free": 4,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 15,
+    "bypassableMechanics": [],
+    "effectiveBits": 8.4,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 137,
+      "similarity": 0.25
+    }
+  },
+  {
+    "number": 46,
+    "id": "level:36",
     "name": "能源核心",
     "rows": 7,
     "cols": 7,
@@ -1063,12 +1417,13 @@
     ],
     "goals": 2,
     "mostSimilar": {
-      "number": 82,
+      "number": 121,
       "similarity": 0.23809523809523808
     }
   },
   {
-    "number": 37,
+    "number": 47,
+    "id": "level:37",
     "name": "旁路供能",
     "rows": 7,
     "cols": 7,
@@ -1100,7 +1455,40 @@
     }
   },
   {
-    "number": 38,
+    "number": 48,
+    "id": "flow:11",
+    "name": "竹径·汇流",
+    "rows": 8,
+    "cols": 8,
+    "controls": 11,
+    "bits": 12,
+    "solutions": 2,
+    "minClicks": 5,
+    "live": 10,
+    "correctLive": 5,
+    "wrongLive": 5,
+    "free": 1,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 22,
+    "bypassableMechanics": [],
+    "effectiveBits": 11,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 72,
+      "similarity": 0.3333333333333333
+    }
+  },
+  {
+    "number": 49,
+    "id": "level:38",
     "name": "聚能取钥",
     "rows": 8,
     "cols": 8,
@@ -1133,7 +1521,39 @@
     }
   },
   {
-    "number": 39,
+    "number": 50,
+    "id": "flow:12",
+    "name": "竹径·流光",
+    "rows": 8,
+    "cols": 8,
+    "controls": 9,
+    "bits": 9,
+    "solutions": 2,
+    "minClicks": 5,
+    "live": 8,
+    "correctLive": 3,
+    "wrongLive": 5,
+    "free": 1,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 18,
+    "bypassableMechanics": [],
+    "effectiveBits": 8,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 88,
+      "similarity": 0.25
+    }
+  },
+  {
+    "number": 51,
+    "id": "level:39",
     "name": "双门回路",
     "rows": 8,
     "cols": 8,
@@ -1160,12 +1580,13 @@
     ],
     "goals": 3,
     "mostSimilar": {
-      "number": 63,
+      "number": 90,
       "similarity": 0.23529411764705882
     }
   },
   {
-    "number": 40,
+    "number": 52,
+    "id": "level:40",
     "name": "双钥汇核",
     "rows": 8,
     "cols": 8,
@@ -1193,12 +1614,45 @@
     ],
     "goals": 4,
     "mostSimilar": {
-      "number": 26,
+      "number": 29,
       "similarity": 0.25
     }
   },
   {
-    "number": 41,
+    "number": 53,
+    "id": "flow:13",
+    "name": "竹径·折返",
+    "rows": 8,
+    "cols": 8,
+    "controls": 10,
+    "bits": 11,
+    "solutions": 2,
+    "minClicks": 5,
+    "live": 9,
+    "correctLive": 5,
+    "wrongLive": 4,
+    "free": 1,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 10,
+    "bypassableMechanics": [],
+    "effectiveBits": 10,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 143,
+      "similarity": 0.2631578947368421
+    }
+  },
+  {
+    "number": 54,
+    "id": "level:41",
     "name": "空间跃迁",
     "rows": 5,
     "cols": 5,
@@ -1223,12 +1677,47 @@
     ],
     "goals": 1,
     "mostSimilar": {
-      "number": 47,
+      "number": 64,
       "similarity": 0.18181818181818182
     }
   },
   {
-    "number": 42,
+    "number": 55,
+    "id": "flow:14",
+    "name": "竹径·启门",
+    "rows": 8,
+    "cols": 8,
+    "controls": 9,
+    "bits": 10,
+    "solutions": 2,
+    "minClicks": 5,
+    "live": 8,
+    "correctLive": 4,
+    "wrongLive": 4,
+    "free": 1,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 23,
+    "bypassableMechanics": [],
+    "effectiveBits": 9,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "door",
+      "splitter",
+      "switch"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 10,
+      "similarity": 0.2222222222222222
+    }
+  },
+  {
+    "number": 56,
+    "id": "level:42",
     "name": "跃迁之后",
     "rows": 6,
     "cols": 6,
@@ -1259,7 +1748,8 @@
     }
   },
   {
-    "number": 43,
+    "number": 57,
+    "id": "level:43",
     "name": "穿过封锁",
     "rows": 7,
     "cols": 7,
@@ -1285,12 +1775,45 @@
     ],
     "goals": 2,
     "mostSimilar": {
-      "number": 27,
-      "similarity": 0.3076923076923077
+      "number": 179,
+      "similarity": 0.3333333333333333
     }
   },
   {
-    "number": 44,
+    "number": 58,
+    "id": "flow:15",
+    "name": "竹径·双翼",
+    "rows": 8,
+    "cols": 8,
+    "controls": 9,
+    "bits": 10,
+    "solutions": 4,
+    "minClicks": 5,
+    "live": 8,
+    "correctLive": 5,
+    "wrongLive": 3,
+    "free": 2,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 24,
+    "bypassableMechanics": [],
+    "effectiveBits": 8,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 193,
+      "similarity": 0.3125
+    }
+  },
+  {
+    "number": 59,
+    "id": "level:44",
     "name": "分流跃迁",
     "rows": 7,
     "cols": 7,
@@ -1316,12 +1839,13 @@
     ],
     "goals": 3,
     "mostSimilar": {
-      "number": 28,
+      "number": 33,
       "similarity": 0.26666666666666666
     }
   },
   {
-    "number": 45,
+    "number": 60,
+    "id": "level:45",
     "name": "光之网络",
     "rows": 8,
     "cols": 8,
@@ -1354,7 +1878,40 @@
     }
   },
   {
-    "number": 46,
+    "number": 61,
+    "id": "flow:16",
+    "name": "竹径·合光",
+    "rows": 8,
+    "cols": 8,
+    "controls": 10,
+    "bits": 11,
+    "solutions": 2,
+    "minClicks": 5,
+    "live": 9,
+    "correctLive": 5,
+    "wrongLive": 4,
+    "free": 1,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 17,
+    "bypassableMechanics": [],
+    "effectiveBits": 10,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 23,
+      "similarity": 0.23076923076923078
+    }
+  },
+  {
+    "number": 62,
+    "id": "level:46",
     "name": "双重跃迁",
     "rows": 7,
     "cols": 8,
@@ -1379,12 +1936,45 @@
     ],
     "goals": 1,
     "mostSimilar": {
-      "number": 16,
-      "similarity": 0.21428571428571427
+      "number": 35,
+      "similarity": 0.23529411764705882
     }
   },
   {
-    "number": 47,
+    "number": 63,
+    "id": "flow:17",
+    "name": "竹径·远送",
+    "rows": 8,
+    "cols": 8,
+    "controls": 10,
+    "bits": 10,
+    "solutions": 16,
+    "minClicks": 5,
+    "live": 9,
+    "correctLive": 4,
+    "wrongLive": 5,
+    "free": 4,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 36,
+    "bypassableMechanics": [],
+    "effectiveBits": 6,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "portal",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 72,
+      "similarity": 0.3125
+    }
+  },
+  {
+    "number": 64,
+    "id": "level:47",
     "name": "跃迁双路",
     "rows": 8,
     "cols": 8,
@@ -1410,12 +2000,13 @@
     ],
     "goals": 2,
     "mostSimilar": {
-      "number": 79,
+      "number": 116,
       "similarity": 0.23076923076923078
     }
   },
   {
-    "number": 48,
+    "number": 65,
+    "id": "level:48",
     "name": "跃迁汇光",
     "rows": 8,
     "cols": 8,
@@ -1442,12 +2033,47 @@
     ],
     "goals": 4,
     "mostSimilar": {
-      "number": 125,
+      "number": 191,
       "similarity": 0.23529411764705882
     }
   },
   {
-    "number": 49,
+    "number": 66,
+    "id": "flow:18",
+    "name": "竹径·双钥",
+    "rows": 8,
+    "cols": 8,
+    "controls": 9,
+    "bits": 10,
+    "solutions": 2,
+    "minClicks": 5,
+    "live": 8,
+    "correctLive": 3,
+    "wrongLive": 5,
+    "free": 1,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 9,
+    "bypassableMechanics": [],
+    "effectiveBits": 9,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "door",
+      "splitter",
+      "switch"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 91,
+      "similarity": 0.19047619047619047
+    }
+  },
+  {
+    "number": 67,
+    "id": "level:49",
     "name": "空间三路",
     "rows": 8,
     "cols": 8,
@@ -1473,12 +2099,45 @@
     ],
     "goals": 3,
     "mostSimilar": {
-      "number": 52,
+      "number": 72,
       "similarity": 0.2
     }
   },
   {
-    "number": 50,
+    "number": 68,
+    "id": "flow:19",
+    "name": "竹径·合奏",
+    "rows": 8,
+    "cols": 8,
+    "controls": 11,
+    "bits": 12,
+    "solutions": 2,
+    "minClicks": 5,
+    "live": 10,
+    "correctLive": 5,
+    "wrongLive": 5,
+    "free": 1,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 25,
+    "bypassableMechanics": [],
+    "effectiveBits": 11,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "splitter"
+    ],
+    "goals": 5,
+    "mostSimilar": {
+      "number": 32,
+      "similarity": 0.3125
+    }
+  },
+  {
+    "number": 69,
+    "id": "level:50",
     "name": "远端聚能",
     "rows": 8,
     "cols": 8,
@@ -1505,12 +2164,13 @@
     ],
     "goals": 4,
     "mostSimilar": {
-      "number": 28,
-      "similarity": 0.23529411764705882
+      "number": 176,
+      "similarity": 0.4117647058823529
     }
   },
   {
-    "number": 51,
+    "number": 70,
+    "id": "level:51",
     "name": "双源绕墙",
     "rows": 6,
     "cols": 6,
@@ -1538,7 +2198,40 @@
     }
   },
   {
-    "number": 52,
+    "number": 71,
+    "id": "flow:20",
+    "name": "竹径·回响",
+    "rows": 8,
+    "cols": 8,
+    "controls": 11,
+    "bits": 12,
+    "solutions": 4,
+    "minClicks": 6,
+    "live": 10,
+    "correctLive": 4,
+    "wrongLive": 6,
+    "free": 2,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 19,
+    "bypassableMechanics": [],
+    "effectiveBits": 10,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 74,
+      "similarity": 0.26666666666666666
+    }
+  },
+  {
+    "number": 72,
+    "id": "level:52",
     "name": "窄缝双路",
     "rows": 6,
     "cols": 6,
@@ -1563,12 +2256,45 @@
     ],
     "goals": 3,
     "mostSimilar": {
-      "number": 59,
+      "number": 48,
       "similarity": 0.3333333333333333
     }
   },
   {
-    "number": 53,
+    "number": 73,
+    "id": "flow:21",
+    "name": "云阶·汇流",
+    "rows": 8,
+    "cols": 8,
+    "controls": 8,
+    "bits": 9,
+    "solutions": 2,
+    "minClicks": 5,
+    "live": 7,
+    "correctLive": 4,
+    "wrongLive": 3,
+    "free": 1,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 14,
+    "bypassableMechanics": [],
+    "effectiveBits": 8,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "splitter"
+    ],
+    "goals": 5,
+    "mostSimilar": {
+      "number": 122,
+      "similarity": 0.2857142857142857
+    }
+  },
+  {
+    "number": 74,
+    "id": "level:53",
     "name": "交叉绕障",
     "rows": 6,
     "cols": 6,
@@ -1591,12 +2317,13 @@
     "mechanics": [],
     "goals": 2,
     "mostSimilar": {
-      "number": 23,
+      "number": 24,
       "similarity": 0.4444444444444444
     }
   },
   {
-    "number": 54,
+    "number": 75,
+    "id": "level:54",
     "name": "迷宫双源",
     "rows": 7,
     "cols": 7,
@@ -1621,12 +2348,44 @@
     ],
     "goals": 3,
     "mostSimilar": {
-      "number": 77,
+      "number": 113,
       "similarity": 0.3
     }
   },
   {
-    "number": 55,
+    "number": 76,
+    "id": "flow:22",
+    "name": "云阶·流光",
+    "rows": 8,
+    "cols": 8,
+    "controls": 11,
+    "bits": 11,
+    "solutions": 10,
+    "minClicks": 5,
+    "live": 10,
+    "correctLive": 5,
+    "wrongLive": 5,
+    "free": 5,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 25,
+    "bypassableMechanics": [],
+    "effectiveBits": 7.7,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 31,
+      "similarity": 0.3333333333333333
+    }
+  },
+  {
+    "number": 77,
+    "id": "level:55",
     "name": "对向迷宫",
     "rows": 6,
     "cols": 6,
@@ -1649,12 +2408,13 @@
     "mechanics": [],
     "goals": 2,
     "mostSimilar": {
-      "number": 56,
+      "number": 78,
       "similarity": 0.4444444444444444
     }
   },
   {
-    "number": 56,
+    "number": 78,
+    "id": "level:56",
     "name": "分流夹击",
     "rows": 6,
     "cols": 7,
@@ -1679,12 +2439,46 @@
     ],
     "goals": 3,
     "mostSimilar": {
-      "number": 55,
+      "number": 77,
       "similarity": 0.4444444444444444
     }
   },
   {
-    "number": 57,
+    "number": 79,
+    "id": "flow:23",
+    "name": "云阶·跃迁",
+    "rows": 8,
+    "cols": 8,
+    "controls": 10,
+    "bits": 11,
+    "solutions": 2,
+    "minClicks": 5,
+    "live": 9,
+    "correctLive": 4,
+    "wrongLive": 5,
+    "free": 1,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 35,
+    "bypassableMechanics": [],
+    "effectiveBits": 10,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "portal",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 144,
+      "similarity": 0.2631578947368421
+    }
+  },
+  {
+    "number": 80,
+    "id": "level:57",
     "name": "锁镜双火",
     "rows": 6,
     "cols": 6,
@@ -1712,7 +2506,42 @@
     }
   },
   {
-    "number": 58,
+    "number": 81,
+    "id": "flow:24",
+    "name": "云阶·启门",
+    "rows": 8,
+    "cols": 8,
+    "controls": 9,
+    "bits": 10,
+    "solutions": 2,
+    "minClicks": 5,
+    "live": 8,
+    "correctLive": 4,
+    "wrongLive": 4,
+    "free": 1,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 14,
+    "bypassableMechanics": [],
+    "effectiveBits": 9,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "door",
+      "splitter",
+      "switch"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 196,
+      "similarity": 0.375
+    }
+  },
+  {
+    "number": 82,
+    "id": "level:58",
     "name": "双翼汇流",
     "rows": 8,
     "cols": 8,
@@ -1738,12 +2567,13 @@
     ],
     "goals": 4,
     "mostSimilar": {
-      "number": 19,
-      "similarity": 0.2727272727272727
+      "number": 174,
+      "similarity": 0.3076923076923077
     }
   },
   {
-    "number": 59,
+    "number": 83,
+    "id": "level:59",
     "name": "三源迷宫",
     "rows": 7,
     "cols": 7,
@@ -1768,12 +2598,45 @@
     ],
     "goals": 4,
     "mostSimilar": {
-      "number": 52,
+      "number": 72,
       "similarity": 0.3333333333333333
     }
   },
   {
-    "number": 60,
+    "number": 84,
+    "id": "flow:25",
+    "name": "云阶·双翼",
+    "rows": 8,
+    "cols": 8,
+    "controls": 10,
+    "bits": 11,
+    "solutions": 4,
+    "minClicks": 6,
+    "live": 9,
+    "correctLive": 4,
+    "wrongLive": 5,
+    "free": 2,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 36,
+    "bypassableMechanics": [],
+    "effectiveBits": 9,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 176,
+      "similarity": 0.29411764705882354
+    }
+  },
+  {
+    "number": 85,
+    "id": "level:60",
     "name": "错峰合光",
     "rows": 8,
     "cols": 8,
@@ -1804,7 +2667,40 @@
     }
   },
   {
-    "number": 61,
+    "number": 86,
+    "id": "flow:26",
+    "name": "云阶·合光",
+    "rows": 8,
+    "cols": 8,
+    "controls": 9,
+    "bits": 10,
+    "solutions": 2,
+    "minClicks": 5,
+    "live": 8,
+    "correctLive": 4,
+    "wrongLive": 4,
+    "free": 1,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 16,
+    "bypassableMechanics": [],
+    "effectiveBits": 9,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 169,
+      "similarity": 0.2222222222222222
+    }
+  },
+  {
+    "number": 87,
+    "id": "level:61",
     "name": "双束入门",
     "rows": 6,
     "cols": 6,
@@ -1830,12 +2726,13 @@
     ],
     "goals": 2,
     "mostSimilar": {
-      "number": 25,
+      "number": 28,
       "similarity": 0.3333333333333333
     }
   },
   {
-    "number": 62,
+    "number": 88,
+    "id": "level:62",
     "name": "对面汇流",
     "rows": 6,
     "cols": 6,
@@ -1865,7 +2762,40 @@
     }
   },
   {
-    "number": 63,
+    "number": 89,
+    "id": "flow:27",
+    "name": "云阶·远送",
+    "rows": 8,
+    "cols": 8,
+    "controls": 11,
+    "bits": 11,
+    "solutions": 2,
+    "minClicks": 5,
+    "live": 10,
+    "correctLive": 5,
+    "wrongLive": 5,
+    "free": 1,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 20,
+    "bypassableMechanics": [],
+    "effectiveBits": 10,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "portal",
+      "splitter"
+    ],
+    "goals": 5,
+    "mostSimilar": {
+      "number": 160,
+      "similarity": 0.2631578947368421
+    }
+  },
+  {
+    "number": 90,
+    "id": "level:63",
     "name": "分光充能",
     "rows": 7,
     "cols": 7,
@@ -1891,12 +2821,47 @@
     ],
     "goals": 3,
     "mostSimilar": {
-      "number": 9,
-      "similarity": 0.3076923076923077
+      "number": 76,
+      "similarity": 0.3125
     }
   },
   {
-    "number": 64,
+    "number": 91,
+    "id": "flow:28",
+    "name": "云阶·双钥",
+    "rows": 8,
+    "cols": 8,
+    "controls": 8,
+    "bits": 9,
+    "solutions": 2,
+    "minClicks": 5,
+    "live": 7,
+    "correctLive": 3,
+    "wrongLive": 4,
+    "free": 1,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 13,
+    "bypassableMechanics": [],
+    "effectiveBits": 8,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "door",
+      "splitter",
+      "switch"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 116,
+      "similarity": 0.2
+    }
+  },
+  {
+    "number": 92,
+    "id": "level:64",
     "name": "迷宫汇能",
     "rows": 6,
     "cols": 6,
@@ -1922,12 +2887,13 @@
     ],
     "goals": 2,
     "mostSimilar": {
-      "number": 23,
+      "number": 24,
       "similarity": 0.625
     }
   },
   {
-    "number": 65,
+    "number": 93,
+    "id": "level:65",
     "name": "窄路双束",
     "rows": 6,
     "cols": 6,
@@ -1953,12 +2919,46 @@
     ],
     "goals": 2,
     "mostSimilar": {
-      "number": 27,
+      "number": 31,
       "similarity": 0.3333333333333333
     }
   },
   {
-    "number": 66,
+    "number": 94,
+    "id": "flow:29",
+    "name": "云阶·合奏",
+    "rows": 8,
+    "cols": 8,
+    "controls": 9,
+    "bits": 10,
+    "solutions": 2,
+    "minClicks": 5,
+    "live": 8,
+    "correctLive": 4,
+    "wrongLive": 4,
+    "free": 1,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 23,
+    "bypassableMechanics": [],
+    "effectiveBits": 9,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "focus",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 97,
+      "similarity": 0.23529411764705882
+    }
+  },
+  {
+    "number": 95,
+    "id": "level:66",
     "name": "双晶迷宫",
     "rows": 6,
     "cols": 7,
@@ -1983,12 +2983,13 @@
     ],
     "goals": 2,
     "mostSimilar": {
-      "number": 55,
+      "number": 77,
       "similarity": 0.2727272727272727
     }
   },
   {
-    "number": 67,
+    "number": 96,
+    "id": "level:67",
     "name": "交叉充能",
     "rows": 7,
     "cols": 7,
@@ -2019,7 +3020,40 @@
     }
   },
   {
-    "number": 68,
+    "number": 97,
+    "id": "flow:30",
+    "name": "云阶·回响",
+    "rows": 8,
+    "cols": 8,
+    "controls": 9,
+    "bits": 10,
+    "solutions": 4,
+    "minClicks": 6,
+    "live": 8,
+    "correctLive": 4,
+    "wrongLive": 4,
+    "free": 2,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 31,
+    "bypassableMechanics": [],
+    "effectiveBits": 8,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "splitter"
+    ],
+    "goals": 3,
+    "mostSimilar": {
+      "number": 9,
+      "similarity": 0.2857142857142857
+    }
+  },
+  {
+    "number": 98,
+    "id": "level:68",
     "name": "晶核协作",
     "rows": 8,
     "cols": 8,
@@ -2046,12 +3080,45 @@
     ],
     "goals": 4,
     "mostSimilar": {
-      "number": 124,
+      "number": 190,
       "similarity": 0.2631578947368421
     }
   },
   {
-    "number": 69,
+    "number": 99,
+    "id": "flow:31",
+    "name": "星桥·汇流",
+    "rows": 8,
+    "cols": 8,
+    "controls": 10,
+    "bits": 11,
+    "solutions": 2,
+    "minClicks": 5,
+    "live": 9,
+    "correctLive": 4,
+    "wrongLive": 5,
+    "free": 1,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 7,
+    "bypassableMechanics": [],
+    "effectiveBits": 10,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 83,
+      "similarity": 0.26666666666666666
+    }
+  },
+  {
+    "number": 100,
+    "id": "level:69",
     "name": "三向取二",
     "rows": 6,
     "cols": 6,
@@ -2076,12 +3143,13 @@
     ],
     "goals": 2,
     "mostSimilar": {
-      "number": 23,
-      "similarity": 0.2222222222222222
+      "number": 153,
+      "similarity": 0.3333333333333333
     }
   },
   {
-    "number": 70,
+    "number": 101,
+    "id": "level:70",
     "name": "双晶汇核",
     "rows": 8,
     "cols": 8,
@@ -2108,12 +3176,44 @@
     ],
     "goals": 4,
     "mostSimilar": {
-      "number": 27,
-      "similarity": 0.25
+      "number": 151,
+      "similarity": 0.35294117647058826
     }
   },
   {
-    "number": 71,
+    "number": 102,
+    "id": "flow:32",
+    "name": "星桥·流光",
+    "rows": 8,
+    "cols": 8,
+    "controls": 9,
+    "bits": 9,
+    "solutions": 10,
+    "minClicks": 5,
+    "live": 8,
+    "correctLive": 3,
+    "wrongLive": 5,
+    "free": 4,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 23,
+    "bypassableMechanics": [],
+    "effectiveBits": 5.7,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "splitter"
+    ],
+    "goals": 3,
+    "mostSimilar": {
+      "number": 48,
+      "similarity": 0.29411764705882354
+    }
+  },
+  {
+    "number": 103,
+    "id": "level:71",
     "name": "聚合入门",
     "rows": 6,
     "cols": 6,
@@ -2143,7 +3243,41 @@
     }
   },
   {
-    "number": 72,
+    "number": 104,
+    "id": "flow:33",
+    "name": "星桥·跃迁",
+    "rows": 8,
+    "cols": 8,
+    "controls": 9,
+    "bits": 10,
+    "solutions": 2,
+    "minClicks": 5,
+    "live": 8,
+    "correctLive": 3,
+    "wrongLive": 5,
+    "free": 1,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 19,
+    "bypassableMechanics": [],
+    "effectiveBits": 9,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "portal",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 88,
+      "similarity": 0.21428571428571427
+    }
+  },
+  {
+    "number": 105,
+    "id": "level:72",
     "name": "转向聚合",
     "rows": 7,
     "cols": 7,
@@ -2169,12 +3303,13 @@
     ],
     "goals": 3,
     "mostSimilar": {
-      "number": 29,
+      "number": 34,
       "similarity": 0.3
     }
   },
   {
-    "number": 73,
+    "number": 106,
+    "id": "level:73",
     "name": "聚合迷宫",
     "rows": 6,
     "cols": 6,
@@ -2200,12 +3335,47 @@
     ],
     "goals": 2,
     "mostSimilar": {
-      "number": 28,
+      "number": 33,
       "similarity": 0.2727272727272727
     }
   },
   {
-    "number": 74,
+    "number": 107,
+    "id": "flow:34",
+    "name": "星桥·启门",
+    "rows": 8,
+    "cols": 8,
+    "controls": 9,
+    "bits": 10,
+    "solutions": 4,
+    "minClicks": 5,
+    "live": 8,
+    "correctLive": 5,
+    "wrongLive": 3,
+    "free": 2,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 18,
+    "bypassableMechanics": [],
+    "effectiveBits": 8,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "door",
+      "splitter",
+      "switch"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 176,
+      "similarity": 0.2777777777777778
+    }
+  },
+  {
+    "number": 108,
+    "id": "level:74",
     "name": "错位输入",
     "rows": 8,
     "cols": 8,
@@ -2231,12 +3401,45 @@
     ],
     "goals": 3,
     "mostSimilar": {
-      "number": 71,
+      "number": 103,
       "similarity": 0.375
     }
   },
   {
-    "number": 75,
+    "number": 109,
+    "id": "flow:35",
+    "name": "星桥·接棒",
+    "rows": 8,
+    "cols": 8,
+    "controls": 9,
+    "bits": 11,
+    "solutions": 4,
+    "minClicks": 6,
+    "live": 8,
+    "correctLive": 4,
+    "wrongLive": 4,
+    "free": 2,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 25,
+    "bypassableMechanics": [],
+    "effectiveBits": 9,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 84,
+      "similarity": 0.23529411764705882
+    }
+  },
+  {
+    "number": 110,
+    "id": "level:75",
     "name": "聚合开门",
     "rows": 6,
     "cols": 6,
@@ -2268,7 +3471,8 @@
     }
   },
   {
-    "number": 76,
+    "number": 111,
+    "id": "level:76",
     "name": "双核串联",
     "rows": 6,
     "cols": 7,
@@ -2293,12 +3497,46 @@
     ],
     "goals": 1,
     "mostSimilar": {
-      "number": 79,
-      "similarity": 0.2222222222222222
+      "number": 37,
+      "similarity": 0.23076923076923078
     }
   },
   {
-    "number": 77,
+    "number": 112,
+    "id": "flow:36",
+    "name": "星桥·晶光",
+    "rows": 8,
+    "cols": 8,
+    "controls": 11,
+    "bits": 12,
+    "solutions": 18,
+    "minClicks": 5,
+    "live": 10,
+    "correctLive": 5,
+    "wrongLive": 5,
+    "free": 4,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 25,
+    "bypassableMechanics": [],
+    "effectiveBits": 7.8,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "focus",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 150,
+      "similarity": 0.2777777777777778
+    }
+  },
+  {
+    "number": 113,
+    "id": "level:77",
     "name": "窄缝输出",
     "rows": 6,
     "cols": 6,
@@ -2323,12 +3561,13 @@
     ],
     "goals": 1,
     "mostSimilar": {
-      "number": 80,
+      "number": 118,
       "similarity": 0.3333333333333333
     }
   },
   {
-    "number": 78,
+    "number": 114,
+    "id": "level:78",
     "name": "晶核交错",
     "rows": 8,
     "cols": 8,
@@ -2355,12 +3594,45 @@
     ],
     "goals": 4,
     "mostSimilar": {
-      "number": 30,
+      "number": 36,
       "similarity": 0.26666666666666666
     }
   },
   {
-    "number": 79,
+    "number": 115,
+    "id": "flow:37",
+    "name": "星桥·远送",
+    "rows": 8,
+    "cols": 8,
+    "controls": 11,
+    "bits": 11,
+    "solutions": 4,
+    "minClicks": 5,
+    "live": 10,
+    "correctLive": 5,
+    "wrongLive": 5,
+    "free": 2,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 39,
+    "bypassableMechanics": [],
+    "effectiveBits": 9,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "portal",
+      "splitter"
+    ],
+    "goals": 5,
+    "mostSimilar": {
+      "number": 128,
+      "similarity": 0.22727272727272727
+    }
+  },
+  {
+    "number": 116,
+    "id": "level:79",
     "name": "跃迁聚合",
     "rows": 6,
     "cols": 7,
@@ -2386,12 +3658,47 @@
     ],
     "goals": 1,
     "mostSimilar": {
-      "number": 47,
+      "number": 64,
       "similarity": 0.23076923076923078
     }
   },
   {
-    "number": 80,
+    "number": 117,
+    "id": "flow:38",
+    "name": "星桥·双钥",
+    "rows": 8,
+    "cols": 8,
+    "controls": 11,
+    "bits": 12,
+    "solutions": 4,
+    "minClicks": 5,
+    "live": 10,
+    "correctLive": 5,
+    "wrongLive": 5,
+    "free": 2,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 50,
+    "bypassableMechanics": [],
+    "effectiveBits": 10,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "door",
+      "splitter",
+      "switch"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 192,
+      "similarity": 0.22727272727272727
+    }
+  },
+  {
+    "number": 118,
+    "id": "level:80",
     "name": "双源终核",
     "rows": 7,
     "cols": 7,
@@ -2422,7 +3729,8 @@
     }
   },
   {
-    "number": 81,
+    "number": 119,
+    "id": "level:81",
     "name": "交叉开门",
     "rows": 7,
     "cols": 7,
@@ -2449,12 +3757,46 @@
     ],
     "goals": 2,
     "mostSimilar": {
-      "number": 86,
+      "number": 128,
       "similarity": 0.3
     }
   },
   {
-    "number": 82,
+    "number": 120,
+    "id": "flow:39",
+    "name": "星桥·合奏",
+    "rows": 8,
+    "cols": 8,
+    "controls": 10,
+    "bits": 11,
+    "solutions": 4,
+    "minClicks": 5,
+    "live": 9,
+    "correctLive": 5,
+    "wrongLive": 4,
+    "free": 2,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 14,
+    "bypassableMechanics": [],
+    "effectiveBits": 9,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "focus",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 127,
+      "similarity": 0.29411764705882354
+    }
+  },
+  {
+    "number": 121,
+    "id": "level:82",
     "name": "双核接力",
     "rows": 8,
     "cols": 8,
@@ -2480,12 +3822,45 @@
     ],
     "goals": 4,
     "mostSimilar": {
-      "number": 51,
+      "number": 70,
       "similarity": 0.26666666666666666
     }
   },
   {
-    "number": 83,
+    "number": 122,
+    "id": "flow:40",
+    "name": "星桥·回响",
+    "rows": 8,
+    "cols": 8,
+    "controls": 8,
+    "bits": 9,
+    "solutions": 2,
+    "minClicks": 6,
+    "live": 7,
+    "correctLive": 3,
+    "wrongLive": 4,
+    "free": 1,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 17,
+    "bypassableMechanics": [],
+    "effectiveBits": 8,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "splitter"
+    ],
+    "goals": 3,
+    "mostSimilar": {
+      "number": 73,
+      "similarity": 0.2857142857142857
+    }
+  },
+  {
+    "number": 123,
+    "id": "level:83",
     "name": "双锁分流",
     "rows": 7,
     "cols": 7,
@@ -2517,7 +3892,8 @@
     }
   },
   {
-    "number": 84,
+    "number": 124,
+    "id": "level:84",
     "name": "聚合分岔",
     "rows": 7,
     "cols": 7,
@@ -2543,12 +3919,45 @@
     ],
     "goals": 3,
     "mostSimilar": {
-      "number": 87,
+      "number": 129,
       "similarity": 0.46153846153846156
     }
   },
   {
-    "number": 85,
+    "number": 125,
+    "id": "flow:41",
+    "name": "长廊·汇流",
+    "rows": 8,
+    "cols": 8,
+    "controls": 11,
+    "bits": 12,
+    "solutions": 4,
+    "minClicks": 5,
+    "live": 10,
+    "correctLive": 5,
+    "wrongLive": 5,
+    "free": 2,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 14,
+    "bypassableMechanics": [],
+    "effectiveBits": 10,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 37,
+      "similarity": 0.35294117647058826
+    }
+  },
+  {
+    "number": 126,
+    "id": "level:85",
     "name": "双核接力",
     "rows": 7,
     "cols": 8,
@@ -2573,12 +3982,44 @@
     ],
     "goals": 1,
     "mostSimilar": {
-      "number": 94,
+      "number": 141,
       "similarity": 0.4166666666666667
     }
   },
   {
-    "number": 86,
+    "number": 127,
+    "id": "flow:42",
+    "name": "长廊·流光",
+    "rows": 8,
+    "cols": 8,
+    "controls": 9,
+    "bits": 9,
+    "solutions": 12,
+    "minClicks": 5,
+    "live": 8,
+    "correctLive": 3,
+    "wrongLive": 5,
+    "free": 5,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 21,
+    "bypassableMechanics": [],
+    "effectiveBits": 5.4,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "splitter"
+    ],
+    "goals": 3,
+    "mostSimilar": {
+      "number": 120,
+      "similarity": 0.29411764705882354
+    }
+  },
+  {
+    "number": 128,
+    "id": "level:86",
     "name": "门后晶体",
     "rows": 7,
     "cols": 7,
@@ -2607,12 +4048,13 @@
     ],
     "goals": 1,
     "mostSimilar": {
-      "number": 81,
+      "number": 119,
       "similarity": 0.3
     }
   },
   {
-    "number": 87,
+    "number": 129,
+    "id": "level:87",
     "name": "三源取舍",
     "rows": 7,
     "cols": 8,
@@ -2639,12 +4081,46 @@
     ],
     "goals": 2,
     "mostSimilar": {
-      "number": 84,
+      "number": 124,
       "similarity": 0.46153846153846156
     }
   },
   {
-    "number": 88,
+    "number": 130,
+    "id": "flow:43",
+    "name": "长廊·跃迁",
+    "rows": 8,
+    "cols": 8,
+    "controls": 8,
+    "bits": 9,
+    "solutions": 2,
+    "minClicks": 5,
+    "live": 7,
+    "correctLive": 4,
+    "wrongLive": 3,
+    "free": 1,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 17,
+    "bypassableMechanics": [],
+    "effectiveBits": 8,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "portal",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 7,
+      "similarity": 0.21428571428571427
+    }
+  },
+  {
+    "number": 131,
+    "id": "level:88",
     "name": "聚光暗巷",
     "rows": 8,
     "cols": 8,
@@ -2670,12 +4146,13 @@
     ],
     "goals": 4,
     "mostSimilar": {
-      "number": 24,
+      "number": 26,
       "similarity": 0.25
     }
   },
   {
-    "number": 89,
+    "number": 132,
+    "id": "level:89",
     "name": "双跃聚能",
     "rows": 7,
     "cols": 8,
@@ -2702,12 +4179,47 @@
     ],
     "goals": 3,
     "mostSimilar": {
-      "number": 87,
+      "number": 129,
       "similarity": 0.21739130434782608
     }
   },
   {
-    "number": 90,
+    "number": 133,
+    "id": "flow:44",
+    "name": "长廊·启门",
+    "rows": 8,
+    "cols": 8,
+    "controls": 10,
+    "bits": 11,
+    "solutions": 8,
+    "minClicks": 5,
+    "live": 9,
+    "correctLive": 5,
+    "wrongLive": 4,
+    "free": 3,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 11,
+    "bypassableMechanics": [],
+    "effectiveBits": 8,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "door",
+      "splitter",
+      "switch"
+    ],
+    "goals": 5,
+    "mostSimilar": {
+      "number": 75,
+      "similarity": 0.23529411764705882
+    }
+  },
+  {
+    "number": 134,
+    "id": "level:90",
     "name": "机关交响",
     "rows": 8,
     "cols": 8,
@@ -2742,7 +4254,40 @@
     }
   },
   {
-    "number": 91,
+    "number": 135,
+    "id": "flow:45",
+    "name": "长廊·接棒",
+    "rows": 8,
+    "cols": 8,
+    "controls": 10,
+    "bits": 12,
+    "solutions": 2,
+    "minClicks": 6,
+    "live": 9,
+    "correctLive": 5,
+    "wrongLive": 4,
+    "free": 1,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 36,
+    "bypassableMechanics": [],
+    "effectiveBits": 11,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 179,
+      "similarity": 0.29411764705882354
+    }
+  },
+  {
+    "number": 136,
+    "id": "level:91",
     "name": "镜像陷阱",
     "rows": 8,
     "cols": 8,
@@ -2771,12 +4316,13 @@
     ],
     "goals": 2,
     "mostSimilar": {
-      "number": 51,
+      "number": 70,
       "similarity": 0.2777777777777778
     }
   },
   {
-    "number": 92,
+    "number": 137,
+    "id": "level:92",
     "name": "汇光联锁",
     "rows": 8,
     "cols": 8,
@@ -2804,12 +4350,46 @@
     ],
     "goals": 4,
     "mostSimilar": {
-      "number": 32,
-      "similarity": 0.23529411764705882
+      "number": 45,
+      "similarity": 0.25
     }
   },
   {
-    "number": 93,
+    "number": 138,
+    "id": "flow:46",
+    "name": "长廊·晶光",
+    "rows": 8,
+    "cols": 8,
+    "controls": 11,
+    "bits": 12,
+    "solutions": 2,
+    "minClicks": 5,
+    "live": 10,
+    "correctLive": 5,
+    "wrongLive": 5,
+    "free": 1,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 31,
+    "bypassableMechanics": [],
+    "effectiveBits": 11,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "focus",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 78,
+      "similarity": 0.3333333333333333
+    }
+  },
+  {
+    "number": 139,
+    "id": "level:93",
     "name": "三束汇核",
     "rows": 8,
     "cols": 8,
@@ -2835,12 +4415,45 @@
     ],
     "goals": 6,
     "mostSimilar": {
-      "number": 9,
-      "similarity": 0.2777777777777778
+      "number": 30,
+      "similarity": 0.2857142857142857
     }
   },
   {
-    "number": 94,
+    "number": 140,
+    "id": "flow:47",
+    "name": "长廊·远送",
+    "rows": 8,
+    "cols": 8,
+    "controls": 9,
+    "bits": 9,
+    "solutions": 2,
+    "minClicks": 5,
+    "live": 8,
+    "correctLive": 3,
+    "wrongLive": 5,
+    "free": 1,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 22,
+    "bypassableMechanics": [],
+    "effectiveBits": 8,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "portal",
+      "splitter"
+    ],
+    "goals": 5,
+    "mostSimilar": {
+      "number": 72,
+      "similarity": 0.25
+    }
+  },
+  {
+    "number": 141,
+    "id": "level:94",
     "name": "串联跃迁",
     "rows": 8,
     "cols": 8,
@@ -2866,12 +4479,13 @@
     ],
     "goals": 1,
     "mostSimilar": {
-      "number": 85,
+      "number": 126,
       "similarity": 0.4166666666666667
     }
   },
   {
-    "number": 95,
+    "number": 142,
+    "id": "level:95",
     "name": "双核双晶",
     "rows": 8,
     "cols": 8,
@@ -2898,12 +4512,47 @@
     ],
     "goals": 2,
     "mostSimilar": {
-      "number": 91,
+      "number": 136,
       "similarity": 0.19047619047619047
     }
   },
   {
-    "number": 96,
+    "number": 143,
+    "id": "flow:48",
+    "name": "长廊·双钥",
+    "rows": 8,
+    "cols": 8,
+    "controls": 9,
+    "bits": 10,
+    "solutions": 2,
+    "minClicks": 5,
+    "live": 8,
+    "correctLive": 5,
+    "wrongLive": 3,
+    "free": 1,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 15,
+    "bypassableMechanics": [],
+    "effectiveBits": 9,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "door",
+      "splitter",
+      "switch"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 8,
+      "similarity": 0.26666666666666666
+    }
+  },
+  {
+    "number": 144,
+    "id": "level:96",
     "name": "四源矩阵",
     "rows": 8,
     "cols": 8,
@@ -2930,12 +4579,46 @@
     ],
     "goals": 3,
     "mostSimilar": {
-      "number": 105,
-      "similarity": 0.2222222222222222
+      "number": 79,
+      "similarity": 0.2631578947368421
     }
   },
   {
-    "number": 97,
+    "number": 145,
+    "id": "flow:49",
+    "name": "长廊·合奏",
+    "rows": 8,
+    "cols": 8,
+    "controls": 11,
+    "bits": 12,
+    "solutions": 6,
+    "minClicks": 5,
+    "live": 10,
+    "correctLive": 5,
+    "wrongLive": 5,
+    "free": 3,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 26,
+    "bypassableMechanics": [],
+    "effectiveBits": 9.4,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "focus",
+      "splitter"
+    ],
+    "goals": 3,
+    "mostSimilar": {
+      "number": 35,
+      "similarity": 0.2631578947368421
+    }
+  },
+  {
+    "number": 146,
+    "id": "level:97",
     "name": "三门认证",
     "rows": 8,
     "cols": 8,
@@ -2962,12 +4645,13 @@
     ],
     "goals": 3,
     "mostSimilar": {
-      "number": 12,
-      "similarity": 0.18181818181818182
+      "number": 40,
+      "similarity": 0.19230769230769232
     }
   },
   {
-    "number": 98,
+    "number": 147,
+    "id": "level:98",
     "name": "双分光回路",
     "rows": 8,
     "cols": 8,
@@ -2995,12 +4679,45 @@
     ],
     "goals": 4,
     "mostSimilar": {
-      "number": 29,
-      "similarity": 0.23529411764705882
+      "number": 122,
+      "similarity": 0.2777777777777778
     }
   },
   {
-    "number": 99,
+    "number": 148,
+    "id": "flow:50",
+    "name": "长廊·回响",
+    "rows": 8,
+    "cols": 8,
+    "controls": 9,
+    "bits": 10,
+    "solutions": 2,
+    "minClicks": 6,
+    "live": 8,
+    "correctLive": 3,
+    "wrongLive": 5,
+    "free": 1,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 17,
+    "bypassableMechanics": [],
+    "effectiveBits": 9,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "splitter"
+    ],
+    "goals": 3,
+    "mostSimilar": {
+      "number": 126,
+      "similarity": 0.3076923076923077
+    }
+  },
+  {
+    "number": 149,
+    "id": "level:99",
     "name": "光域合奏",
     "rows": 8,
     "cols": 8,
@@ -3028,12 +4745,13 @@
     ],
     "goals": 4,
     "mostSimilar": {
-      "number": 109,
-      "similarity": 0.25
+      "number": 84,
+      "similarity": 0.2631578947368421
     }
   },
   {
-    "number": 100,
+    "number": 150,
+    "id": "level:100",
     "name": "终极光域",
     "rows": 8,
     "cols": 8,
@@ -3060,12 +4778,45 @@
     ],
     "goals": 3,
     "mostSimilar": {
-      "number": 77,
-      "similarity": 0.25
+      "number": 112,
+      "similarity": 0.2777777777777778
     }
   },
   {
-    "number": 101,
+    "number": 151,
+    "id": "flow:51",
+    "name": "月庭·汇流",
+    "rows": 8,
+    "cols": 8,
+    "controls": 10,
+    "bits": 11,
+    "solutions": 2,
+    "minClicks": 5,
+    "live": 9,
+    "correctLive": 4,
+    "wrongLive": 5,
+    "free": 1,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 23,
+    "bypassableMechanics": [],
+    "effectiveBits": 10,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 101,
+      "similarity": 0.35294117647058826
+    }
+  },
+  {
+    "number": 152,
+    "id": "level:101",
     "name": "岔口留镜",
     "rows": 8,
     "cols": 8,
@@ -3090,12 +4841,44 @@
     ],
     "goals": 4,
     "mostSimilar": {
-      "number": 102,
+      "number": 154,
       "similarity": 0.23809523809523808
     }
   },
   {
-    "number": 102,
+    "number": 153,
+    "id": "flow:52",
+    "name": "月庭·流光",
+    "rows": 8,
+    "cols": 8,
+    "controls": 10,
+    "bits": 10,
+    "solutions": 6,
+    "minClicks": 5,
+    "live": 9,
+    "correctLive": 4,
+    "wrongLive": 5,
+    "free": 3,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 29,
+    "bypassableMechanics": [],
+    "effectiveBits": 7.4,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "splitter"
+    ],
+    "goals": 3,
+    "mostSimilar": {
+      "number": 100,
+      "similarity": 0.3333333333333333
+    }
+  },
+  {
+    "number": 154,
+    "id": "level:102",
     "name": "隔墙取钥",
     "rows": 8,
     "cols": 8,
@@ -3122,12 +4905,13 @@
     ],
     "goals": 4,
     "mostSimilar": {
-      "number": 103,
+      "number": 155,
       "similarity": 0.2608695652173913
     }
   },
   {
-    "number": 103,
+    "number": 155,
+    "id": "level:103",
     "name": "折返航道",
     "rows": 8,
     "cols": 8,
@@ -3153,12 +4937,46 @@
     ],
     "goals": 4,
     "mostSimilar": {
-      "number": 102,
+      "number": 154,
       "similarity": 0.2608695652173913
     }
   },
   {
-    "number": 104,
+    "number": 156,
+    "id": "flow:53",
+    "name": "月庭·跃迁",
+    "rows": 8,
+    "cols": 8,
+    "controls": 11,
+    "bits": 12,
+    "solutions": 6,
+    "minClicks": 5,
+    "live": 10,
+    "correctLive": 5,
+    "wrongLive": 5,
+    "free": 3,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 33,
+    "bypassableMechanics": [],
+    "effectiveBits": 9.4,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "portal",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 9,
+      "similarity": 0.29411764705882354
+    }
+  },
+  {
+    "number": 157,
+    "id": "level:104",
     "name": "三岔汇核",
     "rows": 8,
     "cols": 8,
@@ -3190,7 +5008,42 @@
     }
   },
   {
-    "number": 105,
+    "number": 158,
+    "id": "flow:54",
+    "name": "月庭·启门",
+    "rows": 8,
+    "cols": 8,
+    "controls": 10,
+    "bits": 11,
+    "solutions": 18,
+    "minClicks": 5,
+    "live": 9,
+    "correctLive": 4,
+    "wrongLive": 5,
+    "free": 5,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 27,
+    "bypassableMechanics": [],
+    "effectiveBits": 6.8,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "door",
+      "splitter",
+      "switch"
+    ],
+    "goals": 3,
+    "mostSimilar": {
+      "number": 154,
+      "similarity": 0.21739130434782608
+    }
+  },
+  {
+    "number": 159,
+    "id": "level:105",
     "name": "借光开门",
     "rows": 8,
     "cols": 8,
@@ -3218,12 +5071,13 @@
     ],
     "goals": 4,
     "mostSimilar": {
-      "number": 24,
+      "number": 26,
       "similarity": 0.3333333333333333
     }
   },
   {
-    "number": 106,
+    "number": 160,
+    "id": "level:106",
     "name": "真假近路",
     "rows": 7,
     "cols": 7,
@@ -3253,7 +5107,40 @@
     }
   },
   {
-    "number": 107,
+    "number": 161,
+    "id": "flow:55",
+    "name": "月庭·接棒",
+    "rows": 8,
+    "cols": 8,
+    "controls": 9,
+    "bits": 11,
+    "solutions": 4,
+    "minClicks": 6,
+    "live": 8,
+    "correctLive": 4,
+    "wrongLive": 4,
+    "free": 2,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 20,
+    "bypassableMechanics": [],
+    "effectiveBits": 9,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 32,
+      "similarity": 0.26666666666666666
+    }
+  },
+  {
+    "number": 162,
+    "id": "level:107",
     "name": "双钥同锁",
     "rows": 8,
     "cols": 8,
@@ -3280,12 +5167,46 @@
     ],
     "goals": 5,
     "mostSimilar": {
-      "number": 83,
-      "similarity": 0.21739130434782608
+      "number": 37,
+      "similarity": 0.23809523809523808
     }
   },
   {
-    "number": 108,
+    "number": 163,
+    "id": "flow:56",
+    "name": "月庭·晶光",
+    "rows": 8,
+    "cols": 8,
+    "controls": 10,
+    "bits": 11,
+    "solutions": 2,
+    "minClicks": 5,
+    "live": 9,
+    "correctLive": 4,
+    "wrongLive": 5,
+    "free": 1,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 26,
+    "bypassableMechanics": [],
+    "effectiveBits": 10,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "focus",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 40,
+      "similarity": 0.3333333333333333
+    }
+  },
+  {
+    "number": 164,
+    "id": "level:108",
     "name": "跃迁接棒",
     "rows": 8,
     "cols": 8,
@@ -3312,12 +5233,13 @@
     ],
     "goals": 3,
     "mostSimilar": {
-      "number": 27,
-      "similarity": 0.25
+      "number": 76,
+      "similarity": 0.2631578947368421
     }
   },
   {
-    "number": 109,
+    "number": 165,
+    "id": "level:109",
     "name": "双晶分账",
     "rows": 8,
     "cols": 8,
@@ -3348,7 +5270,40 @@
     }
   },
   {
-    "number": 110,
+    "number": 166,
+    "id": "flow:57",
+    "name": "月庭·远送",
+    "rows": 8,
+    "cols": 8,
+    "controls": 11,
+    "bits": 11,
+    "solutions": 8,
+    "minClicks": 5,
+    "live": 10,
+    "correctLive": 5,
+    "wrongLive": 5,
+    "free": 3,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 34,
+    "bypassableMechanics": [],
+    "effectiveBits": 8,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "portal",
+      "splitter"
+    ],
+    "goals": 5,
+    "mostSimilar": {
+      "number": 148,
+      "similarity": 0.2631578947368421
+    }
+  },
+  {
+    "number": 167,
+    "id": "level:110",
     "name": "汇流岔道",
     "rows": 8,
     "cols": 8,
@@ -3374,12 +5329,13 @@
     ],
     "goals": 4,
     "mostSimilar": {
-      "number": 12,
-      "similarity": 0.21428571428571427
+      "number": 174,
+      "similarity": 0.26666666666666666
     }
   },
   {
-    "number": 111,
+    "number": 168,
+    "id": "level:111",
     "name": "远端回钥",
     "rows": 8,
     "cols": 8,
@@ -3407,12 +5363,47 @@
     ],
     "goals": 4,
     "mostSimilar": {
-      "number": 27,
-      "similarity": 0.2
+      "number": 53,
+      "similarity": 0.22727272727272727
     }
   },
   {
-    "number": 112,
+    "number": 169,
+    "id": "flow:58",
+    "name": "月庭·双钥",
+    "rows": 8,
+    "cols": 8,
+    "controls": 8,
+    "bits": 9,
+    "solutions": 2,
+    "minClicks": 5,
+    "live": 7,
+    "correctLive": 4,
+    "wrongLive": 3,
+    "free": 1,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 7,
+    "bypassableMechanics": [],
+    "effectiveBits": 8,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "door",
+      "splitter",
+      "switch"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 85,
+      "similarity": 0.23529411764705882
+    }
+  },
+  {
+    "number": 170,
+    "id": "level:112",
     "name": "分光汇阵",
     "rows": 8,
     "cols": 8,
@@ -3438,12 +5429,46 @@
     ],
     "goals": 4,
     "mostSimilar": {
-      "number": 51,
+      "number": 70,
       "similarity": 0.35714285714285715
     }
   },
   {
-    "number": 113,
+    "number": 171,
+    "id": "flow:59",
+    "name": "月庭·合奏",
+    "rows": 8,
+    "cols": 8,
+    "controls": 10,
+    "bits": 11,
+    "solutions": 2,
+    "minClicks": 5,
+    "live": 9,
+    "correctLive": 4,
+    "wrongLive": 5,
+    "free": 1,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 27,
+    "bypassableMechanics": [],
+    "effectiveBits": 10,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "focus",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 151,
+      "similarity": 0.2777777777777778
+    }
+  },
+  {
+    "number": 172,
+    "id": "level:113",
     "name": "跃迁补光",
     "rows": 8,
     "cols": 8,
@@ -3470,12 +5495,13 @@
     ],
     "goals": 4,
     "mostSimilar": {
-      "number": 128,
-      "similarity": 0.2
+      "number": 112,
+      "similarity": 0.22727272727272727
     }
   },
   {
-    "number": 114,
+    "number": 173,
+    "id": "level:114",
     "name": "三钥密室",
     "rows": 8,
     "cols": 8,
@@ -3502,12 +5528,45 @@
     ],
     "goals": 6,
     "mostSimilar": {
-      "number": 54,
+      "number": 75,
       "similarity": 0.25
     }
   },
   {
-    "number": 115,
+    "number": 174,
+    "id": "flow:60",
+    "name": "月庭·回响",
+    "rows": 8,
+    "cols": 8,
+    "controls": 8,
+    "bits": 9,
+    "solutions": 4,
+    "minClicks": 6,
+    "live": 7,
+    "correctLive": 3,
+    "wrongLive": 4,
+    "free": 2,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 17,
+    "bypassableMechanics": [],
+    "effectiveBits": 7,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 12,
+      "similarity": 0.3333333333333333
+    }
+  },
+  {
+    "number": 175,
+    "id": "level:115",
     "name": "双核接棒",
     "rows": 8,
     "cols": 8,
@@ -3533,12 +5592,45 @@
     ],
     "goals": 4,
     "mostSimilar": {
-      "number": 40,
-      "similarity": 0.21052631578947367
+      "number": 174,
+      "similarity": 0.25
     }
   },
   {
-    "number": 116,
+    "number": 176,
+    "id": "flow:61",
+    "name": "虹港·汇流",
+    "rows": 8,
+    "cols": 8,
+    "controls": 10,
+    "bits": 11,
+    "solutions": 10,
+    "minClicks": 5,
+    "live": 9,
+    "correctLive": 4,
+    "wrongLive": 5,
+    "free": 3,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 27,
+    "bypassableMechanics": [],
+    "effectiveBits": 7.7,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 69,
+      "similarity": 0.4117647058823529
+    }
+  },
+  {
+    "number": 177,
+    "id": "level:116",
     "name": "四向折返",
     "rows": 7,
     "cols": 7,
@@ -3568,7 +5660,8 @@
     }
   },
   {
-    "number": 117,
+    "number": 178,
+    "id": "level:117",
     "name": "三色迷航",
     "rows": 8,
     "cols": 8,
@@ -3594,12 +5687,44 @@
     ],
     "goals": 5,
     "mostSimilar": {
-      "number": 119,
+      "number": 182,
       "similarity": 0.19230769230769232
     }
   },
   {
-    "number": 118,
+    "number": 179,
+    "id": "flow:62",
+    "name": "虹港·流光",
+    "rows": 8,
+    "cols": 8,
+    "controls": 10,
+    "bits": 10,
+    "solutions": 16,
+    "minClicks": 5,
+    "live": 9,
+    "correctLive": 4,
+    "wrongLive": 5,
+    "free": 5,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 33,
+    "bypassableMechanics": [],
+    "effectiveBits": 6,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "splitter"
+    ],
+    "goals": 3,
+    "mostSimilar": {
+      "number": 3,
+      "similarity": 0.3333333333333333
+    }
+  },
+  {
+    "number": 180,
+    "id": "level:118",
     "name": "门锁晶核",
     "rows": 8,
     "cols": 8,
@@ -3628,12 +5753,46 @@
     ],
     "goals": 4,
     "mostSimilar": {
-      "number": 87,
+      "number": 129,
       "similarity": 0.3
     }
   },
   {
-    "number": 119,
+    "number": 181,
+    "id": "flow:63",
+    "name": "虹港·跃迁",
+    "rows": 8,
+    "cols": 8,
+    "controls": 11,
+    "bits": 12,
+    "solutions": 2,
+    "minClicks": 5,
+    "live": 10,
+    "correctLive": 5,
+    "wrongLive": 5,
+    "free": 1,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 19,
+    "bypassableMechanics": [],
+    "effectiveBits": 11,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "portal",
+      "splitter"
+    ],
+    "goals": 5,
+    "mostSimilar": {
+      "number": 70,
+      "similarity": 0.2222222222222222
+    }
+  },
+  {
+    "number": 182,
+    "id": "level:119",
     "name": "汇核远送",
     "rows": 8,
     "cols": 8,
@@ -3660,12 +5819,13 @@
     ],
     "goals": 4,
     "mostSimilar": {
-      "number": 27,
-      "similarity": 0.2222222222222222
+      "number": 133,
+      "similarity": 0.22727272727272727
     }
   },
   {
-    "number": 120,
+    "number": 183,
+    "id": "level:120",
     "name": "三向合璧",
     "rows": 8,
     "cols": 8,
@@ -3691,12 +5851,47 @@
     ],
     "goals": 5,
     "mostSimilar": {
-      "number": 53,
+      "number": 74,
       "similarity": 0.26666666666666666
     }
   },
   {
-    "number": 121,
+    "number": 184,
+    "id": "flow:64",
+    "name": "虹港·启门",
+    "rows": 8,
+    "cols": 8,
+    "controls": 8,
+    "bits": 9,
+    "solutions": 2,
+    "minClicks": 5,
+    "live": 7,
+    "correctLive": 4,
+    "wrongLive": 3,
+    "free": 1,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 18,
+    "bypassableMechanics": [],
+    "effectiveBits": 8,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "door",
+      "splitter",
+      "switch"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 159,
+      "similarity": 0.29411764705882354
+    }
+  },
+  {
+    "number": 185,
+    "id": "level:121",
     "name": "镜中旁路",
     "rows": 8,
     "cols": 8,
@@ -3721,12 +5916,13 @@
     ],
     "goals": 4,
     "mostSimilar": {
-      "number": 22,
-      "similarity": 0.23076923076923078
+      "number": 194,
+      "similarity": 0.23809523809523808
     }
   },
   {
-    "number": 122,
+    "number": 186,
+    "id": "level:122",
     "name": "双域取钥",
     "rows": 8,
     "cols": 8,
@@ -3754,12 +5950,45 @@
     ],
     "goals": 5,
     "mostSimilar": {
-      "number": 42,
+      "number": 56,
       "similarity": 0.19047619047619047
     }
   },
   {
-    "number": 123,
+    "number": 187,
+    "id": "flow:65",
+    "name": "虹港·接棒",
+    "rows": 8,
+    "cols": 8,
+    "controls": 10,
+    "bits": 12,
+    "solutions": 2,
+    "minClicks": 6,
+    "live": 9,
+    "correctLive": 4,
+    "wrongLive": 5,
+    "free": 1,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 32,
+    "bypassableMechanics": [],
+    "effectiveBits": 11,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 48,
+      "similarity": 0.2777777777777778
+    }
+  },
+  {
+    "number": 188,
+    "id": "level:123",
     "name": "晶核分工",
     "rows": 8,
     "cols": 8,
@@ -3786,12 +6015,46 @@
     ],
     "goals": 4,
     "mostSimilar": {
-      "number": 23,
+      "number": 24,
       "similarity": 0.3076923076923077
     }
   },
   {
-    "number": 124,
+    "number": 189,
+    "id": "flow:66",
+    "name": "虹港·晶光",
+    "rows": 8,
+    "cols": 8,
+    "controls": 9,
+    "bits": 10,
+    "solutions": 2,
+    "minClicks": 5,
+    "live": 8,
+    "correctLive": 3,
+    "wrongLive": 5,
+    "free": 1,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 29,
+    "bypassableMechanics": [],
+    "effectiveBits": 9,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "focus",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 171,
+      "similarity": 0.2777777777777778
+    }
+  },
+  {
+    "number": 190,
+    "id": "level:124",
     "name": "异钥聚光",
     "rows": 8,
     "cols": 8,
@@ -3819,12 +6082,13 @@
     ],
     "goals": 4,
     "mostSimilar": {
-      "number": 44,
-      "similarity": 0.2631578947368421
+      "number": 102,
+      "similarity": 0.2777777777777778
     }
   },
   {
-    "number": 125,
+    "number": 191,
+    "id": "level:125",
     "name": "环路分流",
     "rows": 8,
     "cols": 8,
@@ -3850,12 +6114,45 @@
     ],
     "goals": 3,
     "mostSimilar": {
-      "number": 16,
-      "similarity": 0.2857142857142857
+      "number": 179,
+      "similarity": 0.29411764705882354
     }
   },
   {
-    "number": 126,
+    "number": 192,
+    "id": "flow:67",
+    "name": "虹港·远送",
+    "rows": 8,
+    "cols": 8,
+    "controls": 9,
+    "bits": 9,
+    "solutions": 8,
+    "minClicks": 5,
+    "live": 8,
+    "correctLive": 3,
+    "wrongLive": 5,
+    "free": 4,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 28,
+    "bypassableMechanics": [],
+    "effectiveBits": 6,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "portal",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 177,
+      "similarity": 0.29411764705882354
+    }
+  },
+  {
+    "number": 193,
+    "id": "level:126",
     "name": "双核异向",
     "rows": 8,
     "cols": 8,
@@ -3881,12 +6178,47 @@
     ],
     "goals": 4,
     "mostSimilar": {
-      "number": 77,
+      "number": 113,
       "similarity": 0.3333333333333333
     }
   },
   {
-    "number": 127,
+    "number": 194,
+    "id": "flow:68",
+    "name": "虹港·双钥",
+    "rows": 8,
+    "cols": 8,
+    "controls": 11,
+    "bits": 12,
+    "solutions": 4,
+    "minClicks": 5,
+    "live": 10,
+    "correctLive": 5,
+    "wrongLive": 5,
+    "free": 2,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 22,
+    "bypassableMechanics": [],
+    "effectiveBits": 10,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "door",
+      "splitter",
+      "switch"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 185,
+      "similarity": 0.23809523809523808
+    }
+  },
+  {
+    "number": 195,
+    "id": "level:127",
     "name": "双晶换位",
     "rows": 8,
     "cols": 8,
@@ -3913,12 +6245,13 @@
     ],
     "goals": 4,
     "mostSimilar": {
-      "number": 50,
-      "similarity": 0.22727272727272727
+      "number": 40,
+      "similarity": 0.23809523809523808
     }
   },
   {
-    "number": 128,
+    "number": 196,
+    "id": "level:128",
     "name": "四路汇核",
     "rows": 8,
     "cols": 8,
@@ -3944,12 +6277,46 @@
     ],
     "goals": 5,
     "mostSimilar": {
-      "number": 104,
-      "similarity": 0.25
+      "number": 81,
+      "similarity": 0.375
     }
   },
   {
-    "number": 129,
+    "number": 197,
+    "id": "flow:69",
+    "name": "虹港·合奏",
+    "rows": 8,
+    "cols": 8,
+    "controls": 9,
+    "bits": 10,
+    "solutions": 4,
+    "minClicks": 5,
+    "live": 8,
+    "correctLive": 4,
+    "wrongLive": 4,
+    "free": 2,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 17,
+    "bypassableMechanics": [],
+    "effectiveBits": 8,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "focus",
+      "splitter"
+    ],
+    "goals": 4,
+    "mostSimilar": {
+      "number": 189,
+      "similarity": 0.2222222222222222
+    }
+  },
+  {
+    "number": 198,
+    "id": "level:129",
     "name": "三域联锁",
     "rows": 8,
     "cols": 8,
@@ -3977,12 +6344,45 @@
     ],
     "goals": 5,
     "mostSimilar": {
-      "number": 108,
-      "similarity": 0.18518518518518517
+      "number": 37,
+      "similarity": 0.19230769230769232
     }
   },
   {
-    "number": 130,
+    "number": 199,
+    "id": "flow:70",
+    "name": "虹港·回响",
+    "rows": 8,
+    "cols": 8,
+    "controls": 8,
+    "bits": 9,
+    "solutions": 4,
+    "minClicks": 6,
+    "live": 7,
+    "correctLive": 3,
+    "wrongLive": 4,
+    "free": 2,
+    "decoys": 1,
+    "temptingDecoys": 1,
+    "nearMisses": 29,
+    "bypassableMechanics": [],
+    "effectiveBits": 7,
+    "allFlipWins": false,
+    "mirrorFlipWins": false,
+    "startsSolved": false,
+    "mechanics": [
+      "combiner",
+      "splitter"
+    ],
+    "goals": 3,
+    "mostSimilar": {
+      "number": 24,
+      "similarity": 0.25
+    }
+  },
+  {
+    "number": 200,
+    "id": "level:130",
     "name": "光路终局",
     "rows": 8,
     "cols": 8,
@@ -4011,8 +6411,8 @@
     ],
     "goals": 5,
     "mostSimilar": {
-      "number": 36,
-      "similarity": 0.19230769230769232
+      "number": 166,
+      "similarity": 0.2
     }
   }
 ]

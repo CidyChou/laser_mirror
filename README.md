@@ -2,7 +2,7 @@
 
 正式工程底座：**Vite + TypeScript + PixiJS 8 + WebGL + Pixi UI + JSON Levels + Platform Adapter**。
 
-每章第10关之后会追加一个独立的章节挑战；主线保留 1–130 编号；最新聚合光、挑战难度与激光寿命调整见 [数值调整记录](docs/optics-rebalance.md)。规则与验证范围见 [章节挑战](docs/TIME_BOSSES.md)，本地试玩校验页为 `/tools/visual/time-bosses.html`。
+主线共 **200 关**，每 10 关之后追加一个独立章节挑战，共 **20 个挑战**。新增 70 个中等难度关卡穿插在原有主线中，旧棋盘与通关记录保留。编排、难度和新旧编号见 [200 关扩充记录](docs/campaign-200.md)。挑战规则见 [章节挑战](docs/TIME_BOSSES.md)，本地试玩页为 `/tools/visual/time-bosses.html`。
 
 ## macOS 一键运行
 
@@ -18,7 +18,7 @@
 make gm
 ```
 
-启动关卡设计后台（默认 http://127.0.0.1:8350/）。首次打开会载入当前 `src/levels/levels.json` 里的关卡，可拖拽排序、在棋盘上拖放物体、新建/复制关卡。编辑保存在 `tools/gm/data/` 草稿里，点 **导出到项目** 才会写回 `src/levels/levels.json`。棋盘最大 8×8；手工设计的 21、22、23、35、36 关使用 `handcrafted.json` 保护。`classic.json` 仅作旧版光学回归档案，不再覆盖正式关卡。
+启动关卡设计后台（默认 http://127.0.0.1:8350/）。首次打开会载入当前 `src/levels/levels.json` 里的关卡，可拖拽排序、在棋盘上拖放物体、新建/复制关卡。编辑保存在 `tools/gm/data/` 草稿里，点 **导出到项目** 才会写回 `src/levels/levels.json`。棋盘最大 8×8；原第 21、22、23、35、36 关使用 `handcrafted.json` 按稳定身份保护。`classic.json` 仅作旧版光学回归档案，不再覆盖正式关卡。
 
 ## 构建
 
@@ -36,7 +36,7 @@ npm run build:all
 ## 核心原则
 
 - 玩法计算与渲染完全解耦。
-- 正式关卡位于 `src/levels/levels.json`，共 130 关，最大 8×8。101–110 为“岔路迷阵”，111–120 为“机关织网”，121–130 为“光路博弈”。数值分析、改版范围和设计取舍见 [关卡设计审计](docs/level-design-audit.md)。
+- 正式主线位于 `src/levels/levels.json`，共 200 关，最大 8×8。`stageKey` 跟随棋盘保存，调整显示编号不改变通关身份。新增关卡与编排见 [200 关扩充记录](docs/campaign-200.md)。
 - Pixi UI：正式游戏 UI 不依赖 HTML/CSS DOM。
 - WebGL 优先，默认兼容 WebGL1/2；不依赖 WebGPU。
 - 静态棋盘 `cacheAsTexture()`。
@@ -70,7 +70,7 @@ npm run build:all
 
 启动开发服务器后打开 `/tools/visual/optics.html`，可查看集光、串联、传送、棋盘、多开关联锁和六组传送门的小格场景，切换三个主题及 GPU / Graphics 渲染，并定格收集、蓄力、释放、信号传递和门叶展开阶段。此页面复用正式玩法与渲染，不写入存档或关卡。
 
-渲染生命周期回归页 `/tools/visual/rendering-regression.html` 可复现和检查粒子贴图销毁后的重复发射，以及三套主题、GPU / Graphics 下的完整画面重建。`npm run verify:render-layout` 检查四边端口不遮挡格子、不被屏幕裁切，并验证外移后的可见光路与 130 关解法。
+渲染生命周期回归页 `/tools/visual/rendering-regression.html` 可复现和检查粒子贴图销毁后的重复发射，以及三套主题、GPU / Graphics 下的完整画面重建。`npm run verify:render-layout` 检查四边端口不遮挡格子、不被屏幕裁切，并验证外移后的可见光路与 200 关解法。
 
 聚合点采用切角光学舱、输入槽和输出箭头，集满后蓄力 1.5 秒，再释放 3 倍宽光束；粗光束通过镜子、传送门和分光器后仍保留宽度。聚能终点显示充能比例和进度槽，读数放在光束上方的独立标牌中。
 

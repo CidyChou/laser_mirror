@@ -1,7 +1,7 @@
 import type { LevelDefinition } from '@/gameplay/types';
 
 export function stageId(level: LevelDefinition, fallbackIndex = 0): string {
-  return level.campaign?.id ?? `level:${fallbackIndex + 1}`;
+  return level.campaign?.id ?? level.stageKey ?? `level:${fallbackIndex + 1}`;
 }
 
 export function isBossStage(level: LevelDefinition): boolean {
