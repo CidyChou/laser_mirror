@@ -32,6 +32,17 @@ const speedProbe=new TimeLaserSimulator(fixture,structuredClone(fixture.items),c
 speedProbe.advanceTo(800);
 assert(Math.abs(speedProbe.distance-laserDistanceAtMs(800,TIME_BOSS_SPEED_SCALE))<1e-6);
 
+// A completed UI hold hands the session a fully charged shot: launch is
+// immediate and the old muzzle delay is not replayed.
+for(const level of [fixture,collectorFixture]){
+  const precharged=new GameSession([level]);let launches=0;
+  precharged.on(event=>{if(event.type==='laser-launch')launches++;});
+  precharged.fire(true);
+  assert.equal(launches,1);assert.equal(precharged.state.shotElapsedMs,GameConfig.laser.chargeMs);
+  precharged.update(0);precharged.update(10);
+  assert(precharged.state.beamDistance>0,`${level.name}: precharged beam did not move immediately`);
+}
+
 // Exhausting rotations must end a live infinite loop, with a visible decreasing
 // tail and exactly one failed shot; invalid clicks cannot consume adjustments.
 for(const fps of [30,60,120]){

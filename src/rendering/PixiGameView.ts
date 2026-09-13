@@ -27,7 +27,8 @@ import { TutorialLayer } from './layers/TutorialLayer';
 export type ViewHandlers = {
   bulletTime?:()=>void;
   rotate:(x:number,y:number)=>void;
-  fire:()=>void;
+  firePressStart:()=>void;
+  firePressEnd:()=>void;
   reset:()=>void;
   openSettings:()=>void;
   toggleAudio:()=>void;
@@ -63,6 +64,7 @@ export class PixiGameView{
   private bg=new BackgroundLayer();private stageBg=new Graphics();private board=new BoardLayer();private objects=new ObjectLayer();private laser:LaserEffect;private impacts=new ImpactSystem();private particles:ParticleSystem;private confetti=new WinConfetti();private hud=new HudLayer();private combo=new ComboLayer();readonly coins=new CoinLayer();readonly result=new ResultLayer();readonly poster=new PreviewPosterLayer();readonly settings:SettingsLayer;readonly levelSelect:LevelSelectLayer;private toastBg=new Graphics();private toast=new Text({text:'',style:uiText({fontSize:18,fill:Theme.text})});private toastUntil=0;private victoryUntil=0;private victoryWash=new Graphics();private currentLevel=-1;private lastGeometry:BoardGeometry|null=null;private comboActive=false;private resultActive=false;private posterActive=false;private coinsActive=false;private confettiActive=false;private hudOffset=0;
   constructor(private readonly renderer:Renderer,private readonly performance:PerformanceManager,themeId:ThemeId,levels:readonly LevelDefinition[],gpuLaser=true){this.laser=new LaserEffect(renderer,gpuLaser);this.particles=new ParticleSystem(renderer);this.settings=new SettingsLayer(themeId);this.levelSelect=new LevelSelectLayer(levels);this.buildBackground();this.root.addChild(this.bg,this.stageBg,this.board,this.objects,this.laser,this.particles.container,this.impacts,this.objects.captions,this.victoryWash,this.hud,this.tutorial,this.timeSkills,this.combo,this.result,this.confetti,this.coins,this.poster,this.toastBg,this.toast,this.levelSelect,this.settings);this.toast.anchor.set(.5);this.toast.position.set(360,220);this.toast.visible=false;this.toastBg.visible=false;}
   private targetPorts:Port[]=[];
+  private inputCharge:number|null=null;
   private buildBackground(){
     this.victoryWash.rect(0,STAGE_TOP,DESIGN_WIDTH,STAGE_HEIGHT).fill({color:Theme.victoryWash,alpha:1});
     this.victoryWash.alpha=0;
@@ -74,10 +76,14 @@ export class PixiGameView{
     this.tutorial.nextButton.on('pointertap',()=>h.tutorialNext?.());
     this.tutorial.skipButton.on('pointertap',()=>h.tutorialSkip?.());
     this.tutorial.setTapHandler(()=>h.tutorialTap?.());
+    this.tutorial.setPressHandlers(h.firePressStart,h.firePressEnd);
     this.settings.tutorialButton.on('pointertap',()=>h.replayTutorial?.());
     this.timeSkills.bullet.on('pointertap',()=>h.bulletTime?.());
     this.objects.setRotateHandler(h.rotate);
-    this.hud.fireButton.on('pointertap',h.fire);
+    this.hud.fireButton.on('pointerdown',h.firePressStart);
+    this.hud.fireButton.on('pointerup',h.firePressEnd);
+    this.hud.fireButton.on('pointerupoutside',h.firePressEnd);
+    this.hud.fireButton.on('pointercancel',h.firePressEnd);
     this.hud.settingsButton.on('pointertap',h.openSettings);
     this.hud.levelButton.on('pointertap',h.openLevels);
     this.hud.previousLevel.on('pointertap',event=>{event.stopPropagation();h.selectLevel(this.currentLevel-1);});
@@ -213,6 +219,7 @@ export class PixiGameView{
   showSettings(audioEnabled:boolean,hapticsEnabled:boolean,themeId:ThemeId){this.settings.show(audioEnabled,hapticsEnabled,themeId);this.syncTutorialVisibility();}
   setAudioEnabled(enabled:boolean){this.settings.setAudioEnabled(enabled);}
   setHapticsEnabled(enabled:boolean){this.settings.setHapticsEnabled(enabled);}
+  setFireCharge(progress:number|null,now=0){this.inputCharge=progress;this.hud.setFireCharge(progress,now);this.objects.setInputCharge(progress);}
   closeSettings(){this.settings.hide();this.syncTutorialVisibility();}
   showLevelSelect(currentIndex:number,completed:ReadonlySet<number>,allLevelsUnlocked=false,unlockedThrough=-1){this.levelSelect.show(currentIndex,completed,allLevelsUnlocked,unlockedThrough);this.syncTutorialVisibility();}
   showResult(kind:ResultKind, copy:{title:string;subtitle:string;tip:string;primary:string;secondary?:string;reward?:number}, now:number){this.result.show(kind,copy,now);this.syncTutorialVisibility();}
@@ -301,7 +308,7 @@ export class PixiGameView{
     this.syncTutorialVisibility();
     this.tutorial.update(now);
     this.objects.update(now,!this.settings.visible&&!this.levelSelect.visible&&!this.result.visible&&!this.poster.visible);
-    try{this.laser.update(state,now,this.performance.quality);}catch(error){console.warn('[view] laser update failed',error);}
+    try{this.laser.update(state,now,this.performance.quality,this.inputCharge);}catch(error){console.warn('[view] laser update failed',error);}
     this.impacts.update(now);
     try{this.particles.update(this.performance.quality);}catch(error){console.warn('[view] particles failed',error);}
     this.levelSelect.update(now);
@@ -338,6 +345,6 @@ export class PixiGameView{
     this.poster.setTopOffset(extra);
     this.toast.position.set(360,252+extra);
   }
-  get active(){return this.tutorial.active||this.laser.active||this.impacts.active||this.particles.active||this.objects.active||this.levelSelect.active||this.toastUntil>0||this.victoryUntil>0||this.comboActive||this.resultActive||this.posterActive||this.confettiActive||this.coinsActive;}
+  get active(){return this.hud.active||this.tutorial.active||this.laser.active||this.impacts.active||this.particles.active||this.objects.active||this.levelSelect.active||this.toastUntil>0||this.victoryUntil>0||this.comboActive||this.resultActive||this.posterActive||this.confettiActive||this.coinsActive;}
   destroy(){this.poster.hide();this.particles.destroy();this.root.destroy({children:true});}
 }

@@ -124,7 +124,7 @@ export class TutorialDirector {
           const answer=solution!.find(i=>i.x===item.x&&i.y===item.y)!;
           this.steps.push({id:'mirror-practice',title:'点一下镜子',body:'让光朝终点转弯。',anchors:[cell(item)],action:'rotate',desired:value(answer),completes:'mirror'});
         }
-        this.steps.push({id:'fire',title:'发射试试',body:'点亮终点就过关。失败才扣爱心。',anchors:[{kind:'fire'}],action:'fire',completes:['basics','mirror']});
+        this.steps.push({id:'fire',title:'按住充能',body:'持续按住发射键，能量充满后光束才会射出。',anchors:[{kind:'fire'}],action:'fire',completes:['basics','mirror']});
         return;
       }
     }

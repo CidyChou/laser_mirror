@@ -116,7 +116,7 @@ export class GameSession {
     }
   }
 
-  fire() {
+  fire(precharged=false) {
     const s = this.state;
     if (s.firing || s.won) return;
     if (s.hearts <= 0) { this.emit({type:'toast',text:'爱心不足 · 补充后再发射'}); return; }
@@ -124,12 +124,12 @@ export class GameSession {
     if (s.level.timeBoss) {
       this.dynamic = new TimeLaserSimulator(s.level, s.items, computeGeometry(s.level));
       s.timeSkill = this.createState(s.levelIndex, s.hearts).timeSkill;
-      s.firing=true;s.shotElapsedMs=0;s.beamDistance=0;s.result=this.dynamic.trace;
-      this.realAccumulator=0;this.dynamicElapsed=0;this.terminalMs=0;this.beamAgeMs=0;this.spentAgeMs=0;this.spentStartLife=1;this.terminalStartLife=1;
-      this.shotClockArmed=false;this.launchTriggered=false;this.simNow=0;
+      s.firing=true;s.shotElapsedMs=precharged?GameConfig.laser.chargeMs:0;s.beamDistance=0;s.result=this.dynamic.trace;
+      this.realAccumulator=0;this.dynamicElapsed=s.shotElapsedMs;this.terminalMs=0;this.beamAgeMs=0;this.spentAgeMs=0;this.spentStartLife=1;this.terminalStartLife=1;
+      this.shotClockArmed=false;this.launchTriggered=precharged;this.simNow=0;
       this.syncDynamic();
-      s.shotElapsedMs=0;
-      this.emit({type:'shot-start'});this.emit({type:'state'});
+      s.shotElapsedMs=this.dynamicElapsed;
+      this.emit({type:'shot-start'});if(precharged)this.emit({type:'laser-launch'});this.emit({type:'state'});
       return;
     }
 
@@ -148,15 +148,15 @@ export class GameSession {
 
     s.firing = true;
     s.shotStart = 0;
-    s.shotElapsedMs = 0;
+    s.shotElapsedMs = precharged ? GameConfig.laser.chargeMs : 0;
     s.beamDistance = 0;
     s.comboCount = 0;
     s.result = result;
     s.targets.forEach(t=>{t.hit=false;t.charge=0;}); s.activeSwitches.clear(); s.activeDoorStates={};
     s.focusHits={}; s.combinerHits={}; s.combinerOn={};
-    this.triggered.clear(); this.launchTriggered=false; this.comboEmitted.clear(); this.finishAt=0;
+    this.triggered.clear(); this.launchTriggered=precharged; this.comboEmitted.clear(); this.finishAt=0;
     this.shotClockArmed=false; this.simNow=0;
-    this.emit({type:'shot-start'}); this.emit({type:'state'});
+    this.emit({type:'shot-start'}); if(precharged)this.emit({type:'laser-launch'}); this.emit({type:'state'});
   }
 
   /** Drop a stuck shot without spending a heart. */
@@ -195,7 +195,7 @@ export class GameSession {
     // in the tap handler cannot skip charge and dump every impact in one frame.
     if (!this.shotClockArmed) {
       this.shotClockArmed = true;
-      s.shotStart = now;
+      s.shotStart = now-s.shotElapsedMs;
       this.simNow = now;
       return true;
     }

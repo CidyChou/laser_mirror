@@ -39,6 +39,7 @@ export class ObjectLayer extends Container{
   private doorTimes=new Map<string,number>();
   private signalActive=false;
   private ambientActive=false;
+  private inputCharge:number|null=null;
   private readonly mirrorFinish=new FillGradient({
     start:{x:0,y:0},end:{x:1,y:0},textureSize:128,
     colorStops:[
@@ -68,6 +69,7 @@ export class ObjectLayer extends Container{
     }
   }
   setRotateHandler(fn:(x:number,y:number)=>void){this.rotateHandler=fn;}
+  setInputCharge(progress:number|null){this.inputCharge=progress;}
 
   rotateItem(x:number,y:number,s:0|1,dir?:Direction){
     const n=this.itemNodes.get(`${x},${y}`);
@@ -193,13 +195,15 @@ export class ObjectLayer extends Container{
       n.collector.animate(now,progress,releaseAge);
     }
     for(const port of this.portNodes){
+      const input=port.emitter?this.inputCharge:null;
+      const charged=input!==null;
       const breath=.5+.5*Math.sin(now*.0025+port.phase);
-      port.halo.alpha=port.active?.40+breath*.08:port.emitter?.15:.10;
-      port.light.alpha=port.active?.96:port.emitter?.90:.93;
-      port.core.alpha=port.active?.95:.78;
-      port.sparks.visible=ambient&&port.emitter&&port.active;
+      port.halo.alpha=charged?.18+input!*.30+breath*(.04+input!*.08):port.active?.40+breath*.08:port.emitter?.15:.10;
+      port.light.alpha=charged?.88+input!*.12:port.active?.96:port.emitter?.90:.93;
+      port.core.alpha=charged?.78+input!*.22:port.active?.95:.78;
+      port.sparks.visible=ambient&&port.emitter&&(port.active||charged);
       for(let i=0;i<port.sparks.children.length;i++){
-        const phase=(now*(port.active?.0015:.00042)+i/5)%1,angle=i*2.4;
+        const phase=(now*((port.active||charged)?.0015:.00042)+i/5)%1,angle=i*2.4;
         const spark=port.sparks.children[i],r=port.cell*(.33-phase*.22);
         spark.position.set(port.cell*.09+Math.cos(angle)*r*.38,Math.sin(angle)*r);
         spark.alpha=Math.sin(phase*Math.PI)*.85;

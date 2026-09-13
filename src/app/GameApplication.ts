@@ -64,6 +64,8 @@ export class GameApplication {
   private lastVibrateAt=-Infinity;
   private firePulseAt=0;
   private fireWatchdog:ReturnType<typeof setInterval>|0=0;
+  private fireChargeStartedAt:number|null=null;
+  private fireChargeHapticStep=0;
   private paidVictory=false;
   private savingPoster=false;
 
@@ -132,6 +134,7 @@ export class GameApplication {
         },now);this.wake();
       }
       if(event.type==='level'){
+        this.cancelFireCharge();
         this.collectPendingCoins();this.pendingResult=null;this.paidVictory=false;this.view.hideOverlays();
         saveCurrentLevel(this.platform,state.levelIndex,this.levels);
         this.tutorial.enter(state);
@@ -175,9 +178,7 @@ export class GameApplication {
       }
       if(event.type==='toast'){this.view.showToast(event.text,now);this.wake();}
       if(event.type==='shot-start'){
-        this.audio.play('laserCharge');
         this.view.shotStart(state,now);
-        this.vibrate('medium');
         this.wake();
       }
       if(event.type==='laser-launch'){
@@ -231,6 +232,7 @@ export class GameApplication {
     this.app.ticker.add((t:any)=>{
       try{
         const now=nowMs();
+        this.updateFireCharge(now);
         if(this.session.state.firing) this.firePulseAt=Date.now();
         const logicActive=this.session.update(now);
         // A quality change is queued while a beam is travelling, then committed
@@ -304,7 +306,8 @@ export class GameApplication {
     this.view.setHandlers({
       bulletTime:()=>{if(!this.overlayLocked()){this.session.startBulletTime();this.wake();}},
       rotate:(x,y)=>this.rotate(x,y),
-      fire:()=>this.fire(),
+      firePressStart:()=>this.startFireCharge(),
+      firePressEnd:()=>this.endFireCharge(),
       reset:()=>{this.collectPendingCoins();this.pendingResult=null;this.audio.play('uiClick');this.session.reset();this.wake();},
       openSettings:()=>{if(this.session.state.firing||this.view.result.visible||this.view.poster.visible)return;this.audio.play('uiClick');this.view.showSettings(this.audioEnabled,this.hapticsEnabled,this.themeId);this.wake();},
       closeSettings:()=>{this.audio.play('uiClick');this.view.closeSettings();this.wake();},
@@ -378,7 +381,6 @@ export class GameApplication {
       tutorialTap:()=>{
         const step=this.tutorial.current,anchor=step?.anchors[0];
         if(step?.action==='rotate'&&anchor?.kind==='cell')this.rotate(anchor.x,anchor.y);
-        else if(step?.action==='fire')this.fire();
       },
       replayTutorial:()=>{
         if(this.session.state.firing){this.view.showToast('请等待本次发射结束',nowMs());this.wake();return;}
@@ -397,15 +399,57 @@ export class GameApplication {
     if(!this.app.ticker.started)this.renderOnce();
     this.wake();this.audio.play('mirrorRotate');this.vibrate('light');
   }
-  private fire(){
+  private fire(precharged=false){
     if(this.overlayLocked())return;
     if(this.session.state.firing&&this.session.state.timeSkill){this.session.endTimeShot();this.wake();return;}
     if(!this.session.state.firing&&!this.tutorial.allowsFire())return;
     if(this.session.state.hearts<=0){this.audio.play('uiClick');this.showHeartRefill(nowMs());this.wake();return;}
-    try{this.session.fire();}
+    try{this.session.fire(precharged);}
     catch(error){console.warn('[game] fire failed',error);this.session.abortFire();}
     if(this.session.state.firing)this.armFireWatchdog();
     this.wake();
+  }
+  private startFireCharge(){
+    if(this.fireChargeStartedAt!==null||this.overlayLocked())return;
+    if(this.session.state.firing){
+      if(this.session.state.timeSkill)this.fire();
+      return;
+    }
+    if(!this.tutorial.allowsFire())return;
+    if(this.session.state.hearts<=0){this.audio.play('uiClick');this.showHeartRefill(nowMs());this.wake();return;}
+    this.fireChargeStartedAt=nowMs();
+    this.fireChargeHapticStep=0;
+    this.view.setFireCharge(0,this.fireChargeStartedAt);
+    this.audio.play('laserCharge');
+    this.vibrate('light');
+    this.wake();
+  }
+  private endFireCharge(){
+    if(this.fireChargeStartedAt===null)return;
+    if(nowMs()-this.fireChargeStartedAt>=GameConfig.laser.inputChargeMs)this.completeFireCharge();
+    else this.cancelFireCharge();
+  }
+  private updateFireCharge(now:number){
+    if(this.fireChargeStartedAt===null)return;
+    const progress=Math.min(1,(now-this.fireChargeStartedAt)/GameConfig.laser.inputChargeMs);
+    this.view.setFireCharge(progress,now);
+    const stages=[.24,.45,.64,.80,.92];
+    while(this.fireChargeHapticStep<stages.length&&progress>=stages[this.fireChargeHapticStep]){
+      const step=this.fireChargeHapticStep++;
+      this.vibrate(step<2?'light':step<4?'medium':'heavy');
+    }
+    if(progress>=1)this.completeFireCharge();
+  }
+  private completeFireCharge(){
+    if(this.fireChargeStartedAt===null)return;
+    this.fireChargeStartedAt=null;
+    this.view.setFireCharge(null);
+    this.fire(true);
+  }
+  private cancelFireCharge(){
+    if(this.fireChargeStartedAt===null)return;
+    this.fireChargeStartedAt=null;
+    this.view?.setFireCharge(null);
   }
   private syncTutorial(){
     if(this.view)this.view.setTutorial(this.tutorial.current,this.session.state,this.tutorial.progress);
@@ -528,5 +572,5 @@ export class GameApplication {
   private renderOnce(){
     try{this.app.renderer.render(this.app.stage);}catch(error){console.warn('[game] render failed',error);}
   }
-  destroy(){this.pendingResult=null;this.clearFireWatchdog();this.unresize();this.audio.destroy();this.view?.destroy();this.app.destroy(true);}
+  destroy(){this.pendingResult=null;this.cancelFireCharge();this.clearFireWatchdog();this.unresize();this.audio.destroy();this.view?.destroy();this.app.destroy(true);}
 }

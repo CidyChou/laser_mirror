@@ -31,6 +31,8 @@ export class TutorialLayer extends Container {
   private topOffset = 0;
   private viewport = new Rectangle(0, 0, DESIGN_WIDTH, DESIGN_HEIGHT);
   private tapHandler: () => void = () => {};
+  private pressStartHandler: () => void = () => {};
+  private pressEndHandler: () => void = () => {};
 
   constructor() {
     super();
@@ -42,7 +44,11 @@ export class TutorialLayer extends Container {
     this.outlines.eventMode = 'none';
     this.target.eventMode = 'static';
     this.target.cursor = 'pointer';
-    this.target.on('pointertap', () => this.tapHandler());
+    this.target.on('pointertap', () => { if(this.step?.action!=='fire')this.tapHandler(); });
+    this.target.on('pointerdown', () => { if(this.step?.action==='fire')this.pressStartHandler(); });
+    this.target.on('pointerup', () => { if(this.step?.action==='fire')this.pressEndHandler(); });
+    this.target.on('pointerupoutside', () => { if(this.step?.action==='fire')this.pressEndHandler(); });
+    this.target.on('pointercancel', () => { if(this.step?.action==='fire')this.pressEndHandler(); });
     this.card.eventMode = 'static';
     this.finger.eventMode = 'none';
     this.finger.anchor.set(.22, .12);
@@ -55,6 +61,7 @@ export class TutorialLayer extends Container {
   }
 
   setTapHandler(handler: () => void) { this.tapHandler = handler; }
+  setPressHandlers(start:()=>void,end:()=>void){this.pressStartHandler=start;this.pressEndHandler=end;}
   setViewport(bounds: Rectangle) {
     this.viewport = bounds;
     if (this.step) this.layout();
@@ -147,7 +154,7 @@ export class TutorialLayer extends Container {
     this.nextButton.position.set(width - 202, height - 80);
     this.nextButton.setText(step.button ?? (this.count.current === this.count.total ? '知道了' : '继续'));
     this.instruction.visible = actionable;
-    this.instruction.text = step.action === 'fire' ? '点击「发射」' : '点按高亮镜面';
+    this.instruction.text = step.action === 'fire' ? '按住「发射」直到充能完成' : '点按高亮镜面';
     this.instruction.position.set(28, height - 55);
   }
 

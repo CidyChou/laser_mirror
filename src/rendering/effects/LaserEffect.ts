@@ -1,6 +1,7 @@
 import { Container, FillGradient, Geometry, GlProgram, Graphics, Mesh, Shader, type Renderer } from 'pixi.js';
 import { GameConfig } from '@/config/GameConfig';
-import { beamScale, computeGeometry } from '@/gameplay/geometry';
+import { beamScale, computeGeometry, portMuzzle } from '@/gameplay/geometry';
+import { levelEmitters } from '@/gameplay/levelAccess';
 import type { GameState, LaserSegment, LaserTrace } from '@/gameplay/types';
 import { beamSegments } from '../beamGeometry';
 import type { Quality } from '@/performance/PerformanceManager';
@@ -560,7 +561,15 @@ export class LaserEffect extends Container{
     this.fallbackPackets.visible=false;this.head.clear();this.chargeRoot.visible=false;
   }
 
-  update(state:GameState,now:number,quality:Quality){
+  private chargeOrigin(state:GameState):LaserSegment|undefined{
+    const port=levelEmitters(state.level)[0];
+    if(!port)return undefined;
+    const p=portMuzzle(computeGeometry(state.level),port);
+    const [dx,dy]=port.side==='W'?[1,0]:port.side==='E'?[-1,0]:port.side==='N'?[0,1]:[0,-1];
+    return{x1:p.x,y1:p.y,x2:p.x+dx*12,y2:p.y+dy*12,startDist:0,endDist:12,branch:0};
+  }
+
+  update(state:GameState,now:number,quality:Quality,inputCharge:number|null=null){
     const t0=LaserEffect.debugPerf?performance.now():0;
     this.animating=state.firing;
     if(state.result!==this.boundResult){
@@ -569,9 +578,9 @@ export class LaserEffect extends Container{
       else{this.clearBeam();this.renderSegments=[];this.jointSignature='';this.frozen=false;}
     }
 
-    const origin=this.renderSegments[0];
-    const chargeT=state.firing?Math.min(1,state.shotElapsedMs/GameConfig.laser.chargeMs):1;
-    if(state.firing&&chargeT<1&&origin)this.updateCharge(origin,chargeT,quality);
+    const origin=inputCharge!==null?this.chargeOrigin(state):this.renderSegments[0];
+    const chargeT=inputCharge!==null?inputCharge:state.firing?Math.min(1,state.shotElapsedMs/GameConfig.laser.chargeMs):1;
+    if((inputCharge!==null||state.firing)&&chargeT<1&&origin)this.updateCharge(origin,chargeT,quality);
     else this.chargeRoot.visible=false;
 
     const dist=this.smoothDistance(state,now);

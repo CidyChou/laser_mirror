@@ -65,6 +65,8 @@ export const GameConfig = {
     antialias: true,
   },
   laser: {
+    // The hold itself drives the muzzle charge; release happens at completion.
+    inputChargeMs: 1200,
     chargeMs: 480,
     challengeLifetimeMs: 20000,
     spentAdjustmentFadeMs: 6000,

@@ -55,7 +55,7 @@ function build(){
   session=new GameSession([level]);
   view=new PixiGameView(app.renderer,quality,theme.value as ThemeId,[level],renderer.value==='gpu');
   app.stage.addChild(view.root);session.on(event);view.sync(session.state);
-  view.setHandlers({rotate:(x,y)=>session.rotateAt(x,y),fire:()=>play(),bulletTime:()=>session.startBulletTime(),reset:()=>reset(),openSettings:()=>showOverlay(),
+  view.setHandlers({rotate:(x,y)=>session.rotateAt(x,y),firePressStart:()=>play(),firePressEnd:()=>{},bulletTime:()=>session.startBulletTime(),reset:()=>reset(),openSettings:()=>showOverlay(),
     tutorialNext:()=>{},tutorialSkip:()=>{},tutorialTap:()=>{},replayTutorial:()=>{},canSelectLevel:()=>false,
     toggleAudio:()=>{},toggleHaptics:()=>{},selectTheme:()=>{},closeSettings:()=>showOverlay(),openLevels:()=>{},
     selectLevel:()=>{},unlockAllLevels:()=>{},clearHistory:()=>{},uiChanged:()=>{},resultPrimary:()=>{},resultSecondary:()=>{},resultPreview:()=>{},resultLevels:()=>{},closePoster:()=>{},savePoster:()=>{},coinSound:()=>{}});

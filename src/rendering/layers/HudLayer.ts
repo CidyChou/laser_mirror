@@ -32,6 +32,7 @@ export class HudLayer extends Container {
   private firing = false;
   private previousAvailable = false;
   private nextAvailable = false;
+  private fireCharge: number | null = null;
 
   constructor() {
     super();
@@ -120,11 +121,19 @@ export class HudLayer extends Container {
     this.firing=state.firing;
     this.syncArrows();
     this.fireButton.setActive(state.firing);
-    this.fireButton.setText(state.hearts > 0 ? (state.firing?(state.timeSkill?'结束本次试射':'能量释放中'):'发射光束') : '补充爱心');
+    if(this.fireCharge===null)this.fireButton.setText(state.hearts > 0 ? (state.firing?(state.timeSkill?'结束本次试射':'能量释放中'):'按住发射光束') : '补充爱心');
     this.status.text=state.won?'所有接收器已点亮':state.firing?'光束传输中':'将光束引导至所有接收器';
     this.statusDot.x=this.status.x-this.status.width/2-14;
     this.status.tint=state.won?Theme.green:state.firing?Theme.laserPlasma:Theme.white;
   }
+
+  setFireCharge(progress:number|null,now=0){
+    this.fireCharge=progress;
+    this.fireButton.setChargeProgress(progress,now);
+    this.fireButton.setText(progress===null?'按住发射光束':progress>.84?'即将释放':'保持按住');
+  }
+
+  get active(){return this.fireCharge!==null;}
 
   setHeartsVisible(visible: boolean) {
     this.hearts.visible = visible;

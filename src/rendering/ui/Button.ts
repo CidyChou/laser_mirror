@@ -9,6 +9,10 @@ export class Button extends Container {
   private shadow = new Graphics();
   private body = new Graphics();
   private face = new Graphics();
+  private chargeFill = new Graphics();
+  private chargeEdge = new Graphics();
+  private chargeMeter = new Graphics();
+  private chargeFlare = new Graphics();
   private caption = new Text({ text: '', style: uiText({ fontSize: 26, fill: Theme.ink }) });
   private disabledState = false;
   private activeState = false;
@@ -16,6 +20,7 @@ export class Button extends Container {
   private labelOffsetY = 0;
   private cornerRadius: number | undefined;
   private labelMaxWidth = Infinity;
+  private chargeProgress: number | null = null;
   private readonly finishes = new Map<number, FillGradient>();
 
   constructor(
@@ -26,7 +31,7 @@ export class Button extends Container {
   ) {
     super();
     this.addChild(this.shadow, this.body, this.content);
-    this.content.addChild(this.face, this.caption);
+    this.content.addChild(this.face, this.chargeFill, this.chargeEdge, this.chargeMeter, this.chargeFlare, this.caption);
     this.caption.anchor.set(0.5);
     this.eventMode = 'static';
     this.cursor = 'pointer';
@@ -87,6 +92,33 @@ export class Button extends Container {
     this.redraw();
   }
 
+  /** A single left-to-right energy layer; geometry stays cached while charging. */
+  setChargeProgress(progress: number | null, now = 0) {
+    this.chargeProgress = progress === null ? null : Math.max(0, Math.min(1, progress));
+    const active = this.kind === 'fire' && this.chargeProgress !== null;
+    this.chargeFill.visible = active;
+    this.chargeEdge.visible = active;
+    this.chargeMeter.visible = active;
+    this.chargeFlare.visible = active;
+    if (!active) {
+      this.content.x = 0;
+      return;
+    }
+    const p = this.chargeProgress!;
+    const pulse=.5+.5*Math.sin(now*(.009+p*.014));
+    this.chargeFill.alpha = .055 + p * .15 + pulse*p*.045;
+    this.chargeEdge.alpha = .16 + p * .46 + pulse*p*.16;
+    this.chargeMeter.scale.x = Math.max(.001,p);
+    this.chargeMeter.alpha=.58+p*.36;
+    this.chargeFlare.x=58+(this.widthPx-116)*p;
+    this.chargeFlare.alpha=.42+p*.52;
+    this.chargeFlare.scale.set(.72+p*.58+pulse*.12);
+    const shake = Math.max(0,p-.58)**2 * 7.5;
+    this.content.x = Math.sin(now * (.018 + p * .026)) * shake;
+  }
+
+  get charging() { return this.chargeProgress !== null; }
+
   private setPressed(value: boolean) {
     if (this.disabledState || this.pressedState === value) return;
     this.pressedState = value;
@@ -97,6 +129,10 @@ export class Button extends Container {
     this.shadow.clear();
     this.body.clear();
     this.face.clear();
+    this.chargeFill.clear();
+    this.chargeEdge.clear();
+    this.chargeMeter.clear();
+    this.chargeFlare.clear();
 
     const radius = this.cornerRadius ?? (this.kind === 'fire' ? 38 : this.kind === 'icon' ? UI_TOKENS.radius.md : 22);
     const pressed = this.pressedState;
@@ -150,6 +186,17 @@ export class Button extends Container {
     this.content.y = faceY;
     this.face.roundRect(0, 0, this.widthPx, faceH, radius).fill(finish)
       .stroke({color:edge,width:this.kind==='fire'?1.8:1.4,alpha:this.kind==='fire'?.85:.84});
+    if(this.kind==='fire'){
+      this.chargeFill.roundRect(3,3,this.widthPx-6,faceH-6,Math.max(4,radius-3))
+        .fill({color:Theme.white,alpha:1});
+      this.chargeEdge.roundRect(3,3,this.widthPx-6,faceH-6,Math.max(4,radius-3))
+        .stroke({color:Theme.laserCore,width:2.4,alpha:1});
+      this.chargeMeter.position.set(58,0);
+      this.chargeMeter.moveTo(0,faceH-9).lineTo(this.widthPx-116,faceH-9)
+        .stroke({color:Theme.white,width:3,alpha:1,cap:'round'});
+      this.chargeFlare.circle(0,faceH-9,8).fill({color:Theme.beamHot,alpha:.18})
+        .circle(0,faceH-9,3).fill({color:Theme.white,alpha:1});
+    }
     if(this.kind==='fire'&&!disabled){
       const playX=48;
       this.face.poly([playX,faceH*.32,playX+22,faceH*.5,playX,faceH*.68],true)
@@ -160,6 +207,7 @@ export class Button extends Container {
     this.caption.style.fill = label;
     this.caption.alpha = disabled ? 0.62 : 1;
     this.caption.position.set(this.widthPx / 2 + (this.kind==='fire'?8:0), faceH / 2 + this.labelOffsetY);
+    this.setChargeProgress(this.chargeProgress);
   }
 
   override destroy(options?: Parameters<Container['destroy']>[0]) {
