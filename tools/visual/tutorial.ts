@@ -1,4 +1,5 @@
 import { GameApplication } from '@/app/GameApplication';
+import { nowMs } from '@/core/clock';
 import { WebPlatform } from '@/platform/web/WebPlatform';
 import type { GameSession } from '@/gameplay/GameSession';
 import type { TutorialDirector } from '@/gameplay/tutorial';
@@ -28,4 +29,24 @@ const game = new GameApplication(platform);
 await game.start();
 const debug = game as unknown as { session: GameSession; tutorial: TutorialDirector; view: PixiGameView };
 debug.session.load(index);
+const now = nowMs();
+const combo = Number(params.get('combo') || 0);
+const charge = params.get('charge');
+if (combo >= 2) {
+  debug.view.showCombo(combo, now - 420);
+  debug.view.update(debug.session.state, now);
+}
+if (charge != null && charge !== '') debug.view.setFireCharge(Math.min(1, Math.max(0, Number(charge))), now);
+const overlay = params.get('overlay');
+if (overlay === 'settings') debug.view.showSettings(false, false, (params.get('theme') ?? 'void') as 'void' | 'aurora' | 'atelier');
+if (overlay === 'result') {
+  debug.view.showResult('win', {
+    title: '通关',
+    subtitle: '第 2 关',
+    tip: '光路接通',
+    primary: '下一关',
+    reward: 20,
+  }, now - 900);
+  debug.view.update(debug.session.state, now);
+}
 Object.assign(window, { tutorialQA: { game: debug, storage } });

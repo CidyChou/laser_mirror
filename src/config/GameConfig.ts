@@ -6,7 +6,7 @@ export const STAGE_HEIGHT = 714;
 
 export const UI_TOKENS = {
   radius: { sm: 12, md: 18, lg: 26, xl: 36 },
-  button: { idleDepth: 6, pressedDepth: 2, chromeDepth: 5 },
+  button: { idleDepth: 6, pressedDepth: 2, chromeDepth: 5, labelOpticalLift: 0.18 },
 } as const;
 
 export const UI_RECTS = {
@@ -26,7 +26,7 @@ export const COMBO_MOTION = {
   enterDuration: 180,
   burstDuration: 760,
   holdUntil: 900,
-  badgeY: 144,
+  badgeY: UI_RECTS.progress.y + UI_RECTS.progress.h / 2,
   tiers: {
     1: { badgeScale: 1, ringCount: 1 },
     2: { badgeScale: 1.05, ringCount: 2 },

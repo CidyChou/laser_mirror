@@ -54,6 +54,7 @@ export class ComboLayer extends Container {
     setUiFontSize(this.comboText, 32 + tier * 3);
     this.drawBody(tier);
     this.visible = true;
+    this.draw(this.effect, now, 'high');
   }
 
   setTopOffset(offset: number) {
@@ -79,8 +80,7 @@ export class ComboLayer extends Container {
   }
 
   private drawBody(tier: ComboTier) {
-    const width = 300 + tier * 16;
-    const height = 86 + tier * 4;
+    const { width, height } = comboBadgeSize(tier);
     this.body.clear();
     this.body.roundRect(-width / 2, -height / 2 + 8, width, height, height / 2).fill(Theme.comboSide);
     this.body.roundRect(-width / 2, -height / 2, width, height, height / 2).fill(Theme.beam).stroke({ color: Theme.coin, width: 5 });
@@ -101,12 +101,11 @@ export class ComboLayer extends Container {
     ));
     const alpha = clamp(elapsed / 70, 0, 1) * (1 - exit);
     const tierMotion = COMBO_MOTION.tiers[effect.tier];
-    const width = 300 + effect.tier * 16;
-    const height = 86 + effect.tier * 4;
+    const { width, height } = comboBadgeSize(effect.tier);
     const pulse = 1 + Math.sin(clamp(sinceUpdate / 220, 0, 1) * Math.PI) * 0.03 * (1 - exit);
     const scale = lerp(0.56, tierMotion.badgeScale, enter) * pulse * (1 - exit * 0.08);
     const x = UI_RECTS.progress.x + UI_RECTS.progress.w / 2;
-    const y = Math.max(height * scale / 2 + 10, COMBO_MOTION.badgeY - exit * 18) + this.topOffset;
+    const y = COMBO_MOTION.badgeY - exit * 18 + this.topOffset;
 
     this.position.set(x, y);
     this.scale.set(scale);
@@ -129,6 +128,13 @@ export class ComboLayer extends Container {
         .stroke({ color: ring % 2 === 0 ? Theme.coin : Theme.beamHot, width: 5 - ringProgress * 2, alpha: (1 - ringProgress) * 0.82 });
     }
   }
+}
+
+function comboBadgeSize(tier: ComboTier) {
+  return {
+    width: UI_RECTS.progress.w + tier * 16,
+    height: UI_RECTS.progress.h + 6 + tier * 4,
+  };
 }
 
 function drawStar(g: Graphics, x: number, y: number, radius: number, color: number) {

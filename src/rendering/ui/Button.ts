@@ -9,10 +9,11 @@ export class Button extends Container {
   private shadow = new Graphics();
   private body = new Graphics();
   private face = new Graphics();
+  private chrome = new Graphics();
+  private chargeLayer = new Container();
+  private chargeMask = new Graphics();
   private chargeFill = new Graphics();
   private chargeEdge = new Graphics();
-  private chargeMeter = new Graphics();
-  private chargeFlare = new Graphics();
   private caption = new Text({ text: '', style: uiText({ fontSize: 26, fill: Theme.ink }) });
   private disabledState = false;
   private activeState = false;
@@ -30,8 +31,14 @@ export class Button extends Container {
     private readonly kind: ButtonKind = 'primary',
   ) {
     super();
+    this.chargeLayer.eventMode = 'none';
+    this.chargeMask.eventMode = 'none';
+    this.chargeLayer.addChild(this.chargeFill, this.chargeEdge);
+    this.chargeLayer.mask = this.chargeMask;
+    this.chargeLayer.visible = false;
+    this.chargeFill.pivot.set(0, 0);
     this.addChild(this.shadow, this.body, this.content);
-    this.content.addChild(this.face, this.chargeFill, this.chargeEdge, this.chargeMeter, this.chargeFlare, this.caption);
+    this.content.addChild(this.face, this.chargeMask, this.chargeLayer, this.chrome, this.caption);
     this.caption.anchor.set(0.5);
     this.eventMode = 'static';
     this.cursor = 'pointer';
@@ -92,28 +99,25 @@ export class Button extends Container {
     this.redraw();
   }
 
-  /** A single left-to-right energy layer; geometry stays cached while charging. */
+  /** Left-to-right fill across the whole face; geometry stays cached while charging. */
   setChargeProgress(progress: number | null, now = 0) {
     this.chargeProgress = progress === null ? null : Math.max(0, Math.min(1, progress));
     const active = this.kind === 'fire' && this.chargeProgress !== null;
-    this.chargeFill.visible = active;
-    this.chargeEdge.visible = active;
-    this.chargeMeter.visible = active;
-    this.chargeFlare.visible = active;
+    this.chargeLayer.visible = active;
     if (!active) {
       this.content.x = 0;
+      this.chargeFill.scale.x = 1;
+      this.chargeEdge.x = 0;
       return;
     }
     const p = this.chargeProgress!;
-    const pulse=.5+.5*Math.sin(now*(.009+p*.014));
-    this.chargeFill.alpha = .055 + p * .15 + pulse*p*.045;
-    this.chargeEdge.alpha = .16 + p * .46 + pulse*p*.16;
-    this.chargeMeter.scale.x = Math.max(.001,p);
-    this.chargeMeter.alpha=.58+p*.36;
-    this.chargeFlare.x=58+(this.widthPx-116)*p;
-    this.chargeFlare.alpha=.42+p*.52;
-    this.chargeFlare.scale.set(.72+p*.58+pulse*.12);
-    const shake = Math.max(0,p-.58)**2 * 7.5;
+    const pulse = .5 + .5 * Math.sin(now * (.009 + p * .014));
+    this.chargeFill.scale.x = Math.max(.001, p);
+    this.chargeFill.alpha = .22 + p * .26 + pulse * p * .08;
+    this.chargeEdge.visible = p * this.widthPx > 6;
+    this.chargeEdge.x = this.widthPx * p;
+    this.chargeEdge.alpha = .42 + p * .38 + pulse * .12;
+    const shake = Math.max(0, p - .58) ** 2 * 7.5;
     this.content.x = Math.sin(now * (.018 + p * .026)) * shake;
   }
 
@@ -129,10 +133,10 @@ export class Button extends Container {
     this.shadow.clear();
     this.body.clear();
     this.face.clear();
+    this.chrome.clear();
+    this.chargeMask.clear();
     this.chargeFill.clear();
     this.chargeEdge.clear();
-    this.chargeMeter.clear();
-    this.chargeFlare.clear();
 
     const radius = this.cornerRadius ?? (this.kind === 'fire' ? 38 : this.kind === 'icon' ? UI_TOKENS.radius.md : 22);
     const pressed = this.pressedState;
@@ -187,27 +191,29 @@ export class Button extends Container {
     this.face.roundRect(0, 0, this.widthPx, faceH, radius).fill(finish)
       .stroke({color:edge,width:this.kind==='fire'?1.8:1.4,alpha:this.kind==='fire'?.85:.84});
     if(this.kind==='fire'){
-      this.chargeFill.roundRect(3,3,this.widthPx-6,faceH-6,Math.max(4,radius-3))
-        .fill({color:Theme.white,alpha:1});
-      this.chargeEdge.roundRect(3,3,this.widthPx-6,faceH-6,Math.max(4,radius-3))
-        .stroke({color:Theme.laserCore,width:2.4,alpha:1});
-      this.chargeMeter.position.set(58,0);
-      this.chargeMeter.moveTo(0,faceH-9).lineTo(this.widthPx-116,faceH-9)
-        .stroke({color:Theme.white,width:3,alpha:1,cap:'round'});
-      this.chargeFlare.circle(0,faceH-9,8).fill({color:Theme.beamHot,alpha:.18})
-        .circle(0,faceH-9,3).fill({color:Theme.white,alpha:1});
+      const inset = 2;
+      this.chargeMask.roundRect(inset, inset, this.widthPx - inset * 2, faceH - inset * 2, Math.max(4, radius - inset))
+        .fill(0xffffff);
+      this.chargeFill.rect(0, 0, this.widthPx, faceH).fill({ color: Theme.white });
+      this.chargeEdge.rect(-4, 0, 4, faceH).fill({ color: Theme.laserCore });
     }
     if(this.kind==='fire'&&!disabled){
       const playX=48;
-      this.face.poly([playX,faceH*.32,playX+22,faceH*.5,playX,faceH*.68],true)
+      this.chrome.poly([playX,faceH*.32,playX+22,faceH*.5,playX,faceH*.68],true)
         .fill({color:Theme.white,alpha:.97});
-      for(let i=0;i<3;i++)this.face.roundRect(this.widthPx-56+i*7,faceH*.40,2,faceH*.20,1)
+      for(let i=0;i<3;i++)this.chrome.roundRect(this.widthPx-56+i*7,faceH*.40,2,faceH*.20,1)
         .fill({color:Theme.white,alpha:.25});
     }
     this.caption.style.fill = label;
     this.caption.alpha = disabled ? 0.62 : 1;
-    this.caption.position.set(this.widthPx / 2 + (this.kind==='fire'?8:0), faceH / 2 + this.labelOffsetY);
+    this.caption.position.set(this.widthPx / 2 + (this.kind==='fire'?8:0), this.labelCenterY(faceH));
     this.setChargeProgress(this.chargeProgress);
+  }
+
+  private labelCenterY(faceH: number) {
+    const size = Number(this.caption.style.fontSize ?? 26);
+    // PingFang / Hiragino CJK sits below the em-box center; lift onto the face midline.
+    return faceH / 2 - Math.round(size * UI_TOKENS.button.labelOpticalLift) + this.labelOffsetY;
   }
 
   override destroy(options?: Parameters<Container['destroy']>[0]) {
