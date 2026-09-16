@@ -164,6 +164,7 @@ export class LaserEffect extends Container{
   private visualNow=0;
   private visualFiring=false;
   private jointSignature='';
+  private straightJoints=new Set<string>();
   private frozen=false;
   private gpuFailed=false;
   private cellScale=1;
@@ -299,6 +300,7 @@ export class LaserEffect extends Container{
     this.fallbackBeam.removeChildren().forEach(child=>child.destroy({children:true}));
     this.fallbackRuns=[];
     this.runs=[];
+    this.straightJoints.clear();
     // The join geometry is independent of beamRoot; clear it together with
     // its cache key so reset / abort cannot leave illuminated endpoints.
     this.joints.clear();this.jointSignature='';
@@ -321,6 +323,7 @@ export class LaserEffect extends Container{
       this.runs=this.mergeCollinear(this.renderSegments).filter(run=>isFiniteRun(run));
       this.buildFallbackBeam();
     }
+    this.straightJoints=findStraightJoints(this.runs);
   }
 
   private buildGpuBeam(){
@@ -490,12 +493,12 @@ export class LaserEffect extends Container{
   private ensureJoints(dist:number){
     const points=new Map<string,{x:number;y:number;width:number}>();
     const add=(x:number,y:number,width:number)=>{
-      const key=`${Math.round(x)},${Math.round(y)}`,existing=points.get(key);
+      const key=jointKey(x,y),existing=points.get(key);
       if(!existing||existing.width<width)points.set(key,{x,y,width});
     };
     for(const run of this.runs){
-      if(run.startDist<=dist&&run.startDist>=this.tailDistance+this.tailFade)add(run.x1,run.y1,run.widthScale);
-      if(run.endDist<=dist&&run.endDist>=this.tailDistance+this.tailFade)add(run.x2,run.y2,run.widthScale);
+      if(run.startDist<=dist&&run.startDist>=this.tailDistance+this.tailFade&&!this.straightJoints.has(jointKey(run.x1,run.y1)))add(run.x1,run.y1,run.widthScale);
+      if(run.endDist<=dist&&run.endDist>=this.tailDistance+this.tailFade&&!this.straightJoints.has(jointKey(run.x2,run.y2)))add(run.x2,run.y2,run.widthScale);
     }
     const signature=[...points].map(([key,p])=>`${key}:${p.width}`).join('|');
     if(signature===this.jointSignature)return;
@@ -656,4 +659,29 @@ function isFiniteRun(run:Run){
   const length=Math.hypot(run.x2-run.x1,run.y2-run.y1);
   return Number.isFinite(length)&&length>=0.5
     &&Number.isFinite(run.startDist)&&Number.isFinite(run.endDist);
+}
+
+function jointKey(x:number,y:number){return`${Math.round(x)},${Math.round(y)}`;}
+
+function findStraightJoints(runs:Run[]){
+  const directions=new Map<string,{x:number;y:number}[]>();
+  const add=(x:number,y:number,dx:number,dy:number)=>{
+    const length=Math.hypot(dx,dy);
+    if(length<.5)return;
+    const direction={x:dx/length,y:dy/length};
+    const key=jointKey(x,y),atPoint=directions.get(key)??[];
+    if(!atPoint.some(other=>Math.abs(other.x-direction.x)<.01&&Math.abs(other.y-direction.y)<.01))atPoint.push(direction);
+    directions.set(key,atPoint);
+  };
+  for(const run of runs){
+    add(run.x1,run.y1,run.x2-run.x1,run.y2-run.y1);
+    add(run.x2,run.y2,run.x1-run.x2,run.y1-run.y2);
+  }
+  const straight=new Set<string>();
+  for(const [key,atPoint] of directions){
+    if(atPoint.length!==2)continue;
+    const [a,b]=atPoint;
+    if(Math.abs(a.x*b.y-a.y*b.x)<.01&&a.x*b.x+a.y*b.y<-.99)straight.add(key);
+  }
+  return straight;
 }

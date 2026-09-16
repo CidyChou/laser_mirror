@@ -170,6 +170,7 @@ export class ObjectLayer extends Container{
         this.signalActive=true;
         const t=Math.min(1,age/GameConfig.laser.doorSignalMs),inv=1-t;
         link.dot.position.set(inv*inv*link.from.x+2*inv*t*link.bend.x+t*t*link.to.x,inv*inv*link.from.y+2*inv*t*link.bend.y+t*t*link.to.y);
+        link.dot.visible=t<1;
         link.root.alpha=t<1?1:Math.max(0,1-(age-GameConfig.laser.doorSignalMs)/GameConfig.laser.doorOpenMs);
       }
       for(const n of this.itemNodes.values()){
