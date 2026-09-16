@@ -16,7 +16,11 @@ const TILE_H = 84;
 const TILE_GAP_X = 12;
 const TILE_GAP_Y = 12;
 const TILE_COLUMNS = 4;
-const SCROLL_TOP = 246;
+const SCROLL_TOP = 198;
+const TITLE_Y = 82;
+const PROGRESS_Y = 136;
+const PROGRESS_TRACK_Y = 163;
+const SETTINGS_Y = 56;
 const CONTENT_BOTTOM_PAD = 48;
 const DRAG_THRESHOLD = 10;
 const GM_TAP_COUNT = 5;
@@ -41,7 +45,8 @@ export class LevelSelectLayer extends Container {
   private titleTapStartedAt = 0;
   private contentHeight = 0;
   private viewportTop = SCROLL_TOP;
-  private viewportHeight = DESIGN_HEIGHT - SCROLL_TOP;
+  private viewportBottom = DESIGN_HEIGHT;
+  private viewportHeight = this.viewportBottom - SCROLL_TOP;
   private scrollY = 0;
   private dragStartY = 0;
   private dragStartScroll = 0;
@@ -60,14 +65,14 @@ export class LevelSelectLayer extends Container {
     this.hitArea = new Rectangle(0, 0, DESIGN_WIDTH, DESIGN_HEIGHT);
 
     this.title.anchor.set(0.5);
-    this.title.position.set(DESIGN_WIDTH / 2, 130);
+    this.title.position.set(DESIGN_WIDTH / 2, TITLE_Y);
     this.title.eventMode = 'static';
     this.title.hitArea = new Rectangle(-180, -44, 360, 88);
     this.title.on('pointertap', () => this.handleTitleTap());
     this.progressLabel.anchor.set(0.5);
-    this.progressLabel.position.set(DESIGN_WIDTH / 2, 184);
-    this.settingsButton.position.set(UI_RECTS.settings.x, 104);
-    this.progressTrack.roundRect(120, 211, 480, 10, 5).fill(Theme.surfaceMuted);
+    this.progressLabel.position.set(DESIGN_WIDTH / 2, PROGRESS_Y);
+    this.settingsButton.position.set(UI_RECTS.settings.x, SETTINGS_Y);
+    this.progressTrack.roundRect(120, PROGRESS_TRACK_Y, 480, 10, 5).fill(Theme.surfaceMuted);
     this.header.addChild(this.title, this.progressLabel, this.progressTrack, this.progressFill, this.settingsButton);
 
     const groups = new Map<number, Array<{ index: number; level: LevelDefinition }>>();
@@ -124,12 +129,15 @@ export class LevelSelectLayer extends Container {
   setViewport(bounds: Rectangle) {
     this.hitArea=bounds;
     this.background.setViewport(bounds);
+    this.viewportBottom=Math.max(DESIGN_HEIGHT,bounds.y+bounds.height);
+    this.viewportHeight=Math.max(240,this.viewportBottom-this.viewportTop);
+    this.layoutViewport();
   }
 
   setTopOffset(offset: number) {
     this.header.position.y = offset;
     this.viewportTop = SCROLL_TOP + offset;
-    this.viewportHeight = Math.max(240, DESIGN_HEIGHT - this.viewportTop);
+    this.viewportHeight = Math.max(240, this.viewportBottom - this.viewportTop);
     this.layoutViewport();
   }
 
@@ -208,7 +216,7 @@ export class LevelSelectLayer extends Container {
       : `主线 ${normalDone}/${normalTotal} · 挑战 ${bossDone}/${bossTotal}  ·  ${nextCopy}`;
     const fillW = total > 0 ? 480 * done / total : 0;
     this.progressFill.clear();
-    if (fillW > 0) this.progressFill.roundRect(120, 211, Math.max(10, fillW), 10, 5).fill(Theme.accent);
+    if (fillW > 0) this.progressFill.roundRect(120, PROGRESS_TRACK_Y, Math.max(10, fillW), 10, 5).fill(Theme.accent);
     for (const card of this.chapterCards) card.sync(currentIndex, completed, total, allLevelsUnlocked, unlockedThrough);
   }
 

@@ -198,15 +198,12 @@ export class Button extends Container {
       this.chargeEdge.rect(-4, 0, 4, faceH).fill({ color: Theme.laserCore });
     }
     if(this.kind==='fire'&&!disabled){
-      const playX=48;
-      this.chrome.poly([playX,faceH*.32,playX+22,faceH*.5,playX,faceH*.68],true)
-        .fill({color:Theme.white,alpha:.97});
       for(let i=0;i<3;i++)this.chrome.roundRect(this.widthPx-56+i*7,faceH*.40,2,faceH*.20,1)
         .fill({color:Theme.white,alpha:.25});
     }
     this.caption.style.fill = label;
     this.caption.alpha = disabled ? 0.62 : 1;
-    this.caption.position.set(this.widthPx / 2 + (this.kind==='fire'?8:0), this.labelCenterY(faceH));
+    this.caption.position.set(this.widthPx / 2, this.labelCenterY(faceH));
     this.setChargeProgress(this.chargeProgress);
   }
 

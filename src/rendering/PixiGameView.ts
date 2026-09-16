@@ -322,11 +322,14 @@ export class PixiGameView{
     else if(this.victoryUntil){this.victoryUntil=0;this.victoryWash.visible=false;this.victoryWash.alpha=0;}
   }
   resize(viewW:number,viewH:number,safeTopPx=0){
-    // Fit the complete layout below native chrome instead of shifting the HUD into the board.
+    // Bias tall screens upward so the masthead shares the native menu-button row.
+    // The wider design still fits short screens without clipping.
     const safeTop=safeTopPx>0?safeTopPx+8:0;
     const scale=Math.min(viewW/DESIGN_WIDTH,viewH/DESIGN_HEIGHT,(viewH-safeTop)/(DESIGN_HEIGHT-40));
     this.root.scale.set(scale);
-    const rootY=Math.max((viewH-DESIGN_HEIGHT*scale)/2,safeTop-40*scale);
+    const verticalSlack=Math.max(0,viewH-DESIGN_HEIGHT*scale);
+    const chromeAlignedY=safeTopPx>0?safeTop-80*scale:0;
+    const rootY=Math.max(verticalSlack*.25,chromeAlignedY);
     this.root.position.set((viewW-DESIGN_WIDTH*scale)/2,rootY);
     const bounds=new Rectangle(-this.root.x/scale,-rootY/scale,viewW/scale,viewH/scale);
     this.bg.setViewport(bounds);

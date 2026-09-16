@@ -11,7 +11,7 @@ export const UI_TOKENS = {
 
 export const UI_RECTS = {
   settings: { x: 46, y: 152, w: 82, h: 76 },
-  progress: { x: 198, y: 147, w: 324, h: 80 },
+  progress: { x: 198, y: 152, w: 324, h: 76 },
   hearts: { x: 554, y: 152, w: 124, h: 76 },
   coinCounter: { x: 550, y: 152, w: 136, h: 76 },
   fire: { x: 158, y: 1052, w: 404, h: 100 },

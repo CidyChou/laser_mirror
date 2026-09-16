@@ -1,10 +1,13 @@
 import { Container, Graphics, Rectangle, Text, Texture } from 'pixi.js';
-import { UI_RECTS } from '@/config/GameConfig';
+import { UI_RECTS, UI_TOKENS } from '@/config/GameConfig';
 import type { GameState } from '@/gameplay/types';
 import { stageLabel } from '@/levels/campaign';
 import { Button } from '../ui/Button';
 import { SettingsButton } from '../ui/SettingsButton';
 import { Theme, uiText } from '../theme';
+
+const GUIDE_X = 258;
+const GUIDE_Y = 38;
 
 export class HudLayer extends Container {
   readonly settingsButton = new SettingsButton(UI_RECTS.settings.w, UI_RECTS.settings.h);
@@ -48,7 +51,7 @@ export class HudLayer extends Container {
     this.topOffset = offset;
     const y = (rectY: number) => rectY + offset;
     this.masthead.y=offset;
-    this.guideButton.y=88+offset;
+    this.guideButton.y=GUIDE_Y+offset;
     this.settingsButton.position.set(UI_RECTS.settings.x, y(UI_RECTS.settings.y));
     this.levelButton.position.set(UI_RECTS.progress.x, y(UI_RECTS.progress.y));
     this.hearts.position.set(UI_RECTS.hearts.x, y(UI_RECTS.hearts.y));
@@ -62,9 +65,10 @@ export class HudLayer extends Container {
     const progress = UI_RECTS.progress;
     this.levelButton.position.set(progress.x, progress.y);
     this.levelButton.setLabelSize(34);
-    this.levelButton.setCornerRadius(27);
-    this.previousLevel.position.set(36,37);
-    this.nextLevel.position.set(progress.w-36,37);
+    this.levelButton.setCornerRadius(26);
+    const progressCenterY=(progress.h-UI_TOKENS.button.idleDepth)/2;
+    this.previousLevel.position.set(36,progressCenterY);
+    this.nextLevel.position.set(progress.w-36,progressCenterY);
     this.levelButton.content.addChild(this.previousLevel,this.nextLevel);
     this.levelButton.setLabelMaxWidth(progress.w-128);
 
@@ -81,22 +85,13 @@ export class HudLayer extends Container {
     title.position.set(46,40);
     const edition=new Text({text:'LIGHT PUZZLE',style:uiText({fontSize:11,fill:Theme.inkSoft,letterSpacing:4})});
     edition.position.set(46,83);edition.alpha=.8;
-    const tagline=new Text({text:'以光为引 · 解开每一道弯',style:uiText({fontSize:14,fill:Theme.inkSoft,letterSpacing:1})});
-    tagline.anchor.set(1,0);tagline.position.set(678,46);
     const brandRule=new Graphics().moveTo(46,118).lineTo(63,118).stroke({color:Theme.cyan,width:1.8});
-    this.guideButton.position.set(630,88);this.guideButton.setCornerRadius(23);this.guideButton.setLabelSize(24);
+    this.guideButton.position.set(GUIDE_X,GUIDE_Y);this.guideButton.setCornerRadius(23);this.guideButton.setLabelSize(24);
     this.guideButton.hitArea=new Rectangle(-12,-12,72,70);
     this.status.anchor.set(.5);this.status.position.set(370,246);
     this.statusDot.position.set(246,246);
-    const legend=new Container();legend.position.set(360,1018);
-    const legendText=new Text({text:'旋转镜面   /   连接所有接收器',style:uiText({fontSize:18,fill:Theme.inkSoft,letterSpacing:.6})});
-    legendText.anchor.set(.5);legendText.x=16;
-    const rotate=new Graphics().arc(-145,0,10,-Math.PI*.8,Math.PI*.6)
-      .stroke({color:Theme.inkSoft,width:1.8,cap:'round'});
-    rotate.moveTo(-155,-7).lineTo(-155,0).lineTo(-149,-3).stroke({color:Theme.inkSoft,width:1.8,cap:'round',join:'round'});
-    legend.addChild(rotate,legendText);
-    this.masthead.addChild(title,edition,tagline,brandRule,this.statusDot,this.status);
-    this.addChild(this.masthead,legend);
+    this.masthead.addChild(title,edition,brandRule,this.statusDot,this.status);
+    this.addChild(this.masthead);
     this.addChild(this.guideButton,this.settingsButton, this.levelButton, this.hearts, this.heartsCount, this.fireButton, this.hint);
   }
 
