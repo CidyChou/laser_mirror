@@ -1,5 +1,6 @@
 import { Container, Graphics, Particle, ParticleContainer, ParticleShader, type Renderer, type Texture } from 'pixi.js';
 import type { Quality } from '@/performance/PerformanceManager';
+import { isLightTheme } from '../theme';
 
 export type ParticleShape='dot'|'spark'|'mixed';
 export type EmitDirection={
@@ -53,7 +54,8 @@ export class ParticleSystem {
     const dynamic={position:true,vertex:true,rotation:true,color:true};
     this.dots=new ParticleContainer({texture:this.dotTexture,dynamicProperties:dynamic,shader:this.shader});
     this.sparks=new ParticleContainer({texture:this.sparkTexture,dynamicProperties:dynamic,shader:this.shader});
-    this.dots.blendMode='add';this.sparks.blendMode='add';
+    const blend=isLightTheme()?'normal':'add';
+    this.dots.blendMode=blend;this.sparks.blendMode=blend;
     this.container.addChild(this.dots,this.sparks);
   }
 

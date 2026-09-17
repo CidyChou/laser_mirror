@@ -2,13 +2,13 @@ import { Application } from 'pixi.js';
 import { GameSession } from '../../src/gameplay/GameSession';
 import { PerformanceManager } from '../../src/performance/PerformanceManager';
 import { PixiGameView } from '../../src/rendering/PixiGameView';
-import { setActiveTheme,Theme,type ThemeId } from '../../src/rendering/theme';
+import { normalizeThemeId,setActiveTheme,Theme } from '../../src/rendering/theme';
 import campaign from '../../src/levels/levels.json';
 import { designBoss } from '../../scripts/time-boss-designs';
 import type { LevelDefinition } from '../../src/gameplay/types';
 
 const params=new URLSearchParams(location.search),number=Number(params.get('level')||10);
-const theme=(params.get('theme')||'void') as ThemeId,renderer=params.get('renderer')||'gpu';
+const theme=normalizeThemeId(params.get('theme')||'void'),renderer=params.get('renderer')||'gpu';
 for(const id of ['level','theme','renderer']){
   const select=document.querySelector<HTMLSelectElement>(`#${id}`)!;
   if(id==='level')for(let n=10;n<=campaign.length;n+=10)select.add(new Option(`第${n/10}章挑战`,String(n)));

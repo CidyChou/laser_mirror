@@ -35,7 +35,7 @@ const VOID_PALETTE = {
 } as const;
 
 export type ThemePalette = { -readonly [K in keyof typeof VOID_PALETTE]: number };
-export type ThemeId = 'void' | 'aurora' | 'atelier';
+export type ThemeId = 'void' | 'aurora' | 'white';
 export type GameTheme = {
   readonly id: ThemeId;
   readonly name: string;
@@ -73,30 +73,32 @@ export const THEMES: readonly GameTheme[] = Object.freeze([
     }),
   },
   {
-    id: 'atelier', name: '暖金工坊', tagline: '温暖 · 玩具感', colorScheme: 'light',
+    id: 'white', name: '简约白', tagline: '干净 · 纸白', colorScheme: 'light',
     colors: palette({
-      bg: 0xf7eddd, bg0: 0xfff7eb, bg1: 0xead8bd,
-      panel: 0xfffaf1, panelHi: 0xffffff,
-      surface: 0xfffaf1, surfaceTop: 0xffffff, surfaceSide: 0xe9d2b1,
-      surfaceLine: 0xd6b88e, surfaceMuted: 0xf2e3cf,
-      boardTop: 0xf1d9b5, boardBottom: 0xd9bc91, boardSide: 0xb99368,
-      boardShadow: 0x7d6047, boardDepthBottom: 0xb08a61, boardDepthSide: 0xc39b6e,
-      cellA: 0xfff2dc, cellB: 0xe9cea7, cellShade: 0xbfa078,
-      text: 0x4f4036, ink: 0x4f4036, inkSoft: 0x7c624f, muted: 0x7c624f,
-      accent: 0x69b83f, accentDark: 0x4f8f30,
-      danger: 0xd84f51, dangerSurface: 0xf4cfcb, success: 0x4f9b36,
-      gold: 0xc88716, cyan: 0x078f9f, cyanSoft: 0xb5faff, green: 0x179868,
-      settingsIcon: 0x5b4a3d, overlay: 0x33251d, shadow: 0x735844,
-      heartEmpty: 0xcab89f, disabledSurface: 0xd7c8b5, disabledEdge: 0xbca98e,
-      raisedFixed: 0x9bafbd, raisedMovable: 0x83aabd,
-      splitterFixed: 0x8da8b1, splitterMovable: 0x73a7b2,
-      mirrorBlade: 0xd8f2fb, mirrorCore: 0xffffff,
-      mirrorShade: 0x7ba0b5, mirrorEnd: 0x698d9f,
-      lock: 0x6f7f8c, lockKey: 0xe7d9c2, splitterGem: 0x52c2d3,
-      wallFace: 0x9b876f, wallInset: 0x796753,
-      switchOff: 0xb7aa96, switchOffRing: 0x8b7d6b, switchOffCore: 0x746756,
-      doorClosed: 0xb95e75, doorEdge: 0xe24f78, doorBars: 0xffe3ea,
-      comboSide: 0xa73349,
+      bg: 0xffffff, bg0: 0xf6f6f6, bg1: 0xf0f0f0,
+      panel: 0xffffff, panelHi: 0xffffff,
+      surface: 0xffffff, surfaceTop: 0xffffff, surfaceSide: 0xd9d9d9,
+      surfaceLine: 0xd4d4d4, surfaceMuted: 0xf6f6f6,
+      boardTop: 0xf7f7f7, boardBottom: 0xf0f0f0, boardSide: 0xd4d4d4,
+      boardShadow: 0xc8c8c8, boardDepthBottom: 0xe0e0e0, boardDepthSide: 0xd4d4d4,
+      cellA: 0xffffff, cellB: 0xf3f3f3, cellShade: 0xeeeeee,
+      text: 0x111111, ink: 0x111111, inkSoft: 0x5c5f66, muted: 0x5c5f66,
+      textOnAccent: 0xffffff,
+      accent: 0x111111, accentDark: 0x000000,
+      danger: 0xe24b4b, dangerSurface: 0xfdeeee, success: 0x1f9d6a,
+      coin: 0xd4a017, gold: 0xd4a017,
+      cyan: 0x0b8fa0, cyanSoft: 0x7ec8d4, green: 0x1f9d6a, purple: 0x6d52d4,
+      settingsIcon: 0x2c2e33, overlay: 0x111111, shadow: 0x111111,
+      heartEmpty: 0xd0d0d0, disabledSurface: 0xe8e8e8, disabledEdge: 0xd0d0d0,
+      raisedFixed: 0xb8c0c8, raisedMovable: 0xa8c0cc,
+      splitterFixed: 0xb0bcc4, splitterMovable: 0xa0b8c0,
+      mirrorBlade: 0xd8e4ea, mirrorCore: 0xffffff,
+      mirrorShade: 0x7a909c, mirrorEnd: 0x6a808c,
+      lock: 0x6a727c, lockKey: 0xf6f6f6, splitterGem: 0x1aa7b8,
+      wallFace: 0x8b939c, wallInset: 0x5c646c,
+      switchOff: 0xd8d8d8, switchOffRing: 0x9aa0a6, switchOffCore: 0x6a7076,
+      doorClosed: 0xc45a6e, comboSide: 0xb43a4e,
+      victoryWash: 0xd8fff0,
     }),
   },
 ]);
@@ -106,6 +108,7 @@ export const Theme: ThemePalette = { ...VOID_PALETTE };
 export let activeThemeId: ThemeId = DEFAULT_THEME_ID;
 
 export function normalizeThemeId(value: unknown): ThemeId {
+  if (value === 'atelier') return 'white';
   return THEMES.some((theme) => theme.id === value) ? value as ThemeId : DEFAULT_THEME_ID;
 }
 

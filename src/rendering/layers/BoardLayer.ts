@@ -14,24 +14,25 @@ export class BoardLayer extends Container {
     this.removeChildren().forEach(c=>c.destroy());
     const shape=new Graphics();
     const {ox:x,oy:y,boardW:w,boardH:h}=g;
-    shape.roundRect(x-10,y-6,w+20,h+20,17).fill({color:Theme.boardShadow,alpha:.24});
-    shape.roundRect(x-10,y-10,w+20,h+20,17).fill({color:Theme.cellShade,alpha:.64})
-      .stroke({color:Theme.cyan,width:1.7,alpha:.46});
+    const light=isLightTheme();
+    shape.roundRect(x-10,y-6,w+20,h+20,17).fill({color:Theme.boardShadow,alpha:light?.12:.24});
+    shape.roundRect(x-10,y-10,w+20,h+20,17).fill({color:Theme.cellShade,alpha:light?1:.64})
+      .stroke({color:light?Theme.ink:Theme.cyan,width:light?1.2:1.7,alpha:light?.16:.46});
     for(let row=0;row<level.rows;row++)for(let col=0;col<level.cols;col++){
       const inset=Math.max(2,g.cell*.028),size=g.cell-inset*2;
       const rx=x+col*g.cell+inset,ry=y+row*g.cell+inset,radius=Math.max(6,g.cell*.095);
-      shape.roundRect(rx,ry+1.5,size,size,radius).fill({color:Theme.boardShadow,alpha:.5});
+      shape.roundRect(rx,ry+1.5,size,size,radius).fill({color:Theme.boardShadow,alpha:light?.16:.5});
       shape.roundRect(rx,ry,size,size,radius).fill(this.cellFills[0])
-        .stroke({color:Theme.surfaceLine,width:1,alpha:.64});
+        .stroke({color:Theme.surfaceLine,width:1,alpha:light?.9:.64});
       // A quiet registration cross keeps empty cells intentional and readable.
       const cx=rx+size/2,cy=ry+size/2;
       shape.moveTo(cx-3,cy).lineTo(cx+3,cy).moveTo(cx,cy-3).lineTo(cx,cy+3)
-        .stroke({color:Theme.cyanSoft,width:.8,alpha:.10});
+        .stroke({color:light?Theme.ink:Theme.cyanSoft,width:.8,alpha:light?.06:.10});
     }
     for(const [cx,cy,sx,sy] of [[x,y,1,1],[x+w,y,-1,1],[x,y+h,1,-1],[x+w,y+h,-1,-1]]){
       shape.moveTo(cx+sx*3,cy+sy*15).lineTo(cx+sx*3,cy+sy*9)
         .quadraticCurveTo(cx+sx*3,cy+sy*3,cx+sx*9,cy+sy*3).lineTo(cx+sx*15,cy+sy*3)
-        .stroke({color:Theme.cyanSoft,width:1.8,alpha:.94});
+        .stroke({color:light?Theme.ink:Theme.cyanSoft,width:1.8,alpha:light?.28:.94});
     }
     this.addChild(shape);
     this.cacheAsTexture({resolution:GameConfig.renderer.staticCacheResolution,antialias:true});

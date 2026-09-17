@@ -207,7 +207,7 @@ class ThemeCard extends Container {
 
   private drawPreview() {
     const c = this.theme.colors;
-    this.preview.roundRect(10, 10, CARD_W - 20, 76, 13).fill(c.bg);
+    this.preview.roundRect(10, 10, CARD_W - 20, 76, 13).fill(c.bg1);
     this.preview.roundRect(24, 24, 78, 48, 10).fill(c.boardTop).stroke({ color: c.surfaceLine, width: 1 });
     this.preview.roundRect(31, 31, 28, 34, 7).fill(c.cellA);
     this.preview.roundRect(66, 31, 28, 34, 7).fill(c.cellB);

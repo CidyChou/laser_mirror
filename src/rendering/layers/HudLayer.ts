@@ -4,14 +4,17 @@ import type { GameState } from '@/gameplay/types';
 import { stageLabel } from '@/levels/campaign';
 import { Button } from '../ui/Button';
 import { SettingsButton } from '../ui/SettingsButton';
-import { Theme, uiText } from '../theme';
+import { Theme, uiText, uiTextPadding } from '../theme';
 
-const GUIDE_X = 258;
+const TITLE_X = 46;
+const TITLE_Y = 40;
+const TITLE_SIZE = 31;
+const GUIDE_GAP = 10;
 const GUIDE_Y = 38;
 
 export class HudLayer extends Container {
   readonly settingsButton = new SettingsButton(UI_RECTS.settings.w, UI_RECTS.settings.h);
-  readonly levelButton = new Button(UI_RECTS.progress.w, UI_RECTS.progress.h, '', 'secondary');
+  readonly levelButton = new Button(UI_RECTS.progress.w, UI_RECTS.progress.h, '', 'icon');
   readonly fireButton = new Button(UI_RECTS.fire.w, UI_RECTS.fire.h, '发射', 'fire');
   readonly guideButton = new Button(48, 46, '?', 'icon');
   readonly previousLevel = levelArrow(-1);
@@ -51,7 +54,6 @@ export class HudLayer extends Container {
     this.topOffset = offset;
     const y = (rectY: number) => rectY + offset;
     this.masthead.y=offset;
-    this.guideButton.y=GUIDE_Y+offset;
     this.settingsButton.position.set(UI_RECTS.settings.x, y(UI_RECTS.settings.y));
     this.levelButton.position.set(UI_RECTS.progress.x, y(UI_RECTS.progress.y));
     this.hearts.position.set(UI_RECTS.hearts.x, y(UI_RECTS.hearts.y));
@@ -64,9 +66,13 @@ export class HudLayer extends Container {
 
     const progress = UI_RECTS.progress;
     this.levelButton.position.set(progress.x, progress.y);
-    this.levelButton.setLabelSize(34);
-    this.levelButton.setCornerRadius(26);
-    const progressCenterY=(progress.h-UI_TOKENS.button.idleDepth)/2;
+    const levelLabelSize=34;
+    this.levelButton.setLabelSize(levelLabelSize);
+    this.levelButton.setCornerRadius(20);
+    const chipFaceH=progress.h-UI_TOKENS.button.chromeDepth;
+    // Sit on the whole chip midline (face + bottom lip), not the generic CJK lift.
+    this.levelButton.setLabelOffsetY(Math.round(progress.h/2-chipFaceH/2+levelLabelSize*UI_TOKENS.button.labelOpticalLift));
+    const progressCenterY=progress.h/2;
     this.previousLevel.position.set(36,progressCenterY);
     this.nextLevel.position.set(progress.w-36,progressCenterY);
     this.levelButton.content.addChild(this.previousLevel,this.nextLevel);
@@ -81,18 +87,21 @@ export class HudLayer extends Container {
     this.hint.anchor.set(0.5, 0);
     this.hint.position.set(UI_RECTS.hint.x, UI_RECTS.hint.y);
 
-    const title=new Text({text:'光线急转弯',style:uiText({fontSize:31,fill:Theme.ink,letterSpacing:3})});
-    title.position.set(46,40);
+    const title=new Text({text:'光线急转弯',style:uiText({fontSize:TITLE_SIZE,fill:Theme.ink,letterSpacing:3})});
+    title.position.set(TITLE_X,TITLE_Y);
     const edition=new Text({text:'LIGHT PUZZLE',style:uiText({fontSize:11,fill:Theme.inkSoft,letterSpacing:4})});
-    edition.position.set(46,83);edition.alpha=.8;
-    const brandRule=new Graphics().moveTo(46,118).lineTo(63,118).stroke({color:Theme.cyan,width:1.8});
-    this.guideButton.position.set(GUIDE_X,GUIDE_Y);this.guideButton.setCornerRadius(23);this.guideButton.setLabelSize(24);
+    edition.position.set(TITLE_X,83);edition.alpha=.8;
+    const brandRule=new Graphics().moveTo(TITLE_X,118).lineTo(TITLE_X+17,118).stroke({color:Theme.cyan,width:1.8});
+    // uiText padding insets the glyphs; sit the help button against the visible title.
+    const titleWidth=title.width>0?title.width:167;
+    this.guideButton.position.set(Math.round(TITLE_X+titleWidth+uiTextPadding(TITLE_SIZE)+GUIDE_GAP),GUIDE_Y);
+    this.guideButton.setCornerRadius(23);this.guideButton.setLabelSize(24);
     this.guideButton.hitArea=new Rectangle(-12,-12,72,70);
     this.status.anchor.set(.5);this.status.position.set(370,246);
     this.statusDot.position.set(246,246);
-    this.masthead.addChild(title,edition,brandRule,this.statusDot,this.status);
+    this.masthead.addChild(title,edition,brandRule,this.guideButton,this.statusDot,this.status);
     this.addChild(this.masthead);
-    this.addChild(this.guideButton,this.settingsButton, this.levelButton, this.hearts, this.heartsCount, this.fireButton, this.hint);
+    this.addChild(this.settingsButton, this.levelButton, this.hearts, this.heartsCount, this.fireButton, this.hint);
   }
 
   sync(state: GameState) {
@@ -119,7 +128,7 @@ export class HudLayer extends Container {
     if(this.fireCharge===null)this.fireButton.setText(state.hearts > 0 ? (state.firing?(state.timeSkill?'结束本次试射':'能量释放中'):'按住发射光束') : '补充爱心');
     this.status.text=state.won?'所有接收器已点亮':state.firing?'光束传输中':'将光束引导至所有接收器';
     this.statusDot.x=this.status.x-this.status.width/2-14;
-    this.status.tint=state.won?Theme.green:state.firing?Theme.laserPlasma:Theme.white;
+    this.status.tint=state.won?Theme.green:state.firing?Theme.laserPlasma:Theme.ink;
   }
 
   setFireCharge(progress:number|null,now=0){

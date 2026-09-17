@@ -38,7 +38,7 @@ if (combo >= 2) {
 }
 if (charge != null && charge !== '') debug.view.setFireCharge(Math.min(1, Math.max(0, Number(charge))), now);
 const overlay = params.get('overlay');
-if (overlay === 'settings') debug.view.showSettings(false, false, (params.get('theme') ?? 'void') as 'void' | 'aurora' | 'atelier');
+if (overlay === 'settings') debug.view.showSettings(false, false, (params.get('theme') ?? 'void') as 'void' | 'aurora' | 'white');
 if (overlay === 'result') {
   debug.view.showResult('win', {
     title: '通关',

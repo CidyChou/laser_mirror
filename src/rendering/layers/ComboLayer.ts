@@ -3,7 +3,7 @@ import { COMBO_MOTION, UI_RECTS } from '@/config/GameConfig';
 import { clamp, easeInCubic, easeOutBack, easeOutCubic, lerp } from '@/core/easing';
 import { comboPraiseForCount, comboTierForCount, isComboMilestone, type ComboTier } from '@/gameplay/combo';
 import type { Quality } from '@/performance/PerformanceManager';
-import { setUiFontSize, Theme, uiText } from '../theme';
+import { isLightTheme, setUiFontSize, Theme, uiText } from '../theme';
 
 type ComboFx = {
   count: number;
@@ -29,7 +29,7 @@ export class ComboLayer extends Container {
 
   constructor() {
     super();
-    this.rings.blendMode = 'add';
+    this.rings.blendMode = isLightTheme() ? 'normal' : 'add';
     this.praise.anchor.set(0.5);
     this.comboText.anchor.set(0.5);
     this.addChild(this.rings, this.body, this.praise, this.comboText);

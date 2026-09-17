@@ -4,7 +4,7 @@ import { GameSession, type GameEvent } from '../../src/gameplay/GameSession';
 import { laserMsAtDistance } from '../../src/gameplay/laserTiming';
 import { PerformanceManager } from '../../src/performance/PerformanceManager';
 import { PixiGameView } from '../../src/rendering/PixiGameView';
-import { setActiveTheme, Theme, type ThemeId } from '../../src/rendering/theme';
+import { normalizeThemeId, setActiveTheme, Theme } from '../../src/rendering/theme';
 import { boardFixture, chainedFixture, collectorFixture, transportedFixture, mechanismsFixture, denseMechanismsFixture } from '../../scripts/fixtures/optics';
 import campaign from '../../src/levels/levels.json';
 import solvedCampaign from './campaign-solutions.json';
@@ -49,11 +49,11 @@ function resize(){
 }
 function build(){
   playing=false;overlay=false;clock=0;view?.destroy();
-  setActiveTheme(theme.value as ThemeId);app.renderer.background.color=Theme.bg;
+  setActiveTheme(normalizeThemeId(theme.value));app.renderer.background.color=Theme.bg;
   const level=fixtures[scene.value as keyof typeof fixtures];
   quality.quality=renderer.value==='gpu'?'high':'low';
   session=new GameSession([level]);
-  view=new PixiGameView(app.renderer,quality,theme.value as ThemeId,[level],renderer.value==='gpu');
+  view=new PixiGameView(app.renderer,quality,normalizeThemeId(theme.value),[level],renderer.value==='gpu');
   app.stage.addChild(view.root);session.on(event);view.sync(session.state);
   view.setHandlers({rotate:(x,y)=>session.rotateAt(x,y),firePressStart:()=>play(),firePressEnd:()=>{},bulletTime:()=>session.startBulletTime(),reset:()=>reset(),openSettings:()=>showOverlay(),
     tutorialNext:()=>{},tutorialSkip:()=>{},tutorialTap:()=>{},replayTutorial:()=>{},canSelectLevel:()=>false,
@@ -63,7 +63,7 @@ function build(){
 }
 function reset(){playing=false;overlay=false;clock=0;session.reset();view.hideOverlays();view.update(session.state,clock);report();}
 function play(){playing=false;overlay=false;clock=0;view.hideOverlays();session.fire();session.update(clock);playing=true;report();}
-function showOverlay(){overlay=!overlay;if(overlay)view.showSettings(true,true,theme.value as ThemeId);else view.closeSettings();report();}
+function showOverlay(){overlay=!overlay;if(overlay)view.showSettings(true,true,normalizeThemeId(theme.value));else view.closeSettings();report();}
 function seek(phase:string){
   reset();session.fire();session.update(0);
   const trace=session.state.result!,pulse=Object.values(trace.combinerPulses)[0];

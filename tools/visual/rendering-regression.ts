@@ -20,7 +20,7 @@ document.querySelector('#run')!.addEventListener('click',()=>{
       particles.destroy();root.destroy({children:true});
     }
     for(let i=0;i<12;i++){
-      const theme=(['void','aurora','atelier'] as ThemeId[])[i%3];setActiveTheme(theme);
+      const theme=(['void','aurora','white'] as ThemeId[])[i%3];setActiveTheme(theme);
       const session=new GameSession([transportedFixture]);
       const view=new PixiGameView(app.renderer,new PerformanceManager(),theme,[transportedFixture],i%2===0);
       app.stage.addChild(view.root);view.resize(360,700);view.sync(session.state);

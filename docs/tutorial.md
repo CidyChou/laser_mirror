@@ -25,6 +25,6 @@
 
 - `npm run verify:tutorial`：首关 3 步通关、每次最多 3 步、短文案、合并与推迟知识、200 关首次机制覆盖、移动棋盘、无解/复杂棋盘回退、配对和计数、存档迁移、跳过重看、GM 挑战标记往返、教学关可解性。
 - `npm run typecheck`、`npm run validate:levels`、`npm run verify:optics`、`npm run verify:mechanisms`。
-- `npm run dev` 后打开 `/tools/visual/tutorial.html?level=1&theme=void`。支持 `level=1…200` 及三种主题，使用正式应用和内存存档，不修改玩家存档。章节挑战使用 `stage=boss:1…boss:20`；界面适配参数见 [界面美化说明](UI_POLISH.md)。
+- `npm run dev` 后打开 `/tools/visual/tutorial.html?level=1&theme=void`。支持 `level=1…200` 及 `void` / `aurora` / `white` 三种主题，使用正式应用和内存存档，不修改玩家存档。章节挑战使用 `stage=boss:1…boss:20`；界面适配参数见 [界面美化说明](UI_POLISH.md)。
 
 本次浏览器检查覆盖精简后的首关 3 步排版、实际旋转与发射通关。Web、微信、抖音和小红书产物均已构建；真机运行仍需在各平台开发者工具验证。

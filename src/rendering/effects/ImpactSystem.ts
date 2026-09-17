@@ -1,6 +1,6 @@
 import { Container, Graphics } from 'pixi.js';
 import type { ImpactEvent, Point } from '@/gameplay/types';
-import { Theme } from '../theme';
+import { isLightTheme, Theme } from '../theme';
 
 type Fx={
   root:Container;
@@ -22,7 +22,8 @@ export class ImpactSystem extends Container{
       const root=new Container();root.visible=false;
       const ring=new Graphics().circle(0,0,6.5).stroke({color:Theme.white,width:3.1,alpha:.88});
       const flash=new Graphics().circle(0,0,6).fill({color:Theme.white,alpha:.92});
-      ring.blendMode='add';flash.blendMode='add';
+      const blend=isLightTheme()?'normal':'add';
+      ring.blendMode=blend;flash.blendMode=blend;
       root.addChild(flash,ring);this.addChild(root);
       this.pool.push({root,ring,flash,start:0,life:320,active:false,strength:1,inward:false});
     }

@@ -21,4 +21,4 @@ Web、微信、抖音、小红书构建通过，四份产物中的背景资源�
 
 运行 `npm run dev`，使用控制台显示的地址打开 `/tools/visual/tutorial.html?level=2&learned=1`。该页面运行正式应用并使用内存存档，不影响玩家进度。
 
-参数：`level=1…130` 为主线编号；`stage=boss:1…boss:13` 为章节挑战；`theme=void|aurora|atelier` 切换主题；`learned=1` 跳过首次教学；`safeTop=64` 模拟顶部安全区；`webgl=1&beam=fallback` 检查兼容模式。重看引导仍可从右上角问号进入。
+参数：`level=1…130` 为主线编号；`stage=boss:1…boss:13` 为章节挑战；`theme=void|aurora|white` 切换主题；`learned=1` 跳过首次教学；`safeTop=64` 模拟顶部安全区；`webgl=1&beam=fallback` 检查兼容模式。重看引导仍可从右上角问号进入。
