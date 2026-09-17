@@ -199,9 +199,10 @@ export class ObjectLayer extends Container{
       const input=port.emitter?this.inputCharge:null;
       const charged=input!==null;
       const breath=.5+.5*Math.sin(now*.0025+port.phase);
-      port.halo.alpha=charged?.18+input!*.30+breath*(.04+input!*.08):port.active?.40+breath*.08:port.emitter?.15:.10;
-      port.light.alpha=charged?.88+input!*.12:port.active?.96:port.emitter?.90:.93;
-      port.core.alpha=charged?.78+input!*.22:port.active?.95:.78;
+      const idleHalo=port.emitter?(isLightTheme()?.36:.15):.10;
+      port.halo.alpha=charged?.18+input!*.30+breath*(.04+input!*.08):port.active?.40+breath*.08:idleHalo;
+      port.light.alpha=charged?.88+input!*.12:port.active?.96:port.emitter?(isLightTheme()?.98:.90):.93;
+      port.core.alpha=charged?.78+input!*.22:port.active?.95:port.emitter&&isLightTheme()?.92:.78;
       port.sparks.visible=ambient&&port.emitter&&(port.active||charged);
       for(let i=0;i<port.sparks.children.length;i++){
         const phase=(now*((port.active||charged)?.0015:.00042)+i/5)%1,angle=i*2.4;
@@ -287,9 +288,10 @@ export class ObjectLayer extends Container{
 
   private mirrorSeat(cell:number,fixed:boolean){
     const seat=new Graphics(),size=cell*.92,radius=cell*.095;
+    const light=isLightTheme();
     seat.roundRect(-size/2,-size/2,size,size,radius)
-      .fill(fixed?this.fixedMirrorSeatFinish:this.mirrorSeatFinish)
-      .stroke({color:fixed?Theme.lock:Theme.cyan,width:1.3,alpha:fixed?.42:.52});
+      .fill(light?(fixed?Theme.raisedFixed:Theme.raisedMovable):(fixed?this.fixedMirrorSeatFinish:this.mirrorSeatFinish))
+      .stroke({color:light?Theme.surfaceLine:(fixed?Theme.lock:Theme.cyan),width:1.3,alpha:light?.85:(fixed?.42:.52)});
     return seat;
   }
 
@@ -301,14 +303,16 @@ export class ObjectLayer extends Container{
       const s=g.cell*.73,thickness=g.cell*.145,radius=thickness*.40;
       const glow=new Graphics();
       const spread=g.cell*.035;
-      glow.roundRect(-s/2-spread,-thickness/2-spread,s+spread*2,thickness+spread*2,radius+spread)
-        .fill({color:Theme.cyan,alpha:item.fixed?.06:.13});
-      glow.blendMode=this.energyBlend;
+      if(!isLightTheme()){
+        glow.roundRect(-s/2-spread,-thickness/2-spread,s+spread*2,thickness+spread*2,radius+spread)
+          .fill({color:Theme.cyan,alpha:item.fixed?.06:.13});
+        glow.blendMode=this.energyBlend;
+      }
       const shadow=new Graphics().roundRect(-s/2+1,-thickness/2+g.cell*.026,s,thickness,radius)
-        .fill({color:Theme.shadow,alpha:.30});
+        .fill({color:Theme.shadow,alpha:isLightTheme()?.12:.30});
       const blade=new Graphics().roundRect(-s/2,-thickness/2,s,thickness,radius)
         .fill(this.mirrorFinish)
-        .stroke({color:Theme.cyanSoft,width:1.25,alpha:.95});
+        .stroke({color:isLightTheme()?Theme.ink:Theme.cyanSoft,width:1.25,alpha:isLightTheme()?.22:.95});
       carrier.addChild(glow,shadow,blade);motion.addChild(carrier);
       if(item.fixed)motion.addChild(this.lockMark(g.cell));
       return{key,kind:item.type,root,motion,angleCarrier:carrier,phase:0};
@@ -317,14 +321,15 @@ export class ObjectLayer extends Container{
       root.addChildAt(this.mirrorSeat(g.cell,!!item.fixed),0);
       const gem=new Container();gem.rotation=Math.PI/4;
       const s=g.cell*.49,radius=g.cell*.025;
-      const halo=new Graphics();this.light(halo,0,0,s*.8,s*.8,Theme.cyan,.10);halo.blendMode=this.energyBlend;
-      const shadow=new Graphics().roundRect(-s/2+1,-s/2+g.cell*.025,s,s,radius).fill({color:Theme.shadow,alpha:.30});
+      const halo=new Graphics();
+      if(!isLightTheme()){this.light(halo,0,0,s*.8,s*.8,Theme.cyan,.10);halo.blendMode=this.energyBlend;}
+      const shadow=new Graphics().roundRect(-s/2+1,-s/2+g.cell*.025,s,s,radius).fill({color:Theme.shadow,alpha:isLightTheme()?.12:.30});
       const crystal=new Graphics().roundRect(-s/2,-s/2,s,s,radius)
-        .fill(this.finish(mix(Theme.cyanSoft,Theme.white,.25),mix(Theme.splitterGem,Theme.boardBottom,.28)))
-        .stroke({color:Theme.white,width:1.25,alpha:.42});
+        .fill(isLightTheme()?Theme.splitterGem:this.finish(mix(Theme.cyanSoft,Theme.white,.25),mix(Theme.splitterGem,Theme.boardBottom,.28)))
+        .stroke({color:isLightTheme()?Theme.ink:Theme.white,width:1.25,alpha:isLightTheme()?.22:.42});
       // Facets share the crystal silhouette instead of adding an opaque tile.
-      crystal.poly([-s*.43,-s*.40,s*.40,-s*.40,-s*.40,s*.40],true).fill({color:Theme.white,alpha:.15});
-      crystal.poly([s*.41,-s*.36,s*.41,s*.41,-s*.36,s*.41],true).fill({color:Theme.cyan,alpha:.12});
+      crystal.poly([-s*.43,-s*.40,s*.40,-s*.40,-s*.40,s*.40],true).fill({color:Theme.white,alpha:isLightTheme()?.08:.15});
+      if(!isLightTheme())crystal.poly([s*.41,-s*.36,s*.41,s*.41,-s*.36,s*.41],true).fill({color:Theme.cyan,alpha:.12});
       gem.addChild(halo,shadow,crystal);motion.addChild(gem);
       const dir=new Container();dir.rotation=item.s===0?Math.PI/4:-Math.PI/4;
       const rail=new Graphics().moveTo(-g.cell*.23,0).lineTo(g.cell*.23,0)
@@ -490,35 +495,39 @@ export class ObjectLayer extends Container{
     const shell=new Graphics(),halo=new Graphics(),light=new Graphics(),core=new Graphics(),pips=new Graphics(),sparks=new Container();
     shell.roundRect(-width*.54,-length/2+cell*.05,width*1.22,length,cell*.04).fill({color:Theme.shadow,alpha:.65});
     shell.roundRect(-width*.52,-length/2,width*1.12,length,cell*.04)
-      .fill(this.finish(Theme.raisedFixed,Theme.boardShadow,true))
+      .fill(this.finish(emitter&&isLightTheme()?mix(Theme.laserBody,Theme.raisedFixed,.45):Theme.raisedFixed,Theme.boardShadow,true))
       .stroke({color:emitter?Theme.laserPlasma:Theme.gold,width:1.8,alpha:.85});
     for(const side of [-1,1]){
       shell.roundRect(-width*.35,side*length*.37-cell*.035,width*.7,cell*.07,cell*.012)
         .fill(Theme.mirrorShade);
     }
-    this.light(halo,cell*.035,0,cell*.37,length*.85,Theme.white,1);halo.blendMode=this.energyBlend;
+    this.light(halo,emitter?cell*.12:cell*.035,0,cell*(emitter?.50:.37),length*.85,Theme.white,1);
+    halo.blendMode='add';
     const lensW=width*.42,lensH=length*.62;
     light.roundRect(-lensW/2,-lensH/2,lensW,lensH,cell*.02).fill(Theme.white);
     if(emitter){
       // A broad arrow-shaped nozzle is recognizable even without animation.
       shell.poly([-cell*.025,-cell*.16,cell*.09,-cell*.16,cell*.25,0,cell*.09,cell*.16,-cell*.025,cell*.16],true)
         .fill(this.finish(Theme.laserPlasma,Theme.beam2)).stroke({color:Theme.laserPlasma,width:1.5});
+      shell.circle(cell*.20,0,cell*.09).fill(this.finish(Theme.laserPlasma,Theme.beam2));
       light.poly([cell*.018,-cell*.092,cell*.17,0,cell*.018,cell*.092],true).fill(Theme.white);
-      core.moveTo(cell*.02,0).lineTo(cell*.17,0)
+      light.circle(cell*.16,0,cell*.055).fill(Theme.white);
+      core.moveTo(cell*.02,0).lineTo(cell*.20,0)
         .stroke({color:Theme.laserCore,width:Math.max(2.2,cell*.035),cap:'round'});
+      core.circle(cell*.18,0,cell*.028).fill(Theme.white);
       for(let i=0;i<5;i++){
         const spark=new Graphics().circle(0,0,cell*.014).fill(Theme.laserPlasma)
           .circle(0,0,cell*.006).fill(Theme.white);
         sparks.addChild(spark);
       }
-      sparks.blendMode=this.energyBlend;
+      sparks.blendMode='add';
     }else{
       light.moveTo(cell*.13,-cell*.22).lineTo(cell*.19,-cell*.22).lineTo(cell*.19,cell*.22).lineTo(cell*.13,cell*.22)
         .stroke({color:Theme.white,width:Math.max(2,cell*.027),alpha:.9});
       core.moveTo(0,-lensH*.32).lineTo(0,lensH*.32)
         .stroke({color:Theme.white,width:Math.max(1.5,cell*.022),cap:'round'});
     }
-    core.blendMode=this.energyBlend;
+    core.blendMode='add';
     root.addChild(halo,shell,light,core,pips,sparks);
     return{port,emitter,targetIndex,root,halo,light,core,pips,sparks,cell,required:Math.max(1,Math.floor(required)),
       phase:(targetIndex??0)*1.37,active:false,lastActive:null,lastCharge:-1};

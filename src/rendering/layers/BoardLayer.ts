@@ -21,9 +21,9 @@ export class BoardLayer extends Container {
     for(let row=0;row<level.rows;row++)for(let col=0;col<level.cols;col++){
       const inset=Math.max(2,g.cell*.028),size=g.cell-inset*2;
       const rx=x+col*g.cell+inset,ry=y+row*g.cell+inset,radius=Math.max(6,g.cell*.095);
-      shape.roundRect(rx,ry+1.5,size,size,radius).fill({color:Theme.boardShadow,alpha:light?.16:.5});
-      shape.roundRect(rx,ry,size,size,radius).fill(this.cellFills[0])
-        .stroke({color:Theme.surfaceLine,width:1,alpha:light?.9:.64});
+      shape.roundRect(rx,ry+1.5,size,size,radius).fill({color:Theme.boardShadow,alpha:light?.10:.5});
+      shape.roundRect(rx,ry,size,size,radius).fill(light?Theme.cellA:this.cellFills[0])
+        .stroke({color:Theme.surfaceLine,width:1,alpha:light?.85:.64});
       // A quiet registration cross keeps empty cells intentional and readable.
       const cx=rx+size/2,cy=ry+size/2;
       shape.moveTo(cx-3,cy).lineTo(cx+3,cy).moveTo(cx,cy-3).lineTo(cx,cy+3)

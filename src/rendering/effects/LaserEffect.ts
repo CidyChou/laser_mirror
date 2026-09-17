@@ -168,7 +168,7 @@ export class LaserEffect extends Container{
   private frozen=false;
   private gpuFailed=false;
   private cellScale=1;
-  private readonly energyBlend=isLightTheme()?'normal':'add';
+  private readonly energyBlend='add';
   private readonly beamGlow=glowGradient();
   private readonly pointGlow=glowGradient(true);
 
@@ -503,12 +503,16 @@ export class LaserEffect extends Container{
     const signature=[...points].map(([key,p])=>`${key}:${p.width}`).join('|');
     if(signature===this.jointSignature)return;
     this.jointSignature=signature;this.joints.clear();
+    const muzzles=new Set(this.runs.filter(run=>run.startDist===0).map(run=>jointKey(run.x1,run.y1)));
+    const light=isLightTheme();
     for(const {x,y,width} of points.values()){
       const s=this.cellScale*width;
-      this.joints.circle(x,y,24*s).fill({fill:this.pointGlow,alpha:.62});
-      this.joints.circle(x,y,4.5*s).fill({color:Theme.laserBody,alpha:.76});
-      this.joints.circle(x,y,1.6*s).fill({color:Theme.laserPlasma,alpha:.90});
-      this.joints.circle(x,y,.80*s).fill({color:Theme.white,alpha:.98});
+      const muzzle=light&&muzzles.has(jointKey(x,y));
+      const boost=muzzle?1.45:1;
+      this.joints.circle(x,y,24*s*boost).fill({fill:this.pointGlow,alpha:muzzle?.92:.62});
+      this.joints.circle(x,y,4.5*s*boost).fill({color:Theme.laserBody,alpha:muzzle?.88:.76});
+      this.joints.circle(x,y,1.6*s*boost).fill({color:Theme.laserPlasma,alpha:.90});
+      this.joints.circle(x,y,.80*s*boost).fill({color:Theme.white,alpha:.98});
     }
   }
 
