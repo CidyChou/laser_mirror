@@ -11,6 +11,7 @@
     select,button{font:inherit;color:inherit;background:#263346;border:1px solid #43536e;border-radius:8px;padding:9px}
     select{width:100%}button{cursor:pointer}button:hover{background:#34465e}.actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px}
     output{display:block;white-space:pre-line;line-height:1.8;font-variant-numeric:tabular-nums;margin-top:18px;color:#a8efff}
+    #laser-color-preview{height:12px;border-radius:6px;margin-top:10px}.palette-hint{font-size:12px;line-height:1.6;margin:8px 0 0}
     #stage{min-width:0;min-height:0;overflow:hidden}canvas{display:block}a{color:#a8efff}
     @media(max-width:620px){main{display:flex;flex-direction:column;height:auto}#stage{height:100dvh;order:-1}aside{padding:18px}}
   </style>
@@ -24,9 +25,14 @@
     <select id="scene"><option value="collector">分步集光</option><option value="chain">串联集光</option><option value="transport">传送与粗光束</option><option value="board">棋盘与镜面</option><option value="mechanisms">配对机关与三束充能</option><option value="dense">小格机关 · 六组传送</option></select>
     <label for="theme">主题</label>
     <select id="theme"><option value="void">深空霓虹</option><option value="aurora">极光紫</option><option value="white">简约白</option></select>
+    <label for="laser-color">激光配色</label>
+    <select id="laser-color" aria-describedby="palette-hint"></select>
+    <div id="laser-color-preview" aria-hidden="true"></div>
+    <p class="palette-hint" id="palette-hint">切换颜色保留当前光路。尚未发射时自动发射，方便对比。</p>
     <label for="renderer">激光渲染</label>
-    <select id="renderer"><option value="gpu">GPU · 高画质</option><option value="fallback">Graphics · 兼容低画质</option></select>
+    <select id="renderer"><option value="gpu">GPU · 高画质</option><option value="fallback-high">Graphics · 小游戏高画质</option><option value="fallback">Graphics · 兼容低画质</option></select>
     <div class="actions"><button id="play">发射当前摆法</button><button id="pause">暂停</button><button id="reset">重置</button></div>
+    <div class="actions"><button data-phase="launch">发射瞬间</button><button data-phase="reflection">镜面碰撞</button><button data-phase="poster">通关海报</button></div>
     <div class="actions"><button data-phase="partial">收到一束</button><button data-phase="charge">蓄力中段</button><button data-phase="release">释放强光</button><button data-phase="complete">完整光路</button></div>
     <div class="actions"><button data-phase="signal">信号传递</button><button data-phase="opening">门叶展开</button><button data-phase="open">开门完成</button></div>
     <div class="actions"><button data-phase="portal-enter">传送收光</button><button data-phase="portal-wait">传递中</button><button data-phase="portal-exit">传送出光</button></div>

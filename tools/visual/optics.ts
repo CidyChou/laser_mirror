@@ -9,12 +9,16 @@ import { boardFixture, chainedFixture, collectorFixture, transportedFixture, mec
 import campaign from '../../src/levels/levels.json';
 import solvedCampaign from './campaign-solutions.json';
 import type { LevelDefinition } from '../../src/gameplay/types';
+import { applyLaserPalette, LASER_PALETTES } from './laser-palettes';
 
 const stage=document.querySelector<HTMLDivElement>('#stage')!;
 const status=document.querySelector<HTMLOutputElement>('#status')!;
 const scene=document.querySelector<HTMLSelectElement>('#scene')!;
 const theme=document.querySelector<HTMLSelectElement>('#theme')!;
 const renderer=document.querySelector<HTMLSelectElement>('#renderer')!;
+const laserColor=document.querySelector<HTMLSelectElement>('#laser-color')!;
+const colorPreview=document.querySelector<HTMLDivElement>('#laser-color-preview')!;
+for(const palette of LASER_PALETTES)laserColor.add(new Option(palette.name,palette.id));
 const fixtures:Record<string,LevelDefinition>={collector:collectorFixture,chain:chainedFixture,transport:transportedFixture,board:boardFixture,mechanisms:mechanismsFixture,dense:denseMechanismsFixture};
 campaign.forEach((level,index)=>{
   const number=index+1;
@@ -25,13 +29,13 @@ campaign.forEach((level,index)=>{
   if(solved)scene.add(new Option(`${number} · ${level.name} · 解法`,`solved-${number}`));
 });
 const preset=new URLSearchParams(location.search);
-for(const select of [scene,theme,renderer]){
+for(const select of [scene,theme,renderer,laserColor]){
   const value=preset.get(select.id);
   if(value&&[...select.options].some(option=>option.value===value))select.value=value;
 }
 const app=new Application();
 await app.init({width:stage.clientWidth,height:stage.clientHeight,resolution:Math.min(devicePixelRatio,2),autoDensity:true,
-  antialias:true,preference:'webgl',background:Theme.bg});
+  antialias:true,preference:'webgl',preferWebGLVersion:preset.get('webgl')==='1'?1:2,background:Theme.bg});
 stage.append(app.canvas);
 const quality=new PerformanceManager();
 let session:GameSession,view:PixiGameView,clock=0,playing=false,overlay=false;
@@ -48,13 +52,20 @@ function resize(){
   view?.resize(stage.clientWidth,stage.clientHeight);
 }
 function build(){
-  playing=false;overlay=false;clock=0;view?.destroy();
+  playing=false;overlay=false;clock=0;
+  session=new GameSession([fixtures[scene.value]]);session.on(event);
+  mountView();
+}
+function mountView(){
+  view?.destroy();
   setActiveTheme(normalizeThemeId(theme.value));app.renderer.background.color=Theme.bg;
-  const level=fixtures[scene.value as keyof typeof fixtures];
-  quality.quality=renderer.value==='gpu'?'high':'low';
-  session=new GameSession([level]);
+  applyLaserPalette(Theme,laserColor.value);
+  const colors=[Theme.laserMist,Theme.beam2,Theme.laserBody,Theme.laserPlasma,Theme.laserCore,Theme.laserPlasma,Theme.laserBody,Theme.beam2,Theme.laserMist];
+  colorPreview.style.background=`linear-gradient(90deg,${colors.map(color=>`#${color.toString(16).padStart(6,'0')}`).join(',')})`;
+  const level=session.state.level;
+  quality.quality=renderer.value==='fallback'?'low':'high';
   view=new PixiGameView(app.renderer,quality,normalizeThemeId(theme.value),[level],renderer.value==='gpu');
-  app.stage.addChild(view.root);session.on(event);view.sync(session.state);
+  app.stage.addChild(view.root);view.sync(session.state);
   view.setHandlers({rotate:(x,y)=>session.rotateAt(x,y),firePressStart:()=>play(),firePressEnd:()=>{},bulletTime:()=>session.startBulletTime(),reset:()=>reset(),openSettings:()=>showOverlay(),
     tutorialNext:()=>{},tutorialSkip:()=>{},tutorialTap:()=>{},replayTutorial:()=>{},canSelectLevel:()=>false,
     toggleAudio:()=>{},toggleHaptics:()=>{},selectTheme:()=>{},closeSettings:()=>showOverlay(),openLevels:()=>{},
@@ -71,9 +82,12 @@ function seek(phase:string){
   const sw=trace.impactEvents.find(e=>e.type==='switch');
   const door=trace.impactEvents.find(e=>e.type==='door-open');
   const portal=trace.impactEvents.find(e=>e.type==='portal');
+  const mirror=trace.impactEvents.find(e=>e.type==='mirror');
   let t:number;
-  if(portal&&phase.startsWith('portal-'))t=laserMsAtDistance(portal.at)+(phase==='portal-enter'?80:phase==='portal-wait'?360:GameConfig.laser.portalTransitMs+80);
-  else if(phase==='complete')t=laserMsAtDistance(trace.maxTravel)+800;
+  if(phase==='launch')t=80;
+  else if(phase==='reflection'&&mirror)t=laserMsAtDistance(mirror.at)+65;
+  else if(portal&&phase.startsWith('portal-'))t=laserMsAtDistance(portal.at)+(phase==='portal-enter'?80:phase==='portal-wait'?360:GameConfig.laser.portalTransitMs+80);
+  else if(phase==='complete'||phase==='poster')t=laserMsAtDistance(trace.maxTravel)+800;
   else if(phase==='signal'&&sw)t=laserMsAtDistance(sw.at)+GameConfig.laser.doorSignalMs*.5;
   else if(phase==='opening'&&door)t=laserMsAtDistance(door.at)-GameConfig.laser.doorOpenMs*.5;
   else if(phase==='open'&&door)t=laserMsAtDistance(door.at)+80;
@@ -82,6 +96,14 @@ function seek(phase:string){
   const end=t+GameConfig.laser.chargeMs;
   for(clock=10;clock<end;clock+=10){session.update(clock);view.update(session.state,clock);}
   clock=end;session.update(clock);view.update(session.state,clock);report();
+  if(phase==='poster'&&session.state.won){
+    showPoster();
+  }
+}
+function showPoster(){
+  const number=scene.value.match(/^(?:solved|level)-(\d+)$/)?.[1];
+  view.showWinPreview({stageLabel:number?`第 ${number} 关`:session.state.level.name,comboCount:session.state.comboCount},clock-600);
+  view.update(session.state,clock);
 }
 function report(){
   const s=session.state,counts=Object.entries(s.combinerHits).map(([key,count])=>`${key}: ${count}${s.combinerOn[key]?' → 已释放':''}`);
@@ -93,10 +115,25 @@ document.querySelector('#pause')!.addEventListener('click',()=>{playing=!playing
 document.querySelector('#reset')!.addEventListener('click',reset);
 document.querySelector('#overlay')!.addEventListener('click',showOverlay);
 document.querySelectorAll<HTMLButtonElement>('[data-phase]').forEach(button=>button.addEventListener('click',()=>seek(button.dataset.phase!)));
+laserColor.addEventListener('change',()=>{
+  const posterVisible=view.poster.visible;
+  // Recreate colour-dependent textures while preserving the live simulation,
+  // mirror arrangement, playback clock and paused frame for a fair comparison.
+  mountView();
+  if(posterVisible)showPoster();
+  else if(overlay)view.showSettings(true,true,normalizeThemeId(theme.value));
+  if(!session.state.result)play();
+  const params=new URLSearchParams(location.search);
+  params.set(laserColor.id,laserColor.value);
+  history.replaceState(null,'',`${location.pathname}?${params}`);
+});
 for(const select of [scene,theme,renderer])select.addEventListener('change',()=>{
   // Theme materials belong to the renderer. A fresh document also makes each
   // comparison independent of old pooled GPU resources and transient effects.
-  const params=new URLSearchParams({scene:scene.value,theme:theme.value,renderer:renderer.value});
+  const params=new URLSearchParams(location.search);
+  for(const control of [scene,theme,renderer,laserColor])params.set(control.id,control.value);
+  params.delete('play');params.delete('phase');
+  if(session.state.result)params.set('phase','complete');
   location.search=params.toString();
 });
 new ResizeObserver(resize).observe(stage);

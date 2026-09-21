@@ -1,4 +1,4 @@
-import { Container, Graphics } from 'pixi.js';
+import { Container, FillGradient, Graphics } from 'pixi.js';
 import type { ImpactEvent, Point } from '@/gameplay/types';
 import { isLightTheme, Theme } from '../theme';
 
@@ -6,6 +6,8 @@ type Fx={
   root:Container;
   ring:Graphics;
   flash:Graphics;
+  rays:Graphics;
+  bloom:Graphics;
   start:number;
   life:number;
   active:boolean;
@@ -15,17 +17,26 @@ type Fx={
 
 export class ImpactSystem extends Container{
   private pool:Fx[]=[];
+  private readonly bloomFill=new FillGradient({type:'radial',center:{x:.5,y:.5},outerCenter:{x:.5,y:.5},innerRadius:0,outerRadius:.5,
+    colorStops:[{offset:0,color:'rgba(255,255,255,.65)'},{offset:.25,color:'rgba(255,255,255,.32)'},
+      {offset:.6,color:'rgba(255,255,255,.09)'},{offset:1,color:'rgba(255,255,255,0)'}],textureSize:128});
 
   constructor(){
     super();
     for(let i=0;i<24;i++){
       const root=new Container();root.visible=false;
-      const ring=new Graphics().circle(0,0,6.5).stroke({color:Theme.white,width:3.1,alpha:.88});
-      const flash=new Graphics().circle(0,0,6).fill({color:Theme.white,alpha:.92});
+      const ring=new Graphics().circle(0,0,6.5).stroke({color:Theme.white,width:2.1,alpha:.88});
+      const flash=new Graphics().circle(0,0,4.5).fill({color:Theme.white,alpha:.92});
+      const bloom=new Graphics().circle(0,0,44).fill(this.bloomFill);
+      const rays=new Graphics();
+      for(let ray=0;ray<9;ray++){
+        const angle=ray*2.399,ux=Math.cos(angle),uy=Math.sin(angle),length=ray%3===0?40:17+ray;
+        rays.poly([-uy*1.2,ux*1.2,ux*length,uy*length,uy*1.2,-ux*1.2]).fill({color:Theme.white,alpha:ray%3===0?.94:.65});
+      }
       const blend=isLightTheme()?'normal':'add';
-      ring.blendMode=blend;flash.blendMode=blend;
-      root.addChild(flash,ring);this.addChild(root);
-      this.pool.push({root,ring,flash,start:0,life:320,active:false,strength:1,inward:false});
+      ring.blendMode=blend;flash.blendMode=blend;rays.blendMode=blend;bloom.blendMode=blend;
+      root.addChild(bloom,ring,rays,flash);this.addChild(root);
+      this.pool.push({root,ring,flash,rays,bloom,start:0,life:320,active:false,strength:1,inward:false});
     }
   }
 
@@ -36,7 +47,8 @@ export class ImpactSystem extends Container{
   triggerImpactEffect(e:ImpactEvent,now:number,colorOverride?:number){
     if(e.type==='combiner-fire'){this.activate(e.px,e.py,Theme.beam,now,460,2);return;}
     if(e.type==='portal'||e.type==='portal-exit'){
-      this.activate(e.px,e.py,colorOverride??Theme.purple,now,e.type==='portal'?340:420,1.5,e.type==='portal');
+      // Portal feedback keeps its distinct circular language.
+      this.activate(e.px,e.py,colorOverride??Theme.purple,now,e.type==='portal'?340:420,1.5,e.type==='portal',false);
       return;
     }
     const color=colorOverride??(e.type==='target'||e.type==='switch'||e.type==='focus'||e.type==='door-open'?Theme.green
@@ -49,11 +61,14 @@ export class ImpactSystem extends Container{
     points.forEach((point,index)=>this.activate(point.x,point.y,Theme.green,now+index*45,680,1.9));
   }
 
-  private activate(x:number,y:number,color:number,start:number,life:number,strength:number,inward=false){
+  private activate(x:number,y:number,color:number,start:number,life:number,strength:number,inward=false,flare=true){
     const effect=this.pool.find(value=>!value.active)??this.pool[0];
     effect.active=true;effect.start=start;effect.life=life;effect.strength=strength;effect.inward=inward;
     effect.root.visible=true;effect.root.position.set(x,y);
     effect.ring.tint=color;effect.flash.tint=Theme.white;
+    effect.rays.visible=flare;effect.rays.tint=color===Theme.white?Theme.beamHot:color;
+    effect.bloom.visible=flare;effect.bloom.tint=color===Theme.white?Theme.beam:color;
+    effect.rays.rotation=(x*.17+y*.31)%Math.PI;effect.rays.scale.set(.6);
     effect.ring.scale.set(1);effect.flash.scale.set(1);
   }
 
@@ -66,7 +81,11 @@ export class ImpactSystem extends Container{
       effect.root.visible=true;
       const out=1-Math.pow(1-t,2.2);
       effect.ring.scale.set(effect.inward?.45+(1-out)*3.5:1+out*3.05*effect.strength);
-      effect.ring.alpha=(1-t)*.86;
+      effect.ring.alpha=(1-t)*(effect.rays.visible?.38:.86);
+      effect.rays.scale.set((.5+out*.85)*effect.strength);
+      effect.rays.alpha=Math.pow(Math.max(0,1-t*2.1),1.5);
+      effect.bloom.scale.set((.6+out*.7)*effect.strength);
+      effect.bloom.alpha=Math.pow(1-t,1.8)*.85;
       effect.flash.scale.set(.62+Math.sin(Math.min(1,t*4.5)*Math.PI)*1.08*effect.strength);
       effect.flash.alpha=Math.max(0,1-t*4)*.88;
     }
@@ -74,4 +93,8 @@ export class ImpactSystem extends Container{
 
   get active(){return this.pool.some(effect=>effect.active);}
   clear(){for(const effect of this.pool){effect.active=false;effect.root.visible=false;}}
+
+  override destroy(options?:Parameters<Container['destroy']>[0]){
+    super.destroy(options);this.bloomFill.destroy();
+  }
 }

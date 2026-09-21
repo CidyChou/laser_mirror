@@ -1,4 +1,4 @@
-import { Container, FillGradient, Geometry, GlProgram, Graphics, Mesh, Shader, type Renderer } from 'pixi.js';
+import { Container, FillGradient, Geometry, GlProgram, Graphics, Mesh, Shader, Sprite, type Renderer, type Texture } from 'pixi.js';
 import { GameConfig } from '@/config/GameConfig';
 import { beamScale, computeGeometry, portMuzzle } from '@/gameplay/geometry';
 import { levelEmitters } from '@/gameplay/levelAccess';
@@ -19,26 +19,42 @@ type BeamUniforms={
   uPunch:number;
   uBreathe:number;
   uGlowRadius:number;
+  uHaloStrength:number;
   uHaloColor:Float32Array;
+  uMistColor:Float32Array;
   uBodyColor:Float32Array;
   uPlasmaColor:Float32Array;
   uCoreColor:Float32Array;
 };
 
-const GLOW_RADIUS=34;
+const GLOW_RADIUS=58;
+// Shared cross-section for the shader and the baked compatibility gradient.
+// Widths are fractions of the halo radius: colour occupies most of the beam.
+const BEAM_PROFILE={body:.10,bodyFeather:.045,plasma:.042,plasmaFeather:.033,core:.014,coreFeather:.010};
 
 // Baked once, then shared by the inexpensive mini-game Graphics path.
 // Smooth alpha falloff supplies bloom without a full-screen blur pass.
 function glowGradient(radial=false){
-  const stops=Array.from({length:33},(_,i)=>{
-    const offset=i/32,edge=radial?offset:Math.abs(offset*2-1);
-    const taper=1-smoothstep(.78,1,edge);
-    const alpha=(.26*Math.exp(-edge*edge*5.2)+.24*Math.exp(-edge*edge*27))*taper;
-    return{offset,color:rgba(Theme.beam2,alpha)};
+  const samples=radial?64:256;
+  const strength=isLightTheme()?.55:1;
+  const stops=Array.from({length:samples+1},(_,i)=>{
+    const offset=i/samples,edge=radial?offset:Math.abs(offset*2-1);
+    // A faint cool mist surrounds a tighter warm corona. Their falloffs keep
+    // the broad glow from reading as one solid red strip.
+    const halo=(.19*Math.exp(-edge*edge*3.6)+.44*Math.exp(-edge*edge*28))*(1-smoothstep(.76,1,edge))*strength;
+    const haloColor=mixColor(Theme.laserMist,Theme.beam2,1-smoothstep(.12,.46,edge));
+    if(radial)return{offset,color:rgba(haloColor,halo)};
+    const p=BEAM_PROFILE;
+    const body=1-smoothstep(p.body,p.body+p.bodyFeather,edge);
+    const plasma=1-smoothstep(p.plasma,p.plasma+p.plasmaFeather,edge);
+    const core=1-smoothstep(p.core,p.core+p.coreFeather,edge);
+    const color=mixColor(mixColor(mixColor(haloColor,Theme.laserBody,body),Theme.laserPlasma,plasma),Theme.laserCore,core);
+    // Bake the layers together: additive strokes would bleach the pink body.
+    return{offset,color:rgba(color,Math.max(halo,body*.96,plasma*.98,core))};
   });
   return new FillGradient(radial
     ?{type:'radial',center:{x:.5,y:.5},outerCenter:{x:.5,y:.5},innerRadius:0,outerRadius:.5,colorStops:stops,textureSize:128}
-    :{start:{x:0,y:0},end:{x:0,y:1},colorStops:stops,textureSize:128});
+    :{start:{x:0,y:0},end:{x:0,y:1},colorStops:stops,textureSize:256});
 }
 
 const BEAM_VERTEX=`
@@ -81,7 +97,9 @@ uniform float uPacketCount;
 uniform float uPunch;
 uniform float uBreathe;
 uniform float uGlowRadius;
+uniform float uHaloStrength;
 uniform vec3 uHaloColor;
+uniform vec3 uMistColor;
 uniform vec3 uBodyColor;
 uniform vec3 uPlasmaColor;
 uniform vec3 uCoreColor;
@@ -104,7 +122,7 @@ void main(void){
   reveal*=smoothstep(uTailDistance,uTailDistance+uTailFade,pathDistance);
 
   float breathPhase=0.5+0.5*sin(uTime*3.15-localDistance*0.012);
-  float halo=(0.26*exp(-edge*edge*5.2)+0.24*exp(-edge*edge*27.0))*(1.0-smoothstep(0.78,1.0,edge));
+  float halo=(0.19*exp(-edge*edge*3.6)+0.44*exp(-edge*edge*28.0))*(1.0-smoothstep(0.76,1.0,edge));
 
   // Streaks advance at a consistent speed across successive reflections.
   float localPhase=fract((pathDistance-uTime*190.0)/240.0);
@@ -113,17 +131,22 @@ void main(void){
   float packetB=exp(-pow(loopDistance(localPhase,0.70)*axisScale/0.38,2.0));
   float endFade=smoothstep(0.0,0.4,min(localDistance,runLength-localDistance)/max(1.0,uGlowRadius*vBeamWidth));
   float packet=max(packetA*step(0.5,uPacketCount),packetB*step(1.5,uPacketCount)*0.72)*uFlowStrength*endFade;
-  float body=softBand(edge,0.13*uBreathe,0.055);
-  float plasma=softBand(edge,0.036*uBreathe+packet*0.009,0.025);
-  float core=softBand(edge,0.016*uBreathe+packet*0.008,0.014);
+  // Only the coloured sheath ripples; the thin axial highlight stays readable.
+  float current=sin(pathDistance*0.053-uTime*8.0+sin(pathDistance*0.019-uTime*2.7));
+  float shear=current*0.010*uFlowStrength;
+  float body=softBand(edge,${BEAM_PROFILE.body}*uBreathe+shear,${BEAM_PROFILE.bodyFeather});
+  float plasma=softBand(edge,${BEAM_PROFILE.plasma}*uBreathe+packet*0.009,${BEAM_PROFILE.plasmaFeather});
+  float core=softBand(edge,${BEAM_PROFILE.core}*uBreathe,${BEAM_PROFILE.coreFeather});
+  float rim=exp(-pow((edge-0.21-shear*2.0)/0.065,2.0))*packet;
 
-  float haloAlpha=halo*(0.91+breathPhase*0.09+uPunch*0.08)+softBand(edge,0.12,0.14)*packet*0.08;
-  float bodyAlpha=body*0.92;
-  float plasmaAlpha=plasma*0.96;
+  float haloAlpha=(halo*(0.88+breathPhase*0.12+current*0.06*uFlowStrength+uPunch*0.20)+rim*0.23)*uHaloStrength;
+  float bodyAlpha=body*0.96;
+  float plasmaAlpha=plasma*0.98;
   float coreAlpha=core*0.995;
   float alpha=max(haloAlpha,max(bodyAlpha,max(plasmaAlpha,coreAlpha)));
 
-  vec3 color=uHaloColor;
+  vec3 color=mix(uMistColor,uHaloColor,1.0-smoothstep(0.12,0.46,edge));
+  color=mix(color,uBodyColor,rim*0.55);
   color=mix(color,uBodyColor,body);
   color=mix(color,uPlasmaColor,plasma);
   color=mix(color,uCoreColor,core);
@@ -137,8 +160,10 @@ export class LaserEffect extends Container{
 
   private beamRoot=new Container();
   private fallbackBeam=new Container();
-  private fallbackPackets=new Container();
-  private packetPool:Graphics[]=[];
+  private energyDetails=new Container();
+  private packetPool:Sprite[]=[];
+  private readonly sparkTexture:Texture;
+  private readonly ribbonTexture:Texture;
   private gpuMesh:Mesh<Geometry,Shader>|null=null;
   private gpuShader:Shader|null=null;
   private gpuUniforms:BeamUniforms|null=null;
@@ -168,19 +193,29 @@ export class LaserEffect extends Container{
   private frozen=false;
   private gpuFailed=false;
   private cellScale=1;
-  private readonly energyBlend='add';
+  private readonly energyBlend=isLightTheme()?'normal':'add';
   private readonly beamGlow=glowGradient();
   private readonly pointGlow=glowGradient(true);
 
   constructor(renderer:Renderer, enableGpu=true){
     super();
     this.gpuShader=enableGpu?this.createGpuShader(renderer):null;
-    this.fallbackPackets.blendMode=this.energyBlend;
+    // Shared fleck and ribbon textures keep both backends animated without
+    // rebuilding geometry or applying full-screen bloom each frame.
+    const spark=new Graphics().ellipse(0,0,7,4).fill(this.pointGlow)
+      .poly([-3,0,0,-1.25,3,0,0,1.25]).fill(Theme.beamHot)
+      .ellipse(0,0,1.3,.65).fill(Theme.white);
+    this.sparkTexture=renderer.generateTexture({target:spark,resolution:2});spark.destroy();
+    const ribbon=new Graphics().ellipse(0,0,28,5).fill(this.pointGlow)
+      .poly([-23,0,-4,-1.2,19,0,-4,1.2]).fill({color:Theme.laserBody,alpha:.6})
+      .ellipse(-2,0,12,.55).fill({color:Theme.laserPlasma,alpha:.72});
+    this.ribbonTexture=renderer.generateTexture({target:ribbon,resolution:2});ribbon.destroy();
+    this.energyDetails.blendMode=this.energyBlend;
     this.joints.blendMode=this.energyBlend;
     this.head.blendMode=this.energyBlend;
     this.beamRoot.addChild(this.fallbackBeam);
     this.buildCharge();
-    this.addChild(this.beamRoot,this.joints,this.fallbackPackets,this.head,this.chargeRoot);
+    this.addChild(this.beamRoot,this.joints,this.energyDetails,this.head,this.chargeRoot);
   }
 
   bind(_state:GameState,cell=100){
@@ -218,7 +253,9 @@ export class LaserEffect extends Container{
             uPunch:{value:0,type:'f32'},
             uBreathe:{value:1,type:'f32'},
             uGlowRadius:{value:GLOW_RADIUS,type:'f32'},
+            uHaloStrength:{value:isLightTheme()?.55:1,type:'f32'},
             uHaloColor:{value:colorVec(Theme.beam2),type:'vec3<f32>'},
+            uMistColor:{value:colorVec(Theme.laserMist),type:'vec3<f32>'},
             uBodyColor:{value:colorVec(Theme.laserBody),type:'vec3<f32>'},
             uPlasmaColor:{value:colorVec(Theme.laserPlasma),type:'vec3<f32>'},
             uCoreColor:{value:colorVec(Theme.laserCore),type:'vec3<f32>'},
@@ -282,13 +319,6 @@ export class LaserEffect extends Container{
     return{dx:dx/len,dy:dy/len};
   }
 
-  private strokeLine(width:number,color:number,alpha:number,length:number){
-    const g=new Graphics();
-    g.blendMode=this.energyBlend;
-    g.moveTo(0,0).lineTo(length,0).stroke({color,width,alpha,cap:'round'});
-    return g;
-  }
-
   private clearBeam(){
     if(this.gpuMesh){
       this.beamRoot.removeChild(this.gpuMesh);
@@ -304,7 +334,7 @@ export class LaserEffect extends Container{
     // The join geometry is independent of beamRoot; clear it together with
     // its cache key so reset / abort cannot leave illuminated endpoints.
     this.joints.clear();this.jointSignature='';
-    this.fallbackPackets.visible=false;this.head.clear();
+    this.energyDetails.visible=false;this.head.clear();
   }
 
   private rebuild(state:GameState){
@@ -378,10 +408,7 @@ export class LaserEffect extends Container{
       const s=this.cellScale*run.widthScale;
       const halo=new Graphics().rect(0,-GLOW_RADIUS*s,length,GLOW_RADIUS*2*s).fill(this.beamGlow);
       halo.blendMode=this.energyBlend;
-      const body=this.strokeLine(9.0*s,Theme.laserBody,.92,length);
-      const plasma=this.strokeLine(3.2*s,Theme.laserPlasma,.90,length);
-      const core=this.strokeLine(1.6*s,Theme.laserCore,.99,length);
-      root.addChild(halo,body,plasma,core);
+      root.addChild(halo);
       this.fallbackBeam.addChild(root);
       this.fallbackRuns.push({run,length,root,halo});
     }
@@ -414,33 +441,37 @@ export class LaserEffect extends Container{
     }
   }
 
-  private drawFallbackPackets(dist:number,now:number,quality:Quality){
-    const count=quality==='high'?2:quality==='medium'?1:0;
-    this.fallbackPackets.visible=!!count&&!this.gpuMesh;
-    if(!this.fallbackPackets.visible)return;
+  private updateEnergyDetails(dist:number,now:number,quality:Quality){
+    const budget=quality==='high'?72:quality==='medium'?40:16;
+    this.energyDetails.visible=true;
     let used=0;
-    for(const visual of this.fallbackRuns){
-      if(visual.run.endDist<=this.tailDistance+this.tailFade)continue;
-      const span=Math.max(.001,visual.run.endDist-visual.run.startDist);
-      const visible=Math.min(1,Math.max(0,(dist-visual.run.startDist)/span));
-      if(visible<=0||visual.length<12)continue;
-      const dx=visual.run.x2-visual.run.x1,dy=visual.run.y2-visual.run.y1;
-      for(let i=0;i<count;i++){
-        const spacing=240,offset=((now*.19+48+i*120-visual.run.startDist)%spacing+spacing)%spacing;
-        for(let path=offset;path<visible*span&&used<64;path+=spacing){
-          if(visual.run.startDist+path<this.tailDistance+this.tailFade)continue;
-          const t=path/span,s=this.cellScale*visual.run.widthScale;
-          const fade=smoothstep(0,22*s,Math.min(t,visible-t)*visual.length);
-          if(fade<.01)continue;
-          let packet=this.packetPool[used++];
-          if(!packet){
-            packet=new Graphics().ellipse(-7,0,19,5).fill({fill:this.pointGlow,alpha:.6})
-              .moveTo(-18,0).lineTo(0,0).stroke({color:Theme.laserCore,width:2,alpha:.82,cap:'round'});
-            this.packetPool.push(packet);this.fallbackPackets.addChild(packet);
-          }
-          packet.visible=true;packet.position.set(visual.run.x1+dx*t,visual.run.y1+dy*t);
-          packet.rotation=Math.atan2(dy,dx);packet.scale.set(s*(i===0?1:.72),s);packet.alpha=fade;
+    for(const run of this.runs){
+      if(used>=budget)break;
+      if(run.startDist>=dist||run.endDist<=this.tailDistance)continue;
+      const span=Math.max(.001,run.endDist-run.startDist);
+      const dx=run.x2-run.x1,dy=run.y2-run.y1,length=Math.hypot(dx,dy);
+      const s=this.cellScale*Math.min(1.65,run.widthScale);
+      const count=Math.ceil(length/((quality==='high'?46:quality==='medium'?76:140)*s));
+      for(let i=0;i<count&&used<budget;i++){
+        const seed=hash(run.x1*.17+run.y1*.31+run.startDist*.07+i*13.7);
+        const phase=(now*(.0010+seed*.00055)+seed)%1;
+        const t=(i+phase)/count,path=run.startDist+t*span;
+        const edgeFade=smoothstep(0,16*s,Math.min(t,1-t)*length);
+        const fade=edgeFade*smoothstep(0,10*s,dist-path)*smoothstep(this.tailDistance,this.tailDistance+this.tailFade,path);
+        if(fade<.01)continue;
+        let packet=this.packetPool[used++];
+        if(!packet){
+          packet=new Sprite(this.sparkTexture);packet.anchor.set(.5);packet.blendMode=this.energyBlend;
+          this.packetPool.push(packet);this.energyDetails.addChild(packet);
         }
+        const side=(i%2===0?1:-1)*(7+seed*13+Math.sin(phase*Math.PI)*5)*s;
+        const streak=seed>.58;
+        packet.visible=true;
+        packet.texture=streak?this.ribbonTexture:this.sparkTexture;
+        packet.position.set(run.x1+dx*t-dy/length*side,run.y1+dy*t+dx/length*side);
+        packet.rotation=Math.atan2(dy,dx)+(streak?Math.sin(phase*Math.PI*2)*.055:(seed-.5)*1.3);
+        packet.scale.set(s*(streak?.6+seed*.4:.65+seed*.4),s*(streak?.85:.8));
+        packet.alpha=fade*Math.sin(phase*Math.PI)*(.75+seed*.25);
       }
     }
     for(let i=used;i<this.packetPool.length;i++)this.packetPool[i].visible=false;
@@ -509,10 +540,20 @@ export class LaserEffect extends Container{
       const s=this.cellScale*width;
       const muzzle=light&&muzzles.has(jointKey(x,y));
       const boost=muzzle?1.45:1;
-      this.joints.circle(x,y,24*s*boost).fill({fill:this.pointGlow,alpha:muzzle?.92:.62});
-      this.joints.circle(x,y,4.5*s*boost).fill({color:Theme.laserBody,alpha:muzzle?.88:.76});
-      this.joints.circle(x,y,1.6*s*boost).fill({color:Theme.laserPlasma,alpha:.90});
-      this.joints.circle(x,y,.80*s*boost).fill({color:Theme.white,alpha:.98});
+      this.joints.circle(x,y,46*s*boost).fill({fill:this.pointGlow,alpha:.9});
+      // Compact, irregular splinters keep reflections sharp in the win poster,
+      // where transient impact particles have already faded out.
+      const flareScale=this.cellScale*Math.min(width,1.65)*boost;
+      for(let i=0;i<7;i++){
+        const seed=hash(x*.13+y*.27+i*9.1),angle=i*2.399+seed*.65;
+        const ux=Math.cos(angle),uy=Math.sin(angle),length=(10+seed*16)*flareScale;
+        const base=1.1*flareScale;
+        this.joints.poly([x-uy*base,y+ux*base,x+ux*length,y+uy*length,x+uy*base,y-ux*base])
+          .fill({color:i%3===0?Theme.white:Theme.beamHot,alpha:.48+seed*.35});
+      }
+      this.joints.circle(x,y,6.8*s*boost).fill({color:Theme.laserBody,alpha:.88});
+      this.joints.circle(x,y,2.8*s*boost).fill({color:Theme.laserPlasma,alpha:.94});
+      this.joints.circle(x,y,1.2*s*boost).fill({color:Theme.laserCore,alpha:1});
     }
   }
 
@@ -522,8 +563,8 @@ export class LaserEffect extends Container{
     if(origin&&launchAge<210){
       const fade=1-launchAge/210,blast=fade*fade;
       const mx=origin.x1,my=origin.y1;
-      this.head.circle(mx,my,(12+blast*17)*s).fill({color:Theme.beam2,alpha:.15*blast});
-      this.head.circle(mx,my,(5+blast*7)*s).fill({color:Theme.white,alpha:.5*blast});
+      this.head.circle(mx,my,(24+blast*28)*s).fill({fill:this.pointGlow,alpha:.9*blast});
+      this.head.circle(mx,my,(3+blast*4)*s).fill({color:Theme.laserPlasma,alpha:.7*blast});
     }
     for(const partial of this.runs){
       const progress=(dist-partial.startDist)/Math.max(.001,partial.endDist-partial.startDist);
@@ -535,11 +576,11 @@ export class LaserEffect extends Container{
     const dx=partial.x2-partial.x1,dy=partial.y2-partial.y1,len=Math.hypot(dx,dy)||1;
     const ux=dx/len,uy=dy/len,pulse=.5+.5*Math.sin(now*.024);
     const tail=(13+punch*8)*s;
-    this.head.moveTo(x-ux*tail,y-uy*tail).lineTo(x-ux*2*s,y-uy*2*s).stroke({color:Theme.beam,width:(8.6+punch*1.8)*s,alpha:.38+punch*.16,cap:'round'});
-    this.head.moveTo(x-ux*tail*.75,y-uy*tail*.75).lineTo(x,y).stroke({color:Theme.white,width:2.1*s,alpha:.72,cap:'round'});
-    this.head.circle(x,y,(18+punch*5)*s).fill(this.pointGlow);
+    this.head.moveTo(x-ux*tail,y-uy*tail).lineTo(x-ux*2*s,y-uy*2*s).stroke({color:Theme.beam,width:(12+punch*2.4)*s,alpha:.5+punch*.16,cap:'round'});
+    this.head.moveTo(x-ux*tail*.75,y-uy*tail*.75).lineTo(x,y).stroke({color:Theme.laserCore,width:1.8*s,alpha:.92,cap:'round'});
+    this.head.circle(x,y,(36+punch*10)*s).fill(this.pointGlow);
     this.head.circle(x,y,(3.2+pulse*.25+punch*.7)*s).fill({color:Theme.laserPlasma,alpha:.9});
-    this.head.circle(x,y,(1.55+punch*.35)*s).fill({color:Theme.white,alpha:1});
+    this.head.circle(x,y,(1.3+punch*.3)*s).fill({color:Theme.laserCore,alpha:1});
     }
   }
 
@@ -565,7 +606,7 @@ export class LaserEffect extends Container{
   }
 
   private hideOverlays(){
-    this.fallbackPackets.visible=false;this.head.clear();this.chargeRoot.visible=false;
+    this.energyDetails.visible=false;this.head.clear();this.chargeRoot.visible=false;
   }
 
   private chargeOrigin(state:GameState):LaserSegment|undefined{
@@ -599,7 +640,7 @@ export class LaserEffect extends Container{
     if(!state.result||dist<=0){
       this.beamRoot.visible=false;
       if(this.jointSignature){this.joints.clear();this.jointSignature='';}
-      this.fallbackPackets.visible=false;this.head.clear();
+      this.energyDetails.visible=false;this.head.clear();
       this.logPerf(t0,quality);
       return;
     }
@@ -612,7 +653,7 @@ export class LaserEffect extends Container{
         this.updateGpuBeam(visibleDistance,now,quality,0,1);
         this.updateFallbackBeam(visibleDistance,1,now);
         this.hideOverlays();this.ensureJoints(visibleDistance);
-        this.drawFallbackPackets(visibleDistance,now,quality);
+        this.updateEnergyDetails(visibleDistance,now,quality);
       }
       return;
     }
@@ -624,7 +665,7 @@ export class LaserEffect extends Container{
     this.updateGpuBeam(dist,now,quality,punch,breathe);
     this.updateFallbackBeam(dist,breathe,now);
     this.ensureJoints(dist);
-    this.drawFallbackPackets(dist,now,quality);
+    this.updateEnergyDetails(dist,now,quality);
     this.drawHead(dist,now,punch,origin,launchAge);
     this.logPerf(t0,quality);
   }
@@ -640,6 +681,7 @@ export class LaserEffect extends Container{
     this.gpuShader?.destroy();
     this.gpuShader=null;this.gpuUniforms=null;
     super.destroy(options);
+    this.sparkTexture.destroy(true);this.ribbonTexture.destroy(true);
     this.beamGlow.destroy();this.pointGlow.destroy();
   }
 
@@ -655,6 +697,11 @@ function rgba(color:number,alpha:number){
   return `rgba(${(color>>16)&255},${(color>>8)&255},${color&255},${alpha})`;
 }
 
+function mixColor(a:number,b:number,t:number){
+  const channel=(shift:number)=>Math.round(((a>>shift)&255)*(1-t)+((b>>shift)&255)*t);
+  return(channel(16)<<16)|(channel(8)<<8)|channel(0);
+}
+
 function colorVec(color:number){
   return new Float32Array([((color>>16)&255)/255,((color>>8)&255)/255,(color&255)/255]);
 }
@@ -666,6 +713,8 @@ function isFiniteRun(run:Run){
 }
 
 function jointKey(x:number,y:number){return`${Math.round(x)},${Math.round(y)}`;}
+
+function hash(value:number){const n=Math.sin(value*127.1)*43758.5453;return n-Math.floor(n);}
 
 function findStraightJoints(runs:Run[]){
   const directions=new Map<string,{x:number;y:number}[]>();
