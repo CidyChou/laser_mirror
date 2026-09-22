@@ -56,6 +56,28 @@ body {
 }
 .top-status { display: flex; align-items: center; gap: 10px; flex: 1; }
 .top-actions { display: flex; gap: 8px; }
+.tool-link {
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid rgba(85, 221, 255, 0.32);
+  border-radius: 8px;
+  color: var(--cyan);
+  background: rgba(85, 221, 255, 0.06);
+  font-size: 13px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.tool-link:hover {
+  border-color: var(--cyan);
+  background: rgba(85, 221, 255, 0.12);
+  color: #d9f9ff;
+}
+.tool-link:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
 .pill, .chip {
   display: inline-flex; align-items: center;
   height: 26px; padding: 0 10px; border-radius: 999px;

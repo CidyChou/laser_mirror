@@ -1,3 +1,4 @@
+import { WeldingSparks } from './WeldingSparks';
 import { Container, FillGradient, Graphics } from 'pixi.js';
 import type { ImpactEvent, Point } from '@/gameplay/types';
 import { isLightTheme, Theme } from '../theme';
@@ -6,7 +7,7 @@ type Fx={
   root:Container;
   ring:Graphics;
   flash:Graphics;
-  rays:Graphics;
+  rays:WeldingSparks;
   bloom:Graphics;
   start:number;
   life:number;
@@ -28,11 +29,7 @@ export class ImpactSystem extends Container{
       const ring=new Graphics().circle(0,0,6.5).stroke({color:Theme.white,width:2.1,alpha:.88});
       const flash=new Graphics().circle(0,0,4.5).fill({color:Theme.white,alpha:.92});
       const bloom=new Graphics().circle(0,0,44).fill(this.bloomFill);
-      const rays=new Graphics();
-      for(let ray=0;ray<9;ray++){
-        const angle=ray*2.399,ux=Math.cos(angle),uy=Math.sin(angle),length=ray%3===0?40:17+ray;
-        rays.poly([-uy*1.2,ux*1.2,ux*length,uy*length,uy*1.2,-ux*1.2]).fill({color:Theme.white,alpha:ray%3===0?.94:.65});
-      }
+      const rays=new WeldingSparks();
       const blend=isLightTheme()?'normal':'add';
       ring.blendMode=blend;flash.blendMode=blend;rays.blendMode=blend;bloom.blendMode=blend;
       root.addChild(bloom,ring,rays,flash);this.addChild(root);
@@ -68,7 +65,8 @@ export class ImpactSystem extends Container{
     effect.ring.tint=color;effect.flash.tint=Theme.white;
     effect.rays.visible=flare;effect.rays.tint=color===Theme.white?Theme.beamHot:color;
     effect.bloom.visible=flare;effect.bloom.tint=color===Theme.white?Theme.beam:color;
-    effect.rays.rotation=(x*.17+y*.31)%Math.PI;effect.rays.scale.set(.6);
+    effect.rays.rotation=0;effect.rays.scale.set(strength);
+    effect.rays.reset();
     effect.ring.scale.set(1);effect.flash.scale.set(1);
   }
 
@@ -82,8 +80,8 @@ export class ImpactSystem extends Container{
       const out=1-Math.pow(1-t,2.2);
       effect.ring.scale.set(effect.inward?.45+(1-out)*3.5:1+out*3.05*effect.strength);
       effect.ring.alpha=(1-t)*(effect.rays.visible?.38:.86);
-      effect.rays.scale.set((.5+out*.85)*effect.strength);
-      effect.rays.alpha=Math.pow(Math.max(0,1-t*2.1),1.5);
+      effect.rays.animate(now,effect.root.x*.17+effect.root.y*.31,12,now-effect.start);
+      effect.rays.alpha=1;
       effect.bloom.scale.set((.6+out*.7)*effect.strength);
       effect.bloom.alpha=Math.pow(1-t,1.8)*.85;
       effect.flash.scale.set(.62+Math.sin(Math.min(1,t*4.5)*Math.PI)*1.08*effect.strength);

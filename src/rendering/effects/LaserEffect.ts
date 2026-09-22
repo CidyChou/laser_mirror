@@ -1,4 +1,5 @@
 import { Container, FillGradient, Geometry, GlProgram, Graphics, Mesh, Shader, Sprite, type Renderer, type Texture } from 'pixi.js';
+import { WeldingSparks } from './WeldingSparks';
 import { GameConfig } from '@/config/GameConfig';
 import { beamScale, computeGeometry, portMuzzle } from '@/gameplay/geometry';
 import { levelEmitters } from '@/gameplay/levelAccess';
@@ -163,7 +164,6 @@ export class LaserEffect extends Container{
   private energyDetails=new Container();
   private packetPool:Sprite[]=[];
   private readonly sparkTexture:Texture;
-  private readonly ribbonTexture:Texture;
   private gpuMesh:Mesh<Geometry,Shader>|null=null;
   private gpuShader:Shader|null=null;
   private gpuUniforms:BeamUniforms|null=null;
@@ -172,6 +172,8 @@ export class LaserEffect extends Container{
   private tailFade=1;
   private fallbackRuns:FallbackRun[]=[];
   private joints=new Graphics();
+  private jointSparks=new Container();
+  private jointSparkPool:WeldingSparks[]=[];
   private head=new Graphics();
   private chargeRoot=new Container();
   private halo=new Graphics();
@@ -200,22 +202,18 @@ export class LaserEffect extends Container{
   constructor(renderer:Renderer, enableGpu=true){
     super();
     this.gpuShader=enableGpu?this.createGpuShader(renderer):null;
-    // Shared fleck and ribbon textures keep both backends animated without
+    // Shared fleck texture keeps both backends animated without
     // rebuilding geometry or applying full-screen bloom each frame.
     const spark=new Graphics().ellipse(0,0,7,4).fill(this.pointGlow)
       .poly([-3,0,0,-1.25,3,0,0,1.25]).fill(Theme.beamHot)
       .ellipse(0,0,1.3,.65).fill(Theme.white);
     this.sparkTexture=renderer.generateTexture({target:spark,resolution:2});spark.destroy();
-    const ribbon=new Graphics().ellipse(0,0,28,5).fill(this.pointGlow)
-      .poly([-23,0,-4,-1.2,19,0,-4,1.2]).fill({color:Theme.laserBody,alpha:.6})
-      .ellipse(-2,0,12,.55).fill({color:Theme.laserPlasma,alpha:.72});
-    this.ribbonTexture=renderer.generateTexture({target:ribbon,resolution:2});ribbon.destroy();
     this.energyDetails.blendMode=this.energyBlend;
     this.joints.blendMode=this.energyBlend;
     this.head.blendMode=this.energyBlend;
     this.beamRoot.addChild(this.fallbackBeam);
     this.buildCharge();
-    this.addChild(this.beamRoot,this.joints,this.energyDetails,this.head,this.chargeRoot);
+    this.addChild(this.beamRoot,this.joints,this.jointSparks,this.energyDetails,this.head,this.chargeRoot);
   }
 
   bind(_state:GameState,cell=100){
@@ -333,7 +331,8 @@ export class LaserEffect extends Container{
     this.straightJoints.clear();
     // The join geometry is independent of beamRoot; clear it together with
     // its cache key so reset / abort cannot leave illuminated endpoints.
-    this.joints.clear();this.jointSignature='';
+    this.joints.clear();this.jointSignature='';this.jointSparks.visible=false;
+    for(const sparks of this.jointSparkPool)sparks.reset();
     this.energyDetails.visible=false;this.head.clear();
   }
 
@@ -465,12 +464,11 @@ export class LaserEffect extends Container{
           this.packetPool.push(packet);this.energyDetails.addChild(packet);
         }
         const side=(i%2===0?1:-1)*(7+seed*13+Math.sin(phase*Math.PI)*5)*s;
-        const streak=seed>.58;
         packet.visible=true;
-        packet.texture=streak?this.ribbonTexture:this.sparkTexture;
+        packet.texture=this.sparkTexture;
         packet.position.set(run.x1+dx*t-dy/length*side,run.y1+dy*t+dx/length*side);
-        packet.rotation=Math.atan2(dy,dx)+(streak?Math.sin(phase*Math.PI*2)*.055:(seed-.5)*1.3);
-        packet.scale.set(s*(streak?.6+seed*.4:.65+seed*.4),s*(streak?.85:.8));
+        packet.rotation=Math.atan2(dy,dx)+(seed-.5)*1.3;
+        packet.scale.set(s*(.32+seed*.28),s*.65);
         packet.alpha=fade*Math.sin(phase*Math.PI)*(.75+seed*.25);
       }
     }
@@ -521,7 +519,7 @@ export class LaserEffect extends Container{
     this.sparks.visible=quality!=='low';
   }
 
-  private ensureJoints(dist:number){
+  private ensureJoints(dist:number,now:number,quality:Quality){
     const points=new Map<string,{x:number;y:number;width:number}>();
     const add=(x:number,y:number,width:number)=>{
       const key=jointKey(x,y),existing=points.get(key);
@@ -532,6 +530,18 @@ export class LaserEffect extends Container{
       if(run.endDist<=dist&&run.endDist>=this.tailDistance+this.tailFade&&!this.straightJoints.has(jointKey(run.x2,run.y2)))add(run.x2,run.y2,run.widthScale);
     }
     const signature=[...points].map(([key,p])=>`${key}:${p.width}`).join('|');
+    this.jointSparks.visible=true;
+    let used=0;
+    const limit=quality==='high'?16:quality==='medium'?10:5;
+    for(const {x,y,width} of points.values()){
+      if(used>=limit)break;
+      let sparks=this.jointSparkPool[used++];
+      if(!sparks){sparks=new WeldingSparks();this.jointSparkPool.push(sparks);this.jointSparks.addChild(sparks);}
+      sparks.visible=true;sparks.position.set(x,y);
+      sparks.scale.set(this.cellScale*Math.min(width,1.4));
+      sparks.animate(now,x*.13+y*.27,quality==='high'?10:5);
+    }
+    for(let i=used;i<this.jointSparkPool.length;i++)this.jointSparkPool[i].visible=false;
     if(signature===this.jointSignature)return;
     this.jointSignature=signature;this.joints.clear();
     const muzzles=new Set(this.runs.filter(run=>run.startDist===0).map(run=>jointKey(run.x1,run.y1)));
@@ -541,16 +551,6 @@ export class LaserEffect extends Container{
       const muzzle=light&&muzzles.has(jointKey(x,y));
       const boost=muzzle?1.45:1;
       this.joints.circle(x,y,46*s*boost).fill({fill:this.pointGlow,alpha:.9});
-      // Compact, irregular splinters keep reflections sharp in the win poster,
-      // where transient impact particles have already faded out.
-      const flareScale=this.cellScale*Math.min(width,1.65)*boost;
-      for(let i=0;i<7;i++){
-        const seed=hash(x*.13+y*.27+i*9.1),angle=i*2.399+seed*.65;
-        const ux=Math.cos(angle),uy=Math.sin(angle),length=(10+seed*16)*flareScale;
-        const base=1.1*flareScale;
-        this.joints.poly([x-uy*base,y+ux*base,x+ux*length,y+uy*length,x+uy*base,y-ux*base])
-          .fill({color:i%3===0?Theme.white:Theme.beamHot,alpha:.48+seed*.35});
-      }
       this.joints.circle(x,y,6.8*s*boost).fill({color:Theme.laserBody,alpha:.88});
       this.joints.circle(x,y,2.8*s*boost).fill({color:Theme.laserPlasma,alpha:.94});
       this.joints.circle(x,y,1.2*s*boost).fill({color:Theme.laserCore,alpha:1});
@@ -639,7 +639,7 @@ export class LaserEffect extends Container{
     this.head.alpha=state.timeSkill?Math.min(1,life*8):1;
     if(!state.result||dist<=0){
       this.beamRoot.visible=false;
-      if(this.jointSignature){this.joints.clear();this.jointSignature='';}
+      if(this.jointSignature){this.joints.clear();this.jointSignature='';this.jointSparks.visible=false;}
       this.energyDetails.visible=false;this.head.clear();
       this.logPerf(t0,quality);
       return;
@@ -652,7 +652,7 @@ export class LaserEffect extends Container{
         const visibleDistance=state.timeSkill?state.beamDistance:1e12;
         this.updateGpuBeam(visibleDistance,now,quality,0,1);
         this.updateFallbackBeam(visibleDistance,1,now);
-        this.hideOverlays();this.ensureJoints(visibleDistance);
+        this.hideOverlays();this.ensureJoints(visibleDistance,now,quality);
         this.updateEnergyDetails(visibleDistance,now,quality);
       }
       return;
@@ -664,7 +664,7 @@ export class LaserEffect extends Container{
     const breathe=1+.055*Math.sin(now*.00315)+punch*.09;
     this.updateGpuBeam(dist,now,quality,punch,breathe);
     this.updateFallbackBeam(dist,breathe,now);
-    this.ensureJoints(dist);
+    this.ensureJoints(dist,now,quality);
     this.updateEnergyDetails(dist,now,quality);
     this.drawHead(dist,now,punch,origin,launchAge);
     this.logPerf(t0,quality);
@@ -681,7 +681,7 @@ export class LaserEffect extends Container{
     this.gpuShader?.destroy();
     this.gpuShader=null;this.gpuUniforms=null;
     super.destroy(options);
-    this.sparkTexture.destroy(true);this.ribbonTexture.destroy(true);
+    this.sparkTexture.destroy(true);
     this.beamGlow.destroy();this.pointGlow.destroy();
   }
 

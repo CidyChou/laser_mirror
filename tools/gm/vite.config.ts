@@ -9,6 +9,7 @@ const projectRoot = resolve(dir, '../..');
 export default defineConfig({
   root: dir,
   publicDir: false,
+  cacheDir: resolve(projectRoot, 'node_modules/.vite-gm'),
   resolve: {
     alias: { '@': resolve(projectRoot, 'src') },
   },
