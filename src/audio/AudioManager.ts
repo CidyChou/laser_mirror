@@ -56,13 +56,13 @@ export class AudioManager {
   private enabled = true;
   private unlocked = false;
 
-  constructor(private readonly platform:IPlatform) {
+  constructor(private readonly platform:IPlatform, audioBase=platform.kind === 'web' ? './audio/' : 'audio/') {
     for (const [name, def] of Object.entries(SOUND_DEFS) as [SfxName, SoundDef][]) {
       const players:Player[] = [];
       for (let i=0;i<def.pool;i++) {
         const player = this.platform.createAudio?.();
         if (!player) continue;
-        const src = `${this.platform.kind === 'web' ? './' : ''}audio/${def.file}`;
+        const src = `${audioBase}${def.file}`;
         try {
           player.src = src;
           player.volume = def.volume;
@@ -139,7 +139,9 @@ export class AudioManager {
       player.volume=Math.max(0,Math.min(1,def.volume*this.masterVolume*volumeScale));
       if ('playbackRate' in player) {
         const jitter=def.rateJitter ?? 0;
-        player.playbackRate=1+(Math.random()*2-1)*jitter;
+        try {
+          player.playbackRate=1+(Math.random()*2-1)*jitter;
+        } catch { /* Some mini-game players only support the original playback rate. */ }
       }
       const result=player.play?.();
       result?.catch?.(()=>{});

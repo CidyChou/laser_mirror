@@ -38,8 +38,13 @@ export const WIN_REWARD_MOTION = {
   counterRevealDelay: 1600,
   counterRevealDuration: 160,
   coinFlightStartDelay: 1800,
-  coinFlightStagger: 75,
-  coinFlightDuration: 850,
+  coinFlightStagger: 62,
+  coinPopDuration: 220,
+  coinHoverDuration: 220,
+  coinFlightDuration: 400,
+  coinArrivalDuration: 140,
+  coinSoundGap: 45,
+  rewardCoinRevealDuration: 420,
 } as const;
 
 export const WIN_CONFETTI_MOTION = {

@@ -110,7 +110,11 @@ export class PixiGameView{
     this.result.levels.on('pointertap',h.resultLevels);
     this.poster.closeButton.on('pointertap',h.closePoster);
     this.poster.saveButton.on('pointertap',h.savePoster);
-    this.coins.setHandlers({onSound:h.coinSound});
+    this.coins.setHandlers({
+      onSound:h.coinSound,
+      onLaunch:()=>this.result.hideRewardCoin(),
+      onComplete:now=>this.result.restoreRewardCoin(now),
+    });
   }
   setUiTexture(key:UiAssetKey, texture:Texture){
     if(key==='background'){
@@ -228,7 +232,7 @@ export class PixiGameView{
     if(reward>0) this.coins.spawn(now, reward, () => this.result.rewardCoinPoint());
   }
   revealWinCoins(){this.hud.setHeartsVisible(false);}
-  settleCoins(){return this.coins.settle();}
+  settleCoins(){const leftover=this.coins.settle();this.result.restoreRewardCoin();return leftover;}
   showCombo(count:number, now:number){this.combo.show(count,now);}
   mirrorRotateFeedback(x:number,y:number,now:number){if(this.lastGeometry)this.objects.rotateFeedback(x,y,now,this.lastGeometry);}
   private emitScale(){return this.performance.quality==='high'?1:this.performance.quality==='medium'?.65:.4;}

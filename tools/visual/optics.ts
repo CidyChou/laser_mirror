@@ -1,4 +1,6 @@
-import { Application } from 'pixi.js';
+import { Application, Assets, Texture } from 'pixi.js';
+import { AudioManager } from '../../src/audio/AudioManager';
+import { WebPlatform } from '../../src/platform/web/WebPlatform';
 import { GameConfig } from '../../src/config/GameConfig';
 import { GameSession, type GameEvent } from '../../src/gameplay/GameSession';
 import { laserMsAtDistance } from '../../src/gameplay/laserTiming';
@@ -38,6 +40,13 @@ await app.init({width:stage.clientWidth,height:stage.clientHeight,resolution:Mat
   antialias:true,preference:'webgl',preferWebGLVersion:preset.get('webgl')==='1'?1:2,background:Theme.bg});
 stage.append(app.canvas);
 const quality=new PerformanceManager();
+const assetBase=new URL('../../',location.href).href;
+const rewardAudio=new AudioManager(new WebPlatform(), `${assetBase}audio/`);
+let rewardAudioEnabled=true;
+const rewardTextures=await Promise.all(['coin','crown'].map(async key=>{
+  try { return await Assets.load<Texture>(`${assetBase}ui/victory-${key}.png`); }
+  catch { return Texture.EMPTY; }
+}));
 let session:GameSession,view:PixiGameView,clock=0,playing=false,overlay=false;
 
 function event(e:GameEvent){
@@ -66,10 +75,12 @@ function mountView(){
   quality.quality=renderer.value==='fallback'?'low':'high';
   view=new PixiGameView(app.renderer,quality,normalizeThemeId(theme.value),[level],renderer.value==='gpu');
   app.stage.addChild(view.root);view.sync(session.state);
+  view.setUiTexture('coin',rewardTextures[0]);
+  view.setUiTexture('crown',rewardTextures[1]);
   view.setHandlers({rotate:(x,y)=>session.rotateAt(x,y),firePressStart:()=>play(),firePressEnd:()=>{},bulletTime:()=>session.startBulletTime(),reset:()=>reset(),openSettings:()=>showOverlay(),
     tutorialNext:()=>{},tutorialSkip:()=>{},tutorialTap:()=>{},replayTutorial:()=>{},canSelectLevel:()=>false,
     toggleAudio:()=>{},toggleHaptics:()=>{},selectTheme:()=>{},closeSettings:()=>showOverlay(),openLevels:()=>{},
-    selectLevel:()=>{},unlockAllLevels:()=>{},clearHistory:()=>{},uiChanged:()=>{},resultPrimary:()=>{},resultSecondary:()=>{},resultPreview:()=>{},resultLevels:()=>{},closePoster:()=>{},savePoster:()=>{},coinSound:()=>{}});
+    selectLevel:()=>{},unlockAllLevels:()=>{},clearHistory:()=>{},uiChanged:()=>{},resultPrimary:()=>{},resultSecondary:()=>{},resultPreview:()=>{},resultLevels:()=>{},closePoster:()=>{},savePoster:()=>{},coinSound:()=>rewardAudio.play('coin')});
   resize();view.update(session.state,clock);report();
 }
 function reset(){playing=false;overlay=false;clock=0;session.reset();view.hideOverlays();view.update(session.state,clock);report();}
@@ -113,6 +124,23 @@ function report(){
 document.querySelector('#play')!.addEventListener('click',play);
 document.querySelector('#pause')!.addEventListener('click',()=>{playing=!playing;report();});
 document.querySelector('#reset')!.addEventListener('click',reset);
+document.querySelector('#coins')!.addEventListener('click',()=>{
+  reset();
+  rewardAudio.play('uiClick',.4);
+  view.showResult('win',{title:'通关成功',subtitle:'金币动效预览',tip:'放大悬浮 → 加速入账',primary:'下一关',reward:12},clock);
+  view.startWinCoins(clock,100,12);
+  view.revealWinCoins();
+  playing=true;
+  view.update(session.state,clock);report();
+});
+document.querySelector('#coin-audio')!.addEventListener('click',event=>{
+  rewardAudioEnabled=!rewardAudioEnabled;
+  rewardAudio.setEnabled(rewardAudioEnabled);
+  const button=event.currentTarget as HTMLButtonElement;
+  button.textContent=`金币音效：${rewardAudioEnabled?'开':'关'}`;
+  button.setAttribute('aria-pressed',String(rewardAudioEnabled));
+});
+window.addEventListener('pagehide',()=>rewardAudio.destroy(),{once:true});
 document.querySelector('#overlay')!.addEventListener('click',showOverlay);
 document.querySelectorAll<HTMLButtonElement>('[data-phase]').forEach(button=>button.addEventListener('click',()=>seek(button.dataset.phase!)));
 laserColor.addEventListener('change',()=>{

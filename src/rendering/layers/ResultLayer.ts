@@ -1,5 +1,5 @@
 import { Container, Graphics, Rectangle, Sprite, Text, Texture } from 'pixi.js';
-import { DESIGN_HEIGHT, DESIGN_WIDTH, UI_RECTS, UI_TOKENS } from '@/config/GameConfig';
+import { DESIGN_HEIGHT, DESIGN_WIDTH, UI_RECTS, UI_TOKENS, WIN_REWARD_MOTION } from '@/config/GameConfig';
 import { clamp, easeOutBack } from '@/core/easing';
 import { Button } from '../ui/Button';
 import { drawCoinIcon, drawCrownIcon } from '../ui/icons';
@@ -36,6 +36,7 @@ export class ResultLayer extends Container {
   private kind: ResultKind = 'win';
   private shownAt = 0;
   private entering = false;
+  private rewardCoinRevealAt: number | null = null;
   private coinTexture = Texture.EMPTY;
   private dimDrawn = false;
 
@@ -100,6 +101,7 @@ export class ResultLayer extends Container {
     this.shownAt = now;
     this.entering = true;
     this.visible = true;
+    this.restoreRewardCoin();
     this.ensureDim();
     this.title.text = copy.title;
     this.subtitle.text = copy.subtitle;
@@ -128,6 +130,22 @@ export class ResultLayer extends Container {
   hide() {
     this.visible = false;
     this.entering = false;
+    this.restoreRewardCoin();
+  }
+
+  hideRewardCoin() {
+    this.rewardCoinRevealAt = null;
+    this.setRewardCoinAlpha(0);
+  }
+
+  restoreRewardCoin(now?: number) {
+    this.rewardCoinRevealAt = this.visible && this.kind === 'win' ? now ?? null : null;
+    this.setRewardCoinAlpha(this.rewardCoinRevealAt === null ? 1 : 0);
+  }
+
+  private setRewardCoinAlpha(alpha: number) {
+    this.rewardCoin.alpha = alpha;
+    this.rewardCoinFallback.alpha = alpha;
   }
 
   rewardCoinPoint() {
@@ -139,7 +157,13 @@ export class ResultLayer extends Container {
 
   update(now: number): boolean {
     if (!this.visible) return false;
-    return this.syncMotion(now);
+    const entering = this.syncMotion(now);
+    if (this.rewardCoinRevealAt !== null) {
+      const progress = clamp((now - this.rewardCoinRevealAt) / WIN_REWARD_MOTION.rewardCoinRevealDuration, 0, 1);
+      this.setRewardCoinAlpha(progress * progress * (3 - 2 * progress));
+      if (progress === 1) this.rewardCoinRevealAt = null;
+    }
+    return entering || this.rewardCoinRevealAt !== null;
   }
 
   private layout() {
