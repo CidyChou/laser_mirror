@@ -1,10 +1,12 @@
 import { Container, Graphics, Rectangle, Text } from 'pixi.js';
 import { DESIGN_HEIGHT, DESIGN_WIDTH, UI_RECTS, UI_TOKENS } from '@/config/GameConfig';
 import { Button } from '../ui/Button';
-import { THEMES, Theme, type GameTheme, type ThemeId, uiText } from '../theme';
+import { LASER_COLORS, THEMES, Theme, themeById, type GameTheme, type LaserColorId, type LaserColorOption, type ThemeId, uiText } from '../theme';
 
 const CARD_W = 156;
 const CARD_H = 150;
+const COLOR_W = 92;
+const COLOR_H = 68;
 
 export class SettingsLayer extends Container {
   readonly closeButton = new Button(64, 64, '✕', 'icon');
@@ -20,10 +22,11 @@ export class SettingsLayer extends Container {
   private readonly panel = new Graphics();
   private readonly title = new Text({ text: '设置', style: uiText({ fontSize: 40, fill: Theme.ink }) });
   private readonly appearanceLabel = sectionLabel('外观主题');
+  private readonly laserColorLabel = sectionLabel('激光颜色');
   private readonly audioLabel = sectionLabel('声音与触感');
   private readonly actionLabel = sectionLabel('本局操作');
   private readonly footer = new Text({
-    text: '主题、音效与震动设置会自动保存',
+    text: '主题、激光颜色、音效与震动会自动保存',
     style: uiText({ fontSize: 14, fill: Theme.inkSoft }),
   });
   private readonly confirmLayer = new Container();
@@ -31,11 +34,13 @@ export class SettingsLayer extends Container {
   private readonly confirmPanel = new Graphics();
   private readonly confirmTitle = new Text({ text: '清理历史记录？', style: uiText({ fontSize: 34, fill: Theme.ink }) });
   private readonly confirmCopy = new Text({
-    text: '将清空关卡进度、金币并恢复爱心\n新手引导重置，主题、音效与震动保留',
+    text: '将清空关卡进度、金币并恢复爱心\n新手引导重置，外观、音效与震动保留',
     style: uiText({ fontSize: 19, fill: Theme.inkSoft, align: 'center', lineHeight: 32 }),
   });
   private readonly themeCards = THEMES.map((theme) => new ThemeCard(theme));
+  private readonly laserColorCards = LASER_COLORS.map((color) => new LaserColorCard(color));
   private themeHandler: (id: ThemeId) => void = () => {};
+  private laserColorHandler: (id: LaserColorId) => void = () => {};
   private closeHandler: () => void = () => {};
   private changeHandler: () => void = () => {};
 
@@ -61,9 +66,13 @@ export class SettingsLayer extends Container {
     for (const card of this.themeCards) {
       card.on('pointertap', () => this.themeHandler(card.theme.id));
     }
+    for (const card of this.laserColorCards) {
+      card.on('pointertap', () => this.laserColorHandler(card.color.id));
+    }
     this.addChild(
       this.dim, this.panel, this.title, this.closeButton,
       this.appearanceLabel, ...this.themeCards,
+      this.laserColorLabel, ...this.laserColorCards,
       this.audioLabel, this.audioButton, this.hapticsButton,
       this.actionLabel, this.levelSelectButton, this.restartButton, this.tutorialButton, this.clearHistoryButton, this.footer,
     );
@@ -88,6 +97,10 @@ export class SettingsLayer extends Container {
     this.themeHandler = handler;
   }
 
+  setLaserColorHandler(handler: (id: LaserColorId) => void) {
+    this.laserColorHandler = handler;
+  }
+
   setViewport(bounds: Rectangle) {
     this.hitArea = bounds;
     this.confirmLayer.hitArea = bounds;
@@ -104,11 +117,12 @@ export class SettingsLayer extends Container {
     this.changeHandler = handler;
   }
 
-  show(audioEnabled: boolean, hapticsEnabled: boolean, themeId: ThemeId) {
+  show(audioEnabled: boolean, hapticsEnabled: boolean, themeId: ThemeId, laserColorId: LaserColorId) {
     this.visible = true;
     this.setAudioEnabled(audioEnabled);
     this.setHapticsEnabled(hapticsEnabled);
     this.setThemeId(themeId);
+    this.setLaserColorId(laserColorId);
   }
 
   hide() {
@@ -126,6 +140,11 @@ export class SettingsLayer extends Container {
 
   setThemeId(themeId: ThemeId) {
     for (const card of this.themeCards) card.setSelected(card.theme.id === themeId);
+    this.laserColorCards[0].setPreviewColor(themeById(themeId).colors.laserBody);
+  }
+
+  setLaserColorId(id: LaserColorId) {
+    for (const card of this.laserColorCards) card.setSelected(card.color.id === id);
   }
 
   showClearConfirmation() {
@@ -151,15 +170,17 @@ export class SettingsLayer extends Container {
     this.closeButton.position.set(rect.x + rect.w - 84, rect.y + 22);
     this.appearanceLabel.position.set(rect.x + 40, rect.y + 112);
     this.themeCards.forEach((card, index) => card.position.set(rect.x + 40 + index * (CARD_W + 16), rect.y + 144));
-    this.audioLabel.position.set(rect.x + 40, rect.y + 330);
-    this.audioButton.position.set(rect.x + 40, rect.y + 360);
-    this.hapticsButton.position.set(rect.x + 40, rect.y + 436);
-    this.actionLabel.position.set(rect.x + 40, rect.y + 536);
-    this.levelSelectButton.position.set(rect.x + 40, rect.y + 566);
-    this.restartButton.position.set(rect.x + 40, rect.y + 646);
-    this.tutorialButton.position.set(rect.x + 40, rect.y + 726);
-    this.clearHistoryButton.position.set(rect.x + 40, rect.y + 806);
-    this.footer.position.set(DESIGN_WIDTH / 2, rect.y + 908);
+    this.laserColorLabel.position.set(rect.x + 40, rect.y + 330);
+    this.laserColorCards.forEach((card, index) => card.position.set(rect.x + 40 + index * (COLOR_W + 10), rect.y + 360));
+    this.audioLabel.position.set(rect.x + 40, rect.y + 460);
+    this.audioButton.position.set(rect.x + 40, rect.y + 490);
+    this.hapticsButton.position.set(rect.x + 40, rect.y + 566);
+    this.actionLabel.position.set(rect.x + 40, rect.y + 650);
+    this.levelSelectButton.position.set(rect.x + 40, rect.y + 680);
+    this.restartButton.position.set(rect.x + 40, rect.y + 760);
+    this.tutorialButton.position.set(rect.x + 40, rect.y + 840);
+    this.clearHistoryButton.position.set(rect.x + 40, rect.y + 920);
+    this.footer.position.set(DESIGN_WIDTH / 2, rect.y + 1070);
 
     const confirm = { x: 100, y: 490, w: 520, h: 330 };
     this.confirmDim.rect(0, 0, DESIGN_WIDTH, DESIGN_HEIGHT).fill({ color: Theme.overlay, alpha: 0.82 });
@@ -172,6 +193,53 @@ export class SettingsLayer extends Container {
     this.confirmCopy.position.set(DESIGN_WIDTH / 2, confirm.y + 142);
     this.cancelClearButton.position.set(confirm.x + 24, confirm.y + 230);
     this.confirmClearButton.position.set(confirm.x + confirm.w - 248, confirm.y + 230);
+  }
+}
+
+class LaserColorCard extends Container {
+  private readonly chrome = new Graphics();
+  private readonly sample = new Graphics();
+  private readonly nameText: Text;
+  private selected = false;
+  private previewColor: number;
+
+  constructor(readonly color: LaserColorOption) {
+    super();
+    this.previewColor = color.preview;
+    this.eventMode = 'static';
+    this.cursor = 'pointer';
+    this.hitArea = new Rectangle(0, 0, COLOR_W, COLOR_H);
+    this.nameText = new Text({ text: color.name, style: uiText({ fontSize: 15, fill: Theme.ink }) });
+    this.nameText.anchor.set(0.5);
+    this.nameText.position.set(COLOR_W / 2, 51);
+    this.addChild(this.chrome, this.sample, this.nameText);
+    this.redraw();
+  }
+
+  setSelected(selected: boolean) {
+    if (this.selected === selected) return;
+    this.selected = selected;
+    this.redraw();
+  }
+
+  setPreviewColor(color: number) {
+    if (this.previewColor === color) return;
+    this.previewColor = color;
+    this.redraw();
+  }
+
+  private redraw() {
+    this.chrome.clear()
+      .roundRect(0, 0, COLOR_W, COLOR_H, UI_TOKENS.radius.sm)
+      .fill(Theme.surfaceMuted)
+      .stroke({ color: this.selected ? this.previewColor : Theme.surfaceLine, width: this.selected ? 3 : 1.5 });
+    this.sample.clear()
+      .moveTo(20, 23).lineTo(COLOR_W - 20, 23)
+      .stroke({ color: this.previewColor, width: 12, alpha: .28, cap: 'round' })
+      .moveTo(20, 23).lineTo(COLOR_W - 20, 23)
+      .stroke({ color: this.previewColor, width: 5, cap: 'round' })
+      .moveTo(22, 23).lineTo(COLOR_W - 22, 23)
+      .stroke({ color: Theme.white, width: 1.5, alpha: .88, cap: 'round' });
   }
 }
 

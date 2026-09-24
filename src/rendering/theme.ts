@@ -36,6 +36,29 @@ const VOID_PALETTE = {
 
 export type ThemePalette = { -readonly [K in keyof typeof VOID_PALETTE]: number };
 export type ThemeId = 'void' | 'aurora' | 'white';
+export type LaserColorId = 'pink' | 'red' | 'blue' | 'violet' | 'amber';
+type LaserPalette = Pick<ThemePalette, 'beam' | 'beamHot' | 'beam2' | 'beamCore' | 'laserBody' | 'laserPlasma' | 'laserCore' | 'laserMist'>;
+export type LaserColorOption = { readonly id: LaserColorId; readonly name: string; readonly preview: number; readonly colors?: LaserPalette };
+
+export const LASER_COLORS: readonly LaserColorOption[] = Object.freeze([
+  { id: 'pink', name: '霓虹粉', preview: VOID_PALETTE.laserBody },
+  { id: 'red', name: '烈焰红', preview: 0xff4d58, colors: {
+    beam: 0xff5156, beamHot: 0xffa4a0, beam2: 0xe92c42, beamCore: 0xfff5ef,
+    laserBody: 0xff4453, laserPlasma: 0xffaaa0, laserCore: 0xfff5ef, laserMist: 0xb82d55,
+  } },
+  { id: 'blue', name: '冰川蓝', preview: 0x35bfff, colors: {
+    beam: 0x39bfff, beamHot: 0xa5e9ff, beam2: 0x188bea, beamCore: 0xf1fbff,
+    laserBody: 0x31b9ff, laserPlasma: 0xa0e8ff, laserCore: 0xf1fbff, laserMist: 0x586cdf,
+  } },
+  { id: 'violet', name: '电光紫', preview: 0xb477ff, colors: {
+    beam: 0xb875ff, beamHot: 0xe3bdff, beam2: 0x874ce8, beamCore: 0xfff4ff,
+    laserBody: 0xb26aff, laserPlasma: 0xe5bbff, laserCore: 0xfff4ff, laserMist: 0x6443ca,
+  } },
+  { id: 'amber', name: '琥珀金', preview: 0xffb83f, colors: {
+    beam: 0xffb83e, beamHot: 0xffdf97, beam2: 0xe88325, beamCore: 0xfff9e8,
+    laserBody: 0xffb136, laserPlasma: 0xffdd87, laserCore: 0xfff9e8, laserMist: 0xb95839,
+  } },
+]);
 export type GameTheme = {
   readonly id: ThemeId;
   readonly name: string;
@@ -107,6 +130,17 @@ export const THEMES: readonly GameTheme[] = Object.freeze([
 export const DEFAULT_THEME_ID: ThemeId = 'void';
 export const Theme: ThemePalette = { ...VOID_PALETTE };
 export let activeThemeId: ThemeId = DEFAULT_THEME_ID;
+export let activeLaserColorId: LaserColorId = 'pink';
+
+export function normalizeLaserColorId(value: unknown): LaserColorId {
+  return LASER_COLORS.some((color) => color.id === value) ? value as LaserColorId : 'pink';
+}
+
+export function setActiveLaserColor(id: LaserColorId) {
+  activeLaserColorId = id;
+  const colors = LASER_COLORS.find((color) => color.id === id)?.colors;
+  Object.assign(Theme, themeById(activeThemeId).colors, colors);
+}
 
 export function normalizeThemeId(value: unknown): ThemeId {
   if (value === 'atelier') return 'white';
@@ -124,7 +158,7 @@ export function isLightTheme() {
 export function setActiveTheme(id: ThemeId): GameTheme {
   const next = themeById(id);
   activeThemeId = next.id;
-  Object.assign(Theme, next.colors);
+  Object.assign(Theme, next.colors, LASER_COLORS.find((color) => color.id === activeLaserColorId)?.colors);
   return next;
 }
 

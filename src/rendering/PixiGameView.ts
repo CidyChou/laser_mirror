@@ -19,7 +19,7 @@ import { LaserEffect } from './effects/LaserEffect';
 import { ImpactSystem } from './effects/ImpactSystem';
 import { ParticleSystem } from './effects/ParticleSystem';
 import { WinConfetti } from './effects/WinConfetti';
-import { Theme, type ThemeId, uiText } from './theme';
+import { Theme, activeLaserColorId, type LaserColorId, type ThemeId, uiText } from './theme';
 import type { UiAssetKey } from './ui/assets';
 import type { TutorialStep } from '@/gameplay/tutorial';
 import { TutorialLayer } from './layers/TutorialLayer';
@@ -34,6 +34,7 @@ export type ViewHandlers = {
   toggleAudio:()=>void;
   toggleHaptics:()=>void;
   selectTheme:(id:ThemeId)=>void;
+  selectLaserColor?:(id:LaserColorId)=>void;
   closeSettings:()=>void;
   openLevels:()=>void;
   selectLevel:(index:number)=>void;
@@ -95,6 +96,7 @@ export class PixiGameView{
     this.settings.audioButton.on('pointertap',h.toggleAudio);
     this.settings.hapticsButton.on('pointertap',h.toggleHaptics);
     this.settings.setThemeHandler(h.selectTheme);
+    this.settings.setLaserColorHandler(id=>h.selectLaserColor?.(id));
     this.settings.restartButton.on('pointertap',()=>{h.closeSettings();h.reset();});
     this.settings.levelSelectButton.on('pointertap',()=>{h.closeSettings();h.openLevels();});
     this.settings.clearHistoryButton.on('pointertap',()=>this.settings.showClearConfirmation());
@@ -220,7 +222,7 @@ export class PixiGameView{
       this.root.scale.set(sx,sy);
     }
   }
-  showSettings(audioEnabled:boolean,hapticsEnabled:boolean,themeId:ThemeId){this.settings.show(audioEnabled,hapticsEnabled,themeId);this.syncTutorialVisibility();}
+  showSettings(audioEnabled:boolean,hapticsEnabled:boolean,themeId:ThemeId,laserColorId:LaserColorId=activeLaserColorId){this.settings.show(audioEnabled,hapticsEnabled,themeId,laserColorId);this.syncTutorialVisibility();}
   setAudioEnabled(enabled:boolean){this.settings.setAudioEnabled(enabled);}
   setHapticsEnabled(enabled:boolean){this.settings.setHapticsEnabled(enabled);}
   setFireCharge(progress:number|null,now=0){this.inputCharge=progress;this.hud.setFireCharge(progress,now);this.objects.setInputCharge(progress);}

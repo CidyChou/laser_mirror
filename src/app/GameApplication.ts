@@ -31,15 +31,19 @@ import {
   Theme,
   activeThemeId,
   applyThemeToDocument,
+  normalizeLaserColorId,
   normalizeThemeId,
+  setActiveLaserColor,
   setActiveTheme,
   themeById,
+  type LaserColorId,
   type ThemeId,
 } from '@/rendering/theme';
 
 const AUDIO_STORAGE_KEY = 'laser-mirror-audio-enabled';
 const HAPTICS_STORAGE_KEY = 'laser-mirror-haptics-enabled';
 const THEME_STORAGE_KEY = 'laser-mirror-theme';
+const LASER_COLOR_STORAGE_KEY = 'laser-mirror-laser-color';
 const TIME_PROGRESS_KEY = 'laser-mirror-time-progress-v1';
 
 export class GameApplication {
@@ -52,6 +56,7 @@ export class GameApplication {
   private audioEnabled=true;
   private hapticsEnabled=true;
   private themeId:ThemeId=DEFAULT_THEME_ID;
+  private laserColorId:LaserColorId='pink';
   private readonly levels:readonly LevelDefinition[];
   private completedLevels=new Set<number>();
   private allLevelsUnlocked=false;
@@ -89,6 +94,8 @@ export class GameApplication {
     this.audio=new AudioManager(platform);
     this.coins=loadCoins(platform);
     this.themeId=normalizeThemeId(this.platform.storage.get(THEME_STORAGE_KEY));
+    this.laserColorId=normalizeLaserColorId(this.platform.storage.get(LASER_COLOR_STORAGE_KEY));
+    setActiveLaserColor(this.laserColorId);
     const initialTheme=setActiveTheme(this.themeId);
     if(this.platform.kind==='web')applyThemeToDocument(initialTheme);
     const saved=this.platform.storage.get(AUDIO_STORAGE_KEY);
@@ -288,7 +295,7 @@ export class GameApplication {
     this.bindViewHandlers();
     this.syncTutorial();
     if(reopenLevels)this.view.showLevelSelect(this.session.state.levelIndex,this.completedLevels,this.allLevelsUnlocked,this.unlockedThrough);
-    if(reopenSettings)this.view.showSettings(this.audioEnabled,this.hapticsEnabled,this.themeId);
+    if(reopenSettings)this.view.showSettings(this.audioEnabled,this.hapticsEnabled,this.themeId,this.laserColorId);
     const renderer=this.app.renderer as any;
     if(renderer.background)renderer.background.color=Theme.bg;
     if(this.platform.kind==='web')applyThemeToDocument(themeById(this.themeId));
@@ -309,7 +316,7 @@ export class GameApplication {
       firePressStart:()=>this.startFireCharge(),
       firePressEnd:()=>this.endFireCharge(),
       reset:()=>{this.collectPendingCoins();this.pendingResult=null;this.audio.play('uiClick');this.session.reset();this.wake();},
-      openSettings:()=>{if(this.session.state.firing||this.view.result.visible||this.view.poster.visible)return;this.audio.play('uiClick');this.view.showSettings(this.audioEnabled,this.hapticsEnabled,this.themeId);this.wake();},
+      openSettings:()=>{if(this.session.state.firing||this.view.result.visible||this.view.poster.visible)return;this.audio.play('uiClick');this.view.showSettings(this.audioEnabled,this.hapticsEnabled,this.themeId,this.laserColorId);this.wake();},
       closeSettings:()=>{this.audio.play('uiClick');this.view.closeSettings();this.wake();},
       toggleAudio:()=>{
         this.audioEnabled=!this.audioEnabled;this.audio.setEnabled(this.audioEnabled);
@@ -330,6 +337,13 @@ export class GameApplication {
         this.audio.play('uiClick');
         const reopenLevels=this.view.levelSelect.visible;
         this.themeId=id;setActiveTheme(id);this.platform.storage.set(THEME_STORAGE_KEY,id);
+        Promise.resolve().then(()=>{this.createView(true,reopenLevels);this.wake();});
+      },
+      selectLaserColor:(id)=>{
+        if(id===this.laserColorId)return;
+        this.audio.play('uiClick');
+        const reopenLevels=this.view.levelSelect.visible;
+        this.laserColorId=id;setActiveLaserColor(id);this.platform.storage.set(LASER_COLOR_STORAGE_KEY,id);
         Promise.resolve().then(()=>{this.createView(true,reopenLevels);this.wake();});
       },
       openLevels:()=>{
