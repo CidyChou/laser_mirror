@@ -8,11 +8,12 @@ import { GameSession } from '@/gameplay/GameSession';
 import { TutorialDirector } from '@/gameplay/tutorial';
 import { loadTutorialProgress, saveTutorialProgress } from '@/progression/tutorialProgress';
 import type { LevelDefinition } from '@/gameplay/types';
-import { rewardLevelIndex, stageCompletionLabel, stageFileLabel, stageLabel } from '@/levels/campaign';
+import { rewardLevelIndex, stageCompletionLabel, stageFileLabel, stageId, stageLabel } from '@/levels/campaign';
 import { LevelRepository } from '@/levels/LevelRepository';
 import { PerformanceManager } from '@/performance/PerformanceManager';
 import type { IPlatform } from '@/platform/IPlatform';
 import { PixiGameView } from '@/rendering/PixiGameView';
+import { createGameShareContent } from './share';
 import {
   clearLevelProgress,
   firstIncompleteLevel,
@@ -73,6 +74,7 @@ export class GameApplication {
   private fireChargeHapticStep=0;
   private paidVictory=false;
   private savingPoster=false;
+  private readonly sharedLaunch:boolean;
 
   constructor(private readonly platform:IPlatform){
     const repo=new LevelRepository();
@@ -82,7 +84,10 @@ export class GameApplication {
     this.unlockedThrough=loadCampaignAccess(platform,this.levels,this.completedLevels);
     this.allLevelsUnlocked=false;
     if(loadAllLevelsUnlocked(platform))saveAllLevelsUnlocked(platform,false);
-    const initialLevel=loadCurrentLevel(platform,this.levels,this.completedLevels,false);
+    const requestedStage=platform.getSharedStage?.();
+    const sharedIndex=requestedStage?this.levels.findIndex((level,index)=>stageId(level,index)===requestedStage):-1;
+    this.sharedLaunch=sharedIndex>=0&&isLevelUnlocked(sharedIndex,this.totalLevels,this.completedLevels,false,this.unlockedThrough);
+    const initialLevel=this.sharedLaunch?sharedIndex:loadCurrentLevel(platform,this.levels,this.completedLevels,false);
     try{
       const saved=JSON.parse(platform.storage.get(TIME_PROGRESS_KEY)||'{}');
       if(Array.isArray(saved.failures))this.timeProgress.usedFailureProtection=new Set(saved.failures.filter((n:unknown)=>Number.isInteger(n)));
@@ -102,6 +107,12 @@ export class GameApplication {
     this.audioEnabled=saved!=='0';
     this.hapticsEnabled=this.platform.storage.get(HAPTICS_STORAGE_KEY)!=='0';
     this.audio.setEnabled(this.audioEnabled);
+    this.platform.configureShare?.(()=>this.createShareContent());
+  }
+
+  private createShareContent() {
+    const {level,levelIndex}=this.session.state;
+    return createGameShareContent(level,levelIndex);
   }
 
   async start(canvas?:any){
@@ -121,7 +132,7 @@ export class GameApplication {
     });
 
     this.platform.attachCanvas(this.app.canvas,(this.app.renderer as any).events);
-    this.createView(false,true);
+    this.createView(false,!this.sharedLaunch);
 
     // UI sprites are optional decoration. Never block gameplay or the first
     // frame on mini-game image callbacks; the vector fallbacks are complete.
@@ -288,6 +299,7 @@ export class GameApplication {
     const viewport=this.platform.viewport();
     // Mini-game GPUs have hung on the custom laser mesh at fire; Graphics fallback is the same visual path as ?beam=fallback.
     this.view=new PixiGameView(this.app.renderer,this.perf,this.themeId,this.levels,this.platform.kind==='web');
+    this.view.setShareAvailable(this.platform.canShare?.()??false);
     this.app.stage.addChild(this.view.root);
     this.view.resize(viewport.width,viewport.height,this.platform.safeTop());
     this.view.sync(this.session.state);
@@ -331,6 +343,10 @@ export class GameApplication {
         this.view.setHapticsEnabled(this.hapticsEnabled);
         if(this.hapticsEnabled)this.vibrate('light');
         this.wake();
+      },
+      share:()=>{
+        if(!this.platform.canShare?.())return;
+        this.platform.shareAppMessage?.(this.createShareContent());
       },
       selectTheme:(id)=>{
         if(id===this.themeId||id===activeThemeId)return;

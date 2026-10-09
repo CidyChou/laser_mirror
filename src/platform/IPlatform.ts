@@ -3,6 +3,15 @@ export type HapticKind='light'|'medium'|'heavy'|'success';
 export interface ViewportInfo { width:number;height:number;pixelRatio:number }
 export interface AlbumSaveInput { canvas:unknown; filename?:string }
 export interface AlbumSaveResult { ok:boolean; message:string }
+export interface ShareContent {
+  readonly title:string;
+  readonly query:string;
+  readonly imageUrl?:string;
+  readonly imageUrlId?:string;
+  readonly imagePreviewUrl?:string;
+  readonly imagePreviewUrlId?:string;
+}
+export type ShareContentProvider=()=>ShareContent;
 export interface IPlatform {
   readonly kind:PlatformKind;
   viewport():ViewportInfo;
@@ -15,4 +24,8 @@ export interface IPlatform {
   vibrate(type?:HapticKind):void;
   storage:{get(key:string):string|null;set(key:string,value:string):void};
   saveImageToAlbum(input:AlbumSaveInput):Promise<AlbumSaveResult>;
+  configureShare?(provider:ShareContentProvider):void;
+  canShare?():boolean;
+  shareAppMessage?(content:ShareContent):void;
+  getSharedStage?():string|null;
 }

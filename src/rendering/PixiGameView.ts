@@ -33,6 +33,7 @@ export type ViewHandlers = {
   openSettings:()=>void;
   toggleAudio:()=>void;
   toggleHaptics:()=>void;
+  share?:()=>void;
   selectTheme:(id:ThemeId)=>void;
   selectLaserColor?:(id:LaserColorId)=>void;
   closeSettings:()=>void;
@@ -95,6 +96,7 @@ export class PixiGameView{
     this.settings.setChangeHandler(h.uiChanged);
     this.settings.audioButton.on('pointertap',h.toggleAudio);
     this.settings.hapticsButton.on('pointertap',h.toggleHaptics);
+    this.settings.shareButton.on('pointertap',()=>h.share?.());
     this.settings.setThemeHandler(h.selectTheme);
     this.settings.setLaserColorHandler(id=>h.selectLaserColor?.(id));
     this.settings.restartButton.on('pointertap',()=>{h.closeSettings();h.reset();});
@@ -225,6 +227,7 @@ export class PixiGameView{
   showSettings(audioEnabled:boolean,hapticsEnabled:boolean,themeId:ThemeId,laserColorId:LaserColorId=activeLaserColorId){this.settings.show(audioEnabled,hapticsEnabled,themeId,laserColorId);this.syncTutorialVisibility();}
   setAudioEnabled(enabled:boolean){this.settings.setAudioEnabled(enabled);}
   setHapticsEnabled(enabled:boolean){this.settings.setHapticsEnabled(enabled);}
+  setShareAvailable(available:boolean){this.settings.setShareAvailable(available);}
   setFireCharge(progress:number|null,now=0){this.inputCharge=progress;this.hud.setFireCharge(progress,now);this.objects.setInputCharge(progress);}
   closeSettings(){this.settings.hide();this.syncTutorialVisibility();}
   showLevelSelect(currentIndex:number,completed:ReadonlySet<number>,allLevelsUnlocked=false,unlockedThrough=-1){this.levelSelect.show(currentIndex,completed,allLevelsUnlocked,unlockedThrough);this.syncTutorialVisibility();}

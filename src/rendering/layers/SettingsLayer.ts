@@ -15,6 +15,7 @@ export class SettingsLayer extends Container {
   readonly levelSelectButton = new Button(500, 68, '选择关卡', 'secondary');
   readonly restartButton = new Button(500, 68, '重新开始当前关卡', 'primary');
   readonly tutorialButton = new Button(500, 68, '重看本关引导', 'secondary');
+  readonly shareButton = new Button(500, 68, '分享给好友', 'secondary');
   readonly clearHistoryButton = new Button(500, 68, '清理历史记录', 'danger');
   readonly confirmClearButton = new Button(224, 72, '确认清理', 'danger');
   readonly cancelClearButton = new Button(224, 72, '取消', 'secondary');
@@ -60,6 +61,8 @@ export class SettingsLayer extends Container {
     this.levelSelectButton.setLabelSize(22);
     this.restartButton.setLabelSize(24);
     this.tutorialButton.setLabelSize(22);
+    this.shareButton.setLabelSize(22);
+    this.shareButton.visible = false;
     this.clearHistoryButton.setLabelSize(22);
     this.confirmClearButton.setLabelSize(23);
     this.cancelClearButton.setLabelSize(23);
@@ -74,7 +77,7 @@ export class SettingsLayer extends Container {
       this.appearanceLabel, ...this.themeCards,
       this.laserColorLabel, ...this.laserColorCards,
       this.audioLabel, this.audioButton, this.hapticsButton,
-      this.actionLabel, this.levelSelectButton, this.restartButton, this.tutorialButton, this.clearHistoryButton, this.footer,
+      this.actionLabel, this.levelSelectButton, this.restartButton, this.tutorialButton, this.shareButton, this.clearHistoryButton, this.footer,
     );
     this.confirmLayer.visible = false;
     this.confirmLayer.eventMode = 'static';
@@ -138,6 +141,13 @@ export class SettingsLayer extends Container {
     this.hapticsButton.setText(enabled ? '震动反馈  ·  已开启' : '震动反馈  ·  已关闭');
   }
 
+  setShareAvailable(available: boolean) {
+    this.shareButton.visible = available;
+    const rect = UI_RECTS.settingsPanel;
+    this.clearHistoryButton.y = rect.y + (available ? 1000 : 920);
+    this.footer.y = rect.y + (available ? 1090 : 1070);
+  }
+
   setThemeId(themeId: ThemeId) {
     for (const card of this.themeCards) card.setSelected(card.theme.id === themeId);
     this.laserColorCards[0].setPreviewColor(themeById(themeId).colors.laserBody);
@@ -179,6 +189,7 @@ export class SettingsLayer extends Container {
     this.levelSelectButton.position.set(rect.x + 40, rect.y + 680);
     this.restartButton.position.set(rect.x + 40, rect.y + 760);
     this.tutorialButton.position.set(rect.x + 40, rect.y + 840);
+    this.shareButton.position.set(rect.x + 40, rect.y + 920);
     this.clearHistoryButton.position.set(rect.x + 40, rect.y + 920);
     this.footer.position.set(DESIGN_WIDTH / 2, rect.y + 1070);
 

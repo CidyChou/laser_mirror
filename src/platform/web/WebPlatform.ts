@@ -1,5 +1,5 @@
 import { downloadCanvas } from '../album';
-import type { AlbumSaveInput, AlbumSaveResult, IPlatform, ViewportInfo } from '../IPlatform';
+import type { AlbumSaveInput, AlbumSaveResult, IPlatform, ShareContent, ViewportInfo } from '../IPlatform';
 export class WebPlatform implements IPlatform{
   readonly kind='web' as const;
   viewport():ViewportInfo{return{width:Math.min(window.innerWidth,520),height:window.innerHeight,pixelRatio:Math.max(1,window.devicePixelRatio||1)}}
@@ -16,5 +16,21 @@ export class WebPlatform implements IPlatform{
   storage={get:(key:string)=>localStorage.getItem(key),set:(key:string,value:string)=>localStorage.setItem(key,value)};
   saveImageToAlbum(input:AlbumSaveInput):Promise<AlbumSaveResult>{
     return downloadCanvas(input.canvas,input.filename??'laser-mirror.png');
+  }
+  canShare():boolean {
+    return typeof navigator!=='undefined'&&typeof navigator.share==='function';
+  }
+  shareAppMessage(content:ShareContent):void {
+    if(!this.canShare())return;
+    try {
+      const url=new URL(window.location.href);
+      for(const [key,value] of new URLSearchParams(content.query))url.searchParams.set(key,value);
+      void navigator.share({title:content.title,text:content.title,url:url.href}).catch(()=>undefined);
+    } catch {
+      // A cancelled/restricted browser share leaves the current game in place.
+    }
+  }
+  getSharedStage():string|null {
+    return new URLSearchParams(window.location.search).get('stage');
   }
 }

@@ -16,6 +16,7 @@
     "verify:expansion": "npx tsx --tsconfig tsconfig.json scripts/solve-expansion.ts",
     "verify:optics": "npx tsx --tsconfig tsconfig.json scripts/verify-optics.ts",
     "verify:render-layout": "npx tsx --tsconfig tsconfig.json scripts/verify-render-layout.ts",
+    "verify:sharing": "npx tsx --tsconfig tsconfig.json scripts/verify-sharing.ts",
     "verify:mechanisms": "npx tsx --tsconfig tsconfig.json scripts/verify-mechanisms.ts",
     "verify:tutorial": "npx tsx --tsconfig tsconfig.json scripts/verify-tutorial.ts",
     "verify:time": "npx tsx --tsconfig tsconfig.json scripts/verify-time-core.ts && npx tsx --tsconfig tsconfig.json scripts/verify-time-bosses.ts && npx tsx --tsconfig tsconfig.json scripts/verify-campaign.ts",
