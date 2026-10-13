@@ -10,12 +10,12 @@ const COLOR_H = 68;
 
 export class SettingsLayer extends Container {
   readonly closeButton = new Button(64, 64, '✕', 'icon');
-  readonly audioButton = new Button(500, 64, '音效  ·  已开启', 'secondary');
+  readonly musicButton = new Button(242, 64, '音乐  ·  已开启', 'secondary');
+  readonly audioButton = new Button(242, 64, '音效  ·  已开启', 'secondary');
   readonly hapticsButton = new Button(500, 64, '震动反馈  ·  已开启', 'secondary');
   readonly levelSelectButton = new Button(500, 68, '选择关卡', 'secondary');
   readonly restartButton = new Button(500, 68, '重新开始当前关卡', 'primary');
   readonly tutorialButton = new Button(500, 68, '重看本关引导', 'secondary');
-  readonly shareButton = new Button(500, 68, '分享给好友', 'secondary');
   readonly clearHistoryButton = new Button(500, 68, '清理历史记录', 'danger');
   readonly confirmClearButton = new Button(224, 72, '确认清理', 'danger');
   readonly cancelClearButton = new Button(224, 72, '取消', 'secondary');
@@ -27,7 +27,7 @@ export class SettingsLayer extends Container {
   private readonly audioLabel = sectionLabel('声音与触感');
   private readonly actionLabel = sectionLabel('本局操作');
   private readonly footer = new Text({
-    text: '主题、激光颜色、音效与震动会自动保存',
+    text: '外观、音乐、音效与震动会自动保存',
     style: uiText({ fontSize: 14, fill: Theme.inkSoft }),
   });
   private readonly confirmLayer = new Container();
@@ -35,7 +35,7 @@ export class SettingsLayer extends Container {
   private readonly confirmPanel = new Graphics();
   private readonly confirmTitle = new Text({ text: '清理历史记录？', style: uiText({ fontSize: 34, fill: Theme.ink }) });
   private readonly confirmCopy = new Text({
-    text: '将清空关卡进度、金币并恢复爱心\n新手引导重置，外观、音效与震动保留',
+    text: '将清空关卡进度、金币并恢复爱心\n新手引导重置，外观、声音与震动保留',
     style: uiText({ fontSize: 19, fill: Theme.inkSoft, align: 'center', lineHeight: 32 }),
   });
   private readonly themeCards = THEMES.map((theme) => new ThemeCard(theme));
@@ -57,12 +57,11 @@ export class SettingsLayer extends Container {
     this.footer.anchor.set(0.5);
     this.closeButton.setLabelSize(26);
     this.audioButton.setLabelSize(22);
+    this.musicButton.setLabelSize(22);
     this.hapticsButton.setLabelSize(22);
     this.levelSelectButton.setLabelSize(22);
     this.restartButton.setLabelSize(24);
     this.tutorialButton.setLabelSize(22);
-    this.shareButton.setLabelSize(22);
-    this.shareButton.visible = false;
     this.clearHistoryButton.setLabelSize(22);
     this.confirmClearButton.setLabelSize(23);
     this.cancelClearButton.setLabelSize(23);
@@ -76,8 +75,8 @@ export class SettingsLayer extends Container {
       this.dim, this.panel, this.title, this.closeButton,
       this.appearanceLabel, ...this.themeCards,
       this.laserColorLabel, ...this.laserColorCards,
-      this.audioLabel, this.audioButton, this.hapticsButton,
-      this.actionLabel, this.levelSelectButton, this.restartButton, this.tutorialButton, this.shareButton, this.clearHistoryButton, this.footer,
+      this.audioLabel, this.musicButton, this.audioButton, this.hapticsButton,
+      this.actionLabel, this.levelSelectButton, this.restartButton, this.tutorialButton, this.clearHistoryButton, this.footer,
     );
     this.confirmLayer.visible = false;
     this.confirmLayer.eventMode = 'static';
@@ -120,9 +119,10 @@ export class SettingsLayer extends Container {
     this.changeHandler = handler;
   }
 
-  show(audioEnabled: boolean, hapticsEnabled: boolean, themeId: ThemeId, laserColorId: LaserColorId) {
+  show(audioEnabled: boolean, hapticsEnabled: boolean, themeId: ThemeId, laserColorId: LaserColorId, musicEnabled = true) {
     this.visible = true;
     this.setAudioEnabled(audioEnabled);
+    this.setMusicEnabled(musicEnabled);
     this.setHapticsEnabled(hapticsEnabled);
     this.setThemeId(themeId);
     this.setLaserColorId(laserColorId);
@@ -137,15 +137,12 @@ export class SettingsLayer extends Container {
     this.audioButton.setText(enabled ? '音效  ·  已开启' : '音效  ·  已关闭');
   }
 
-  setHapticsEnabled(enabled: boolean) {
-    this.hapticsButton.setText(enabled ? '震动反馈  ·  已开启' : '震动反馈  ·  已关闭');
+  setMusicEnabled(enabled: boolean) {
+    this.musicButton.setText(enabled ? '音乐  ·  已开启' : '音乐  ·  已关闭');
   }
 
-  setShareAvailable(available: boolean) {
-    this.shareButton.visible = available;
-    const rect = UI_RECTS.settingsPanel;
-    this.clearHistoryButton.y = rect.y + (available ? 1000 : 920);
-    this.footer.y = rect.y + (available ? 1090 : 1070);
+  setHapticsEnabled(enabled: boolean) {
+    this.hapticsButton.setText(enabled ? '震动反馈  ·  已开启' : '震动反馈  ·  已关闭');
   }
 
   setThemeId(themeId: ThemeId) {
@@ -183,13 +180,13 @@ export class SettingsLayer extends Container {
     this.laserColorLabel.position.set(rect.x + 40, rect.y + 330);
     this.laserColorCards.forEach((card, index) => card.position.set(rect.x + 40 + index * (COLOR_W + 10), rect.y + 360));
     this.audioLabel.position.set(rect.x + 40, rect.y + 460);
-    this.audioButton.position.set(rect.x + 40, rect.y + 490);
+    this.musicButton.position.set(rect.x + 40, rect.y + 490);
+    this.audioButton.position.set(rect.x + 298, rect.y + 490);
     this.hapticsButton.position.set(rect.x + 40, rect.y + 566);
     this.actionLabel.position.set(rect.x + 40, rect.y + 650);
     this.levelSelectButton.position.set(rect.x + 40, rect.y + 680);
     this.restartButton.position.set(rect.x + 40, rect.y + 760);
     this.tutorialButton.position.set(rect.x + 40, rect.y + 840);
-    this.shareButton.position.set(rect.x + 40, rect.y + 920);
     this.clearHistoryButton.position.set(rect.x + 40, rect.y + 920);
     this.footer.position.set(DESIGN_WIDTH / 2, rect.y + 1070);
 

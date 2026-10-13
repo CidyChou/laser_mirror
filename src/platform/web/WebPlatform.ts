@@ -6,6 +6,12 @@ export class WebPlatform implements IPlatform{
   createAudio(){const audio=new Audio();audio.preload='auto';(audio as HTMLAudioElement & {playsInline?:boolean}).playsInline=true;return audio;}
   attachCanvas(canvas:HTMLCanvasElement,_events?:any){const root=document.getElementById('app')!;root.innerHTML='';root.appendChild(canvas);canvas.style.width=`${this.viewport().width}px`;canvas.style.height=`${this.viewport().height}px`;}
   onResize(handler:(v:ViewportInfo)=>void){const fn=()=>handler(this.viewport());window.addEventListener('resize',fn);return()=>window.removeEventListener('resize',fn)}
+  onAudioActiveChange(handler:(active:boolean)=>void){
+    const changed=()=>handler(!document.hidden);
+    document.addEventListener('visibilitychange',changed);
+    changed();
+    return()=>document.removeEventListener('visibilitychange',changed);
+  }
   safeTop(){return 0}
   vibrate(type:'light'|'medium'|'heavy'|'success'='light'){
     try{

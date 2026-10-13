@@ -19,6 +19,7 @@ export interface IPlatform {
   createAudio?():any;
   attachCanvas(canvas:any,events?:any):void;
   onResize(handler:(v:ViewportInfo)=>void):()=>void;
+  onAudioActiveChange?(handler:(active:boolean)=>void):()=>void;
   /** Screen-pixel Y below the platform capsule / status bar. 0 if none. */
   safeTop():number;
   vibrate(type?:HapticKind):void;

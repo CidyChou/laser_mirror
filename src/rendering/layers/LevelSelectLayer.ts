@@ -217,7 +217,7 @@ export class LevelSelectLayer extends Container {
     const fillW = total > 0 ? 480 * done / total : 0;
     this.progressFill.clear();
     if (fillW > 0) this.progressFill.roundRect(120, PROGRESS_TRACK_Y, Math.max(10, fillW), 10, 5).fill(Theme.accent);
-    for (const card of this.chapterCards) card.sync(currentIndex, completed, total, allLevelsUnlocked, unlockedThrough);
+    for (const card of this.chapterCards) card.sync(currentIndex, completed, this.levels, allLevelsUnlocked, unlockedThrough);
   }
 
   private handleTitleTap() {
@@ -400,7 +400,7 @@ class ChapterCard extends Container {
   sync(
     currentIndex: number,
     completed: ReadonlySet<number>,
-    totalLevels: number,
+    levels: readonly LevelDefinition[],
     allLevelsUnlocked = false,
     unlockedThrough = -1,
   ) {
@@ -413,7 +413,7 @@ class ChapterCard extends Container {
     for (const tile of this.tiles) {
       tile.sync({
         completed: completed.has(tile.levelIndex),
-        unlocked: isLevelUnlocked(tile.levelIndex, totalLevels, completed, allLevelsUnlocked, unlockedThrough),
+        unlocked: isLevelUnlocked(tile.levelIndex, levels, completed, allLevelsUnlocked, unlockedThrough),
         current: tile.levelIndex === currentIndex,
       });
     }

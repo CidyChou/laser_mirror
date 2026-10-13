@@ -1,5 +1,5 @@
 import type { LevelDefinition } from '@/gameplay/types';
-import { stageId } from '@/levels/campaign';
+import { nextMainLevelIndex, stageId } from '@/levels/campaign';
 import type { IPlatform } from '@/platform/IPlatform';
 
 export const COMPLETED_LEVELS_STORAGE_KEY = 'laser-mirror-completed-levels';
@@ -79,16 +79,22 @@ export function firstIncompleteLevel(totalLevels: number, completed: ReadonlySet
 
 export function isLevelUnlocked(
   index: number,
-  totalLevels: number,
+  levels: readonly LevelDefinition[],
   completed: ReadonlySet<number>,
   allLevelsUnlocked = false,
   unlockedThrough = -1,
 ): boolean {
+  const totalLevels = levels.length;
   if (index < 0 || index >= totalLevels) return false;
   if (allLevelsUnlocked) return true;
-  // Inserting a board before earned progress must not lock that earlier area.
+  // Preserve earned access and unlock both optional challenges and the next main level.
   let frontier = unlockedThrough;
-  for (const done of completed) if (done >= 0 && done < totalLevels) frontier = Math.max(frontier,done+1);
+  for (const done of completed) {
+    if (done >= 0 && done < totalLevels) {
+      const next = nextMainLevelIndex(levels, done);
+      frontier = Math.max(frontier, next < 0 ? totalLevels - 1 : next);
+    }
+  }
   return index <= Math.max(0,frontier);
 }
 
@@ -122,7 +128,7 @@ export function loadCurrentLevel(
     const legacy = legacyRaw === null ? NaN : Number(legacyRaw);
     if (Number.isInteger(legacy) && legacy >= 0 && legacy < 130) saved = byId.get(`level:${legacy + 1}`);
   }
-  return saved != null && isLevelUnlocked(saved, levels.length, completed, allLevelsUnlocked,loadCampaignAccess(platform,levels,completed))
+  return saved != null && isLevelUnlocked(saved, levels, completed, allLevelsUnlocked,loadCampaignAccess(platform,levels,completed))
     ? saved
     : firstIncompleteLevel(levels.length, completed);
 }

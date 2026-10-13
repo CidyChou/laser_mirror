@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { LevelRepository } from '../src/levels/LevelRepository';
+import { GameSession } from '../src/gameplay/GameSession';
 import {
   firstIncompleteLevel,
   loadCompletedLevels,
@@ -48,15 +49,53 @@ for(const [index,boss]of oldBosses.entries())assert.deepEqual(boardOnly(repo.tim
 const fresh=memoryPlatform();
 const freshCompleted=loadCompletedLevels(fresh,repo.levels);
 assert.equal(loadCampaignAccess(fresh,repo.levels,freshCompleted),0);
-assert(!isLevelUnlocked(1,220,freshCompleted));
+assert(!isLevelUnlocked(1,repo.levels,freshCompleted));
 assert.equal(firstIncompleteLevel(repo.levels.length,freshCompleted),0);
 for(let index=0;index<10;index+=1)freshCompleted.add(index);
 saveCompletedLevels(fresh,freshCompleted,repo.levels);
 assert.equal(repo.levels[firstIncompleteLevel(repo.levels.length,freshCompleted)].campaign?.id,'boss:1');
+assert(isLevelUnlocked(10,repo.levels,freshCompleted),'Chapter 1 challenge remains optional and playable');
+assert(isLevelUnlocked(11,repo.levels,freshCompleted),'Level 10 must unlock level 11 without the challenge');
+assert(!isLevelUnlocked(12,repo.levels,freshCompleted),'Level 12 must stay locked');
 freshCompleted.add(10);
 assert.equal(repo.levels[firstIncompleteLevel(repo.levels.length,freshCompleted)].campaign?.id,'level:11');
 saveCurrentLevel(fresh,10,repo.levels);
 assert.equal(loadCurrentLevel(fresh,repo.levels,freshCompleted),10);
+
+// Chapter transitions still visit challenges, but challenges never gate the main campaign.
+const mainCompleted=new Set<number>();
+const chapterSession=new GameSession(repo.levels);
+for(let index=0;index<repo.levels.length;index+=1){
+  const level=repo.levels[index];
+  if(level.campaign?.kind==='boss')continue;
+  mainCompleted.add(index);
+  if(level.campaign!.displayNumber%10!==0)continue;
+  assert(isLevelUnlocked(index+1,repo.levels,mainCompleted),'Chapter challenge must unlock');
+  assert(!mainCompleted.has(index+1),'Optional challenge must remain uncompleted');
+  chapterSession.load(index);
+  chapterSession.next();
+  assert.equal(chapterSession.state.level.campaign?.kind,'boss','Next must still enter the chapter challenge');
+  if(index+2<repo.levels.length){
+    assert(isLevelUnlocked(index+2,repo.levels,mainCompleted),'Next chapter must unlock without completing a challenge');
+    assert(!isLevelUnlocked(index+3,repo.levels,mainCompleted),'Later main levels must stay locked');
+    chapterSession.next();
+    assert.equal(chapterSession.state.levelIndex,index+2);
+  }
+}
+
+// Existing saves stopped at the first challenge gain access to level 11 without completing it.
+const atChallenge=memoryPlatform({
+  'laser-mirror-completed-stages-v2':JSON.stringify(Array.from({length:10},(_,index)=>`level:${index+1}`)),
+  'laser-mirror-current-stage-v2':'boss:1',
+  'laser-mirror-campaign-access-200':'boss:1',
+});
+const challengeProgress=loadCompletedLevels(atChallenge,repo.levels);
+const challengeAccess=loadCampaignAccess(atChallenge,repo.levels,challengeProgress);
+assert(isLevelUnlocked(11,repo.levels,challengeProgress,false,challengeAccess));
+assert(!challengeProgress.has(10));
+assert.equal(loadCurrentLevel(atChallenge,repo.levels,challengeProgress),10,'Keep the current challenge on restart');
+saveCurrentLevel(atChallenge,11,repo.levels);
+assert.equal(loadCurrentLevel(atChallenge,repo.levels,challengeProgress),11,'Skipped challenge must not invalidate the selected main level');
 
 const legacy=memoryPlatform({
   'laser-mirror-completed-levels':JSON.stringify(Array.from({length:10},(_,index)=>index)),
@@ -74,11 +113,11 @@ const returning=memoryPlatform({'laser-mirror-completed-stages-v2':JSON.stringif
 const restored=loadCompletedLevels(returning,repo.levels),access=loadCampaignAccess(returning,repo.levels,restored);
 const current=loadCurrentLevel(returning,repo.levels,restored);
 assert.equal(repo.levels[current].campaign?.id,'level:43');
-assert(isLevelUnlocked(current,220,restored,false,access));
-assert(!isLevelUnlocked(current+1,220,restored,false,access));
+assert(isLevelUnlocked(current,repo.levels,restored,false,access));
+assert(!isLevelUnlocked(current+1,repo.levels,restored,false,access));
 const added=repo.levels.findIndex(l=>l.stageKey==='flow:1');
 assert(!restored.has(added),'New content must not be marked completed');
-assert(isLevelUnlocked(added,220,restored,false,access));
+assert(isLevelUnlocked(added,repo.levels,restored,false,access));
 saveCompletedLevels(returning,restored,repo.levels);
 assert.deepEqual(loadCompletedLevels(returning,repo.levels),restored);
 const numeric=memoryPlatform({'laser-mirror-completed-levels':JSON.stringify(Array.from({length:42},(_,i)=>i)),'laser-mirror-current-level':'42'});

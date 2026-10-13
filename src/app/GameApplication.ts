@@ -1,5 +1,6 @@
 import { Application } from 'pixi.js';
 import { AudioManager } from '@/audio/AudioManager';
+import { MusicManager } from '@/audio/MusicManager';
 import { GameConfig } from '@/config/GameConfig';
 import { nowMs } from '@/core/clock';
 import { loadCoins, saveCoins, winReward } from '@/economy/wallet';
@@ -42,6 +43,7 @@ import {
 } from '@/rendering/theme';
 
 const AUDIO_STORAGE_KEY = 'laser-mirror-audio-enabled';
+const MUSIC_STORAGE_KEY = 'laser-mirror-music-enabled';
 const HAPTICS_STORAGE_KEY = 'laser-mirror-haptics-enabled';
 const THEME_STORAGE_KEY = 'laser-mirror-theme';
 const LASER_COLOR_STORAGE_KEY = 'laser-mirror-laser-color';
@@ -54,7 +56,9 @@ export class GameApplication {
   private view!:PixiGameView;
   private perf=new PerformanceManager();
   private audio:AudioManager;
+  private music:MusicManager;
   private audioEnabled=true;
+  private musicEnabled=true;
   private hapticsEnabled=true;
   private themeId:ThemeId=DEFAULT_THEME_ID;
   private laserColorId:LaserColorId='pink';
@@ -67,6 +71,7 @@ export class GameApplication {
   private totalLevels=0;
   private pendingResult:{kind:'win'|'lose';copy:{title:string;subtitle:string;tip:string;primary:string;secondary?:string;reward?:number};at:number}|null=null;
   private unresize=()=>{};
+  private unaudio=()=>{};
   private lastVibrateAt=-Infinity;
   private firePulseAt=0;
   private fireWatchdog:ReturnType<typeof setInterval>|0=0;
@@ -86,7 +91,7 @@ export class GameApplication {
     if(loadAllLevelsUnlocked(platform))saveAllLevelsUnlocked(platform,false);
     const requestedStage=platform.getSharedStage?.();
     const sharedIndex=requestedStage?this.levels.findIndex((level,index)=>stageId(level,index)===requestedStage):-1;
-    this.sharedLaunch=sharedIndex>=0&&isLevelUnlocked(sharedIndex,this.totalLevels,this.completedLevels,false,this.unlockedThrough);
+    this.sharedLaunch=sharedIndex>=0&&isLevelUnlocked(sharedIndex,this.levels,this.completedLevels,false,this.unlockedThrough);
     const initialLevel=this.sharedLaunch?sharedIndex:loadCurrentLevel(platform,this.levels,this.completedLevels,false);
     try{
       const saved=JSON.parse(platform.storage.get(TIME_PROGRESS_KEY)||'{}');
@@ -97,6 +102,7 @@ export class GameApplication {
     this.tutorial=new TutorialDirector(loadTutorialProgress(platform,this.levels,this.completedLevels),seen=>saveTutorialProgress(platform,seen));
     this.tutorial.enter(this.session.state);
     this.audio=new AudioManager(platform);
+    this.music=new MusicManager(platform);
     this.coins=loadCoins(platform);
     this.themeId=normalizeThemeId(this.platform.storage.get(THEME_STORAGE_KEY));
     this.laserColorId=normalizeLaserColorId(this.platform.storage.get(LASER_COLOR_STORAGE_KEY));
@@ -105,8 +111,10 @@ export class GameApplication {
     if(this.platform.kind==='web')applyThemeToDocument(initialTheme);
     const saved=this.platform.storage.get(AUDIO_STORAGE_KEY);
     this.audioEnabled=saved!=='0';
+    this.musicEnabled=(this.platform.storage.get(MUSIC_STORAGE_KEY)??saved)!=='0';
     this.hapticsEnabled=this.platform.storage.get(HAPTICS_STORAGE_KEY)!=='0';
     this.audio.setEnabled(this.audioEnabled);
+    this.music.setEnabled(this.musicEnabled);
     this.platform.configureShare?.(()=>this.createShareContent());
   }
 
@@ -132,6 +140,10 @@ export class GameApplication {
     });
 
     this.platform.attachCanvas(this.app.canvas,(this.app.renderer as any).events);
+    this.app.stage.eventMode='static';
+    this.app.stage.hitArea=this.app.screen;
+    this.app.stage.on('pointerdowncapture',()=>this.music.unlock());
+    this.unaudio=this.platform.onAudioActiveChange?.(active=>this.music.setActive(active))??(()=>{});
     this.createView(false,!this.sharedLaunch);
 
     // UI sprites are optional decoration. Never block gameplay or the first
@@ -299,7 +311,6 @@ export class GameApplication {
     const viewport=this.platform.viewport();
     // Mini-game GPUs have hung on the custom laser mesh at fire; Graphics fallback is the same visual path as ?beam=fallback.
     this.view=new PixiGameView(this.app.renderer,this.perf,this.themeId,this.levels,this.platform.kind==='web');
-    this.view.setShareAvailable(this.platform.canShare?.()??false);
     this.app.stage.addChild(this.view.root);
     this.view.resize(viewport.width,viewport.height,this.platform.safeTop());
     this.view.sync(this.session.state);
@@ -307,7 +318,7 @@ export class GameApplication {
     this.bindViewHandlers();
     this.syncTutorial();
     if(reopenLevels)this.view.showLevelSelect(this.session.state.levelIndex,this.completedLevels,this.allLevelsUnlocked,this.unlockedThrough);
-    if(reopenSettings)this.view.showSettings(this.audioEnabled,this.hapticsEnabled,this.themeId,this.laserColorId);
+    if(reopenSettings)this.view.showSettings(this.audioEnabled,this.hapticsEnabled,this.themeId,this.laserColorId,this.musicEnabled);
     const renderer=this.app.renderer as any;
     if(renderer.background)renderer.background.color=Theme.bg;
     if(this.platform.kind==='web')applyThemeToDocument(themeById(this.themeId));
@@ -328,8 +339,14 @@ export class GameApplication {
       firePressStart:()=>this.startFireCharge(),
       firePressEnd:()=>this.endFireCharge(),
       reset:()=>{this.collectPendingCoins();this.pendingResult=null;this.audio.play('uiClick');this.session.reset();this.wake();},
-      openSettings:()=>{if(this.session.state.firing||this.view.result.visible||this.view.poster.visible)return;this.audio.play('uiClick');this.view.showSettings(this.audioEnabled,this.hapticsEnabled,this.themeId,this.laserColorId);this.wake();},
+      openSettings:()=>{if(this.session.state.firing||this.view.result.visible||this.view.poster.visible)return;this.audio.play('uiClick');this.view.showSettings(this.audioEnabled,this.hapticsEnabled,this.themeId,this.laserColorId,this.musicEnabled);this.wake();},
       closeSettings:()=>{this.audio.play('uiClick');this.view.closeSettings();this.wake();},
+      toggleMusic:()=>{
+        this.musicEnabled=!this.musicEnabled;this.music.setEnabled(this.musicEnabled);
+        this.platform.storage.set(MUSIC_STORAGE_KEY,this.musicEnabled?'1':'0');
+        this.view.setMusicEnabled(this.musicEnabled);
+        this.audio.play('uiClick');this.wake();
+      },
       toggleAudio:()=>{
         this.audioEnabled=!this.audioEnabled;this.audio.setEnabled(this.audioEnabled);
         this.platform.storage.set(AUDIO_STORAGE_KEY,this.audioEnabled?'1':'0');
@@ -343,10 +360,6 @@ export class GameApplication {
         this.view.setHapticsEnabled(this.hapticsEnabled);
         if(this.hapticsEnabled)this.vibrate('light');
         this.wake();
-      },
-      share:()=>{
-        if(!this.platform.canShare?.())return;
-        this.platform.shareAppMessage?.(this.createShareContent());
       },
       selectTheme:(id)=>{
         if(id===this.themeId||id===activeThemeId)return;
@@ -371,13 +384,13 @@ export class GameApplication {
       selectLevel:(index)=>{
         if(this.session.state.firing||this.view.result.visible||this.view.poster.visible)return;
         if(index<0||index>=this.totalLevels)return;
-        if(!isLevelUnlocked(index,this.totalLevels,this.completedLevels,this.allLevelsUnlocked,this.unlockedThrough)){
+        if(!isLevelUnlocked(index,this.levels,this.completedLevels,this.allLevelsUnlocked,this.unlockedThrough)){
           this.view.showToast('通过当前关卡后解锁下一关',nowMs());this.wake();return;
         }
         this.collectPendingCoins();this.pendingResult=null;this.audio.play('uiClick');
         this.session.load(index);this.wake();
       },
-      canSelectLevel:index=>isLevelUnlocked(index,this.totalLevels,this.completedLevels,this.allLevelsUnlocked,this.unlockedThrough),
+      canSelectLevel:index=>isLevelUnlocked(index,this.levels,this.completedLevels,this.allLevelsUnlocked,this.unlockedThrough),
       unlockAllLevels:()=>this.unlockAllLevels(),
       clearHistory:()=>this.clearHistory(),
       uiChanged:()=>this.wake(),
@@ -602,5 +615,5 @@ export class GameApplication {
   private renderOnce(){
     try{this.app.renderer.render(this.app.stage);}catch(error){console.warn('[game] render failed',error);}
   }
-  destroy(){this.pendingResult=null;this.cancelFireCharge();this.clearFireWatchdog();this.unresize();this.audio.destroy();this.view?.destroy();this.app.destroy(true);}
+  destroy(){this.pendingResult=null;this.cancelFireCharge();this.clearFireWatchdog();this.unresize();this.unaudio();this.music.destroy();this.audio.destroy();this.view?.destroy();this.app.destroy(true);}
 }

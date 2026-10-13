@@ -8,6 +8,13 @@ export function isBossStage(level: LevelDefinition): boolean {
   return level.campaign?.kind === 'boss' || Boolean(level.timeBoss);
 }
 
+export function nextMainLevelIndex(levels: readonly LevelDefinition[], currentIndex: number): number {
+  for (let index = currentIndex + 1; index < levels.length; index += 1) {
+    if (!isBossStage(levels[index])) return index;
+  }
+  return -1;
+}
+
 export function stageLabel(level: LevelDefinition, fallbackIndex = 0): string {
   const number = level.campaign?.displayNumber ?? fallbackIndex + 1;
   return isBossStage(level) ? `第 ${level.chapterNo} 章 · 挑战` : `第 ${number} 关`;

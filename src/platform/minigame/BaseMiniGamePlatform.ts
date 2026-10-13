@@ -16,6 +16,24 @@ export class BaseMiniGamePlatform implements IPlatform{
     return canvas;
   }
   createAudio(){return this.api.createInnerAudioContext?.()}
+  onAudioActiveChange(handler:(active:boolean)=>void){
+    let visible=true,interrupted=false;
+    const sync=()=>handler(visible&&!interrupted);
+    const hide=()=>{visible=false;sync();};
+    const show=()=>{visible=true;sync();};
+    const begin=()=>{interrupted=true;sync();};
+    const end=()=>{interrupted=false;sync();};
+    this.api.onHide?.(hide);
+    this.api.onShow?.(show);
+    this.api.onAudioInterruptionBegin?.(begin);
+    this.api.onAudioInterruptionEnd?.(end);
+    return()=>{
+      this.api.offHide?.(hide);
+      this.api.offShow?.(show);
+      this.api.offAudioInterruptionBegin?.(begin);
+      this.api.offAudioInterruptionEnd?.(end);
+    };
+  }
   attachCanvas(canvas:any,events?:any){
     this.detachInput();
     if(!canvas||!events)return;

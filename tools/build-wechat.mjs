@@ -87,6 +87,7 @@ const requiredFiles = [
   'audio/coin-pickup.mp3',
   'audio/level-victory.mp3',
   'audio/game-over.mp3',
+  'audio/space-loop.mp3',
   'ui/settings-gear.png',
   'ui/space-background.jpg',
   'ui/victory-crown.png',

@@ -236,18 +236,26 @@ export class CoinLayer extends Container {
       }else if(travelAge<0){
         const t=clamp((age-popDuration)/flight.hoverDuration,0,1);
         const ease=t*t*(3-2*t);
-        x=hoverX+flight.drift.x*ease;
-        y=hoverY+flight.drift.y*ease;
+        // Keep the original rise, but carry its velocity into the UI flight
+        // instead of easing to a complete stop at the phase boundary.
+        const rise=t*t;
+        x=hoverX+flight.drift.x*rise;
+        y=hoverY+flight.drift.y*rise;
         radius=17*(1.5-.15*ease);
         rotation=flight.spin+Math.sin(t*Math.PI)**2*.06;
       }else{
         const t=clamp(travelAge/flight.duration,0,1),ease=t*t;
-        const inverse=1-ease;
+        const inverse=1-t;
         const fromX=hoverX+flight.drift.x,fromY=hoverY+flight.drift.y;
-        const controlX=fromX+flight.drift.x*2;
-        const controlY=fromY+(end.y-fromY)*.3;
-        x=inverse*inverse*fromX+2*inverse*ease*controlX+ease*ease*end.x;
-        y=inverse*inverse*fromY+2*inverse*ease*controlY+ease*ease*end.y;
+        // Match the rise's final velocity exactly, then bend gently toward
+        // the wallet. A second handle guides the last stretch into the icon.
+        const tangentScale=2*flight.duration/(3*flight.hoverDuration);
+        const controlX=fromX+flight.drift.x*tangentScale;
+        const controlY=fromY+flight.drift.y*tangentScale;
+        const arrivalX=end.x-(end.x-fromX)*.12;
+        const arrivalY=end.y+(fromY-end.y)*.24;
+        x=inverse**3*fromX+3*inverse*inverse*t*controlX+3*inverse*t*t*arrivalX+t**3*end.x;
+        y=inverse**3*fromY+3*inverse*inverse*t*controlY+3*inverse*t*t*arrivalY+t**3*end.y;
         radius=17*(1.35-.8*ease);
         rotation=flight.spin*(1-ease);
       }
