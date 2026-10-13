@@ -47,6 +47,10 @@ const rewardTextures=await Promise.all(['coin','crown'].map(async key=>{
   try { return await Assets.load<Texture>(`${assetBase}ui/victory-${key}.png`); }
   catch { return Texture.EMPTY; }
 }));
+const extraTextures = await Promise.all(['heart','emitter','receiver','settings-gear'].map(async key => {
+  try { return await Assets.load<Texture>(`${assetBase}ui/${key}.png`); }
+  catch { return Texture.EMPTY; }
+}));
 let session:GameSession,view:PixiGameView,clock=0,playing=false,overlay=false;
 
 function event(e:GameEvent){
@@ -77,6 +81,7 @@ function mountView(){
   app.stage.addChild(view.root);view.sync(session.state);
   view.setUiTexture('coin',rewardTextures[0]);
   view.setUiTexture('crown',rewardTextures[1]);
+  (['heart','emitter','receiver','settings'] as const).forEach((key,i)=>view.setUiTexture(key,extraTextures[i]));
   view.setHandlers({rotate:(x,y)=>session.rotateAt(x,y),firePressStart:()=>play(),firePressEnd:()=>{},bulletTime:()=>session.startBulletTime(),reset:()=>reset(),openSettings:()=>showOverlay(),
     tutorialNext:()=>{},tutorialSkip:()=>{},tutorialTap:()=>{},replayTutorial:()=>{},canSelectLevel:()=>false,
     toggleAudio:()=>{},toggleHaptics:()=>{},selectTheme:()=>{},closeSettings:()=>showOverlay(),openLevels:()=>{},

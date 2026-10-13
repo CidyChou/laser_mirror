@@ -1,4 +1,4 @@
-import { Container, FillGradient, Graphics, Rectangle, Text } from 'pixi.js';
+import { Container, FillGradient, Graphics, Rectangle, Sprite, Text, Texture } from 'pixi.js';
 import { portPosition, portSize, cellCenter, computeGeometry } from '@/gameplay/geometry';
 import { combinerNeed, focusNeed, itemKey, levelEmitters } from '@/gameplay/levelAccess';
 import type { BoardGeometry, Direction, GameState, ImpactEvent, LevelItem, Port } from '@/gameplay/types';
@@ -13,7 +13,7 @@ type SignalLink={id:string;root:Container;dot:Graphics;from:{x:number;y:number};
 type PortalMotion={key:string;pair:string;motion:Container;flow:Container;mist:Graphics;energy:Graphics;phase:number;hitAt:number|null;receiveAt:number|null;exiting:boolean;horizontal:boolean};
 type Kick={start:number};
 type ClickFx={root:Container;ring:Graphics;flash:Graphics;start:number;active:boolean};
-type PortNode={port:Port;emitter:boolean;targetIndex?:number;root:Container;halo:Graphics;light:Graphics;core:Graphics;pips:Graphics;required:number;phase:number;active:boolean;lastActive:boolean|null;lastCharge:number;sparks:Container;cell:number};
+type PortNode={shell:Graphics;gem:Graphics;sprite:Sprite;port:Port;emitter:boolean;targetIndex?:number;root:Container;halo:Graphics;light:Graphics;core:Graphics;pips:Graphics;required:number;phase:number;active:boolean;lastActive:boolean|null;lastCharge:number;sparks:Container;cell:number;boardCell:number};
 
 export class ObjectLayer extends Container{
   readonly captions=new Container();
@@ -23,6 +23,57 @@ export class ObjectLayer extends Container{
   private feedbackLayer=new Container();
   private itemNodes=new Map<string,ItemNode>();
   private portNodes:PortNode[]=[];
+  private portTextures = { emitter: Texture.EMPTY, receiver: Texture.EMPTY };
+
+  setPortTexture(kind: 'emitter' | 'receiver', texture: Texture) {
+    this.portTextures[kind] = texture;
+    for (const node of this.portNodes) this.applyPortTexture(node);
+  }
+
+  private applyPortTexture(node: PortNode) {
+    const texture = this.portTextures[node.emitter ? 'emitter' : 'receiver'];
+    const available = texture !== Texture.EMPTY && texture.width > 1;
+    const artHeight = node.boardCell * .94;
+    const artWidth = node.emitter ? node.boardCell * .4 : artHeight * (125 / 512);
+    node.sprite.texture = texture;
+    node.sprite.width = artWidth;
+    node.sprite.height = artHeight;
+    // The front rim of the emitter still lands at the simulation's muzzle.
+    node.sprite.position.set(node.emitter ? node.cell*.25-artWidth/2 : 0, 0);
+    node.sprite.visible = available;
+    node.shell.visible = !available;
+    node.gem.visible = node.emitter && available;
+    if (node.emitter) {
+      // The emitter art has a transparent prism window. Color lives behind it,
+      // so the same metal sprite works with every selectable laser palette.
+      const point = (x: number, y: number): [number, number] => [
+        node.sprite.x + (x / 222 - .5) * artWidth,
+        (y / 512 - .5) * artHeight,
+      ];
+      node.gem.clear()
+        .poly([
+          ...point(40, 149), ...point(49, 149), ...point(94, 207),
+          ...point(87, 225), ...point(87, 288), ...point(94, 306),
+          ...point(49, 358), ...point(40, 358), ...point(40, 321),
+          ...point(36, 315), ...point(36, 186), ...point(40, 180),
+        ], true)
+        .fill({ color: Theme.laserBody, alpha: .82 });
+      node.gem.poly([
+        ...point(40, 153), ...point(49, 153), ...point(91, 208),
+        ...point(85, 225), ...point(61, 209),
+      ], true).fill({ color: Theme.laserPlasma, alpha: .34 });
+      node.gem.moveTo(...point(61, 209)).lineTo(...point(61, 297))
+        .stroke({ color: Theme.laserPlasma, width: Math.max(.6, artWidth * .012), alpha: .42 });
+    }
+    node.halo.visible = !node.emitter || !available;
+    node.light.visible = !node.emitter || !available;
+    node.core.visible = node.emitter ? !available : node.active && node.required === 1;
+    const stretch=artHeight/(node.cell*.74);
+    node.halo.scale.y=stretch;
+    node.light.scale.y=stretch;
+    node.pips.scale.y=stretch;
+    node.shell.scale.y=stretch;
+  }
   private kicks=new Map<string,Kick>();
   private clickPool:ClickFx[]=[];
   private rotateHandler:(x:number,y:number)=>void=()=>{};
@@ -492,7 +543,8 @@ export class ObjectLayer extends Container{
     // Local +X always faces into the board, for all four wall orientations.
     root.rotation={W:0,E:Math.PI,N:Math.PI/2,S:-Math.PI/2}[port.side];
     const cell=portSize(g.cell),length=cell*.74,width=cell*(emitter?.25:.19);
-    const shell=new Graphics(),halo=new Graphics(),light=new Graphics(),core=new Graphics(),pips=new Graphics(),sparks=new Container();
+    const sprite = new Sprite(Texture.EMPTY); sprite.anchor.set(.5);
+    const shell=new Graphics(),gem=new Graphics(),halo=new Graphics(),light=new Graphics(),core=new Graphics(),pips=new Graphics(),sparks=new Container();
     shell.roundRect(-width*.54,-length/2+cell*.05,width*1.22,length,cell*.04).fill({color:Theme.shadow,alpha:.65});
     shell.roundRect(-width*.52,-length/2,width*1.12,length,cell*.04)
       .fill(this.finish(emitter&&isLightTheme()?mix(Theme.laserBody,Theme.raisedFixed,.45):Theme.raisedFixed,Theme.boardShadow,true))
@@ -503,34 +555,33 @@ export class ObjectLayer extends Container{
     }
     this.light(halo,emitter?cell*.12:cell*.035,0,cell*(emitter?.50:.37),length*.85,Theme.white,1);
     halo.blendMode='add';
-    const lensW=width*.42,lensH=length*.62;
-    light.roundRect(-lensW/2,-lensH/2,lensW,lensH,cell*.02).fill(Theme.white);
     if(emitter){
       // A broad arrow-shaped nozzle is recognizable even without animation.
       shell.poly([-cell*.025,-cell*.16,cell*.09,-cell*.16,cell*.25,0,cell*.09,cell*.16,-cell*.025,cell*.16],true)
         .fill(this.finish(Theme.laserPlasma,Theme.beam2)).stroke({color:Theme.laserPlasma,width:1.5});
       shell.circle(cell*.20,0,cell*.09).fill(this.finish(Theme.laserPlasma,Theme.beam2));
-      light.poly([cell*.018,-cell*.092,cell*.17,0,cell*.018,cell*.092],true).fill(Theme.white);
-      light.circle(cell*.16,0,cell*.055).fill(Theme.white);
-      core.moveTo(cell*.02,0).lineTo(cell*.20,0)
-        .stroke({color:Theme.laserCore,width:Math.max(2.2,cell*.035),cap:'round'});
-      core.circle(cell*.18,0,cell*.028).fill(Theme.white);
       for(let i=0;i<5;i++){
         const spark=new Graphics().circle(0,0,cell*.014).fill(Theme.laserPlasma)
           .circle(0,0,cell*.006).fill(Theme.white);
         sparks.addChild(spark);
       }
       sparks.blendMode='add';
-    }else{
-      light.moveTo(cell*.13,-cell*.22).lineTo(cell*.19,-cell*.22).lineTo(cell*.19,cell*.22).lineTo(cell*.13,cell*.22)
-        .stroke({color:Theme.white,width:Math.max(2,cell*.027),alpha:.9});
-      core.moveTo(0,-lensH*.32).lineTo(0,lensH*.32)
-        .stroke({color:Theme.white,width:Math.max(1.5,cell*.022),cap:'round'});
     }
     core.blendMode='add';
-    root.addChild(halo,shell,light,core,pips,sparks);
-    return{port,emitter,targetIndex,root,halo,light,core,pips,sparks,cell,required:Math.max(1,Math.floor(required)),
+    // The bitmap supplies only material; live optical state stays in vector layers.
+    const slitX = emitter ? .015 : 0;
+    light.roundRect(cell * (slitX - .022), -cell * .225, cell * .044, cell * .45, cell * .012).fill(Theme.white);
+    if (emitter) {
+      light.roundRect(cell * .16, -cell * .045, cell * .09, cell * .09, cell * .018).fill(Theme.white);
+      core.moveTo(cell * .18, 0).lineTo(cell * .25, 0).stroke({color:Theme.white,width:cell*.025,cap:'round'});
+    } else {
+      core.moveTo(cell * slitX, -cell * .19).lineTo(cell * slitX, cell * .19).stroke({color:Theme.white,width:cell*.015,cap:'round'});
+    }
+    root.addChild(halo,shell,gem,sprite,light,core,pips,sparks);
+    const node: PortNode = {shell,gem,sprite,port,emitter,targetIndex,root,halo,light,core,pips,sparks,cell,boardCell:g.cell,required:Math.max(1,Math.floor(required)),
       phase:(targetIndex??0)*1.37,active:false,lastActive:null,lastCharge:-1};
+    this.applyPortTexture(node);
+    return node;
   }
 
   private refreshPort(n:PortNode,state:GameState,g:BoardGeometry){
@@ -544,7 +595,7 @@ export class ObjectLayer extends Container{
     const idleGold=isLightTheme()?mix(Theme.gold,0xffdb58,.68):mix(Theme.gold,Theme.white,.10);
     const color=n.emitter?Theme.laserBody:active?Theme.green:idleGold;
     n.halo.tint=color;n.light.tint=color;
-    n.core.visible=n.emitter||(active&&n.required===1);
+    n.core.visible=n.emitter?!n.sprite.visible:(active&&n.required===1);
     n.pips.clear();
     // Ordinary targets have no extra ornament. Multi-hit targets retain only
     // the necessary charge marks, integrated into the receiving window.

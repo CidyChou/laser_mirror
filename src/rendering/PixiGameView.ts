@@ -125,6 +125,8 @@ export class PixiGameView{
       this.bg.setTexture(texture);
       this.levelSelect.setBackgroundTexture(texture);
     }
+    if(key==='heart') this.hud.setHeartTexture(texture);
+    if(key==='emitter'||key==='receiver') this.objects.setPortTexture(key,texture);
     if(key==='finger') this.tutorial.setFingerTexture(texture);
     if(key==='settings'){
       this.hud.setGearTexture(texture);

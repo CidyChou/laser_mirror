@@ -20,6 +20,7 @@ export class Button extends Container {
   private pressedState = false;
   private labelOffsetY = 0;
   private cornerRadius: number | undefined;
+  private surfaceDepth: number | undefined;
   private labelMaxWidth = Infinity;
   private chargeProgress: number | null = null;
   private readonly finishes = new Map<number, FillGradient>();
@@ -86,11 +87,18 @@ export class Button extends Container {
     this.caption.scale.set(1);
     const available = Math.min(this.labelMaxWidth, this.widthPx - (this.kind === 'fire' ? 156 : 32));
     if (this.caption.width > available) this.caption.scale.set(available / this.caption.width);
+    const idleDepth = this.surfaceDepth ?? (this.kind === 'icon' ? UI_TOKENS.button.chromeDepth : UI_TOKENS.button.idleDepth);
+    this.caption.y = this.labelCenterY(this.heightPx - idleDepth);
   }
 
   setLabelOffsetY(offset: number) {
     if (this.labelOffsetY === offset) return;
     this.labelOffsetY = offset;
+    this.redraw();
+  }
+
+  setSurfaceDepth(depth: number) {
+    this.surfaceDepth = Math.max(0, depth);
     this.redraw();
   }
 
@@ -141,12 +149,8 @@ export class Button extends Container {
     const radius = this.cornerRadius ?? (this.kind === 'fire' ? 38 : this.kind === 'icon' ? UI_TOKENS.radius.md : 22);
     const pressed = this.pressedState;
     const disabled = this.disabledState;
-    const depth = pressed
-      ? UI_TOKENS.button.pressedDepth
-      : this.kind === 'icon'
-        ? UI_TOKENS.button.chromeDepth
-        : UI_TOKENS.button.idleDepth;
-    const idleDepth = this.kind === 'icon' ? UI_TOKENS.button.chromeDepth : UI_TOKENS.button.idleDepth;
+    const idleDepth = this.surfaceDepth ?? (this.kind === 'icon' ? UI_TOKENS.button.chromeDepth : UI_TOKENS.button.idleDepth);
+    const depth = pressed ? Math.min(idleDepth / 2, UI_TOKENS.button.pressedDepth) : idleDepth;
     const faceH = this.heightPx - idleDepth;
     const faceY = idleDepth - depth;
 
@@ -184,7 +188,7 @@ export class Button extends Container {
         colorStops:[{offset:0,color:fill},{offset:1,color:shade(fill,this.kind==='fire'?.88:isLightTheme()?.96:.79)}]});
       this.finishes.set(fill,finish);
     }
-    this.shadow.roundRect(0, 8, this.widthPx, faceH, radius)
+    this.shadow.roundRect(0, this.surfaceDepth === undefined ? 8 : idleDepth + 2, this.widthPx, faceH, radius)
       .fill({ color: Theme.shadow, alpha: disabled ? .10 : .20 });
     this.body.roundRect(0, idleDepth, this.widthPx, faceH, radius).fill(shade(fill, isLightTheme()?.82:.56));
     this.content.y = faceY;
@@ -208,7 +212,7 @@ export class Button extends Container {
   }
 
   private labelCenterY(faceH: number) {
-    const size = Number(this.caption.style.fontSize ?? 26);
+    const size = Number(this.caption.style.fontSize ?? 26) * this.caption.scale.y;
     // PingFang / Hiragino CJK sits below the em-box center; lift onto the face midline.
     return faceH / 2 - Math.round(size * UI_TOKENS.button.labelOpticalLift) + this.labelOffsetY;
   }

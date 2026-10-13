@@ -18,6 +18,20 @@ for(const cols of [3,4,6,8,9,12])for(const rows of [3,6,9,12]){
     const rx=side==='W'||side==='E'?halfDepth:halfLength,ry=side==='N'||side==='S'?halfDepth:halfLength;
     assert(position.x-rx>=0&&position.x+rx<=DESIGN_WIDTH,`${cols}×${rows} ${side}: port clipped horizontally`);
     assert(position.y-ry>=STAGE_TOP&&position.y+ry<=STAGE_TOP+STAGE_HEIGHT,`${cols}×${rows} ${side}: port clipped vertically`);
+    // Check the full new bitmap footprint, including the emitter's muzzle,
+    // against the stage edges at both small and large cell sizes.
+    for(const emitter of [true,false]){
+      const artHeight=g.cell*.94,artWidth=emitter?g.cell*.4:artHeight*125/512;
+      const centerX=emitter?size*.25-artWidth/2:0;
+      for(const x of [centerX-artWidth/2,centerX+artWidth/2])for(const y of [-artHeight/2,artHeight/2]){
+        const point=side==='W'?{x:position.x+x,y:position.y+y}
+          :side==='E'?{x:position.x-x,y:position.y-y}
+          :side==='N'?{x:position.x-y,y:position.y+x}
+          :{x:position.x+y,y:position.y-x};
+        assert(point.x>=0&&point.x<=DESIGN_WIDTH&&point.y>=STAGE_TOP&&point.y<=STAGE_TOP+STAGE_HEIGHT,
+          `${cols}×${rows} ${side}: ${emitter?'emitter':'receiver'} artwork clipped`);
+      }
+    }
     assert(Math.abs(Math.hypot(muzzle.x-edge.x,muzzle.y-edge.y)-9)<1e-7);
     // The nozzle's tip is the innermost point of both port silhouettes.
     assert(side==='W'?muzzle.x<g.ox:side==='E'?muzzle.x>g.ox+g.boardW:side==='N'?muzzle.y<g.oy:muzzle.y>g.oy+g.boardH);

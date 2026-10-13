@@ -1,7 +1,6 @@
 import { Graphics, Sprite, Texture } from 'pixi.js';
 import { drawGearIcon } from './icons';
 import { Button } from './Button';
-import { Theme } from '../theme';
 
 /** Shared settings control used by both gameplay and level selection. */
 export class SettingsButton extends Button {
@@ -22,7 +21,7 @@ export class SettingsButton extends Button {
     this.spriteIcon.position.set(centerX, centerY);
     this.spriteIcon.width = iconSize;
     this.spriteIcon.height = iconSize;
-    this.spriteIcon.tint = Theme.settingsIcon;
+    this.spriteIcon.tint = 0xffffff;
     this.spriteIcon.eventMode = 'none';
     this.spriteIcon.visible = false;
     this.content.addChild(this.fallbackIcon, this.spriteIcon);
@@ -31,6 +30,7 @@ export class SettingsButton extends Button {
   setTexture(texture: Texture) {
     const available = texture !== Texture.EMPTY && texture.width > 1;
     this.spriteIcon.texture = texture;
+    this.spriteIcon.width = this.spriteIcon.height = Math.min(this.widthPx, this.heightPx) * .575;
     this.spriteIcon.visible = available;
     this.fallbackIcon.visible = !available;
   }

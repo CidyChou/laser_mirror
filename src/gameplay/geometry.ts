@@ -2,7 +2,12 @@ import { DESIGN_WIDTH, STAGE_HEIGHT, STAGE_TOP } from '@/config/GameConfig';
 import type { BoardGeometry, LevelDefinition, Point, Port } from './types';
 
 function cellForBudget(cols: number, rows: number, cellGuess: number) {
-  const portPad = portOutset(cellGuess) + portSize(cellGuess) * 0.16 + 6;
+  // The emitter artwork extends backward from its muzzle by about 0.4 cell.
+  // Reserve that space so large 3×3/4×4 boards keep the whole device visible.
+  const portPad = Math.max(
+    portOutset(cellGuess) + portSize(cellGuess) * 0.16 + 6,
+    cellGuess * 0.4 + 11,
+  );
   const lip = Math.max(8, Math.min(12, cellGuess * 0.08));
   const maxBoardW = DESIGN_WIDTH - portPad * 2 - lip;
   const maxBoardH = STAGE_HEIGHT - portPad * 2 - lip;

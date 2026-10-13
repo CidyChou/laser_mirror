@@ -80,7 +80,14 @@ export class CoinLayer extends Container {
     this.counterIcon.texture = texture;
     this.counterIcon.visible = ok;
     this.counterFallback.visible = !ok;
-    for (const item of this.pool) applyCoinSprite(item.sprite, item.fallback, texture);
+    for (const item of this.pool) {
+      const visible = item.sprite.visible || item.fallback.visible;
+      const width = item.sprite.width, height = item.sprite.height;
+      applyCoinSprite(item.sprite, item.fallback, texture);
+      item.sprite.width = width; item.sprite.height = height;
+      item.sprite.visible = visible && ok; item.fallback.visible = visible && !ok;
+    }
+    this.placeCounter();
   }
 
   setHandlers(handlers: { onSound: () => void; onLaunch?: () => void; onComplete?: (now: number) => void }) {
@@ -335,6 +342,8 @@ export class CoinLayer extends Container {
     this.counterFallback.position.set(this.layout.x, this.layout.y);
     this.counterFallback.scale.set(this.layout.radius / COIN_RADIUS);
     this.counterValue.position.set(this.layout.textX, this.layout.y);
+    this.counterValue.scale.set(1);
+    this.counterValue.scale.set(Math.min(1, 64 / Math.max(1, this.counterValue.width)));
   }
 
   private clearFlights() {
@@ -354,17 +363,7 @@ export class CoinLayer extends Container {
 }
 
 function counterLayout() {
-  const radius = COIN_RADIUS;
-  const gap = 10;
-  const valueWidth = 72;
-  const groupWidth = radius * 2 + gap + valueWidth;
-  const groupX = (UI_RECTS.coinCounter.w - groupWidth) / 2 - 8;
-  return {
-    x: groupX + radius,
-    y: UI_RECTS.coinCounter.h / 2,
-    radius,
-    textX: groupX + radius * 2 + gap,
-  };
+  return { x: 30, y: (UI_RECTS.coinCounter.h - 5) / 2, radius: COIN_RADIUS, textX: 58 };
 }
 
 function drawCounterChrome(g: Graphics, highlighted: boolean) {

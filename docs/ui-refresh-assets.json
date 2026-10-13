@@ -1,0 +1,46 @@
+[
+  {
+    "key": "coin",
+    "name": "victory-coin",
+    "prompt": "Create ONE production-ready mobile puzzle game UI icon, transparent background. A single round champagne-gold energy coin, front-on orthographic view, perfectly circular face, small but visible beveled rim, an elegant simple recessed four-point light-star emblem at the center (not a five-point cartoon star), satin gold metal with soft warm highlights from upper left, restrained bevels, premium light-science-fiction industrial design, tactile semi-3D rendering, crisp strong silhouette readable at 20px. No text, letters, numerals, UI card, extra objects, particles, sparkles, ground shadow or surrounding glow. Centered, fills 84% of square canvas with transparent padding. Face points directly at viewer, no perspective tilt. Real alpha transparency.",
+    "source": "/Users/cidychou/.codex/generated_images/01a1332c-8012-7753-9610-93cbc3bed7f4/exec-5c7b1baf-d7f8-4f9a-a437-69e3e52de2ca.png"
+  },
+  {
+    "key": "heart",
+    "name": "heart",
+    "prompt": "Create ONE production-ready game UI heart icon matching the reference coin's premium satin bevel rendering. Single coral-red heart, pleasing compact symmetrical silhouette, softly rounded sculpted enamel, subtle warm upper-left highlight, darker ruby edges, no metal border. Face-on orthographic. Restrained premium light sci-fi puzzle game, readable at 20 pixels, no sparkles, text, particles, ground shadow, surrounding glow, other objects or card. Centered fills 84% square canvas. True transparent background.",
+    "source": "/Users/cidychou/.codex/generated_images/01a1332c-8012-7753-9610-93cbc3bed7f4/exec-ffe32da6-2cc1-4245-bed5-1d5efac60cdb.png"
+  },
+  {
+    "key": "crown",
+    "name": "victory-crown",
+    "prompt": "Create ONE production-ready premium light sci-fi mobile puzzle game asset. Single premium victory crown icon. Three bold rounded points, tall center point, satin champagne gold matching reference, small pale teal inset diamond in front band, elegant broad shape. Minimal refined bevels, no ornate patterns. Front-on orthographic slightly showing top surfaces. Strong clean silhouette readable at 50px. Match reference material quality and soft lighting. Centered isolated object fills 84% canvas with padding. Real transparent alpha background. No text, letters, numbers, extra objects, ground shadow, glow, sparkles, particles or UI card.",
+    "source": "/Users/cidychou/.codex/generated_images/01a1332c-8012-7753-9610-93cbc3bed7f4/exec-8bc8c04a-544f-4c78-89c1-145807b4d052.png"
+  },
+  {
+    "key": "settings",
+    "name": "settings-gear",
+    "prompt": "Create ONE production-ready premium light sci-fi mobile puzzle game asset. Single precision settings gear icon with six broad rounded teeth, substantial clean circular central opening. Satin silver titanium with dark slate beveled sides and restrained upper-left highlights. Front-on orthographic, strong silhouette readable at 20px, no decorations. Match reference material quality and soft lighting. Centered isolated object fills 84% canvas with padding. Real transparent alpha background. No text, letters, numbers, extra objects, ground shadow, glow, sparkles, particles or UI card.",
+    "source": "/Users/cidychou/.codex/generated_images/01a1332c-8012-7753-9610-93cbc3bed7f4/exec-c499a2e4-b33e-4a1f-a40b-0043d095ad5b.png"
+  },
+  {
+    "key": "emitter",
+    "name": "emitter",
+    "prompt": "Create ONE standalone production-ready transparent PNG sprite for a premium light sci-fi top-down mobile laser puzzle. Camera is perfectly overhead, orthographic. Canonical orientation: the device is mounted vertically along the LEFT side of a board, and MUST visibly fire to the RIGHT. It is a laser EMITTER, not a receiver: emphasize a large, obvious circular emission lens or open muzzle on the RIGHT edge at the exact vertical middle, aimed horizontally RIGHT; metal barrel/conduit clearly feeds the muzzle. Keep total silhouette vertically slim, height about twice width, to fit a 20×40 pixel game footprint. Satin titanium silver and dark graphite matching the reference's material and soft studio light, but use a clearly DIFFERENT shape from the reference. Neutral unlit casing with subtle dark cyan optical glass; game code adds color and glow. Strong clean silhouette with bold features readable at tiny size. Single isolated object only, centered, real alpha transparency, no background, UI card, text, symbols, beam, particles, glow, shadow, people or extra objects. Design variant 04: Prism laser launcher: a narrow titanium vertical mounting bracket, bold faceted central optical prism in cyan-tinted dark glass, a cone-shaped silver focusing nozzle projecting RIGHT from prism with a circular open tip. One strong clean directional profile.",
+    "source": "/Users/cidychou/.codex/generated_images/01a1332c-8012-7753-9610-93cbc3bed7f4/exec-29ace11c-d19b-48d2-b287-687d01314f00.png",
+    "alternatives": [
+      "/Users/cidychou/.codex/generated_images/01a1332c-8012-7753-9610-93cbc3bed7f4/exec-547bfeda-1ff5-475c-a0b2-23b2dd47b116.png",
+      "/Users/cidychou/.codex/generated_images/01a1332c-8012-7753-9610-93cbc3bed7f4/exec-a8885779-e3ea-4b00-a594-93e88f6c779b.png",
+      "/Users/cidychou/.codex/generated_images/01a1332c-8012-7753-9610-93cbc3bed7f4/exec-4a45f09e-ade0-4f89-b3e6-e4aed0b3aeef.png",
+      "/Users/cidychou/.codex/generated_images/01a1332c-8012-7753-9610-93cbc3bed7f4/exec-af8a550e-7101-4f5a-b64e-1eddd368b3bf.png"
+    ],
+    "baseSource": "/Users/cidychou/.codex/generated_images/01a1332c-8012-7753-9610-93cbc3bed7f4/exec-2df5fd95-9129-47a8-859f-6e4803fc0e1a.png",
+    "editPrompt": "Keep the variant 04 emitter metal frame and nozzle; remove the central cyan crystal as a true transparent alpha window and neutralize the muzzle lens. Game code draws the chosen laser color behind the opening."
+  },
+  {
+    "key": "receiver",
+    "name": "receiver",
+    "prompt": "Create ONE production-ready premium light sci-fi mobile puzzle game asset. Single narrow vertical laser receiver housing sprite for a top-down 2D board game. Viewed directly from above, orthographic flat plan view, no perspective tilt. Slim vertical rounded-rectangle dark titanium base with satin silver chamfer edges; height 2.8 times width. A long narrow black glass receiving window centered down vertical axis; flat exposed receiving edge on RIGHT. Two restrained silver end caps top and bottom. Neutral unlit shell only; no colored lights or beams. Precision optical instrument matching emitter family, elegant simple construction, readable at 15x40 pixels. Match reference material quality and soft lighting. Centered isolated object fills 84% canvas with padding. Real transparent alpha background. No text, letters, numbers, extra objects, ground shadow, glow, sparkles, particles or UI card.",
+    "source": "/Users/cidychou/.codex/generated_images/01a1332c-8012-7753-9610-93cbc3bed7f4/exec-c8b819c9-1fc4-4eef-8797-246853fab8fb.png"
+  }
+]

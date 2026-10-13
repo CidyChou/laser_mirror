@@ -1,4 +1,4 @@
-import { Container, Graphics, Rectangle, Text, Texture } from 'pixi.js';
+import { Container, Graphics, Rectangle, Sprite, Text, Texture } from 'pixi.js';
 import { UI_RECTS, UI_TOKENS } from '@/config/GameConfig';
 import type { GameState } from '@/gameplay/types';
 import { stageLabel } from '@/levels/campaign';
@@ -20,9 +20,11 @@ export class HudLayer extends Container {
   readonly previousLevel = levelArrow(-1);
   readonly nextLevel = levelArrow(1);
   private readonly hearts = new Graphics();
+  private readonly heartIcon = new Sprite(Texture.EMPTY);
+  private readonly heartFallback = new Graphics();
   private readonly heartsCount = new Text({
     text: '',
-    style: uiText({ fontSize: 32, fill: Theme.ink }),
+    style: uiText({ fontSize: 26, fill: Theme.ink }),
   });
   private readonly hint = new Text({
     text: '',
@@ -43,6 +45,11 @@ export class HudLayer extends Container {
   constructor() {
     super();
     this.build();
+  }
+
+  setHeartTexture(texture: Texture) {
+    this.heartIcon.texture = texture;
+    if (this.lastHearts >= 0) this.drawHearts(this.lastHearts);
   }
 
   setGearTexture(texture: Texture) {
@@ -69,10 +76,7 @@ export class HudLayer extends Container {
     const levelLabelSize=34;
     this.levelButton.setLabelSize(levelLabelSize);
     this.levelButton.setCornerRadius(20);
-    const chipFaceH=progress.h-UI_TOKENS.button.chromeDepth;
-    // Sit on the whole chip midline (face + bottom lip), not the generic CJK lift.
-    this.levelButton.setLabelOffsetY(Math.round(progress.h/2-chipFaceH/2+levelLabelSize*UI_TOKENS.button.labelOpticalLift));
-    const progressCenterY=progress.h/2;
+    const progressCenterY=(progress.h-UI_TOKENS.button.chromeDepth)/2;
     this.previousLevel.position.set(36,progressCenterY);
     this.nextLevel.position.set(progress.w-36,progressCenterY);
     this.levelButton.content.addChild(this.previousLevel,this.nextLevel);
@@ -81,6 +85,8 @@ export class HudLayer extends Container {
     const hearts = UI_RECTS.hearts;
     this.hearts.position.set(hearts.x, hearts.y);
     this.heartsCount.anchor.set(0, 0.5);
+    this.heartIcon.anchor.set(.5);
+    this.hearts.addChild(this.heartFallback, this.heartIcon);
 
     this.fireButton.position.set(UI_RECTS.fire.x, UI_RECTS.fire.y);
     this.fireButton.setLabelSize(34);
@@ -164,23 +170,32 @@ export class HudLayer extends Container {
     const { x: cardX, y: cardY, w, h } = UI_RECTS.hearts;
     const empty = left <= 0;
     this.hearts.clear()
-      .roundRect(0, 5, w, h - 2, 20)
+      .roundRect(0, 6, w, h - 2, 20)
       .fill({ color: Theme.shadow, alpha: 0.18 })
-      .roundRect(0, 3, w, h - 3, 20)
+      .roundRect(0, 5, w, h - 5, 20)
       .fill(Theme.surfaceSide)
-      .roundRect(0, 0, w, h - 3, 20)
+      .roundRect(0, 0, w, h - 5, 20)
       .fill(Theme.surface)
       .stroke({ color: Theme.surfaceLine, width: 1.5 });
 
-    const size = 34;
+    const centerY = (h - 5) / 2;
+    const iconSize = 36;
     const gap = 10;
-    const faceH = h - 5;
+    const textured = this.heartIcon.texture !== Texture.EMPTY && this.heartIcon.texture.width > 1;
     this.heartsCount.text = `${Math.max(0, left)}`;
     this.heartsCount.style.fill = empty ? Theme.inkSoft : Theme.ink;
-    const groupW = size + gap + this.heartsCount.width;
-    const startX = (w - groupW) / 2;
-    drawHeart(this.hearts, startX + size / 2, faceH / 2 + 1, size, empty ? Theme.heartEmpty : Theme.heart);
-    this.heartsCount.position.set(cardX + startX + size + gap, cardY + this.topOffset + faceH / 2);
+    this.heartsCount.scale.set(1);
+    this.heartsCount.scale.set(Math.min(1, (w-iconSize-gap-24)/Math.max(1, this.heartsCount.width)));
+    const groupWidth=iconSize+gap+this.heartsCount.width;
+    const iconX=(w-groupWidth)/2+iconSize/2;
+    this.heartIcon.position.set(iconX, centerY);
+    this.heartIcon.width = this.heartIcon.height = iconSize;
+    this.heartIcon.visible = textured;
+    this.heartIcon.alpha = empty ? .35 : 1;
+    this.heartFallback.clear();
+    drawHeart(this.heartFallback, iconX, centerY, 34, empty ? Theme.heartEmpty : Theme.heart);
+    this.heartFallback.visible = !textured;
+    this.heartsCount.position.set(cardX + iconX + iconSize/2 + gap, cardY + this.topOffset + centerY - 8*this.heartsCount.scale.y);
   }
 }
 

@@ -12,11 +12,11 @@ export const UI_TOKENS = {
 export const UI_RECTS = {
   settings: { x: 46, y: 152, w: 82, h: 76 },
   progress: { x: 198, y: 152, w: 324, h: 76 },
-  hearts: { x: 554, y: 152, w: 124, h: 76 },
+  hearts: { x: 550, y: 152, w: 136, h: 76 },
   coinCounter: { x: 550, y: 152, w: 136, h: 76 },
   fire: { x: 158, y: 1052, w: 404, h: 100 },
   hint: { x: 360, y: 1180 },
-  resultWin: { x: 80, y: 256, w: 560, h: 640 },
+  resultWin: { x: 80, y: 276, w: 560, h: 600 },
   resultLose: { x: 90, y: 318, w: 540, h: 540 },
   settingsPanel: { x: 70, y: 80, w: 580, h: 1120 },
 } as const;

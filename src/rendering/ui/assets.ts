@@ -7,6 +7,9 @@ const FILES = {
   settings: 'ui/settings-gear.png',
   crown: 'ui/victory-crown.png',
   coin: 'ui/victory-coin.png',
+  heart: 'ui/heart.png',
+  emitter: 'ui/emitter.png',
+  receiver: 'ui/receiver.png',
   finger: 'ui/tutorial/finger.png',
 } as const;
 
@@ -30,11 +33,10 @@ export async function loadUiAssets(kind: PlatformKind): Promise<void> {
     }));
     return;
   }
-  try {
-    await Assets.load(Object.values(FILES).map((file) => src(kind, file)));
-  } catch {
-    // Sprite fallbacks stay in the HUD / result layers.
-  }
+  await Promise.all(Object.values(FILES).map(async file => {
+    try { await Assets.load(src(kind, file)); }
+    catch { /* Each missing decoration keeps its own vector fallback. */ }
+  }));
 }
 
 export function uiTexture(kind: PlatformKind, key: UiAssetKey): Texture {

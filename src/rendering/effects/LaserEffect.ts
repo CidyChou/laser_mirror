@@ -180,6 +180,7 @@ export class LaserEffect extends Container{
   private ringA=new Graphics();
   private sparks=new Container();
   private stub=new Graphics();
+  private focus=new Graphics();
   private core=new Graphics();
   private pop=new Graphics();
   private boundResult:LaserTrace|null=null;
@@ -490,11 +491,17 @@ export class LaserEffect extends Container{
     this.stub.blendMode=this.energyBlend;
     this.stub.moveTo(0,0).lineTo(1,0).stroke({color:Theme.beam,width:9.5,alpha:.32,cap:'round'});
     this.stub.moveTo(0,0).lineTo(1,0).stroke({color:Theme.white,width:2.4,alpha:.82,cap:'round'});
+    // A short, fixed-length focal line avoids stretching the round caps into
+    // the wide wedge seen halfway through the hold-to-fire charge.
+    this.focus.blendMode=this.energyBlend;
+    this.focus.moveTo(0,0).lineTo(11,0).stroke({color:Theme.beam,width:4.2,alpha:.26,cap:'round'});
+    this.focus.moveTo(0,0).lineTo(11,0).stroke({color:Theme.beamHot,width:2.2,alpha:.72,cap:'round'});
+    this.focus.moveTo(0,0).lineTo(8,0).stroke({color:Theme.white,width:1,alpha:.92,cap:'round'});
     this.core.blendMode=this.energyBlend;
     this.core.circle(0,0,1).fill({color:Theme.white,alpha:1});
     this.pop.blendMode=this.energyBlend;
     this.pop.circle(0,0,1).fill({color:Theme.white,alpha:1});
-    this.chargeRoot.addChild(this.halo,this.ringA,this.sparks,this.stub,this.core,this.pop);
+    this.chargeRoot.addChild(this.halo,this.ringA,this.sparks,this.stub,this.focus,this.core,this.pop);
     this.chargeRoot.visible=false;this.chargeRoot.eventMode='none';
   }
 
@@ -508,9 +515,17 @@ export class LaserEffect extends Container{
     this.halo.scale.set(1-inhale*.36);this.halo.alpha=.65+chargeT*.3;
     const phase=(chargeT*1.45)%1;
     this.ringA.scale.set((23-phase*15)/23);this.ringA.alpha=(.28+phase*.48)*(1-chargeT*.1);
+    // Only the middle of the charge changes; the initial gather and final
+    // release keep their established poses and timing.
+    const focusMix=smoothstep(.23,.38,chargeT)*(1-smoothstep(.68,.81,chargeT));
+    this.ringA.alpha*=1-.82*focusMix;
     const sparkR=17*(1-Math.pow(chargeT,.82));
     this.sparks.rotation=chargeT*Math.PI*.8;this.sparks.scale.set(sparkR);this.sparks.alpha=.5+chargeT*.38;
     this.stub.rotation=Math.atan2(dir.dy,dir.dx);this.stub.scale.set(chargeT>.4?4+chargeT*9:0,1);
+    this.stub.alpha=1-focusMix;
+    this.focus.rotation=this.stub.rotation;
+    this.focus.alpha=focusMix;
+    this.focus.visible=focusMix>.001;
     const throb=.78+.22*Math.sin(chargeT*Math.PI*10);
     this.core.scale.set((2.5+chargeT*3.8)*throb);this.core.alpha=.8+chargeT*.2;
     const showPop=quality==='high'&&chargeT>.8;

@@ -331,6 +331,7 @@ export class GameApplication {
     this.view.setUiTexture('crown',uiTexture(this.platform.kind,'crown'));
     this.view.setUiTexture('coin',uiTexture(this.platform.kind,'coin'));
     this.view.setUiTexture('finger',uiTexture(this.platform.kind,'finger'));
+    for (const key of ['heart','emitter','receiver'] as const) this.view.setUiTexture(key,uiTexture(this.platform.kind,key));
   }
   private bindViewHandlers(){
     this.view.setHandlers({

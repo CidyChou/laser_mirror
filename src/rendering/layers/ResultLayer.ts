@@ -8,13 +8,15 @@ import { setUiFontSize, Theme, uiText } from '../theme';
 export type ResultKind = 'win' | 'lose';
 
 export class ResultLayer extends Container {
-  readonly primary = new Button(326, 82, '下一关', 'primary');
-  readonly preview = new Button(244, 70, '预览本关', 'secondary');
-  readonly levels = new Button(244, 70, '选择关卡', 'secondary');
+  readonly primary = new Button(464, 84, '下一关', 'primary');
+  readonly preview = new Button(224, 60, '预览本关', 'secondary');
+  readonly levels = new Button(224, 60, '选择关卡', 'secondary');
   readonly secondary = new Button(340, 64, '重新挑战', 'secondary');
   private readonly dim = new Graphics();
   private readonly panel = new Container();
   private readonly panelGfx = new Graphics();
+  private readonly rewardPanel = new Graphics();
+  private hasReward = false;
   private readonly title = new Text({ text: '', style: uiText({ fontSize: 52, fill: Theme.ink }) });
   private readonly subtitle = new Text({ text: '', style: uiText({ fontSize: 22, fill: Theme.inkSoft }) });
   private readonly tip = new Text({
@@ -22,8 +24,8 @@ export class ResultLayer extends Container {
     style: uiText({ fontSize: 18, fill: Theme.ink, align: 'center', wordWrap: true, wordWrapWidth: 420 }),
   });
   private readonly rewardLabel = new Text({
-    text: '获得',
-    style: uiText({ fontSize: 32, fill: Theme.inkSoft }),
+    text: '本关奖励',
+    style: uiText({ fontSize: 24, fill: Theme.inkSoft }),
   });
   private readonly rewardValue = new Text({
     text: '+0',
@@ -50,18 +52,25 @@ export class ResultLayer extends Container {
     this.subtitle.anchor.set(0.5);
     this.tip.anchor.set(0.5);
     this.rewardLabel.anchor.set(0, 0.5);
-    this.rewardValue.anchor.set(0, 0.5);
+    this.rewardValue.anchor.set(1, 0.5);
     this.rewardCoin.anchor.set(0.5);
     this.crown.anchor.set(0.5);
-    this.crown.width = 124;
-    this.crown.height = 124;
-    drawCrownIcon(this.crownFallback, 124);
+    this.crown.width = 116;
+    this.crown.height = 116;
+    drawCrownIcon(this.crownFallback, 116);
     this.primary.setLabelSize(28);
+    this.primary.setSurfaceDepth(4);
+    this.primary.setCornerRadius(22);
+    this.preview.setSurfaceDepth(2);
+    this.levels.setSurfaceDepth(2);
+    this.preview.setCornerRadius(18);
+    this.levels.setCornerRadius(18);
     this.preview.setLabelSize(22);
     this.levels.setLabelSize(22);
     this.secondary.setLabelSize(22);
     this.panel.addChild(
       this.panelGfx,
+      this.rewardPanel,
       this.crownFallback,
       this.crown,
       this.title,
@@ -82,6 +91,7 @@ export class ResultLayer extends Container {
   setCrownTexture(texture: Texture) {
     const ok = texture !== Texture.EMPTY && texture.width > 1;
     this.crown.texture = texture;
+    this.crown.width = this.crown.height = 116;
     this.crown.visible = this.kind === 'win' && ok;
     this.crownFallback.visible = this.kind === 'win' && !ok;
   }
@@ -90,8 +100,9 @@ export class ResultLayer extends Container {
     this.coinTexture = texture;
     const ok = texture !== Texture.EMPTY && texture.width > 1;
     this.rewardCoin.texture = texture;
-    this.rewardCoin.visible = this.kind === 'win' && ok;
-    this.rewardCoinFallback.visible = this.kind === 'win' && !ok;
+    this.rewardCoin.width = this.rewardCoin.height = 46;
+    this.rewardCoin.visible = this.hasReward && ok;
+    this.rewardCoinFallback.visible = this.hasReward && !ok;
   }
 
   get kindValue(): ResultKind { return this.kind; }
@@ -113,7 +124,8 @@ export class ResultLayer extends Container {
     this.levels.visible = kind === 'win';
     const reward = Math.max(0, Math.floor(copy.reward ?? 0));
     this.rewardValue.text = `+${reward}`;
-    const showReward = kind === 'win' && reward > 0;
+    const showReward = this.hasReward = kind === 'win' && reward > 0;
+    this.rewardPanel.visible = showReward;
     this.rewardLabel.visible = showReward;
     this.rewardValue.visible = showReward;
     const coinOk = this.coinTexture !== Texture.EMPTY && this.coinTexture.width > 1;
@@ -122,7 +134,7 @@ export class ResultLayer extends Container {
     this.crown.visible = kind === 'win' && this.crown.texture !== Texture.EMPTY && this.crown.texture.width > 1;
     this.crownFallback.visible = kind === 'win' && !this.crown.visible;
     this.title.style.fill = kind === 'win' ? Theme.ink : Theme.danger;
-    setUiFontSize(this.title, kind === 'win' ? 52 : 64);
+    setUiFontSize(this.title, kind === 'win' ? 48 : 64);
     this.layout();
     this.syncMotion(now);
   }
@@ -167,61 +179,56 @@ export class ResultLayer extends Container {
   }
 
   private layout() {
-    const rect = this.kind === 'win' ? UI_RECTS.resultWin : UI_RECTS.resultLose;
+    const win = this.kind === 'win';
+    const rect = win ? UI_RECTS.resultWin : UI_RECTS.resultLose;
+    const h = win && !this.hasReward ? rect.h - 112 : rect.h;
+    const top = -h / 2;
     this.panel.position.set(rect.x + rect.w / 2, rect.y + rect.h / 2);
-    this.drawPanel(rect.w, rect.h);
-    this.crown.position.set(0, -rect.h / 2 + 78);
+    this.drawPanel(rect.w, h);
+    this.crown.position.set(0, top + 82);
     this.crownFallback.position.copyFrom(this.crown.position);
-    this.title.position.set(0, this.kind === 'win' ? -rect.h / 2 + 168 : -rect.h / 2 + 132);
-    this.subtitle.position.set(0, this.kind === 'win' ? -rect.h / 2 + 218 : -rect.h / 2 + 198);
-    this.tip.position.set(0, this.kind === 'win' ? -18 : 18);
-    this.layoutReward();
-    if (this.kind === 'win') {
-      const dualY = rect.h / 2 - 186;
-      this.preview.position.set(-this.preview.widthPx - 8, dualY);
-      this.levels.position.set(8, dualY);
-      this.primary.position.set(-this.primary.widthPx / 2, rect.h / 2 - 100);
+    this.title.position.set(0, top + (win ? 168 : 132));
+    this.subtitle.position.set(0, top + (win ? 214 : 198));
+    this.tip.position.set(0, win ? top + 254 : 18);
+    this.layoutReward(top + 344);
+    if (win) {
+      const rewardSpace = this.hasReward ? 112 : 0;
+      this.primary.position.set(-232, top + 308 + rewardSpace);
+      this.preview.position.set(-232, top + 402 + rewardSpace);
+      this.levels.position.set(8, top + 402 + rewardSpace);
     } else {
-      this.primary.position.set(-this.primary.widthPx / 2, rect.h / 2 - 108);
+      this.primary.position.set(-this.primary.widthPx / 2, h / 2 - 108);
     }
-    this.secondary.position.set(-this.secondary.widthPx / 2, rect.h / 2 - 58);
+    this.secondary.position.set(-this.secondary.widthPx / 2, h / 2 - 58);
   }
 
-  private layoutReward() {
-    const gap = 10;
+  private layoutReward(y: number) {
     const coinR = 23;
-    const groupW = this.rewardLabel.width + gap + this.rewardValue.width + 8 + coinR * 2;
-    const startX = -groupW / 2;
-    const y = 42;
-    this.rewardLabel.position.set(startX, y);
-    this.rewardValue.position.set(startX + this.rewardLabel.width + gap, y);
-    const coinX = startX + this.rewardLabel.width + gap + this.rewardValue.width + 8 + coinR;
-    this.rewardCoin.position.set(coinX, y);
-    this.rewardCoin.width = coinR * 2;
-    this.rewardCoin.height = coinR * 2;
-    this.rewardCoinFallback.clear();
-    if (this.rewardCoinFallback.visible) {
-      drawCoinIcon(this.rewardCoinFallback, coinR);
-      this.rewardCoinFallback.position.set(coinX, y);
-    }
+    this.rewardPanel.clear().roundRect(-232, y - 44, 464, 88, 20)
+      .fill({ color: Theme.coin, alpha: .07 })
+      .stroke({ color: Theme.coin, alpha: .20, width: 1 });
+    this.rewardLabel.position.set(-208, y);
+    this.rewardValue.scale.set(1);
+    if (this.rewardValue.width > 160) this.rewardValue.scale.set(160 / this.rewardValue.width);
+    this.rewardValue.position.set(148, y);
+    this.rewardCoin.position.set(185, y);
+    this.rewardCoin.width = this.rewardCoin.height = coinR * 2;
+    drawCoinIcon(this.rewardCoinFallback, coinR);
+    this.rewardCoinFallback.position.set(185, y);
   }
 
   private drawPanel(w: number, h: number) {
-    const x = -w / 2;
-    const y = -h / 2;
-    const accent = this.kind === 'win' ? Theme.accent : Theme.danger;
+    const x = -w / 2, y = -h / 2;
     this.panelGfx.clear()
-      .roundRect(x + 6, y + 10, w, h, UI_TOKENS.radius.xl)
-      .fill({ color: Theme.shadow, alpha: 0.42 })
+      .roundRect(x, y + 8, w, h, UI_TOKENS.radius.xl)
+      .fill({ color: Theme.shadow, alpha: .28 })
       .roundRect(x, y, w, h, UI_TOKENS.radius.xl)
-      .fill(Theme.surfaceSide)
-      .stroke({ color: accent, width: 2 })
-      .roundRect(x + 4, y + 4, w - 8, h - 8, 32)
-      .fill(Theme.surface);
+      .fill(Theme.surface)
+      .stroke({ color: Theme.surfaceLine, width: 1.5, alpha: .85 });
     if (this.kind === 'lose') {
-      this.panelGfx.roundRect(-210,  -20, 420, 96, UI_TOKENS.radius.md)
+      this.panelGfx.roundRect(-210, -20, 420, 96, UI_TOKENS.radius.md)
         .fill(Theme.surfaceMuted)
-        .stroke({ color: Theme.danger, width: 1, alpha: 0.28 });
+        .stroke({ color: Theme.danger, width: 1, alpha: .28 });
     }
   }
 

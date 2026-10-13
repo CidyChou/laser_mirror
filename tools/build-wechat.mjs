@@ -92,6 +92,9 @@ const requiredFiles = [
   'ui/space-background.jpg',
   'ui/victory-crown.png',
   'ui/victory-coin.png',
+  'ui/heart.png',
+  'ui/emitter.png',
+  'ui/receiver.png',
   'ui/tutorial/finger.png',
   'ui/app-icon.png',
 ];

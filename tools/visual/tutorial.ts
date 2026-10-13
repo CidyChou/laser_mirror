@@ -20,6 +20,7 @@ const storage = new Map<string, string>([
   ['laser-mirror-audio-enabled', '0'],
   ['laser-mirror-haptics-enabled', '0'],
   ['laser-mirror-theme', params.get('theme') ?? 'void'],
+  ['laser-mirror-laser-color', params.get('laserColor') ?? 'pink'],
 ]);
 if (params.get('learned') === '1') storage.set('laser-mirror-tutorial-v1', JSON.stringify([...new Set(levels.flatMap(tutorialLessonIds))]));
 const platform = new WebPlatform();
