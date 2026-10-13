@@ -93,6 +93,7 @@ const requiredFiles = [
   'ui/victory-coin.png',
   'ui/tutorial/finger.png',
   'ui/app-icon.png',
+  'ui/loading-title.png',
 ];
 for (const relativePath of requiredFiles) {
   const filePath = join(outputDirectory, relativePath);

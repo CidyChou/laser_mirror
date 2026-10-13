@@ -8,6 +8,7 @@ const FILES = {
   crown: 'ui/victory-crown.png',
   coin: 'ui/victory-coin.png',
   finger: 'ui/tutorial/finger.png',
+  loadingTitle: 'ui/loading-title.png',
 } as const;
 
 export type UiAssetKey = keyof typeof FILES;
@@ -18,23 +19,27 @@ function src(_kind: PlatformKind, file: string): string {
   return file;
 }
 
-export async function loadUiAssets(kind: PlatformKind): Promise<void> {
-  if (kind !== 'web') {
-    await Promise.all((Object.entries(FILES) as [UiAssetKey, string][]).map(async ([key, file]) => {
-      try {
-        nativeTextures.set(key, await loadNativeTexture(file));
-      } catch (error) {
-        nativeTextures.delete(key);
-        console.warn(`[ui] failed to load ${file}`, error);
-      }
-    }));
-    return;
-  }
-  try {
-    await Assets.load(Object.values(FILES).map((file) => src(kind, file)));
-  } catch {
-    // Sprite fallbacks stay in the HUD / result layers.
-  }
+export async function loadUiAssets(kind: PlatformKind, onProgress?: (ratio: number) => void): Promise<void> {
+  const entries = Object.entries(FILES) as [UiAssetKey, string][];
+  let completed = 0;
+  await Promise.all(entries.map(async ([key, file]) => {
+    try {
+      if (kind !== 'web') nativeTextures.set(key, await loadNativeTexture(file));
+      else await withTimeout(Assets.load(src(kind, file)), file);
+    } catch (error) {
+      nativeTextures.delete(key);
+      // Every sprite has a vector/text fallback; optional images must never trap startup.
+      console.warn(`[ui] failed to load ${file}`, error);
+    }
+    onProgress?.(++completed / entries.length);
+  }));
+}
+
+function withTimeout<T>(pending: Promise<T>, file: string): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error(`Image load timed out: ${file}`)), 4500);
+    pending.then(resolve, reject).finally(() => clearTimeout(timer));
+  });
 }
 
 export function uiTexture(kind: PlatformKind, key: UiAssetKey): Texture {
@@ -51,7 +56,17 @@ function loadNativeTexture(file: string): Promise<Texture> {
       onload: (() => void) | null;
       onerror: ((error?: unknown) => void) | null;
     };
+    const cleanUp = () => {
+      clearTimeout(timer);
+      image.onload = null;
+      image.onerror = null;
+    };
+    const timer = setTimeout(() => {
+      cleanUp();
+      reject(new Error(`Image load timed out: ${file}`));
+    }, 4500);
     image.onload = () => {
+      cleanUp();
       try {
         const width = Number(image.naturalWidth || image.width || 0);
         const height = Number(image.naturalHeight || image.height || 0);
@@ -61,7 +76,10 @@ function loadNativeTexture(file: string): Promise<Texture> {
         reject(error);
       }
     };
-    image.onerror = (error) => reject(error ?? new Error(`Failed to load mini-game image: ${file}`));
+    image.onerror = (error) => {
+      cleanUp();
+      reject(error ?? new Error(`Failed to load mini-game image: ${file}`));
+    };
     image.src = file;
   });
 }

@@ -1,5 +1,6 @@
 import { Application } from 'pixi.js';
 import { AudioManager } from '@/audio/AudioManager';
+import { StartupScreen } from './StartupScreen';
 import { GameConfig } from '@/config/GameConfig';
 import { nowMs } from '@/core/clock';
 import { loadCoins, saveCoins, winReward } from '@/economy/wallet';
@@ -75,6 +76,8 @@ export class GameApplication {
   private paidVictory=false;
   private savingPoster=false;
   private readonly sharedLaunch:boolean;
+  private loading:StartupScreen|null=null;
+  private destroyed=false;
 
   constructor(private readonly platform:IPlatform){
     const repo=new LevelRepository();
@@ -115,7 +118,7 @@ export class GameApplication {
     return createGameShareContent(level,levelIndex);
   }
 
-  async start(canvas?:any){
+  async start(canvas?:any,options:{skipLoading?:boolean}={}){
     const v=this.platform.viewport();
     const touch=typeof navigator!=='undefined'&&(navigator.maxTouchPoints>0||/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent||''));
     this.perf.seedFromDevice({kind:this.platform.kind,touch,viewport:v});
@@ -132,11 +135,22 @@ export class GameApplication {
     });
 
     this.platform.attachCanvas(this.app.canvas,(this.app.renderer as any).events);
+    if(!options.skipLoading){
+      this.loading=new StartupScreen(this.app,this.platform);
+      this.loading.scene.setProgress(.15);
+      // Give the loading screen its own first paint before building the full game view.
+      await new Promise<void>(resolve=>setTimeout(resolve,0));
+      if(this.destroyed)return;
+    }
     this.createView(false,!this.sharedLaunch);
+    this.loading?.scene.setProgress(.35);
 
-    // UI sprites are optional decoration. Never block gameplay or the first
-    // frame on mini-game image callbacks; the vector fallbacks are complete.
-    void loadUiAssets(this.platform.kind).then(()=>{
+    const uiReady=loadUiAssets(this.platform.kind,ratio=>{
+      if(this.destroyed)return;
+      this.loading?.scene.setProgress(.35+ratio*.65);
+      this.loading?.scene.setTitleTexture(uiTexture(this.platform.kind,'loadingTitle'));
+    }).then(()=>{
+      if(this.destroyed)return;
       this.applyUiTextures();
       this.renderOnce();
     });
@@ -233,7 +247,6 @@ export class GameApplication {
           this.paidVictory=true;
           this.coins+=reward;
           saveCoins(this.platform,this.coins);
-          this.view.startWinCoins(now, this.coins-reward, reward);
         }
         this.pendingResult={kind:'win',copy,at:now+(state.comboCount>=2?900:280)};
         this.vibrate('success');this.wake();
@@ -248,6 +261,7 @@ export class GameApplication {
 
     this.view.sync(this.session.state);
     this.app.ticker.add((t:any)=>{
+      if(this.loading)return;
       try{
         const now=nowMs();
         this.updateFireCharge(now);
@@ -263,7 +277,11 @@ export class GameApplication {
         if(this.pendingResult&&now>=this.pendingResult.at){
           const pending=this.pendingResult; this.pendingResult=null;
           this.view.showResult(pending.kind, pending.copy, now);
-          if(pending.kind==='win' && (pending.copy.reward??0)>0) this.view.revealWinCoins();
+          const reward=pending.copy.reward??0;
+          if(pending.kind==='win' && reward>0){
+            this.view.startWinCoins(now,this.coins-reward,reward);
+            this.view.revealWinCoins();
+          }
         }
         this.view.update(this.session.state,now);
         if(!logicActive&&!this.view.active&&!this.pendingResult){this.app.ticker.stop();this.renderOnce();}
@@ -285,6 +303,18 @@ export class GameApplication {
       this.renderOnce();
     });
     this.renderOnce();
+    if(this.loading){
+      const loading=this.loading;
+      await uiReady;
+      if(this.destroyed)return;
+      const started=await loading.waitForStart(()=>this.audio.play('uiClick'));
+      if(!started||this.destroyed)return;
+      this.view.root.visible=true;
+      await loading.dismiss();
+      if(this.destroyed)return;
+      this.loading=null;
+      this.wake();
+    }
   }
 
   private collectPendingCoins(){
@@ -300,7 +330,9 @@ export class GameApplication {
     // Mini-game GPUs have hung on the custom laser mesh at fire; Graphics fallback is the same visual path as ?beam=fallback.
     this.view=new PixiGameView(this.app.renderer,this.perf,this.themeId,this.levels,this.platform.kind==='web');
     this.view.setShareAvailable(this.platform.canShare?.()??false);
+    this.view.root.visible=!this.loading;
     this.app.stage.addChild(this.view.root);
+    if(this.loading)this.app.stage.addChild(this.loading.scene);
     this.view.resize(viewport.width,viewport.height,this.platform.safeTop());
     this.view.sync(this.session.state);
     this.applyUiTextures();
@@ -602,5 +634,5 @@ export class GameApplication {
   private renderOnce(){
     try{this.app.renderer.render(this.app.stage);}catch(error){console.warn('[game] render failed',error);}
   }
-  destroy(){this.pendingResult=null;this.cancelFireCharge();this.clearFireWatchdog();this.unresize();this.audio.destroy();this.view?.destroy();this.app.destroy(true);}
+  destroy(){this.destroyed=true;this.loading?.dispose();this.loading=null;this.pendingResult=null;this.cancelFireCharge();this.clearFireWatchdog();this.unresize();this.audio.destroy();this.view?.destroy();this.app.destroy(true);}
 }

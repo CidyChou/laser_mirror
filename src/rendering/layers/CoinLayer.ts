@@ -116,7 +116,7 @@ export class CoinLayer extends Container {
     const spreadRotation=Math.random()*Math.PI*2;
     const firstArrival = now + WIN_REWARD_MOTION.coinFlightStartDelay
       + WIN_REWARD_MOTION.coinPopDuration + WIN_REWARD_MOTION.coinHoverDuration
-      + WIN_REWARD_MOTION.coinFlightDuration + 100;
+      + WIN_REWARD_MOTION.coinFlightDuration;
     for (let index = 0; index < flightCount; index++) {
       // The first coin takes over the result icon at its original size and pose.
       const sourceCoin = index === 0;
@@ -126,9 +126,9 @@ export class CoinLayer extends Container {
       const spread=Math.sqrt((index+.6)/flightCount);
       const offset={x:Math.cos(angle)*(35+spread*83),y:-28+Math.sin(angle)*(20+spread*58)};
       const direction=offset.x<0?-1:1;
-      const startedAt = now + WIN_REWARD_MOTION.coinFlightStartDelay + (sourceCoin ? 0 : Math.random()*65);
-      const popDuration = WIN_REWARD_MOTION.coinPopDuration + Math.random()*65;
-      const duration = WIN_REWARD_MOTION.coinFlightDuration + Math.random()*70;
+      const startedAt = now + WIN_REWARD_MOTION.coinFlightStartDelay + (sourceCoin ? 0 : Math.random()*25);
+      const popDuration = WIN_REWARD_MOTION.coinPopDuration + Math.random()*30;
+      const duration = WIN_REWARD_MOTION.coinFlightDuration + Math.random()*30;
       // Keep the burst organic while giving arrivals a clear collection rhythm.
       const arriveAt = firstArrival + index*WIN_REWARD_MOTION.coinFlightStagger + (sourceCoin ? 0 : (Math.random()-.5)*8);
       const item = this.pool[index];
@@ -327,6 +327,9 @@ export class CoinLayer extends Container {
     this.counterFallback.position.set(this.layout.x, this.layout.y);
     this.counterFallback.scale.set(this.layout.radius / COIN_RADIUS);
     this.counterValue.position.set(this.layout.textX, this.layout.y);
+    this.counterValue.scale.set(1);
+    const availableWidth=UI_RECTS.coinCounter.w-this.layout.textX-12;
+    if(this.counterValue.width>availableWidth)this.counterValue.scale.set(availableWidth/this.counterValue.width);
   }
 
   private clearFlights() {
@@ -350,7 +353,7 @@ function counterLayout() {
   const gap = 10;
   const valueWidth = 72;
   const groupWidth = radius * 2 + gap + valueWidth;
-  const groupX = (UI_RECTS.coinCounter.w - groupWidth) / 2 - 8;
+  const groupX = (UI_RECTS.coinCounter.w - groupWidth) / 2 + 4;
   return {
     x: groupX + radius,
     y: UI_RECTS.coinCounter.h / 2,

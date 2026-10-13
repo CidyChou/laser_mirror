@@ -26,7 +26,7 @@ const platform = new WebPlatform();
 platform.safeTop = () => Math.max(0, Math.min(100, Number(params.get('safeTop')) || 0));
 platform.storage = { get: key => storage.get(key) ?? null, set: (key, value) => { storage.set(key, value); } };
 const game = new GameApplication(platform);
-await game.start();
+await game.start(undefined, { skipLoading: true });
 const debug = game as unknown as { session: GameSession; tutorial: TutorialDirector; view: PixiGameView };
 debug.session.load(index);
 const now = nowMs();
