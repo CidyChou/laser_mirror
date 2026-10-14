@@ -1,6 +1,7 @@
 import { Container, Graphics, Particle, ParticleContainer, ParticleShader, type Renderer, type Texture } from 'pixi.js';
 import type { Quality } from '@/performance/PerformanceManager';
 import { isLightTheme } from '../theme';
+import { nowMs } from '@/core/clock';
 
 export type ParticleShape='dot'|'spark'|'mixed';
 export type EmitDirection={
@@ -37,6 +38,7 @@ export class ParticleSystem {
   private sparkPool:Particle[]=[];
   private readonly dotTexture:Texture;
   private readonly sparkTexture:Texture;
+  private lastUpdate:number|null=null;
 
   constructor(renderer:Renderer){
     const dot=new Graphics()
@@ -90,13 +92,17 @@ export class ParticleSystem {
     }
   }
 
-  update(_quality:Quality){
+  update(_quality:Quality,now=nowMs()){
+    if(!this.activeParticles.length){this.lastUpdate=null;return;}
+    const frames=this.lastUpdate===null?0:Math.max(0,Math.min(50,now-this.lastUpdate))/(1000/60);
+    this.lastUpdate=now;
     for(let i=this.activeParticles.length-1;i>=0;i--){
       const active=this.activeParticles[i];
-      active.p.x+=active.vx;active.p.y+=active.vy;
-      active.vx*=active.kind==='spark'?.958:.966;
-      active.vy*=active.kind==='spark'?.958:.966;
-      active.life--;
+      const damping=active.kind==='spark'?.958:.966;
+      const drag=Math.pow(damping,frames),travel=(1-drag)/(1-damping);
+      active.p.x+=active.vx*travel;active.p.y+=active.vy*travel;
+      active.vx*=drag;active.vy*=drag;
+      active.life-=frames;
       const remaining=Math.max(0,active.life/active.max);
       active.p.alpha=remaining*.84;
       if(active.kind==='spark'){
@@ -125,6 +131,7 @@ export class ParticleSystem {
       (active.kind==='dot'?this.dotPool:this.sparkPool).push(active.p);
     }
     this.activeParticles=[];
+    this.lastUpdate=null;
   }
 
   destroy(){

@@ -1,5 +1,5 @@
 import { downloadCanvas } from '../album';
-import type { AlbumSaveInput, AlbumSaveResult, IPlatform, ShareContent, ViewportInfo } from '../IPlatform';
+import type { AlbumSaveInput, AlbumSaveResult, HapticKind, IPlatform, ShareContent, ViewportInfo } from '../IPlatform';
 export class WebPlatform implements IPlatform{
   readonly kind='web' as const;
   viewport():ViewportInfo{return{width:Math.min(window.innerWidth,520),height:window.innerHeight,pixelRatio:Math.max(1,window.devicePixelRatio||1)}}
@@ -13,12 +13,14 @@ export class WebPlatform implements IPlatform{
     return()=>document.removeEventListener('visibilitychange',changed);
   }
   safeTop(){return 0}
-  vibrate(type:'light'|'medium'|'heavy'|'success'='light'){
+  vibrate(type:HapticKind='light'){
     try{
       if(type==='success') navigator.vibrate?.([36, 50, 90]);
+      else if(type==='launch') navigator.vibrate?.([60, 35, 28]);
       else navigator.vibrate?.(type==='heavy'?42:type==='medium'?28:14);
     }catch{}
   }
+  cancelHaptics(){try{navigator.vibrate?.(0);}catch{}}
   storage={get:(key:string)=>localStorage.getItem(key),set:(key:string,value:string)=>localStorage.setItem(key,value)};
   saveImageToAlbum(input:AlbumSaveInput):Promise<AlbumSaveResult>{
     return downloadCanvas(input.canvas,input.filename??'laser-mirror.png');

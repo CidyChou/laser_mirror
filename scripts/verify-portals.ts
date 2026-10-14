@@ -4,7 +4,7 @@ import { GameSession } from '../src/gameplay/GameSession';
 import { LaserSimulator } from '../src/gameplay/LaserSimulator';
 import { TimeLaserSimulator } from '../src/gameplay/TimeLaserSimulator';
 import { cellCenter,computeGeometry } from '../src/gameplay/geometry';
-import { laserDistanceAtMs,laserMsAtDistance,TIME_BOSS_SPEED_SCALE } from '../src/gameplay/laserTiming';
+import { laserDistanceAtMs,laserMsAtDistance,NORMAL_LASER_SPEED_SCALE,TIME_BOSS_SPEED_SCALE } from '../src/gameplay/laserTiming';
 import type { ImpactEvent,LevelDefinition } from '../src/gameplay/types';
 import { transportedFixture } from './fixtures/optics';
 
@@ -15,7 +15,7 @@ const simulator=new LaserSimulator();
 for(const level of [portal,{...portal,cols:8,rows:8},transportedFixture]){
   const g=computeGeometry(level);
   for(const dynamic of [false,true]){
-    const speed=dynamic?TIME_BOSS_SPEED_SCALE:1;
+    const speed=dynamic?TIME_BOSS_SPEED_SCALE:NORMAL_LASER_SPEED_SCALE;
     const sim=dynamic?new TimeLaserSimulator(level,structuredClone(level.items),g):null;
     if(sim)sim.advanceTo(18000);
     const trace=sim?.trace??simulator.simulate(level,level.items,g);

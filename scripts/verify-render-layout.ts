@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { computeGeometry, portPosition, portSize, portMuzzle, borderPoint } from '../src/gameplay/geometry';
+import { computeGeometry, portPosition, portSize, portMuzzle, portClearance, borderPoint } from '../src/gameplay/geometry';
 import { DESIGN_WIDTH, STAGE_TOP, STAGE_HEIGHT } from '../src/config/GameConfig';
 import { beamSegments } from '../src/rendering/beamGeometry';
 import solutions from '../tools/visual/campaign-solutions.json';
@@ -13,7 +13,7 @@ for(const cols of [3,4,6,8,9,12])for(const rows of [3,6,9,12]){
   const level:LevelDefinition={name:'layout',chapter:'test',chapterNo:1,cols,rows,shots:5,emitter:{side:'W',index:0},targets:[],items:[]};
   const g=computeGeometry(level),size=portSize(g.cell);
   for(const side of ['W','E','N','S'] as const){
-    const port:Port={side,index:0},position=portPosition(g,port),muzzle=portMuzzle(g,port),edge=borderPoint(g,port);
+    const port:Port={side,index:0},position=portPosition(g,port,true),muzzle=portMuzzle(g,port),edge=borderPoint(g,port);
     const halfDepth=size*.16,halfLength=size*.42;
     const rx=side==='W'||side==='E'?halfDepth:halfLength,ry=side==='N'||side==='S'?halfDepth:halfLength;
     assert(position.x-rx>=0&&position.x+rx<=DESIGN_WIDTH,`${cols}×${rows} ${side}: port clipped horizontally`);
@@ -21,18 +21,22 @@ for(const cols of [3,4,6,8,9,12])for(const rows of [3,6,9,12]){
     // Check the full new bitmap footprint, including the emitter's muzzle,
     // against the stage edges at both small and large cell sizes.
     for(const emitter of [true,false]){
+      const artPosition=portPosition(g,port,emitter);
       const artHeight=g.cell*.94,artWidth=emitter?g.cell*.4:artHeight*125/512;
       const centerX=emitter?size*.25-artWidth/2:0;
       for(const x of [centerX-artWidth/2,centerX+artWidth/2])for(const y of [-artHeight/2,artHeight/2]){
-        const point=side==='W'?{x:position.x+x,y:position.y+y}
-          :side==='E'?{x:position.x-x,y:position.y-y}
-          :side==='N'?{x:position.x-y,y:position.y+x}
-          :{x:position.x+y,y:position.y-x};
+        const point=side==='W'?{x:artPosition.x+x,y:artPosition.y+y}
+          :side==='E'?{x:artPosition.x-x,y:artPosition.y-y}
+          :side==='N'?{x:artPosition.x-y,y:artPosition.y+x}
+          :{x:artPosition.x+y,y:artPosition.y-x};
         assert(point.x>=0&&point.x<=DESIGN_WIDTH&&point.y>=STAGE_TOP&&point.y<=STAGE_TOP+STAGE_HEIGHT,
           `${cols}×${rows} ${side}: ${emitter?'emitter':'receiver'} artwork clipped`);
       }
     }
-    assert(Math.abs(Math.hypot(muzzle.x-edge.x,muzzle.y-edge.y)-9)<1e-7);
+    assert(Math.abs(Math.hypot(muzzle.x-edge.x,muzzle.y-edge.y)-portClearance(g.cell))<1e-7);
+    assert(portClearance(g.cell)-10>=14,'Emitter must clear the outer board frame by at least 14 design pixels');
+    const receiver=portPosition(g,port);
+    assert(Math.abs(Math.hypot(receiver.x-edge.x,receiver.y-edge.y)-(size*.25+9))<1e-7,'Receiver must keep its original spacing');
     // The nozzle's tip is the innermost point of both port silhouettes.
     assert(side==='W'?muzzle.x<g.ox:side==='E'?muzzle.x>g.ox+g.boardW:side==='N'?muzzle.y<g.oy:muzzle.y>g.oy+g.boardH);
     level.emitter=port;level.targets=[{side:({W:'E',E:'W',N:'S',S:'N'} as const)[side],index:0}];

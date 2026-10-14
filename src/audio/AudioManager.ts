@@ -85,13 +85,16 @@ export class AudioManager {
     later(() => {
       const warm: SfxName[] = ['uiClick', 'coin', 'laserCharge', 'laserFire', 'win', 'mirrorHit'];
       for (const name of warm) {
-        const player = this.banks.get(name)?.players[0];
+        const bank=this.banks.get(name);
+        if(!bank||bank.lastPlayed!==-Infinity)continue;
+        const player = bank.players[0];
         if (!player) continue;
         try {
           const volume = player.volume;
           player.muted = true;
           player.volume = 0;
           const restore = () => {
+            if(bank.lastPlayed!==-Infinity)return;
             try {
               player.pause?.();
               if ('currentTime' in player) player.currentTime = 0;
@@ -112,16 +115,16 @@ export class AudioManager {
     if (index === null) return;
     const name = `combo${index}` as SfxName;
     this.stopCombo();
-    this.play(name);
+    this.play(name, .94);
   }
 
   private stopCombo() {
-    for (let i=1;i<=6;i++) {
-      const bank=this.banks.get(`combo${i}` as SfxName);
-      if(!bank) continue;
-      for(const player of bank.players){
-        try{player.pause?.();player.stop?.();if('currentTime' in player) player.currentTime=0;}catch{}
-      }
+    for (let i=1;i<=6;i++) this.stop(`combo${i}` as SfxName);
+  }
+
+  stop(name:SfxName) {
+    for(const player of this.banks.get(name)?.players??[]){
+      try{player.pause?.();player.stop?.();if('currentTime' in player)player.currentTime=0;}catch{}
     }
   }
 
@@ -136,6 +139,7 @@ export class AudioManager {
       if (player.paused === false) player.pause?.();
       player.stop?.();
       if ('currentTime' in player && player.currentTime) player.currentTime=0;
+      player.muted=false;
       player.volume=Math.max(0,Math.min(1,def.volume*this.masterVolume*volumeScale));
       if ('playbackRate' in player) {
         const jitter=def.rateJitter ?? 0;

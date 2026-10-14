@@ -9,6 +9,7 @@ type Fx={
   flash:Graphics;
   rays:WeldingSparks;
   bloom:Graphics;
+  jet:Graphics;
   start:number;
   life:number;
   active:boolean;
@@ -30,19 +31,21 @@ export class ImpactSystem extends Container{
       const flash=new Graphics().circle(0,0,4.5).fill({color:Theme.white,alpha:.92});
       const bloom=new Graphics().circle(0,0,44).fill(this.bloomFill);
       const rays=new WeldingSparks();
+      const jet=new Graphics().poly([0,0,24,-9,40,0,24,9],true).fill({color:Theme.white,alpha:.68})
+        .moveTo(0,0).lineTo(34,0).stroke({color:Theme.white,width:3,alpha:.96,cap:'round'});
       const blend=isLightTheme()?'normal':'add';
-      ring.blendMode=blend;flash.blendMode=blend;rays.blendMode=blend;bloom.blendMode=blend;
-      root.addChild(bloom,ring,rays,flash);this.addChild(root);
-      this.pool.push({root,ring,flash,rays,bloom,start:0,life:320,active:false,strength:1,inward:false});
+      ring.blendMode=blend;flash.blendMode=blend;rays.blendMode=blend;bloom.blendMode=blend;jet.blendMode=blend;
+      root.addChild(bloom,ring,rays,jet,flash);this.addChild(root);
+      this.pool.push({root,ring,flash,rays,bloom,jet,start:0,life:320,active:false,strength:1,inward:false});
     }
   }
 
-  triggerLaunch(x:number,y:number,now:number){
-    this.activate(x,y,Theme.beam,now,360,1.55);
+  triggerLaunch(x:number,y:number,now:number,angle=0){
+    this.activate(x,y,Theme.beam,now,420,2.2,false,true,angle);
   }
 
   triggerImpactEffect(e:ImpactEvent,now:number,colorOverride?:number){
-    if(e.type==='combiner-fire'){this.activate(e.px,e.py,Theme.beam,now,460,2);return;}
+    if(e.type==='combiner-fire'){this.activate(e.px,e.py,Theme.beam,now,460,2.3,false,true,(e.outgoingDirs?.[0]??0)*Math.PI/2);return;}
     if(e.type==='portal'||e.type==='portal-exit'){
       // Portal feedback keeps its distinct circular language.
       this.activate(e.px,e.py,colorOverride??Theme.purple,now,e.type==='portal'?340:420,1.5,e.type==='portal',false);
@@ -50,21 +53,22 @@ export class ImpactSystem extends Container{
     }
     const color=colorOverride??(e.type==='target'||e.type==='switch'||e.type==='focus'||e.type==='door-open'?Theme.green
       :e.type==='combiner'||e.type==='splitter'?Theme.cyan:e.type==='mirror'?Theme.white:Theme.beam);
-    const strength=e.type==='target'||e.type==='focus'?1.65:e.type==='combiner'?1.38:e.type==='mirror'||e.type==='splitter'?1.24:1.08;
-    this.activate(e.px,e.py,color,now,e.type==='target'||e.type==='focus'?520:340,strength);
+    const strength=e.type==='target'||e.type==='focus'?1.95:e.type==='combiner'?1.5:e.type==='mirror'||e.type==='splitter'?1.65:1.08;
+    this.activate(e.px,e.py,color,now,e.type==='target'||e.type==='focus'?520:360,strength);
   }
 
   triggerVictory(points:Point[],now:number){
     points.forEach((point,index)=>this.activate(point.x,point.y,Theme.green,now+index*45,680,1.9));
   }
 
-  private activate(x:number,y:number,color:number,start:number,life:number,strength:number,inward=false,flare=true){
+  private activate(x:number,y:number,color:number,start:number,life:number,strength:number,inward=false,flare=true,angle:number|null=null){
     const effect=this.pool.find(value=>!value.active)??this.pool[0];
     effect.active=true;effect.start=start;effect.life=life;effect.strength=strength;effect.inward=inward;
     effect.root.visible=true;effect.root.position.set(x,y);
     effect.ring.tint=color;effect.flash.tint=Theme.white;
     effect.rays.visible=flare;effect.rays.tint=color===Theme.white?Theme.beamHot:color;
     effect.bloom.visible=flare;effect.bloom.tint=color===Theme.white?Theme.beam:color;
+    effect.jet.visible=angle!==null;effect.jet.rotation=angle??0;effect.jet.tint=Theme.beamHot;
     effect.rays.rotation=0;effect.rays.scale.set(strength);
     effect.rays.reset();
     effect.ring.scale.set(1);effect.flash.scale.set(1);
@@ -84,8 +88,10 @@ export class ImpactSystem extends Container{
       effect.rays.alpha=1;
       effect.bloom.scale.set((.6+out*.7)*effect.strength);
       effect.bloom.alpha=Math.pow(1-t,1.8)*.85;
+      effect.jet.scale.set((.65+out*.65)*effect.strength,1+effect.strength*.2);
+      effect.jet.alpha=Math.max(0,1-t*3)**2;
       effect.flash.scale.set(.62+Math.sin(Math.min(1,t*4.5)*Math.PI)*1.08*effect.strength);
-      effect.flash.alpha=Math.max(0,1-t*4)*.88;
+      effect.flash.alpha=Math.max(0,1-t*3.5)*.96;
     }
   }
 

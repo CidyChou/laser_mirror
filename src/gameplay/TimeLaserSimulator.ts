@@ -174,7 +174,7 @@ export class TimeLaserSimulator {
     if (item.type === 'mirror' || item.type === 'splitter') {
       const next = reflected(dir, item.s);
       event(item.type, { outgoingDirs: item.type === 'mirror' ? [next] : [dir, next] });
-      const resume=laserMsAtDistance(this.distance+GameConfig.laser.mirrorPauseDistance, TIME_BOSS_SPEED_SCALE);
+      const resume=laserMsAtDistance(this.distance+GameConfig.laser.challengeMirrorPauseDistance, TIME_BOSS_SPEED_SCALE);
       if (item.type === 'splitter') this.depart({ ...head, at:resume, branch: w.nextBranch++ });
       this.depart({ ...head, at:resume, dir: next }); return;
     }

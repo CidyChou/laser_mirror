@@ -27,9 +27,16 @@ export class WinConfetti extends Container {
       const seedA = ((index * 47 + 7) % 101) / 100;
       const seedB = ((index * 31 + 17) % 97) / 96;
       const seedC = ((index * 67 + 23) % 103) / 102;
-      const view = new Graphics()
-        .rect(-(12 + seedA * 14) / 2, -(7 + seedB * 9) / 2, 12 + seedA * 14, 7 + seedB * 9)
-        .fill(colors[index % colors.length]);
+      const view = new Graphics();
+      if(index%5===0){
+        const width=5+seedA*4,height=20+seedB*24;
+        view.roundRect(-width/2,-height/2,width,height,2).fill(colors[index%colors.length]);
+      }else if(index%7===0){
+        view.circle(0,0,3+seedA*3).fill(colors[index%colors.length]);
+      }else{
+        const width=8+seedA*12,height=4+seedB*7;
+        view.rect(-width/2,-height/2,width,height).fill(colors[index%colors.length]);
+      }
       view.visible = false;
       this.pieces.push({ view, index, seedA, seedB, seedC, left: index % 2 === 0 });
       this.addChild(view);
@@ -61,6 +68,7 @@ export class WinConfetti extends Container {
         piece.view.visible = false;
         continue;
       }
+      // One tight cannon burst: ribbons and flakes leave together, then fall.
       const age = (elapsed - piece.seedC * WIN_CONFETTI_MOTION.staggerWindow) / 1000;
       const rise = 0.55 + piece.seedA * 0.4;
       const fall = 1.5 + piece.seedB;
@@ -87,7 +95,7 @@ export class WinConfetti extends Container {
         mix(rising ? startY : apexY, rising ? apexY : landingY, progress),
       );
       piece.view.rotation = (piece.seedA - 0.5) * 2 + age * (3 + piece.seedB * 5);
-      piece.view.scale.x = Math.max(0.15, Math.abs(Math.cos(age * (5 + piece.seedC * 6))));
+      piece.view.scale.x = Math.max(0.22, Math.abs(Math.cos(age * (5 + piece.seedC * 6))));
       piece.view.alpha = Math.min(Math.max(0, age / 0.06), Math.max(0, (rise + fall - age) / 0.6));
       piece.view.visible = true;
     }

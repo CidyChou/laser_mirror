@@ -2,11 +2,11 @@ import { DESIGN_WIDTH, STAGE_HEIGHT, STAGE_TOP } from '@/config/GameConfig';
 import type { BoardGeometry, LevelDefinition, Point, Port } from './types';
 
 function cellForBudget(cols: number, rows: number, cellGuess: number) {
-  // The emitter artwork extends backward from its muzzle by about 0.4 cell.
-  // Reserve that space so large 3×3/4×4 boards keep the whole device visible.
+  // Reserve the complete emitter behind its muzzle, plus a visible gap from
+  // the board frame. Moving the port alone would clip it on small screens.
   const portPad = Math.max(
     portOutset(cellGuess) + portSize(cellGuess) * 0.16 + 6,
-    cellGuess * 0.4 + 11,
+    portClearance(cellGuess) + cellGuess * 0.4 + 8,
   );
   const lip = Math.max(8, Math.min(12, cellGuess * 0.08));
   const maxBoardW = DESIGN_WIDTH - portPad * 2 - lip;
@@ -53,15 +53,18 @@ export function beamScale(cell: number): number {
 
 /** Presentation-only port dimensions. Keep the simulation on the board edge. */
 export function portSize(cell:number):number { return Math.min(112,cell); }
-export function portOutset(cell:number):number { return portSize(cell)*.25+9; }
+export function portClearance(cell:number):number { return Math.max(24,portSize(cell)*.26); }
+export function portOutset(cell:number):number { return portSize(cell)*.25+portClearance(cell); }
 export function portDirection(port:Port):Point {
   return port.side==='W'?{x:1,y:0}:port.side==='E'?{x:-1,y:0}:port.side==='N'?{x:0,y:1}:{x:0,y:-1};
 }
-export function portPosition(g:BoardGeometry,port:Port):Point {
-  const edge=borderPoint(g,port),dir=portDirection(port),offset=portOutset(g.cell);
+/** Receivers keep their original wall spacing; only the protruding emitter moves outward. */
+export function portPosition(g:BoardGeometry,port:Port,emitter=false):Point {
+  const edge=borderPoint(g,port),dir=portDirection(port);
+  const offset=emitter?portOutset(g.cell):portSize(g.cell)*.25+9;
   return{x:edge.x-dir.x*offset,y:edge.y-dir.y*offset};
 }
 export function portMuzzle(g:BoardGeometry,port:Port):Point {
-  const center=portPosition(g,port),dir=portDirection(port),tip=portSize(g.cell)*.25;
+  const center=portPosition(g,port,true),dir=portDirection(port),tip=portSize(g.cell)*.25;
   return{x:center.x+dir.x*tip,y:center.y+dir.y*tip};
 }

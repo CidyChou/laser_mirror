@@ -528,9 +528,9 @@ export class LaserEffect extends Container{
     this.focus.visible=focusMix>.001;
     const throb=.78+.22*Math.sin(chargeT*Math.PI*10);
     this.core.scale.set((2.5+chargeT*3.8)*throb);this.core.alpha=.8+chargeT*.2;
-    const showPop=quality==='high'&&chargeT>.8;
+    const showPop=chargeT>.84;
     this.pop.visible=showPop;
-    if(showPop){const t=(chargeT-.8)/.2;this.pop.scale.set(7+t*15);this.pop.alpha=.22*(1-t);}
+    if(showPop){const t=(chargeT-.84)/.16;this.pop.scale.set(4+t*7);this.pop.alpha=.08+t*.22;}
     this.sparks.visible=quality!=='low';
   }
 
@@ -675,8 +675,8 @@ export class LaserEffect extends Container{
     this.frozen=false;
 
     const launchAge=Math.max(0,state.shotElapsedMs-GameConfig.laser.chargeMs);
-    const punch=Math.max(0,1-launchAge/170)**2;
-    const breathe=1+.055*Math.sin(now*.00315)+punch*.09;
+    const punch=Math.max(0,1-launchAge/210)**2;
+    const breathe=1+.055*Math.sin(now*.00315)+punch*.22;
     this.updateGpuBeam(dist,now,quality,punch,breathe);
     this.updateFallbackBeam(dist,breathe,now);
     this.ensureJoints(dist,now,quality);

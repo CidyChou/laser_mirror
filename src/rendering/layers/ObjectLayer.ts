@@ -6,7 +6,7 @@ import { isLightTheme, Theme, uiText } from '../theme';
 import { GameConfig } from '@/config/GameConfig';
 import { CollectorVisual } from '../effects/CollectorVisual';
 import { mechanismIdentities, type MechanismIdentity } from '../mechanismIdentity';
-import { laserMsAtDistance, TIME_BOSS_SPEED_SCALE } from '@/gameplay/laserTiming';
+import { laserMsAtDistance, NORMAL_LASER_SPEED_SCALE, TIME_BOSS_SPEED_SCALE } from '@/gameplay/laserTiming';
 import type { MechanismAssetKey } from '../ui/assets';
 import { nowMs } from '@/core/clock';
 
@@ -14,7 +14,7 @@ type ItemArt={key:MechanismAssetKey;sprite:Sprite;fallback:Container[];width:num
 type ItemNode={key:string;kind:LevelItem['type'];root:Container;motion:Container;art?:ItemArt[];angleCarrier?:Container;face?:Graphics;core?:Graphics;phase:number;lastLit?:boolean;lastOpen?:boolean;lastCharge?:number;pips?:Graphics;collector?:CollectorVisual;identity?:MechanismIdentity;counter?:Text;panels?:Container[];doorId?:string;badges?:{id:string;root:Container;check:Graphics}[]};
 type SignalLink={id:string;root:Container;dot:Graphics;from:{x:number;y:number};to:{x:number;y:number};bend:{x:number;y:number}};
 type PortalMotion={key:string;pair:string;motion:Container;flow:Container;mist:Graphics;energy:Graphics;phase:number;hitAt:number|null;receiveAt:number|null;exiting:boolean;horizontal:boolean};
-type Kick={start:number};
+type Kick={start:number;dx:number;dy:number};
 type ClickFx={root:Container;ring:Graphics;flash:Graphics;start:number;active:boolean};
 type PortNode={shell:Graphics;gem:Graphics;sprite:Sprite;port:Port;emitter:boolean;targetIndex?:number;root:Container;halo:Graphics;light:Graphics;core:Graphics;pips:Graphics;required:number;phase:number;active:boolean;lastActive:boolean|null;lastCharge:number;sparks:Container;cell:number;boardCell:number;artScale:number};
 
@@ -210,7 +210,10 @@ export class ObjectLayer extends Container{
     });
   }
 
-  kick(x:number,y:number,now:number){this.kicks.set(`${x},${y}`,{start:now});}
+  kick(x:number,y:number,now:number,direction:Direction=3){
+    const angle=direction*Math.PI/2;
+    this.kicks.set(`${x},${y}`,{start:now,dx:Math.cos(angle),dy:Math.sin(angle)});
+  }
   rotateFeedback(x:number,y:number,now:number,g:BoardGeometry){const c=cellCenter(g,x,y),fx=this.clickPool.find(v=>!v.active)??this.clickPool[0];fx.active=true;fx.start=now;fx.root.visible=true;fx.root.position.set(c.x,c.y);fx.root.scale.set(.7);fx.root.alpha=1;fx.ring.scale.set(.75);fx.flash.rotation=0;}
   portalImpact(event:ImpactEvent,now:number){
     const key=`${event.x},${event.y}`;
@@ -257,7 +260,7 @@ export class ObjectLayer extends Container{
       if(this.trace!==state.result){
         this.trace=state.result;this.switchTimes.clear();this.doorTimes.clear();
         for(const e of state.result?.impactEvents??[]){
-          const at=laserMsAtDistance(e.at,state.timeSkill?TIME_BOSS_SPEED_SCALE:1);
+          const at=laserMsAtDistance(e.at,state.timeSkill?TIME_BOSS_SPEED_SCALE:NORMAL_LASER_SPEED_SCALE);
           if(e.type==='switch'&&e.id&&!this.switchTimes.has(e.id))this.switchTimes.set(e.id,at);
           if(e.type==='door-open'&&e.id)this.doorTimes.set(e.id,at);
         }
@@ -312,7 +315,16 @@ export class ObjectLayer extends Container{
         spark.alpha=Math.sin(phase*Math.PI)*.85;
       }
     }
-    for(const [key,k] of [...this.kicks]){const n=this.itemNodes.get(key);if(!n){this.kicks.delete(key);continue;}const t=(now-k.start)/280;if(t>=1){n.motion.scale.set(1);n.motion.position.set(0,0);n.motion.rotation=0;this.kicks.delete(key);continue;}const hit=Math.sin(t*Math.PI)*Math.exp(-t*1.55);n.motion.scale.set(1+hit*.12);n.motion.position.set(0,-hit*6);n.motion.rotation=hit*.028*Math.sin(now*.08);}
+    for(const [key,k] of this.kicks){
+      const n=this.itemNodes.get(key);
+      if(!n){this.kicks.delete(key);continue;}
+      const t=Math.max(0,(now-k.start)/230);
+      if(t>=1){n.motion.scale.set(1);n.motion.position.set(0,0);n.motion.rotation=0;this.kicks.delete(key);continue;}
+      const hit=Math.cos(t*Math.PI*2.4)*Math.exp(-t*4)*(1-t);
+      n.motion.scale.set(1+hit*.15);
+      n.motion.position.set(k.dx*hit*6,k.dy*hit*6);
+      n.motion.rotation=hit*.035;
+    }
     for(const fx of this.clickPool){if(!fx.active)continue;const t=(now-fx.start)/300;if(t>=1){fx.active=false;fx.root.visible=false;continue;}const ease=1-Math.pow(1-t,3);fx.root.scale.set(.7+ease*.65);fx.root.alpha=1-t;fx.ring.scale.set(.75+ease*.85);fx.flash.rotation=t*.22;fx.flash.alpha=(1-t)*.62;}
   }
   get active(){return this.ambientActive||this.signalActive||this.kicks.size>0||this.splitterTurns.size>0||this.portals.some(p=>p.hitAt!==null||p.receiveAt!==null)||this.clickPool.some(x=>x.active);}
@@ -616,7 +628,7 @@ export class ObjectLayer extends Container{
   }
 
   private makePort(port:Port,g:BoardGeometry,emitter:boolean,targetIndex?:number,required=1):PortNode{
-    const root=new Container();root.position.copyFrom(portPosition(g,port));
+    const root=new Container();root.position.copyFrom(portPosition(g,port,emitter));
     // Local +X always faces into the board, for all four wall orientations.
     root.rotation={W:0,E:Math.PI,N:Math.PI/2,S:-Math.PI/2}[port.side];
     const cell=portSize(g.cell),length=cell*.74,width=cell*(emitter?.25:.19);
@@ -664,7 +676,7 @@ export class ObjectLayer extends Container{
   }
 
   private refreshPort(n:PortNode,state:GameState,g:BoardGeometry){
-    n.root.position.copyFrom(portPosition(g,n.port));
+    n.root.position.copyFrom(portPosition(g,n.port,n.emitter));
     const target=n.targetIndex===undefined?undefined:state.targets[n.targetIndex];
     const active=n.emitter?state.firing:!!target?.hit;
     const charge=target?.charge??0;

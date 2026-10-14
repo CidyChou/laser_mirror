@@ -1,10 +1,12 @@
 import { Container, Graphics, Sprite, Text, Texture } from 'pixi.js';
-import { UI_RECTS, UI_TOKENS, WIN_REWARD_MOTION } from '@/config/GameConfig';
+import { DESIGN_WIDTH, UI_RECTS, UI_TOKENS, WIN_REWARD_MOTION } from '@/config/GameConfig';
 import { clamp, easeOutCubic } from '@/core/easing';
 import { Theme, uiText } from '../theme';
 import { drawCoinIcon } from '../ui/icons';
+import type { Quality } from '@/performance/PerformanceManager';
 
-const FLIGHT_POOL = 12;
+const FLIGHT_COUNTS:Record<Quality,number>={high:24,medium:18,low:12};
+const FLIGHT_POOL = FLIGHT_COUNTS.high;
 const COIN_RADIUS = 18;
 
 type Flight = {
@@ -111,13 +113,13 @@ export class CoinLayer extends Container {
     this.syncValue();
   }
 
-  spawn(now: number, amount: number, getStart: () => { x: number; y: number }) {
+  spawn(now: number, amount: number, getStart: () => { x: number; y: number },quality:Quality='high') {
     this.clearFlights();
     if(amount<=0)return;
     this.flightPhase = 'waiting';
     this.getStart = getStart;
     const start = getStart();
-    const flightCount = Math.min(this.pool.length, Math.max(1, amount));
+    const flightCount = Math.min(FLIGHT_COUNTS[quality], Math.max(1, amount));
     const baseValue = Math.floor(amount / flightCount);
     const remainder = amount % flightCount;
     const spreadRotation=Math.random()*Math.PI*2;
@@ -131,7 +133,10 @@ export class CoinLayer extends Container {
       // jitter preserves separation while keeping each reward different.
       const angle=spreadRotation+index*2.39996+(Math.random()-.5)*.35;
       const spread=Math.sqrt((index+.6)/flightCount);
-      const offset={x:Math.cos(angle)*(35+spread*83),y:-28+Math.sin(angle)*(20+spread*58)};
+      const offset={
+        x:clamp(Math.cos(angle)*(40+spread*115)+(DESIGN_WIDTH/2-start.x)*.25,32-start.x,DESIGN_WIDTH-32-start.x),
+        y:-30+Math.sin(angle)*(24+spread*76),
+      };
       const direction=offset.x<0?-1:1;
       const startedAt = now + WIN_REWARD_MOTION.coinFlightStartDelay + (sourceCoin ? 0 : Math.random()*25);
       const popDuration = WIN_REWARD_MOTION.coinPopDuration + Math.random()*30;
@@ -154,7 +159,7 @@ export class CoinLayer extends Container {
         flipSpeed:(Math.random()<.5?-1:1)*(3+Math.random()*3),
         popDuration,
         hoverDuration: arriveAt - startedAt - popDuration - duration,
-        size: sourceCoin ? 1 : .76+Math.random()*.38,
+        size: sourceCoin ? 1 : .70+Math.random()*.36,
         startRadius: sourceCoin ? 23 : 17*.45,
         startedAt,
         duration,

@@ -38,8 +38,9 @@ export const WIN_REWARD_MOTION = {
   // Relative to the reward panel opening, so combo celebrations cannot leave a gap.
   counterRevealDelay: 140,
   counterRevealDuration: 160,
-  coinFlightStartDelay: 450,
-  coinFlightStagger: 35,
+  // Even the earliest result panel starts its coins after the confetti apex.
+  coinFlightStartDelay: 900,
+  coinFlightStagger: 24,
   coinPopDuration: 140,
   coinHoverDuration: 90,
   coinFlightDuration: 320,
@@ -49,11 +50,11 @@ export const WIN_REWARD_MOTION = {
 } as const;
 
 export const WIN_CONFETTI_MOTION = {
-  duration: 3800,
+  duration: 3600,
   launchInset: 18,
   launchYRatio: 0.4,
-  staggerWindow: 250,
-  counts: { high: 53, medium: 40, low: 28 },
+  staggerWindow: 90,
+  counts: { high: 110, medium: 76, low: 44 },
 } as const;
 
 export const GameConfig = {
@@ -72,7 +73,7 @@ export const GameConfig = {
   },
   laser: {
     // The hold itself drives the muzzle charge; release happens at completion.
-    inputChargeMs: 1200,
+    inputChargeMs: 1050,
     chargeMs: 480,
     challengeLifetimeMs: 20000,
     spentAdjustmentFadeMs: 6000,
@@ -81,14 +82,16 @@ export const GameConfig = {
     startSpeed: 410,
     acceleration: 300,
     maxSpeed: 720,
-    mirrorPauseDistance: 34,
+    travelSpeedScale: 1.32,
+    mirrorPauseDistance: 20,
+    challengeMirrorPauseDistance: 34,
     portalTransitMs: 520,
     doorSignalMs: 420,
     doorOpenMs: 280,
     combinerChargeMs: 1500,
     combinedWidthScale: 3,
-    settleMs: 160,
-    comboHoldMs: 720,
+    settleMs: 140,
+    comboHoldMs: 420,
   },
   performance: {
     highParticleBudget: 360,

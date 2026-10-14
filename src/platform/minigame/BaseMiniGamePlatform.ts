@@ -1,5 +1,5 @@
 import { saveCanvasToAlbum } from '../album';
-import type { AlbumSaveInput, AlbumSaveResult, IPlatform, PlatformKind, ViewportInfo } from '../IPlatform';
+import type { AlbumSaveInput, AlbumSaveResult, HapticKind, IPlatform, PlatformKind, ViewportInfo } from '../IPlatform';
 export class BaseMiniGamePlatform implements IPlatform{
   private detachInput=()=>{};
   constructor(readonly kind:PlatformKind,protected readonly api:any){}
@@ -82,17 +82,28 @@ export class BaseMiniGamePlatform implements IPlatform{
     }catch{}
     return 0;
   }
-  private lastVibrateAt=0;
-  vibrate(type:'light'|'medium'|'heavy'|'success'='light'){
+  private hapticTimer:ReturnType<typeof setTimeout>|null=null;
+  cancelHaptics(){
+    if(this.hapticTimer!==null)clearTimeout(this.hapticTimer);
+    this.hapticTimer=null;
+  }
+  vibrate(type:HapticKind='light'){
+    this.cancelHaptics();
     try{
-      const now=Date.now();
-      if(now-this.lastVibrateAt<80)return;
-      this.lastVibrateAt=now;
+      // The application owns collision throttling. A second gate here used
+      // to discard the strongest pulse when the charge completed on a late frame.
+      if(type==='launch'&&this.api.vibrateShort){
+        this.api.vibrateShort({type:'heavy'});
+        this.hapticTimer=setTimeout(()=>{
+          this.hapticTimer=null;
+          try{this.api.vibrateShort({type:'medium'});}catch{}
+        },100);
+        return;
+      }
       if(type==='success'){
         if(this.api.vibrateLong){
           this.api.vibrateLong();
-          const later=typeof setTimeout==='function'?(fn:()=>void)=>setTimeout(fn,420):(fn:()=>void)=>fn();
-          later(()=>{try{this.api.vibrateLong?.();}catch{}});
+          this.hapticTimer=setTimeout(()=>{this.hapticTimer=null;try{this.api.vibrateLong?.();}catch{}},420);
         }else this.api.vibrateShort?.({type:'heavy'});
         return;
       }

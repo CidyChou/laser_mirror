@@ -1,6 +1,7 @@
 import { Container, Graphics, Rectangle, Sprite, Text, Texture } from 'pixi.js';
 import { DESIGN_HEIGHT, DESIGN_WIDTH, STAGE_TOP, UI_RECTS } from '@/config/GameConfig';
-import { portPosition, portSize, cellCenter, computeGeometry } from '@/gameplay/geometry';
+import { portPosition, portSize, cellCenter, computeGeometry, samePort } from '@/gameplay/geometry';
+import { levelEmitters } from '@/gameplay/levelAccess';
 import type { LevelDefinition } from '@/gameplay/types';
 import type { TutorialStep } from '@/gameplay/tutorial';
 import { Theme, uiText } from '../theme';
@@ -86,9 +87,10 @@ export class TutorialLayer extends Container {
     const step = this.step, level = this.level;
     if (!step || !level) return;
     const g = computeGeometry(level);
+    const emitters=levelEmitters(level);
     const rects = step.anchors.map(anchor => {
       if (anchor.kind === 'fire') return new Rectangle(UI_RECTS.fire.x - 8, UI_RECTS.fire.y - 8, UI_RECTS.fire.w + 16, UI_RECTS.fire.h + 16);
-      const p = anchor.kind === 'cell' ? cellCenter(g, anchor.x, anchor.y) : portPosition(g, anchor.port);
+      const p = anchor.kind === 'cell' ? cellCenter(g, anchor.x, anchor.y) : portPosition(g, anchor.port,emitters.some(port=>samePort(port,anchor.port)));
       if (anchor.kind === 'cell') {
         const size = Math.min(g.cell * .85, 154);
         return new Rectangle(p.x - size / 2, p.y - size / 2, size, size);

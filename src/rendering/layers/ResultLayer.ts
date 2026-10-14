@@ -252,7 +252,7 @@ export class ResultLayer extends Container {
     const entering = clamp(elapsed / 360, 0, 1);
     const scale = 0.76 + easeOutBack(entering) * 0.24;
     this.panel.scale.set(scale);
-    this.primary.alpha = clamp((elapsed - 420) / 220, 0, 1);
+    this.primary.alpha = clamp((elapsed - 220) / 160, 0, 1);
     this.preview.alpha = this.primary.alpha;
     this.levels.alpha = this.primary.alpha;
     this.secondary.alpha = this.primary.alpha;

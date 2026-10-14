@@ -13,7 +13,8 @@ import type { LevelDefinition } from '@/gameplay/types';
 import { rewardLevelIndex, stageCompletionLabel, stageFileLabel, stageId, stageLabel } from '@/levels/campaign';
 import { LevelRepository } from '@/levels/LevelRepository';
 import { PerformanceManager } from '@/performance/PerformanceManager';
-import type { IPlatform } from '@/platform/IPlatform';
+import type { HapticKind, IPlatform } from '@/platform/IPlatform';
+import { HapticGate } from '@/platform/HapticGate';
 import { PixiGameView } from '@/rendering/PixiGameView';
 import { createGameShareContent } from './share';
 import {
@@ -73,7 +74,7 @@ export class GameApplication {
   private pendingResult:{kind:'win'|'lose';copy:{title:string;subtitle:string;tip:string;primary:string;secondary?:string;reward?:number};at:number}|null=null;
   private unresize=()=>{};
   private unaudio=()=>{};
-  private lastVibrateAt=-Infinity;
+  private readonly hapticGate=new HapticGate();
   private firePulseAt=0;
   private fireWatchdog:ReturnType<typeof setInterval>|0=0;
   private fireChargeStartedAt:number|null=null;
@@ -146,7 +147,10 @@ export class GameApplication {
     this.app.stage.eventMode='static';
     this.app.stage.hitArea=this.app.screen;
     this.app.stage.on('pointerdowncapture',()=>this.music.unlock());
-    this.unaudio=this.platform.onAudioActiveChange?.(active=>this.music.setActive(active))??(()=>{});
+    this.unaudio=this.platform.onAudioActiveChange?.(active=>{
+      this.music.setActive(active);
+      if(!active)this.platform.cancelHaptics?.();
+    })??(()=>{});
     if(!options.skipLoading){
       this.loading=new StartupScreen(this.app,this.platform);
       this.loading.scene.setProgress(.15);
@@ -210,14 +214,14 @@ export class GameApplication {
           case 'door-open': this.audio.play('mirrorHit',.35); break;
           case 'wall': this.audio.play('mirrorHit',.42); break;
         }
-        if(event.impact.type==='target')this.vibrate('medium');
-        else if(event.impact.type==='mirror'||event.impact.type==='splitter'||event.impact.type==='portal'||event.impact.type==='portal-exit')this.vibrate('light');
+        if(event.impact.type==='target')this.vibrate('heavy');
+        else if(event.impact.type==='mirror'||event.impact.type==='splitter'||event.impact.type==='focus')this.vibrate('medium');
+        else if(event.impact.type==='portal'||event.impact.type==='portal-exit')this.vibrate('light');
         this.wake();
       }
       if(event.type==='combo'){
         this.view.showCombo(event.count, now);
         this.audio.playCombo(event.count);
-        this.vibrate(event.count>=3?'medium':'light');
         this.wake();
       }
       if(event.type==='toast'){this.view.showToast(event.text,now);this.wake();}
@@ -228,7 +232,7 @@ export class GameApplication {
       if(event.type==='laser-launch'){
         this.audio.play('laserFire');
         this.view.laserLaunch(state,now);
-        this.vibrate('heavy');
+        this.vibrate('launch');
         this.wake();
       }
       if(event.type==='shot-end'){
@@ -260,7 +264,7 @@ export class GameApplication {
           this.coins+=reward;
           saveCoins(this.platform,this.coins);
         }
-        this.pendingResult={kind:'win',copy,at:now+(state.comboCount>=2?900:280)};
+        this.pendingResult={kind:'win',copy,at:now+(state.comboCount>=2?480:220)};
         this.vibrate('success');this.wake();
       }
       if(event.type==='defeat'){
@@ -393,6 +397,7 @@ export class GameApplication {
         this.platform.storage.set(HAPTICS_STORAGE_KEY,this.hapticsEnabled?'1':'0');
         this.view.setHapticsEnabled(this.hapticsEnabled);
         if(this.hapticsEnabled)this.vibrate('light');
+        else this.platform.cancelHaptics?.();
         this.wake();
       },
       selectTheme:(id)=>{
@@ -510,22 +515,24 @@ export class GameApplication {
     if(this.fireChargeStartedAt===null)return;
     const progress=Math.min(1,(now-this.fireChargeStartedAt)/GameConfig.laser.inputChargeMs);
     this.view.setFireCharge(progress,now);
-    const stages=[.24,.45,.64,.80,.92];
+    const stages=[.25,.50,.72,.87];
     while(this.fireChargeHapticStep<stages.length&&progress>=stages[this.fireChargeHapticStep]){
       const step=this.fireChargeHapticStep++;
-      this.vibrate(step<2?'light':step<4?'medium':'heavy');
+      this.vibrate(step<2?'light':step===2?'medium':'heavy');
     }
     if(progress>=1)this.completeFireCharge();
   }
   private completeFireCharge(){
     if(this.fireChargeStartedAt===null)return;
     this.fireChargeStartedAt=null;
+    this.audio.stop('laserCharge');
     this.view.setFireCharge(null);
     this.fire(true);
   }
   private cancelFireCharge(){
     if(this.fireChargeStartedAt===null)return;
     this.fireChargeStartedAt=null;
+    this.audio.stop('laserCharge');
     this.view?.setFireCharge(null);
   }
   private syncTutorial(){
@@ -602,12 +609,9 @@ export class GameApplication {
       primary:`领取 ${AD_HEART_REWARD} 颗爱心`,
     },now);
   }
-  private vibrate(type:'light'|'medium'|'heavy'|'success'){
+  private vibrate(type:HapticKind){
     if(!this.hapticsEnabled)return;
-    const now=nowMs();
-    const gap=type==='light'?90:type==='success'?120:70;
-    if(now-this.lastVibrateAt<gap)return;
-    this.lastVibrateAt=now;
+    if(!this.hapticGate.allows(type,nowMs()))return;
     try{this.platform.vibrate(type);}catch{}
   }
   private armFireWatchdog(){
@@ -649,5 +653,5 @@ export class GameApplication {
   private renderOnce(){
     try{this.app.renderer.render(this.app.stage);}catch(error){console.warn('[game] render failed',error);}
   }
-  destroy(){this.destroyed=true;this.loading?.dispose();this.loading=null;this.pendingResult=null;this.cancelFireCharge();this.clearFireWatchdog();this.unresize();this.unaudio();this.music.destroy();this.audio.destroy();this.view?.destroy();this.app.destroy(true);}
+  destroy(){this.destroyed=true;this.loading?.dispose();this.loading=null;this.pendingResult=null;this.cancelFireCharge();this.clearFireWatchdog();this.platform.cancelHaptics?.();this.unresize();this.unaudio();this.music.destroy();this.audio.destroy();this.view?.destroy();this.app.destroy(true);}
 }
