@@ -98,6 +98,7 @@ const requiredFiles = [
   'ui/tutorial/finger.png',
   'ui/app-icon.png',
   'ui/loading-title.png',
+  ...['focus','combiner','switch','wall','door','splitter','portal'].map(key=>`ui/mechanisms/${key}.png`),
 ];
 for (const relativePath of requiredFiles) {
   const filePath = join(outputDirectory, relativePath);

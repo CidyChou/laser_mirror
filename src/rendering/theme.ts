@@ -35,7 +35,7 @@ const VOID_PALETTE = {
 } as const;
 
 export type ThemePalette = { -readonly [K in keyof typeof VOID_PALETTE]: number };
-export type ThemeId = 'void' | 'aurora' | 'white';
+export type ThemeId = 'void' | 'aurora';
 export type LaserColorId = 'pink' | 'red' | 'blue' | 'violet' | 'amber';
 type LaserPalette = Pick<ThemePalette, 'beam' | 'beamHot' | 'beam2' | 'beamCore' | 'laserBody' | 'laserPlasma' | 'laserCore' | 'laserMist'>;
 export type LaserColorOption = { readonly id: LaserColorId; readonly name: string; readonly preview: number; readonly colors?: LaserPalette };
@@ -95,36 +95,7 @@ export const THEMES: readonly GameTheme[] = Object.freeze([
       doorClosed: 0x70425f,
     }),
   },
-  {
-    id: 'white', name: '简约白', tagline: '干净 · 纸白', colorScheme: 'light',
-    colors: palette({
-      bg: 0xe3e3e6, bg0: 0xdedee1, bg1: 0xd6d6da,
-      panel: 0xf0f0f2, panelHi: 0xf5f5f6,
-      surface: 0xf0f0f2, surfaceTop: 0xf5f5f6, surfaceSide: 0xc4c4c8,
-      surfaceLine: 0xc8c8cc, surfaceMuted: 0xe8e8eb,
-      boardTop: 0xe8e8eb, boardBottom: 0xdddde1, boardSide: 0xc8c8cc,
-      boardShadow: 0xb8b8bc, boardDepthBottom: 0xd0d0d4, boardDepthSide: 0xc4c4c8,
-      cellA: 0xeaeaed, cellB: 0xeaeaed, cellShade: 0xd5d5d9,
-      text: 0x1a1a1c, ink: 0x1a1a1c, inkSoft: 0x5c5c62, muted: 0x5c5c62,
-      textOnAccent: 0xf5f5f6,
-      accent: 0x1a1a1c, accentDark: 0x000000,
-      danger: 0xe24b4b, dangerSurface: 0xf3e0e0, success: 0x2f8f64,
-      coin: 0xc49620, gold: 0xc49620,
-      cyan: 0x6a6a70, cyanSoft: 0xb4b4b8, green: 0x2f8f64, purple: 0x6a6a70,
-      settingsIcon: 0x2c2c30, overlay: 0x1a1a1c, shadow: 0x1a1a1c,
-      heartEmpty: 0xc8c8cc, disabledSurface: 0xdadade, disabledEdge: 0xc4c4c8,
-      raisedFixed: 0xc8c8cc, raisedMovable: 0xd0d0d4,
-      splitterFixed: 0xc8c8cc, splitterMovable: 0xd0d0d4,
-      mirrorBlade: 0xc8c8cc, mirrorCore: 0xeeeef0,
-      mirrorShade: 0x6e6e74, mirrorEnd: 0x8a8a90,
-      lock: 0x6a6a70, lockKey: 0xf0f0f2, splitterGem: 0x9a9aa0,
-      wallFace: 0x8a8a90, wallInset: 0x5c5c62,
-      switchOff: 0xd0d0d4, switchOffRing: 0x9a9aa0, switchOffCore: 0x6a6a70,
-      switchOnRing: 0xd5e8dc,
-      doorClosed: 0xb45a6a, comboSide: 0xb43a4e,
-      victoryWash: 0xe8e8eb,
-    }),
-  },
+
 ]);
 
 export const DEFAULT_THEME_ID: ThemeId = 'void';
@@ -143,7 +114,6 @@ export function setActiveLaserColor(id: LaserColorId) {
 }
 
 export function normalizeThemeId(value: unknown): ThemeId {
-  if (value === 'atelier') return 'white';
   return THEMES.some((theme) => theme.id === value) ? value as ThemeId : DEFAULT_THEME_ID;
 }
 

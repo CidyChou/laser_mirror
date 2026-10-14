@@ -28,7 +28,7 @@ import {
   saveCompletedLevels,
   saveCurrentLevel,
 } from '@/progression/levelProgress';
-import { loadUiAssets, uiTexture } from '@/rendering/ui/assets';
+import { loadUiAssets, MECHANISM_ASSET_KEYS, uiTexture } from '@/rendering/ui/assets';
 import {
   DEFAULT_THEME_ID,
   Theme,
@@ -364,6 +364,7 @@ export class GameApplication {
     this.view.setUiTexture('coin',uiTexture(this.platform.kind,'coin'));
     this.view.setUiTexture('finger',uiTexture(this.platform.kind,'finger'));
     for (const key of ['heart','emitter','receiver'] as const) this.view.setUiTexture(key,uiTexture(this.platform.kind,key));
+    for (const key of MECHANISM_ASSET_KEYS) this.view.setUiTexture(key,uiTexture(this.platform.kind,key));
   }
   private bindViewHandlers(){
     this.view.setHandlers({

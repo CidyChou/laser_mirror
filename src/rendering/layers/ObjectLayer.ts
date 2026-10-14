@@ -7,13 +7,15 @@ import { GameConfig } from '@/config/GameConfig';
 import { CollectorVisual } from '../effects/CollectorVisual';
 import { mechanismIdentities, type MechanismIdentity } from '../mechanismIdentity';
 import { laserMsAtDistance, TIME_BOSS_SPEED_SCALE } from '@/gameplay/laserTiming';
+import type { MechanismAssetKey } from '../ui/assets';
 
-type ItemNode={key:string;kind:LevelItem['type'];root:Container;motion:Container;angleCarrier?:Container;face?:Graphics;core?:Graphics;phase:number;lastLit?:boolean;lastOpen?:boolean;lastCharge?:number;pips?:Graphics;collector?:CollectorVisual;identity?:MechanismIdentity;counter?:Text;panels?:Container[];doorId?:string;badges?:{id:string;root:Container;check:Graphics}[]};
+type ItemArt={key:MechanismAssetKey;sprite:Sprite;fallback:Container[];width:number;height:number;half?:0|1};
+type ItemNode={key:string;kind:LevelItem['type'];root:Container;motion:Container;art?:ItemArt[];angleCarrier?:Container;face?:Graphics;core?:Graphics;phase:number;lastLit?:boolean;lastOpen?:boolean;lastCharge?:number;pips?:Graphics;collector?:CollectorVisual;identity?:MechanismIdentity;counter?:Text;panels?:Container[];doorId?:string;badges?:{id:string;root:Container;check:Graphics}[]};
 type SignalLink={id:string;root:Container;dot:Graphics;from:{x:number;y:number};to:{x:number;y:number};bend:{x:number;y:number}};
 type PortalMotion={key:string;pair:string;motion:Container;flow:Container;mist:Graphics;energy:Graphics;phase:number;hitAt:number|null;receiveAt:number|null;exiting:boolean;horizontal:boolean};
 type Kick={start:number};
 type ClickFx={root:Container;ring:Graphics;flash:Graphics;start:number;active:boolean};
-type PortNode={shell:Graphics;gem:Graphics;sprite:Sprite;port:Port;emitter:boolean;targetIndex?:number;root:Container;halo:Graphics;light:Graphics;core:Graphics;pips:Graphics;required:number;phase:number;active:boolean;lastActive:boolean|null;lastCharge:number;sparks:Container;cell:number;boardCell:number};
+type PortNode={shell:Graphics;gem:Graphics;sprite:Sprite;port:Port;emitter:boolean;targetIndex?:number;root:Container;halo:Graphics;light:Graphics;core:Graphics;pips:Graphics;required:number;phase:number;active:boolean;lastActive:boolean|null;lastCharge:number;sparks:Container;cell:number;boardCell:number;artScale:number};
 
 export class ObjectLayer extends Container{
   readonly captions=new Container();
@@ -24,6 +26,43 @@ export class ObjectLayer extends Container{
   private itemNodes=new Map<string,ItemNode>();
   private portNodes:PortNode[]=[];
   private portTextures = { emitter: Texture.EMPTY, receiver: Texture.EMPTY };
+  private mechanismTextures=new Map<MechanismAssetKey,Texture>();
+  private doorHalves:Texture[]=[];
+
+  setMechanismTexture(kind:MechanismAssetKey,texture:Texture){
+    if(this.mechanismTextures.get(kind)===texture)return;
+    this.mechanismTextures.set(kind,texture);
+    if(kind==='door'){
+      this.doorHalves.forEach(half=>half.destroy());this.doorHalves=[];
+      if(texture!==Texture.EMPTY&&texture.width>1)for(const half of [0,1]){
+        this.doorHalves.push(new Texture({source:texture.source,
+          frame:new Rectangle(texture.frame.x+half*texture.width/2,texture.frame.y,texture.width/2,texture.height)}));
+      }
+    }
+    for(const node of this.itemNodes.values()){
+      for(const art of node.art??[])if(art.key===kind)this.applyItemArt(art);
+      if(kind==='combiner')node.collector?.setTexture(texture);
+      if(kind==='switch'&&node.kind==='switch'&&this.state)
+        this.drawSwitch(node,!!node.lastLit,computeGeometry(this.state.level));
+      if(kind==='focus'&&node.kind==='focus'&&this.state){
+        const item=this.state.items.find(item=>itemKey(item.x,item.y)===node.key);
+        if(item?.type==='focus')this.drawFocus(node,node.lastCharge??0,focusNeed(item),computeGeometry(this.state.level));
+      }
+    }
+  }
+
+  private itemArt(parent:Container,key:MechanismAssetKey,width:number,height:number,fallback:Container[],half?:0|1):ItemArt{
+    const sprite=new Sprite(Texture.EMPTY);sprite.anchor.set(.5);
+    parent.addChildAt(sprite,Math.max(0,parent.getChildIndex(fallback[0])+1));
+    const art={key,sprite,width,height,fallback,half};this.applyItemArt(art);return art;
+  }
+
+  private applyItemArt(art:ItemArt){
+    const texture=art.half===undefined?this.mechanismTextures.get(art.key):this.doorHalves[art.half];
+    const available=!!texture&&texture!==Texture.EMPTY&&texture.width>1;
+    art.sprite.texture=texture??Texture.EMPTY;art.sprite.width=art.width;art.sprite.height=art.height;
+    art.sprite.visible=available;for(const layer of art.fallback)layer.visible=!available;
+  }
 
   setPortTexture(kind: 'emitter' | 'receiver', texture: Texture) {
     this.portTextures[kind] = texture;
@@ -33,8 +72,8 @@ export class ObjectLayer extends Container{
   private applyPortTexture(node: PortNode) {
     const texture = this.portTextures[node.emitter ? 'emitter' : 'receiver'];
     const available = texture !== Texture.EMPTY && texture.width > 1;
-    const artHeight = node.boardCell * .94;
-    const artWidth = node.emitter ? node.boardCell * .4 : artHeight * (125 / 512);
+    const artHeight = node.boardCell * .94 * node.artScale;
+    const artWidth = node.emitter ? node.boardCell * .4 * node.artScale : artHeight * (125 / 512);
     node.sprite.texture = texture;
     node.sprite.width = artWidth;
     node.sprite.height = artHeight;
@@ -382,12 +421,13 @@ export class ObjectLayer extends Container{
       crystal.poly([-s*.43,-s*.40,s*.40,-s*.40,-s*.40,s*.40],true).fill({color:Theme.white,alpha:isLightTheme()?.08:.15});
       if(!isLightTheme())crystal.poly([s*.41,-s*.36,s*.41,s*.41,-s*.36,s*.41],true).fill({color:Theme.cyan,alpha:.12});
       gem.addChild(halo,shadow,crystal);motion.addChild(gem);
+      const art=this.itemArt(motion,'splitter',g.cell*.66,g.cell*.66,[gem]);
       const dir=new Container();dir.rotation=item.s===0?Math.PI/4:-Math.PI/4;
       const rail=new Graphics().moveTo(-g.cell*.23,0).lineTo(g.cell*.23,0)
         .stroke({color:Theme.mirrorCore,width:Math.max(1.7,g.cell*.022),alpha:.92,cap:'round'});
       dir.addChild(rail);motion.addChild(dir);
       if(item.fixed)motion.addChild(this.lockMark(g.cell));
-      return{key,kind:item.type,root,motion,angleCarrier:dir,phase:0};
+      return{key,kind:item.type,root,motion,art:[art],angleCarrier:dir,phase:0};
     }
     if(item.type==='wall'){
       const s=g.cell*.91,r=g.cell*.09,depth=g.cell*.10;
@@ -402,16 +442,19 @@ export class ObjectLayer extends Container{
       for(let i=0;i<3;i++)block.moveTo(-s*.21+i*s*.15,faceCenter-s*.14)
         .lineTo(-s*.04+i*s*.15,faceCenter+s*.14)
         .stroke({color:Theme.wallInset,width:g.cell*.045,alpha:.80,cap:'round'});
-      motion.addChild(block);return{key,kind:item.type,root,motion,phase:0};
+      motion.addChild(block);
+      const art=this.itemArt(motion,'wall',g.cell*.84,g.cell*.84,[block]);
+      return{key,kind:item.type,root,motion,art:[art],phase:0};
     }
     if(item.type==='switch'){
       const face=new Graphics(),core=new Graphics();motion.addChild(face,core);const lit=state.activeSwitches.has(item.id);
       const identity=this.identities.get(item.id)!,n:ItemNode={key,kind:item.type,root,motion,face,core,identity,phase:0,lastLit:lit};
+      n.art=[this.itemArt(motion,'switch',g.cell*.76,g.cell*.76,[face])];
       const badge=this.badge(identity,g.cell);badge.position.y=g.cell*.31;motion.addChild(badge);
       this.drawSwitch(n,lit,g);return n;
     }
     if(item.type==='door'){
-      const c=g.cell*1.12,face=new Graphics(),panels:Container[]=[],badges:NonNullable<ItemNode['badges']>=[];
+      const c=g.cell*1.12,face=new Graphics(),panels:Container[]=[],badges:NonNullable<ItemNode['badges']>=[],art:ItemArt[]=[];
       const tint=this.identities.get(item.requires[0])?.color??Theme.cyan;
       this.blockShadow(face,c*.78,c*.06,c*.08);
       face.roundRect(-c*.38,-c*.34,c*.76,c*.74,c*.06).fill(Theme.boardShadow);
@@ -431,6 +474,11 @@ export class ObjectLayer extends Container{
         plate.moveTo(side<0?c*.09:-c*.09,-c*.06).lineTo(side<0?c*.16:-c*.16,0).lineTo(side<0?c*.09:-c*.09,c*.06)
           .stroke({color:tint,width:1.5,alpha:.65});
         panel.addChild(plate);panels.push(panel);motion.addChild(panel);
+        const skin=this.itemArt(panel,'door',c*.28,c*.54,[plate],side<0?0:1);
+        skin.sprite.position.x=side<0?c*.14:-c*.14;art.push(skin);
+        // Pair color remains a live signal on the moving blades.
+        panel.addChild(new Graphics().moveTo(seam,-c*.20).lineTo(seam,c*.20)
+          .stroke({color:tint,width:Math.max(1,c*.018),alpha:.85}));
       }
       item.requires.forEach((id,index)=>{
         const identity=this.identities.get(id);if(!identity)return;
@@ -439,7 +487,7 @@ export class ObjectLayer extends Container{
         badge.position.set((index-(item.requires.length-1)/2)*Math.max(17,c*.27),c*.30);
         check.position.y=-c*.18;check.visible=false;badge.addChild(check);motion.addChild(badge);badges.push({id,root:badge,check});
       });
-      return{key,kind:item.type,root,motion,face,panels,badges,doorId:item.id,phase:0,lastOpen:!!state.activeDoorStates[item.id]};
+      return{key,kind:item.type,root,motion,art,face,panels,badges,doorId:item.id,phase:0,lastOpen:!!state.activeDoorStates[item.id]};
     }
     if(item.type==='focus'){
       const face=new Graphics(),core=new Graphics(),pips=new Graphics();motion.addChild(face,core,pips);
@@ -451,11 +499,13 @@ export class ObjectLayer extends Container{
       const captionW=Math.max(32,g.cell*.54),captionH=Math.max(19,g.cell*.27);
       caption.addChild(new Graphics().roundRect(-captionW/2,-captionH/2,captionW,captionH,g.cell*.05).fill(0x14202b),counter);
       this.captions.addChild(caption);
-      const n={key,kind:item.type,root,motion,face,core,pips,counter,phase:0,lastCharge:charge,lastLit:charge>=need};
+      const n:ItemNode={key,kind:item.type,root,motion,face,core,pips,counter,phase:0,lastCharge:charge,lastLit:charge>=need,
+        art:[this.itemArt(motion,'focus',g.cell*.86,g.cell*.86,[face])]};
       this.drawFocus(n,charge,need,g);return n;
     }
     if(item.type==='combiner'){
       const collector=new CollectorVisual(g.cell*1.1,combinerNeed(item));
+      collector.setTexture(this.mechanismTextures.get('combiner')??Texture.EMPTY);
       collector.direction.rotation=item.dir*Math.PI/2;
       const charge=state.combinerHits[key]??0,on=!!state.combinerOn[key];
       collector.setCharge(charge,on);motion.addChild(collector);
@@ -488,8 +538,12 @@ export class ObjectLayer extends Container{
     const energy=new Graphics().circle(0,0,c*.12).fill({color:mix(color,Theme.white,.6),alpha:.9});
     energy.blendMode=this.energyBlend;energy.visible=false;
     motion.addChild(portal,mist,orbit,energy);
+    const art=this.itemArt(motion,'portal',g.cell*.76,g.cell*.76,[portal]);
+    const liveRim=new Graphics().circle(0,0,c*.224)
+      .stroke({color,width:Math.max(1.3,g.cell*.025),alpha:.8});
+    motion.addChildAt(liveRim,motion.getChildIndex(mist));
     this.portals.push({key,pair:item.pair,motion,flow,mist,energy,phase:item.x*.9+item.y*.5,hitAt:null,receiveAt:null,exiting:false,horizontal:true});
-    return{key,kind:item.type,root,motion,phase:0};
+    return{key,kind:item.type,root,motion,art:[art],phase:0};
   }
 
   private drawSwitch(n:ItemNode,lit:boolean,g:BoardGeometry){
@@ -505,7 +559,9 @@ export class ObjectLayer extends Container{
       .fill(this.finish(mix(color,Theme.white,lit?.12:.15),mix(color,Theme.boardBottom,.24)))
       .stroke({color:group,width:Math.max(1.5,c*.025),alpha:lit?1:.72});
     // A power mark is a functional glyph, replacing the old bullseye.
-    n.core.clear().arc(0,0,c*.092,-Math.PI*.25,Math.PI*1.25)
+    n.core.clear();
+    if(n.art?.[0]?.sprite.visible)this.light(n.core,0,0,c*.22,c*.22,group,lit?.46:.06);
+    n.core.arc(0,0,c*.092,-Math.PI*.25,Math.PI*1.25)
       .stroke({color:lit?Theme.white:group,width:Math.max(2,c*.033),alpha:.95,cap:'round'});
     n.core.moveTo(0,-c*.13).lineTo(0,-c*.01)
       .stroke({color:lit?Theme.white:group,width:Math.max(2,c*.033),cap:'round'});
@@ -531,10 +587,11 @@ export class ObjectLayer extends Container{
     this.light(n.core,0,0,c*.20,c*.20,color,on?.45:.08);
     if(n.counter){n.counter.text=on?'✓':`${Math.min(charge,need)}/${need}`;n.counter.tint=on?0x7cfdbe:0xffdf80;}
     if(n.pips){
-      const width=c*.47,height=c*.085;
-      n.pips.clear().roundRect(-width/2,-c*.045,width,height,height/2).fill(0x101c2d)
+      const textured=!!n.art?.[0]?.sprite.visible,width=c*(textured?.34:.47),height=c*(textured?.045:.085);
+      const y=textured?c*.11:-c*.045;
+      n.pips.clear().roundRect(-width/2,y,width,height,height/2).fill(0x101c2d)
         .stroke({color,width:1,alpha:.65});
-      if(charge>0)n.pips.roundRect(-width/2+c*.015,-c*.03,(width-c*.03)*Math.min(1,charge/need),height-c*.03,height/3).fill(color);
+      if(charge>0)n.pips.roundRect(-width/2+c*.01,y+c*.006,(width-c*.02)*Math.min(1,charge/need),height-c*.012,height/3).fill(color);
     }
   }
 
@@ -578,7 +635,9 @@ export class ObjectLayer extends Container{
       core.moveTo(cell * slitX, -cell * .19).lineTo(cell * slitX, cell * .19).stroke({color:Theme.white,width:cell*.015,cap:'round'});
     }
     root.addChild(halo,shell,gem,sprite,light,core,pips,sparks);
-    const node: PortNode = {shell,gem,sprite,port,emitter,targetIndex,root,halo,light,core,pips,sparks,cell,boardCell:g.cell,required:Math.max(1,Math.floor(required)),
+    const number=this.state?.level.campaign?.kind==='normal'?this.state.level.campaign.displayNumber:Infinity;
+    const artScale=emitter&&number<=5?.72+(number-1)*.06:1;
+    const node: PortNode = {shell,gem,sprite,port,emitter,targetIndex,root,halo,light,core,pips,sparks,cell,boardCell:g.cell,artScale,required:Math.max(1,Math.floor(required)),
       phase:(targetIndex??0)*1.37,active:false,lastActive:null,lastCharge:-1};
     this.applyPortTexture(node);
     return node;
@@ -616,6 +675,7 @@ export class ObjectLayer extends Container{
     this.fixedMirrorSeatFinish.destroy();
     for(const finish of this.finishes.values())finish.destroy();
     this.finishes.clear();
+    this.doorHalves.forEach(half=>half.destroy());
   }
 }
 

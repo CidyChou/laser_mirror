@@ -12,6 +12,7 @@ import campaign from '../../src/levels/levels.json';
 import solvedCampaign from './campaign-solutions.json';
 import type { LevelDefinition } from '../../src/gameplay/types';
 import { applyLaserPalette, LASER_PALETTES } from './laser-palettes';
+import { MECHANISM_ASSET_KEYS } from '../../src/rendering/ui/assets';
 
 const stage=document.querySelector<HTMLDivElement>('#stage')!;
 const status=document.querySelector<HTMLOutputElement>('#status')!;
@@ -51,6 +52,10 @@ const extraTextures = await Promise.all(['heart','emitter','receiver','settings-
   try { return await Assets.load<Texture>(`${assetBase}ui/${key}.png`); }
   catch { return Texture.EMPTY; }
 }));
+const mechanismTextures=await Promise.all(MECHANISM_ASSET_KEYS.map(async key=>{
+  try{return await Assets.load<Texture>(`${assetBase}ui/mechanisms/${key}.png`);}
+  catch{return Texture.EMPTY;}
+}));
 let session:GameSession,view:PixiGameView,clock=0,playing=false,overlay=false;
 
 function event(e:GameEvent){
@@ -82,6 +87,7 @@ function mountView(){
   view.setUiTexture('coin',rewardTextures[0]);
   view.setUiTexture('crown',rewardTextures[1]);
   (['heart','emitter','receiver','settings'] as const).forEach((key,i)=>view.setUiTexture(key,extraTextures[i]));
+  MECHANISM_ASSET_KEYS.forEach((key,i)=>view.setUiTexture(key,mechanismTextures[i]));
   view.setHandlers({rotate:(x,y)=>session.rotateAt(x,y),firePressStart:()=>play(),firePressEnd:()=>{},bulletTime:()=>session.startBulletTime(),reset:()=>reset(),openSettings:()=>showOverlay(),
     tutorialNext:()=>{},tutorialSkip:()=>{},tutorialTap:()=>{},replayTutorial:()=>{},canSelectLevel:()=>false,
     toggleAudio:()=>{},toggleHaptics:()=>{},selectTheme:()=>{},closeSettings:()=>showOverlay(),openLevels:()=>{},

@@ -3,7 +3,7 @@ import { DESIGN_HEIGHT, DESIGN_WIDTH, UI_RECTS, UI_TOKENS } from '@/config/GameC
 import { Button } from '../ui/Button';
 import { LASER_COLORS, THEMES, Theme, themeById, type GameTheme, type LaserColorId, type LaserColorOption, type ThemeId, uiText } from '../theme';
 
-const CARD_W = 156;
+const CARD_W = (500 - 16 * (THEMES.length - 1)) / THEMES.length;
 const CARD_H = 150;
 const COLOR_W = 92;
 const COLOR_H = 68;

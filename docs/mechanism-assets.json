@@ -1,0 +1,51 @@
+[
+  {
+    "key": "focus",
+    "name": "focus-prism",
+    "prompt": "Use case: stylized-concept. Asset type: ONE transparent PNG sprite for a polished premium mobile laser puzzle board. Directly overhead orthographic view; face-on plan view, no perspective tilt. Rendered satin titanium, dark graphite recesses, clean chamfered industrial edges, a few broad soft upper-left highlights. Strong simple silhouette readable at 40px, more elegant optical instrument than combat equipment. Centered isolated object filling 84% square canvas. True alpha transparency around it. No text, numerals, letters, labels, UI tile, external glow, laser beam, particles, bolts everywhere, scene, ground shadow, checkerboard or extra objects. A compact pointed hexagonal focusing prism: tall diamond/house silhouette with a triangular pointed upper end, warm champagne-gold metal bezel, dark amber optical glass center with two broad geometric facets, one short horizontal recessed receiving slit across its lower middle. Quiet precise elegant optical capacitor, visibly different from an octagonal chamber. No circular rings. Single integrated object.",
+    "source": "/Users/cidychou/.codex/generated_images/01a1332c-8012-7753-9610-93cbc3bed7f4/exec-19f6c2e0-0cfe-4734-8cd4-ae6481cb23f9.png",
+    "output": "public/ui/mechanisms/focus.png"
+  },
+  {
+    "key": "combiner",
+    "name": "collector",
+    "prompt": "Use case: stylized-concept. Asset type: ONE transparent PNG sprite for a polished premium mobile laser puzzle board. Directly overhead orthographic view; face-on plan view, no perspective tilt. Rendered satin titanium, dark graphite recesses, clean chamfered industrial edges, a few broad soft upper-left highlights. Strong simple silhouette readable at 40px, more elegant optical instrument than combat equipment. Centered isolated object filling 84% square canvas. True alpha transparency around it. No text, numerals, letters, labels, UI tile, external glow, laser beam, particles, bolts everywhere, scene, ground shadow, checkerboard or extra objects. An energy collection and re-emission optical hub. Squat octagonal silver titanium chamber, a single large recessed pale cyan faceted diamond at its center, two subtle input slots on the left, and a short unmistakable focusing outlet nozzle pointing RIGHT at exact center. Overall silhouette near square with the outlet integrated inside the square silhouette. Broad faces, restrained cyan optical glass, elegant compact precision device. No arrows, no letters, no meter, no numbered slots; game adds the direction and charge counters.",
+    "source": "/Users/cidychou/.codex/generated_images/01a1332c-8012-7753-9610-93cbc3bed7f4/exec-6a1cd458-344e-4a7d-a819-8df0f274d73d.png",
+    "output": "public/ui/mechanisms/combiner.png"
+  },
+  {
+    "key": "switch",
+    "name": "switch",
+    "prompt": "Use case: stylized-concept. Asset type: ONE transparent PNG sprite for a polished premium mobile laser puzzle board. Directly overhead orthographic face-on plan view, no perspective tilt. Satin titanium silver, dark graphite recesses, clean chamfered edges, broad restrained upper-left studio highlights. Elegant compact precision optical instrument; simple readable at 40 pixels. Centered single isolated object filling 84% square canvas. Real alpha transparency. No text, letters, numerals, UI card, background, ground shadow, glow, particles or extra objects. A laser-activated switch pad: chamfered near-square titanium housing with a broad dark neutral black-glass ROUND button inset in the center. One simple dark smooth optical face, a subtle recessed indicator slit below it, no power symbol printed on it because game overlays that. The button is neutral unlit charcoal, no green or colored lights baked in. Quiet industrial elegance, soft corners, only four broad corner joints.",
+    "source": "/Users/cidychou/.codex/generated_images/01a1332c-8012-7753-9610-93cbc3bed7f4/exec-17912d81-8472-42f1-ab58-ef75bce61b38.png",
+    "output": "public/ui/mechanisms/switch.png"
+  },
+  {
+    "key": "wall",
+    "name": "wall",
+    "prompt": "Use case: stylized-concept. Asset type: ONE transparent PNG sprite for a polished premium mobile laser puzzle board. Directly overhead orthographic face-on plan view, no perspective tilt. Satin titanium silver, dark graphite recesses, clean chamfered edges, broad restrained upper-left studio highlights. Elegant compact precision optical instrument; simple readable at 40 pixels. Centered single isolated object filling 84% square canvas. Real alpha transparency. No text, letters, numerals, UI card, background, ground shadow, glow, particles or extra objects. An immovable beam-blocking obstacle: a solid chamfered square graphite block with a bold satin titanium frame. Large dark central inset with three broad parallel diagonal silver ridges, restrained hard surface depth. Visibly a closed solid barrier, no optical glass, no lights. Compact sturdy yet refined. Symmetrical footprint, no perspective tilt.",
+    "source": "/Users/cidychou/.codex/generated_images/01a1332c-8012-7753-9610-93cbc3bed7f4/exec-9078e268-01fa-497d-8a90-7b23ec83a0ed.png",
+    "output": "public/ui/mechanisms/wall.png"
+  },
+  {
+    "key": "door",
+    "name": "door",
+    "prompt": "Use case: stylized-concept. Asset type: ONE transparent PNG sprite for a polished premium mobile laser puzzle board. Directly overhead orthographic face-on plan view, no perspective tilt. Satin titanium silver, dark graphite recesses, clean chamfered edges, broad restrained upper-left studio highlights. Elegant compact precision optical instrument; simple readable at 40 pixels. Centered single isolated object filling 84% square canvas. Real alpha transparency. No text, letters, numerals, UI card, background, ground shadow, glow, particles or extra objects. A pair of closed retractable shutter blades, together forming one square. Two symmetrical graphite and satin titanium sliding panels meeting at the exact vertical center seam. Each blade has one broad diagonal silver bevel panel, and the center seam has a narrow recessed dark slit. NO outer frame or surrounding rails; only the two matching panels edge-to-edge. Fully symmetric left and right, clean straight center seam so game can split them. Neutral metal, no colored lights, no arrows or writing.",
+    "source": "/Users/cidychou/.codex/generated_images/01a1332c-8012-7753-9610-93cbc3bed7f4/exec-3bd1d4a1-ef28-44a2-913a-99daea11fa8c.png",
+    "output": "public/ui/mechanisms/door.png"
+  },
+  {
+    "key": "splitter",
+    "name": "splitter",
+    "prompt": "Use case: stylized-concept. Asset type: ONE transparent PNG sprite for a premium mobile laser-and-mirror puzzle. Camera directly overhead, orthographic face-on plan, no perspective tilt. Elegant satin titanium and dark graphite precision optical materials, broad restrained soft highlights from upper left, crisp silhouette readable at 40 pixels. Single centered isolated object filling 84% square canvas. True alpha transparency, no background, scene, text, labels, digits, arrows, UI card, laser beam, surrounding glow, particles, ground shadow or extra objects. A laser beam-splitting optical prism: one square diamond with a corner pointing exactly up, down, left and right, cool pale cyan translucent faceted crystal. Thin elegant satin silver beveled mounting rim hugging the diamond, no square base around it. Four broad triangular facets meeting at center, calm dark cyan edges, bright icy highlights. No line drawn across the middle; game overlays the rotating reflection axis. Clearly a refractive diamond, not a ring or round lens.",
+    "source": "/Users/cidychou/.codex/generated_images/01a1332c-8012-7753-9610-93cbc3bed7f4/exec-855af5e8-16aa-4764-b0ad-667f7c31cbb0.png",
+    "output": "public/ui/mechanisms/splitter.png"
+  },
+  {
+    "key": "portal",
+    "name": "portal",
+    "prompt": "Use case: stylized-concept. Asset type: ONE transparent PNG sprite for a premium mobile laser-and-mirror puzzle. Camera directly overhead, orthographic face-on plan, no perspective tilt. Elegant satin titanium and dark graphite precision optical materials, broad restrained soft highlights from upper left, crisp silhouette readable at 40 pixels. Single centered isolated object filling 84% square canvas. True alpha transparency, no background, scene, text, labels, digits, arrows, UI card, laser beam, surrounding glow, particles, ground shadow or extra objects. A teleport aperture mechanical rim: a SINGLE broad circular satin silver ring with four discreet dark graphite quadrant joints, precise smooth bevels. A recessed violet-black glass cavity in center, with extremely subtle deep violet sheen; center is calm near black. No nested rings, spikes or bolts. Circular optical portal instrument, compact robust low-profile design. Keep outer ring neutral silver; game overlays the colored pairing signal in inner aperture.",
+    "source": "/Users/cidychou/.codex/generated_images/01a1332c-8012-7753-9610-93cbc3bed7f4/exec-67250294-ce79-4403-97b3-a1c106fa899a.png",
+    "output": "public/ui/mechanisms/portal.png"
+  }
+]

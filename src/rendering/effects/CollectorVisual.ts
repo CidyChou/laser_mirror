@@ -1,4 +1,4 @@
-import { Container, FillGradient, Graphics, Text } from 'pixi.js';
+import { Container, FillGradient, Graphics, Sprite, Text, Texture } from 'pixi.js';
 import { isLightTheme, Theme, uiText } from '../theme';
 
 /** Faceted optical hub: input slots, a readable charge count, and one output nozzle. */
@@ -12,6 +12,11 @@ export class CollectorVisual extends Container {
   private readonly sparks=new Container();
   private readonly counter:Text;
   private readonly marks:Graphics[]=[];
+  private readonly artMotion=new Container();
+  private readonly artwork=new Sprite(Texture.EMPTY);
+  private body!:Graphics;
+  private crystal!:Graphics;
+  private nozzle!:Graphics;
   private readonly fills:FillGradient[]=[];
   private charge=0;
   private fired=false;
@@ -33,9 +38,11 @@ export class CollectorVisual extends Container {
     this.lens.circle(0,0,c*.22).fill(halo);this.lens.tint=Theme.cyan;this.lens.blendMode=blend;
     this.lens.alpha=.14;
     this.chamber.addChild(body,this.lens);
-    this.chamber.addChild(new Graphics().poly([0,-c*.115,c*.11,0,0,c*.115,-c*.11,0],true)
+    this.body=body;
+    this.crystal=new Graphics().poly([0,-c*.115,c*.11,0,0,c*.115,-c*.11,0],true)
       .fill({color:Theme.cyan,alpha:.70}).stroke({color:Theme.cyanSoft,width:1.2,alpha:.8})
-      .poly([0,-c*.115,0,c*.115,-c*.11,0],true).fill({color:Theme.white,alpha:.16}));
+      .poly([0,-c*.115,0,c*.115,-c*.11,0],true).fill({color:Theme.white,alpha:.16});
+    this.chamber.addChild(this.crystal);
     for(let i=0;i<need;i++){
       const step=c*.35/need,x=-c*.175+step*i;
       body.roundRect(x,c*.14,step*.78,c*.05,c*.013).fill({color:Theme.cyan,alpha:.17});
@@ -49,7 +56,10 @@ export class CollectorVisual extends Container {
       .stroke({color:Theme.cyanSoft,width:Math.max(1.6,c*.023),alpha:.78,cap:'round'})
       .poly([c*.40,0,c*.26,-c*.115,c*.26,c*.115],true).fill(Theme.cyanSoft)
       .moveTo(c*.25,0).lineTo(c*.32,0).stroke({color:Theme.boardBottom,width:Math.max(2,c*.03),cap:'round'});
-    this.direction.addChild(nozzle);
+    this.nozzle=nozzle;
+    this.artwork.anchor.set(.5);this.artwork.visible=false;
+    this.artMotion.addChild(this.artwork);
+    this.direction.addChild(this.artMotion,nozzle);
     this.sweep.arc(0,0,c*.253,-.75,0).stroke({color:Theme.laserPlasma,width:Math.max(2,c*.037),cap:'round'});
     this.sweep.blendMode=blend;
     for(let i=0;i<6;i++){
@@ -61,8 +71,15 @@ export class CollectorVisual extends Container {
     const captionW=Math.max(36,c*.56),captionH=Math.max(19,c*.27);
     this.caption.position.set(c*.06,c*.30);
     this.caption.addChild(new Graphics().roundRect(-captionW/2,-captionH/2,captionW,captionH,c*.05).fill(0x14202b),this.counter);
-    this.addChild(this.glow,this.chamber,this.sweep,this.sparks,this.caption,this.direction);
+    this.addChild(this.glow,this.direction,this.chamber,this.sweep,this.sparks,this.caption);
     this.setCharge(0,false);this.animate(0,null,Infinity);
+  }
+
+  setTexture(texture:Texture){
+    const available=texture!==Texture.EMPTY&&texture.width>1;
+    this.artwork.texture=texture;this.artwork.width=this.cell*.73;this.artwork.height=this.cell*.69;
+    this.artwork.visible=available;
+    this.body.visible=this.crystal.visible=this.nozzle.visible=!available;
   }
 
   private gradient(top:number,bottom:number){
@@ -81,7 +98,7 @@ export class CollectorVisual extends Container {
 
   animate(now:number,progress:number|null,releaseAge:number){
     this.sweep.visible=progress!==null;this.sparks.visible=progress!==null;
-    this.chamber.scale.set(1);this.glow.scale.set(1);this.lens.scale.set(1);
+    this.chamber.scale.set(1);this.artMotion.scale.set(1);this.glow.scale.set(1);this.lens.scale.set(1);
     this.counter.alpha=1;
     if(progress!==null){
       this.setCaption('蓄力');
@@ -106,6 +123,7 @@ export class CollectorVisual extends Container {
       const flash=this.fired?Math.max(0,1-releaseAge/380):0;
       this.glow.alpha=(this.fired?.22:.06+this.charge/this.need*.10)+flash*.50;
       this.glow.scale.set(1+flash*.52);this.chamber.scale.set(1+flash*.10);
+      this.artMotion.scale.set(1+flash*.10);
       this.lens.alpha=(this.fired?.7:.12+this.charge/this.need*.12)+flash*.28;
       this.lens.scale.set(1+flash*.32);
     }

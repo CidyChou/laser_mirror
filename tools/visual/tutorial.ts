@@ -7,6 +7,7 @@ import type { PixiGameView } from '@/rendering/PixiGameView';
 import { LevelRepository } from '@/levels/LevelRepository';
 import { stageId } from '@/levels/campaign';
 import { tutorialLessonIds } from '@/gameplay/tutorial';
+import { normalizeThemeId } from '@/rendering/theme';
 
 // Exercise the real application with isolated in-memory progress. Never touches the player's save.
 const params = new URLSearchParams(location.search);
@@ -39,7 +40,7 @@ if (combo >= 2) {
 }
 if (charge != null && charge !== '') debug.view.setFireCharge(Math.min(1, Math.max(0, Number(charge))), now);
 const overlay = params.get('overlay');
-if (overlay === 'settings') debug.view.showSettings(false, false, (params.get('theme') ?? 'void') as 'void' | 'aurora' | 'white');
+if (overlay === 'settings') debug.view.showSettings(false, false, normalizeThemeId(params.get('theme')));
 if (overlay === 'result') {
   debug.view.showResult('win', {
     title: '通关',

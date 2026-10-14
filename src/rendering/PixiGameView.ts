@@ -20,7 +20,7 @@ import { ImpactSystem } from './effects/ImpactSystem';
 import { ParticleSystem } from './effects/ParticleSystem';
 import { WinConfetti } from './effects/WinConfetti';
 import { Theme, activeLaserColorId, type LaserColorId, type ThemeId, uiText } from './theme';
-import type { UiAssetKey } from './ui/assets';
+import { isMechanismAsset, type UiAssetKey } from './ui/assets';
 import type { TutorialStep } from '@/gameplay/tutorial';
 import { TutorialLayer } from './layers/TutorialLayer';
 
@@ -127,6 +127,7 @@ export class PixiGameView{
     }
     if(key==='heart') this.hud.setHeartTexture(texture);
     if(key==='emitter'||key==='receiver') this.objects.setPortTexture(key,texture);
+    if(isMechanismAsset(key)) this.objects.setMechanismTexture(key,texture);
     if(key==='finger') this.tutorial.setFingerTexture(texture);
     if(key==='settings'){
       this.hud.setGearTexture(texture);

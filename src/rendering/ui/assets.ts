@@ -12,9 +12,21 @@ const FILES = {
   receiver: 'ui/receiver.png',
   finger: 'ui/tutorial/finger.png',
   loadingTitle: 'ui/loading-title.png',
+  focus: 'ui/mechanisms/focus.png',
+  combiner: 'ui/mechanisms/combiner.png',
+  switch: 'ui/mechanisms/switch.png',
+  wall: 'ui/mechanisms/wall.png',
+  door: 'ui/mechanisms/door.png',
+  splitter: 'ui/mechanisms/splitter.png',
+  portal: 'ui/mechanisms/portal.png',
 } as const;
 
 export type UiAssetKey = keyof typeof FILES;
+export const MECHANISM_ASSET_KEYS = ['focus', 'combiner', 'switch', 'wall', 'door', 'splitter', 'portal'] as const;
+export type MechanismAssetKey = typeof MECHANISM_ASSET_KEYS[number];
+export function isMechanismAsset(key: UiAssetKey): key is MechanismAssetKey {
+  return (MECHANISM_ASSET_KEYS as readonly string[]).includes(key);
+}
 
 const nativeTextures = new Map<UiAssetKey, Texture>();
 
