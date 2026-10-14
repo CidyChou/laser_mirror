@@ -35,16 +35,17 @@ export const COMBO_MOTION = {
 } as const;
 
 export const WIN_REWARD_MOTION = {
-  counterRevealDelay: 1600,
+  // Relative to the reward panel opening, so combo celebrations cannot leave a gap.
+  counterRevealDelay: 140,
   counterRevealDuration: 160,
-  coinFlightStartDelay: 1800,
-  coinFlightStagger: 62,
-  coinPopDuration: 220,
-  coinHoverDuration: 220,
-  coinFlightDuration: 400,
+  coinFlightStartDelay: 450,
+  coinFlightStagger: 35,
+  coinPopDuration: 140,
+  coinHoverDuration: 90,
+  coinFlightDuration: 320,
   coinArrivalDuration: 140,
   coinSoundGap: 45,
-  rewardCoinRevealDuration: 420,
+  rewardCoinRevealDuration: 180,
 } as const;
 
 export const WIN_CONFETTI_MOTION = {
