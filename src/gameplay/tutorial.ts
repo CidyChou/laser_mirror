@@ -18,7 +18,7 @@ interface Lesson { id: string; title: string; body: string; anchors: TutorialAnc
 export const MAX_TUTORIAL_STEPS = 3;
 const cell = (item: LevelItem): TutorialAnchor => ({ kind: 'cell', x: item.x, y: item.y });
 const port = (value: Port): TutorialAnchor => ({ kind: 'port', port: value });
-const movable = (item: LevelItem) => ['mirror', 'splitter', 'combiner'].includes(item.type) && !('fixed' in item && item.fixed);
+const movable = (item: LevelItem) => ['mirror', 'splitter', 'combiner'].includes(item.type);
 const value = (item: LevelItem) => item.type === 'combiner' ? item.dir : item.type === 'mirror' || item.type === 'splitter' ? item.s : 0;
 const goalAnchors = (level: LevelDefinition) => [...level.targets.map(port), ...level.items.filter(i => i.type === 'focus').map(cell)];
 
@@ -54,8 +54,6 @@ function lessonsFor(level: LevelDefinition, items: LevelItem[]): Lesson[] {
   if (splitter) add('splitter', '一束分两路', '一束直行，一束转弯。用它连接两条路线。', [cell(splitter)]);
   const emitters = levelEmitters(level);
   if (emitters.length > 1) add('multi-source', '多束光，一起出发', '所有光源同时发射，分别安排好路线。', emitters.map(port));
-  const fixed = sorted.find(i => ['mirror','splitter','combiner'].includes(i.type) && 'fixed' in i && i.fixed);
-  if (fixed) add('fixed-mirror', '带锁的不能转', '保留它的方向，调整其他镜子接通光路。', [cell(fixed)], ['fixed-mirror','fixed-splitter','fixed-combiner']);
   return lessons;
 }
 
@@ -104,9 +102,6 @@ export class TutorialDirector {
 
   enter(state: GameState, replay = false) {
     const {level,items} = state;
-    // Earlier releases taught fixed optics separately; any of those lessons
-    // already explains the shared lock symbol.
-    if(['fixed-mirror','fixed-splitter','fixed-combiner'].some(id=>this.seen.has(id)))this.seen.add('fixed-mirror');
     const unseen = (id: string) => replay || !this.seen.has(id);
     const basics = unseen('basics');
     const lessons = lessonsFor(level,items).filter(l=>unseen(l.id));

@@ -49,7 +49,7 @@ for(const fps of [30,60,120]){
   const s=new GameSession([fixture],1,0,{usedFailureProtection:new Set([0])});
   let failures=0,defeats=0;s.on(e=>{if(e.type==='shot-end'&&!e.success)failures++;if(e.type==='defeat')defeats++;});
   s.fire();const advance=clock(s,fps);advance(600);
-  s.rotateAt(0,0);s.rotateAt(2,2);assert.equal(s.state.timeSkill!.adjustmentUses,2);
+  s.rotateAt(2,2);s.rotateAt(2,3);assert.equal(s.state.timeSkill!.adjustmentUses,2);
   s.rotateAt(3,3);s.rotateAt(3,3);assert.equal(s.state.timeSkill!.adjustmentUses,0);
   s.rotateAt(3,3);assert.equal((s.state.items.at(-1) as any).s,0);
   const life=s.state.timeSkill!.beamLife;advance(3600);

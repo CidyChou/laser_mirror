@@ -87,7 +87,7 @@ for (let i = 1; i < levels.length; i++) {
   session.load(i); guide.enter(session.state); completeGuide();
   for (const id of tutorialLessonIds(levels[i])) assert(seen.has(id), `Missing ${id} at ${i + 1}`);
 }
-assert(seen.has('fixed-mirror') && seen.has('fixed-splitter') && !seen.has('wall'));
+assert(!seen.has('fixed-mirror') && !seen.has('fixed-splitter') && !seen.has('wall'),'Removed lock lessons must not be taught');
 assert(seen.has('portal') && seen.has('switch') && seen.has('door') && seen.has('multi-lock'));
 assert(seen.has('focus-2') && seen.has('combiner-2'));
 assert(writes > 0);

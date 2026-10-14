@@ -38,7 +38,7 @@ export class TimeSkillLayer extends Container {
     if(signature!==this.signature){
       this.signature=signature;this.outline.clear();
       if(t.canOperate){const g=computeGeometry(state.level);for(const i of state.items){
-        if(!['mirror','splitter','combiner'].includes(i.type)||('fixed'in i&&i.fixed))continue;
+        if(!['mirror','splitter','combiner'].includes(i.type))continue;
         const p=cellCenter(g,i.x,i.y),a=g.cell*.42;
         this.outline.roundRect(p.x-a,p.y-a,a*2,a*2,8).stroke({color:Theme.cyan,width:2.5,alpha:.9});
       }}

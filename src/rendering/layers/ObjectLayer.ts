@@ -146,10 +146,6 @@ export class ObjectLayer extends Container{
     start:{x:0,y:0},end:{x:0,y:1},
     colorStops:[{offset:0,color:Theme.raisedMovable},{offset:1,color:Theme.cellB}],
   });
-  private readonly fixedMirrorSeatFinish=new FillGradient({
-    start:{x:0,y:0},end:{x:0,y:1},
-    colorStops:[{offset:0,color:Theme.raisedFixed},{offset:1,color:Theme.cellB}],
-  });
 
   constructor(){
     super();this.addChild(this.portLayer,this.signalLayer,this.itemLayer,this.feedbackLayer);
@@ -189,7 +185,7 @@ export class ObjectLayer extends Container{
     this.portLayer.removeChildren().forEach(c=>c.destroy({children:true}));this.itemLayer.removeChildren().forEach(c=>c.destroy({children:true}));this.itemNodes.clear();this.portNodes=[];this.portals=[];this.kicks.clear();this.splitterTurns.clear();
     levelEmitters(state.level).forEach(port=>{const emitter=this.makePort(port,g,true);this.portNodes.push(emitter);this.portLayer.addChild(emitter.root);});
     state.targets.forEach((t,i)=>{const n=this.makePort(t,g,false,i,t.required);this.portNodes.push(n);this.portLayer.addChild(n.root);});
-    for(const item of state.items){const n=this.makeItem(item,state,g);this.itemLayer.addChild(n.root);this.itemNodes.set(n.key,n);if((item.type==='mirror'||item.type==='splitter'||item.type==='combiner')&&!item.fixed){n.root.eventMode='static';n.root.cursor='pointer';n.root.hitArea=new Rectangle(-g.cell*.43,-g.cell*.43,g.cell*.86,g.cell*.86);n.root.on('pointertap',()=>this.rotateHandler(item.x,item.y));}}
+    for(const item of state.items){const n=this.makeItem(item,state,g);this.itemLayer.addChild(n.root);this.itemNodes.set(n.key,n);if(item.type==='mirror'||item.type==='splitter'||item.type==='combiner'){n.root.eventMode='static';n.root.cursor='pointer';n.root.hitArea=new Rectangle(-g.cell*.43,-g.cell*.43,g.cell*.86,g.cell*.86);n.root.on('pointertap',()=>this.rotateHandler(item.x,item.y));}}
   }
   private refresh(state:GameState,g:BoardGeometry){
     this.portNodes.forEach(n=>this.refreshPort(n,state,g));
@@ -391,34 +387,26 @@ export class ObjectLayer extends Container{
     }
   }
 
-  private lockMark(cell:number,y=cell*.27){
-    const w=cell*.12,h=cell*.075;
-    return new Graphics()
-      .roundRect(-w*.8,y-h*1.1,w*1.6,h*2.2,cell*.025).fill(Theme.boardBottom)
-      .roundRect(-w*.32,y-h*.8,w*.64,h,.025*cell).stroke({color:Theme.lock,width:Math.max(1,cell*.015)})
-      .roundRect(-w/2,y-h*.15,w,h,cell*.015).fill(Theme.lock);
-  }
-
-  private mirrorSeat(cell:number,fixed:boolean){
+  private mirrorSeat(cell:number){
     const seat=new Graphics(),size=cell*.92,radius=cell*.095;
     const light=isLightTheme();
     seat.roundRect(-size/2,-size/2,size,size,radius)
-      .fill(light?(fixed?Theme.raisedFixed:Theme.raisedMovable):(fixed?this.fixedMirrorSeatFinish:this.mirrorSeatFinish))
-      .stroke({color:light?Theme.surfaceLine:(fixed?Theme.lock:Theme.cyan),width:1.3,alpha:light?.85:(fixed?.42:.52)});
+      .fill(light?Theme.raisedMovable:this.mirrorSeatFinish)
+      .stroke({color:light?Theme.surfaceLine:Theme.cyan,width:1.3,alpha:light?.85:.52});
     return seat;
   }
 
   private makeItem(item:LevelItem,state:GameState,g:BoardGeometry):ItemNode{
     const root=new Container(),motion=new Container();root.position.copyFrom(cellCenter(g,item.x,item.y));root.addChild(motion);const key=`${item.x},${item.y}`;
     if(item.type==='mirror'){
-      root.addChildAt(this.mirrorSeat(g.cell,!!item.fixed),0);
+      root.addChildAt(this.mirrorSeat(g.cell),0);
       const carrier=new Container();carrier.rotation=item.s===0?Math.PI/4:-Math.PI/4;
       const s=g.cell*.73,thickness=g.cell*.145,radius=thickness*.40;
       const glow=new Graphics();
       const spread=g.cell*.035;
       if(!isLightTheme()){
         glow.roundRect(-s/2-spread,-thickness/2-spread,s+spread*2,thickness+spread*2,radius+spread)
-          .fill({color:Theme.cyan,alpha:item.fixed?.06:.13});
+          .fill({color:Theme.cyan,alpha:.13});
         glow.blendMode=this.energyBlend;
       }
       const shadow=new Graphics().roundRect(-s/2+1,-thickness/2+g.cell*.026,s,thickness,radius)
@@ -427,11 +415,10 @@ export class ObjectLayer extends Container{
         .fill(this.mirrorFinish)
         .stroke({color:isLightTheme()?Theme.ink:Theme.cyanSoft,width:1.25,alpha:isLightTheme()?.22:.95});
       carrier.addChild(glow,shadow,blade);motion.addChild(carrier);
-      if(item.fixed)motion.addChild(this.lockMark(g.cell));
       return{key,kind:item.type,root,motion,angleCarrier:carrier,phase:0};
     }
     if(item.type==='splitter'){
-      root.addChildAt(this.mirrorSeat(g.cell,!!item.fixed),0);
+      root.addChildAt(this.mirrorSeat(g.cell),0);
       const gem=new Container();gem.rotation=Math.PI/4;
       const s=g.cell*.49,radius=g.cell*.025;
       const halo=new Graphics();
@@ -453,7 +440,6 @@ export class ObjectLayer extends Container{
         .moveTo(-g.cell*.20,-g.cell*.012).lineTo(g.cell*.20,-g.cell*.012)
         .stroke({color:0xffffff,width:Math.max(1,g.cell*.015),alpha:.92,cap:'round'});
       dir.addChild(rail);motion.addChild(dir);
-      if(item.fixed)motion.addChild(this.lockMark(g.cell));
       return{key,kind:item.type,root,motion,art:[art],angleCarrier:dir,phase:0};
     }
     if(item.type==='wall'){
@@ -537,7 +523,6 @@ export class ObjectLayer extends Container{
       const charge=state.combinerHits[key]??0,on=!!state.combinerOn[key];
       collector.setCharge(charge,on);motion.addChild(collector);
       const caption=new Container();caption.position.copyFrom(cellCenter(g,item.x,item.y));caption.addChild(collector.caption);this.captions.addChild(caption);
-      if(item.fixed){const lock=this.lockMark(g.cell,g.cell*.365);lock.position.x=-g.cell*.20;motion.addChild(lock);}
       return{key,kind:item.type,root,motion,angleCarrier:collector.direction,collector,phase:0,lastCharge:charge,lastLit:on};
     }
     const identity=this.portalIdentities.get(item.pair)!,color=identity.color;
@@ -704,7 +689,6 @@ export class ObjectLayer extends Container{
     super.destroy(options);
     this.mirrorFinish.destroy();
     this.mirrorSeatFinish.destroy();
-    this.fixedMirrorSeatFinish.destroy();
     for(const finish of this.finishes.values())finish.destroy();
     this.finishes.clear();
     this.doorHalves.forEach(half=>half.destroy());

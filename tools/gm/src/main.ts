@@ -511,7 +511,6 @@ function renderSelection(state: typeof app, level: GmLevel, item: LevelItem | nu
         h('button', { type: 'button', class: item.s === 1 ? 'active' : '', onClick: () => patchItem(state, it => { if (it.type === 'mirror' || it.type === 'splitter') it.s = 1; }) }, '/ 朝向'),
       ),
       h('div', { class: 'toggle-row' },
-        check('固定不可旋转', !!item.fixed, value => patchItem(state, it => { if (it.type === 'mirror' || it.type === 'splitter') it.fixed = value || undefined; })),
         check('诱饵', !!item.decoy, value => patchItem(state, it => { if (it.type === 'mirror' || it.type === 'splitter') it.decoy = value || undefined; })),
       ),
     );
@@ -557,9 +556,6 @@ function renderSelection(state: typeof app, level: GmLevel, item: LevelItem | nu
         if (it.type !== 'combiner') return;
         it.need = Math.max(2, Math.min(4, Number(value) || 2));
       }))),
-      h('div', { class: 'toggle-row' },
-        check('固定不可旋转', !!item.fixed, value => patchItem(state, it => { if (it.type === 'combiner') it.fixed = value || undefined; })),
-      ),
     );
   }
   kids.push(h('button', { type: 'button', class: 'danger', onClick: () => state.deleteSelection() }, '删除物体'));

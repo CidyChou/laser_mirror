@@ -64,7 +64,11 @@ export class GameSession {
 
   private createState(index: number, hearts: number): GameState {
     const level = this.levels[index];
-    const items = level.items.map(item => ({...item})) as LevelItem[];
+    const items = level.items.map(item => {
+      const copy={...item};
+      if('fixed' in copy)delete copy.fixed;
+      return copy;
+    }) as LevelItem[];
     return {
       timeSkill: level.timeBoss ? { adjustmentUses:level.timeBoss.adjustmentUses, bulletTimeUses:level.timeBoss.bulletTimeUses, phase:'idle', remainingMs:0, timeScale:1, canOperate:false, lifetimeRemainingMs:level.timeBoss.lifetimeMs ?? GameConfig.laser.challengeLifetimeMs, beamLife:1, tutorial:null } : undefined,
       levelIndex:index, level, items, targets:level.targets.map(t=>({...t,hit:false,charge:0})),
@@ -95,7 +99,7 @@ export class GameSession {
   rotateAt(x:number,y:number) {
     if ((this.state.firing && !this.state.timeSkill?.canOperate) || this.state.won) return;
     const item = this.state.items.find(i=>i.x===x && i.y===y);
-    if (!item || ('fixed' in item && item.fixed)) return;
+    if (!item) return;
     const spendAdjustment=()=>{
       const time=this.state.timeSkill;
       if(this.state.firing&&time){time.adjustmentUses=Math.max(0,time.adjustmentUses-1);time.canOperate=time.adjustmentUses>0;

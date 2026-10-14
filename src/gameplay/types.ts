@@ -5,6 +5,7 @@ export type Orientation = 0 | 1;
 export interface Port { side: Side; index: number }
 export interface Target extends Port { hit?: boolean; required?: number; charge?: number }
 
+/** Legacy fixed flags remain import-compatible but never restrict rotation. */
 export type LevelItem =
   | { type: 'mirror'; x: number; y: number; s: Orientation; fixed?: boolean; decoy?: boolean }
   | { type: 'splitter'; x: number; y: number; s: Orientation; fixed?: boolean; decoy?: boolean }

@@ -17,6 +17,7 @@
     "verify:optics": "npx tsx --tsconfig tsconfig.json scripts/verify-optics.ts",
     "verify:render-layout": "npx tsx --tsconfig tsconfig.json scripts/verify-render-layout.ts",
     "verify:feedback": "npx tsx --tsconfig tsconfig.json scripts/verify-feedback.ts",
+    "verify:unlocked-optics": "npx tsx --tsconfig tsconfig.json scripts/verify-unlocked-optics.ts",
     "verify:sharing": "npx tsx --tsconfig tsconfig.json scripts/verify-sharing.ts",
     "verify:music": "npx tsx --tsconfig tsconfig.json scripts/verify-music.ts",
     "verify:loading": "npx tsx --tsconfig tsconfig.json scripts/verify-loading-assets.ts",

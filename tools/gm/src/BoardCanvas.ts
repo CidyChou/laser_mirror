@@ -277,7 +277,6 @@ export class BoardCanvas {
     roundRect(ctx, -s * 0.31, -t * 0.27, s * 0.62, t * 0.54, 4);
     ctx.fill();
     ctx.restore();
-    if (item.fixed) this.drawLock(ctx, g);
   }
 
   private drawSplitter(ctx: CanvasRenderingContext2D, item: Extract<LevelItem, { type: 'splitter' }>, g: BoardGeometry) {
@@ -298,7 +297,6 @@ export class BoardCanvas {
     ctx.lineTo(g.cell * 0.24, 0);
     ctx.stroke();
     ctx.restore();
-    if (item.fixed) this.drawLock(ctx, g);
   }
 
   private drawWall(ctx: CanvasRenderingContext2D, g: BoardGeometry) {
@@ -374,7 +372,6 @@ export class BoardCanvas {
     ctx.closePath();
     ctx.fill();
     ctx.restore();
-    if (item.fixed) this.drawLock(ctx, g);
   }
 
   private drawPortal(ctx: CanvasRenderingContext2D, item: Extract<LevelItem, { type: 'portal' }>, g: BoardGeometry) {
@@ -388,12 +385,6 @@ export class BoardCanvas {
     ctx.ellipse(0, 0, g.cell * 0.18, g.cell * 0.1, 0, 0, Math.PI * 2);
     ctx.fill();
     this.label(ctx, item.pair, g, '#fff');
-  }
-
-  private drawLock(ctx: CanvasRenderingContext2D, g: BoardGeometry) {
-    ctx.fillStyle = '#8b96aa';
-    roundRect(ctx, -8, g.cell * 0.22, 16, 10, 3);
-    ctx.fill();
   }
 
   private label(ctx: CanvasRenderingContext2D, text: string, g: BoardGeometry, color: string) {

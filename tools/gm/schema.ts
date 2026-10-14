@@ -211,7 +211,6 @@ export function toGameItem(item: LevelItem): LevelItem {
     const next: Extract<LevelItem, { type: 'mirror' | 'splitter' }> = {
       type: item.type, x, y, s: item.s === 1 ? 1 : 0,
     };
-    if (item.fixed) next.fixed = true;
     if (item.decoy) next.decoy = true;
     return next;
   }
@@ -230,7 +229,6 @@ export function toGameItem(item: LevelItem): LevelItem {
     const next: Extract<LevelItem, { type: 'combiner' }> = { type: 'combiner', x, y, dir: clampDir(item.dir) };
     const need = Math.floor(Number(item.need ?? 2));
     if (need !== 2) next.need = Math.max(2, Math.min(4, need));
-    if (item.fixed) next.fixed = true;
     return next;
   }
   return { type: 'portal', x, y, pair: String(item.pair || 'P1') };
