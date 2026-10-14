@@ -26,6 +26,8 @@ const api={
   shareAppMessage:(content:ShareContent)=>{shares.push(content);},
 };
 const platform=new WeChatPlatform(api);
+const originalRandom=Math.random;
+Math.random=()=>0;
 const app=new GameApplication(platform) as unknown as AppProbe;
 assert.equal(app.sharedLaunch,true);
 assert.equal(app.session.state.levelIndex,0);
@@ -33,16 +35,25 @@ assert.deepEqual(menus,[
   {withShareTicket:true,menus:['shareAppMessage','shareTimeline']},
   {withShareTicket:true},
 ]);
-assert.deepEqual(SHARE_IMAGE_URLS,[]);
+assert.equal(SHARE_IMAGE_URLS.length,3);
 assert.deepEqual(handlers.friend?.(),{
   title:'来挑战光线急转弯第 1 关！',
   query:`stage=${encodeURIComponent(stageId(levels[0],0))}`,
+  imageUrl:SHARE_IMAGE_URLS[0],
+  imagePreviewUrl:SHARE_IMAGE_URLS[0],
 });
 assert.deepEqual(handlers.timeline?.(),handlers.friend?.());
 app.session.load(1);
 assert.equal(handlers.friend?.().query,`stage=${encodeURIComponent(stageId(levels[1],1))}`);
 platform.shareAppMessage(app.createShareContent());
 assert.deepEqual(shares,[handlers.friend?.()]);
+for(const [index,imageUrl] of SHARE_IMAGE_URLS.entries()) {
+  Math.random=()=>(index+0.5)/SHARE_IMAGE_URLS.length;
+  assert.equal(handlers.friend?.().imageUrl,imageUrl);
+  assert.equal(handlers.timeline?.().imageUrl,imageUrl);
+  assert.equal(handlers.friend?.().imagePreviewUrl,imageUrl);
+}
+Math.random=originalRandom;
 
 const bossIndex=levels.findIndex(level=>level.campaign?.kind==='boss');
 app.session.load(bossIndex);
@@ -103,4 +114,4 @@ else Reflect.deleteProperty(globalThis,'navigator');
 if(originalWindow)Object.defineProperty(globalThis,'window',originalWindow);
 else Reflect.deleteProperty(globalThis,'window');
 
-console.log('Sharing verified: native menus, dynamic stage metadata, unlocked launch, empty artwork, browser URLs and graceful cancellation.');
+console.log('Sharing verified: native menus, dynamic stage metadata, unlocked launch, three random share images, browser URLs and graceful cancellation.');

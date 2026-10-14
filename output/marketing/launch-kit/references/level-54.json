@@ -1,0 +1,206 @@
+{
+  "number": 54,
+  "level": {
+    "name": "空间跃迁",
+    "chapter": "光门接力",
+    "rows": 5,
+    "cols": 5,
+    "emitter": {
+      "side": "N",
+      "index": 0
+    },
+    "targets": [
+      {
+        "side": "E",
+        "index": 4
+      }
+    ],
+    "items": [
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 2,
+        "s": 0
+      },
+      {
+        "type": "portal",
+        "x": 1,
+        "y": 2,
+        "pair": "P1"
+      },
+      {
+        "type": "portal",
+        "x": 3,
+        "y": 4,
+        "pair": "P1"
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 0,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 1,
+        "s": 1,
+        "decoy": true
+      },
+      {
+        "type": "mirror",
+        "x": 4,
+        "y": 3,
+        "s": 1,
+        "decoy": true
+      }
+    ],
+    "hint": "进入同色传送门后，激光会从另一端继续前进。",
+    "chapterNo": 6,
+    "shots": 2,
+    "stageKey": "level:41"
+  },
+  "geometry": {
+    "cell": 100,
+    "ox": 140,
+    "oy": 140,
+    "boardW": 500,
+    "boardH": 500,
+    "wall": 20
+  },
+  "trace": {
+    "switches": [],
+    "exits": [
+      {
+        "side": "E",
+        "index": 4
+      }
+    ],
+    "segments": [
+      {
+        "x1": 190,
+        "y1": 140,
+        "x2": 190,
+        "y2": 190,
+        "startDist": 0,
+        "endDist": 50,
+        "branch": 0,
+        "widthScale": 1
+      },
+      {
+        "x1": 190,
+        "y1": 190,
+        "x2": 190,
+        "y2": 290,
+        "startDist": 50,
+        "endDist": 150,
+        "branch": 0,
+        "widthScale": 1
+      },
+      {
+        "x1": 190,
+        "y1": 290,
+        "x2": 190,
+        "y2": 390,
+        "startDist": 150,
+        "endDist": 250,
+        "branch": 0,
+        "widthScale": 1
+      },
+      {
+        "x1": 190,
+        "y1": 390,
+        "x2": 290,
+        "y2": 390,
+        "startDist": 284,
+        "endDist": 384,
+        "branch": 0,
+        "widthScale": 1
+      },
+      {
+        "x1": 490,
+        "y1": 590,
+        "x2": 590,
+        "y2": 590,
+        "startDist": 745.2778871336498,
+        "endDist": 845.2778871336498,
+        "branch": 0,
+        "widthScale": 1
+      },
+      {
+        "x1": 590,
+        "y1": 590,
+        "x2": 640,
+        "y2": 590,
+        "startDist": 845.2778871336498,
+        "endDist": 895.2778871336498,
+        "branch": 0,
+        "widthScale": 1
+      }
+    ],
+    "impactEvents": [
+      {
+        "type": "mirror",
+        "x": 0,
+        "y": 2,
+        "px": 190,
+        "py": 390,
+        "at": 250,
+        "incomingDir": 1,
+        "outgoingDirs": [
+          0
+        ]
+      },
+      {
+        "type": "portal",
+        "x": 1,
+        "y": 2,
+        "px": 290,
+        "py": 390,
+        "at": 384,
+        "pair": "P1",
+        "toX": 490,
+        "toY": 590,
+        "incomingDir": 0,
+        "outgoingDirs": []
+      },
+      {
+        "type": "portal-exit",
+        "x": 3,
+        "y": 4,
+        "px": 490,
+        "py": 590,
+        "at": 745.2778871336498,
+        "pair": "P1",
+        "incomingDir": 0,
+        "outgoingDirs": [
+          0
+        ]
+      },
+      {
+        "type": "target",
+        "targetIndex": 0,
+        "px": 640,
+        "py": 590,
+        "at": 895.2778871336498,
+        "incomingDir": 0
+      }
+    ],
+    "maxTravel": 895.2778871336498,
+    "combinerHits": {},
+    "combinerHitAt": {},
+    "combinerPulses": {},
+    "focusHits": {},
+    "doorStates": {},
+    "combinerOn": {},
+    "hits": [
+      true
+    ],
+    "focusOn": {}
+  },
+  "orientation": {
+    "0": "\\",
+    "1": "/"
+  }
+}

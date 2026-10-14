@@ -1,0 +1,136 @@
+{
+  "generator": "built-in image_gen",
+  "status": "passed",
+  "layoutCount": 10,
+  "exportCount": 13,
+  "simulationReferences": [
+    1,
+    3,
+    54
+  ],
+  "visualChecks": [
+    "All final originals inspected: mirrors / and backslash match beam turns",
+    "Level 3 retains 5 reflections and 3 unlit decoys matching user screenshot",
+    "Level 54 teleports with rightward direction unchanged and no linking beam",
+    "Universal cover mirror changed from backslash to slash"
+  ],
+  "files": [
+    {
+      "file": "portrait/01-single-mirror-720x1280.jpg",
+      "dimensions": [
+        720,
+        1280
+      ],
+      "bytes": 187085,
+      "limitBytes": 200000
+    },
+    {
+      "file": "portrait/02-mirror-array-720x1280.jpg",
+      "dimensions": [
+        720,
+        1280
+      ],
+      "bytes": 179561,
+      "limitBytes": 200000
+    },
+    {
+      "file": "portrait/03-portal-720x1280.jpg",
+      "dimensions": [
+        720,
+        1280
+      ],
+      "bytes": 187876,
+      "limitBytes": 200000
+    },
+    {
+      "file": "landscape/01-single-mirror-1280x720.jpg",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "bytes": 191127,
+      "limitBytes": 200000
+    },
+    {
+      "file": "landscape/02-mirror-array-1280x720.jpg",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "bytes": 181353,
+      "limitBytes": 200000
+    },
+    {
+      "file": "landscape/03-portal-1280x720.jpg",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "bytes": 177442,
+      "limitBytes": 200000
+    },
+    {
+      "file": "share/01-single-mirror-1000x800.jpg",
+      "dimensions": [
+        1000,
+        800
+      ],
+      "bytes": 182762,
+      "limitBytes": 200000
+    },
+    {
+      "file": "share/01-single-mirror-500x400.jpg",
+      "dimensions": [
+        500,
+        400
+      ],
+      "bytes": 78001,
+      "limitBytes": 200000
+    },
+    {
+      "file": "share/02-mirror-array-1000x800.jpg",
+      "dimensions": [
+        1000,
+        800
+      ],
+      "bytes": 196534,
+      "limitBytes": 200000
+    },
+    {
+      "file": "share/02-mirror-array-500x400.jpg",
+      "dimensions": [
+        500,
+        400
+      ],
+      "bytes": 82761,
+      "limitBytes": 200000
+    },
+    {
+      "file": "share/03-portal-1000x800.jpg",
+      "dimensions": [
+        1000,
+        800
+      ],
+      "bytes": 191748,
+      "limitBytes": 200000
+    },
+    {
+      "file": "share/03-portal-500x400.jpg",
+      "dimensions": [
+        500,
+        400
+      ],
+      "bytes": 82447,
+      "limitBytes": 200000
+    },
+    {
+      "file": "cover/universal-cover-corrected-650x250.jpg",
+      "dimensions": [
+        650,
+        250
+      ],
+      "bytes": 50627,
+      "limitBytes": 80000
+    }
+  ]
+}

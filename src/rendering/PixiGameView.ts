@@ -152,7 +152,7 @@ export class PixiGameView{
   private syncTutorialVisibility(){
     this.tutorial.visible=this.tutorialAvailable&&!this.tutorialShotHidden&&!this.settings.visible&&!this.levelSelect.visible&&!this.result.visible&&!this.poster.visible;
   }
-  rotateItem(x:number,y:number,s:0|1,dir?:Direction){this.objects.rotateItem(x,y,s,dir);}
+  rotateItem(x:number,y:number,s:0|1,dir?:Direction,now?:number){this.objects.rotateItem(x,y,s,dir,now);}
   hideOverlays(){this.result.hide();this.poster.hide();this.settings.hide();this.levelSelect.hide();this.combo.clear();this.confetti.clear();this.coins.hide();this.hud.setHeartsVisible(true);this.syncTutorialVisibility();}
   showLevelSelectFromWin(currentIndex:number,completed:ReadonlySet<number>,allLevelsUnlocked=false,unlockedThrough=-1){
     this.result.hide();this.poster.hide();this.confetti.clear();this.coins.hide();this.hud.setHeartsVisible(true);

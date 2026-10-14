@@ -2,7 +2,7 @@
 
 采用内置 image_gen 为聚光器、集光发射器、开关、障碍块、机关门、分光棱镜、传送口生成七张独立透明 PNG。材质沿用发射台的钛银、石墨与光学玻璃；金色尖棱形、青色八角腔体、圆形按钮、实体斜纹障碍和传送镜面保留各自可辨识的轮廓。
 
-提示词与原图来源见 [mechanism-assets.json](mechanism-assets.json)。原图保存在生成目录，运行时采用 [public/ui/mechanisms](../public/ui/mechanisms) 中 256 × 256 的裁切、缩放与调色板压缩版本，保留 alpha 透明通道。七张图合计 107,924 字节。
+提示词与原图来源见 [mechanism-assets.json](mechanism-assets.json)。原图保存在生成目录，运行时采用 [public/ui/mechanisms](../public/ui/mechanisms) 中 256 × 256 的裁切、缩放与调色板压缩版本，保留 alpha 透明通道。七张图合计 108,953 字节。
 
 ![机关素材](qa/mechanisms/assets-preview.jpg)
 
@@ -24,3 +24,13 @@
 ![第 15 章挑战](qa/mechanisms/challenge-15.png)
 
 ![前期发射器](qa/mechanisms/level-1.png)
+
+## 分光棱镜朝向
+
+反射轴改为深色底座上的亮银斜条，横跨晶体；点击用 160 ms 旋转过渡明确两种反射朝向。快速连续点击仍停在实际光学状态对应的朝向。
+
+![两种反射朝向](qa/mechanisms/splitter-directions.png)
+
+## 开关符号
+
+开关中央的电源标记已用内置 image_gen 编辑为浅银嵌入材质，移除原先代码叠加的细线标记。实时配对色与激活状态改由按钮光和下方指示槽显示。

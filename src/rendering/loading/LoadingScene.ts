@@ -6,6 +6,7 @@ import { LoadingBoard } from './LoadingBoard';
 const WIDTH = 720;
 const CONTENT_HEIGHT = 1110;
 const BG = 0x080f1f;
+const START_Y = 940;
 
 /** Shared Pixi loading screen: the wordmark is the only image asset. */
 export class LoadingScene extends Container {
@@ -16,7 +17,6 @@ export class LoadingScene extends Container {
   private readonly title = new Sprite(Texture.EMPTY);
   private readonly fallback = new Text({ text: '光线\n急转弯', style: uiText({ fontSize: 100, align: 'center', fill: 0xe8fcff, lineHeight: 110, letterSpacing: 8 }) });
   private readonly board = new LoadingBoard();
-  private readonly status = this.makeLabel('正在准备光路', 22, 0x7c9cae);
   private readonly progress = new Container();
   private readonly progressFill = new Graphics();
   readonly startButton = new Container();
@@ -32,7 +32,7 @@ export class LoadingScene extends Container {
   });
   private readonly buttonFill = new FillGradient({
     type: 'linear', start: { x: 0, y: 0 }, end: { x: 0, y: 1 },
-    colorStops: [{ offset: 0, color: '#b2faf4' }, { offset: 1, color: '#53d9d7' }],
+    colorStops: [{ offset: 0, color: '#c5fff4' }, { offset: .48, color: '#7ae7df' }, { offset: 1, color: '#3abec8' }],
   });
   private progressTarget = 0;
   private displayedProgress = 0;
@@ -49,15 +49,12 @@ export class LoadingScene extends Container {
     this.title.visible = false;
     this.fallback.anchor.set(.5, 0);
     this.fallback.position.set(360, 35);
-    const tagline = this.makeLabel('转动镜面 · 点亮终点', 25, 0x9ebac9);
-    tagline.position.set(360, 343);
-    this.board.position.set(360, 650);
-    this.status.position.set(360, 954);
-    this.progress.position.set(210, 995);
+    this.board.position.set(360, 590);
+    this.progress.position.set(210, 895);
     this.progress.addChild(new Graphics().roundRect(0, 0, 300, 5, 2.5).fill(0x203547), this.progressFill);
     this.progressFill.roundRect(0, 0, 300, 5, 2.5).fill(0x75e9e4);
     this.progressFill.scale.x = 0;
-    this.content.addChild(tagline, this.board, this.status, this.progress, this.startButton);
+    this.content.addChild(this.board, this.progress, this.startButton);
     this.buildStartButton();
   }
 
@@ -68,20 +65,21 @@ export class LoadingScene extends Container {
   }
 
   private buildStartButton() {
-    this.startButton.position.set(360, 1028);
-    this.startButton.hitArea = new Rectangle(-210, -48, 420, 96);
+    this.startButton.position.set(360, START_Y);
+    this.startButton.hitArea = new Rectangle(-219, -50, 438, 100);
     this.startButton.cursor = 'pointer';
     this.startButton.eventMode = 'none';
     this.startButton.visible = false;
-    const shadow = new Graphics().roundRect(-210, -39, 420, 96, 27).fill(0x166b78);
-    const face = new Graphics().roundRect(-210, -48, 420, 96, 27).fill(this.buttonFill)
-      .moveTo(-178, -45).lineTo(178, -45).stroke({ color: 0xe9ffff, alpha: .65, width: 1.5 });
-    const label = this.makeLabel('开始游戏', 32, 0x08313d);
-    label.x = -14;
-    const arrow = new Graphics().moveTo(126, -9).lineTo(138, 0).lineTo(126, 9)
-      .stroke({ color: 0x164a54, width: 3.5, cap: 'round', join: 'round' });
+    const shadow = new Graphics().roundRect(-222, -42, 444, 106, 34).fill({color:0x020812,alpha:.35})
+      .roundRect(-219, -43, 438, 100, 32).fill(0x147887);
+    const face = new Graphics().roundRect(-219, -50, 438, 100, 32).fill(this.buttonFill)
+      .stroke({color:0xd0fff7,alpha:.55,width:1.5})
+      .moveTo(-181, -46).lineTo(181, -46).stroke({ color: 0xf0fffc, alpha: .66, width: 1.5,cap:'round' });
+    const label = this.makeLabel('开始游戏', 34, 0x082e3c);
+    label.style.fontWeight='700';
+    label.position.set(0,-4);
     this.startButton.addChild(shadow, this.buttonFace);
-    this.buttonFace.addChild(face, label, arrow);
+    this.buttonFace.addChild(face, label);
     this.startButton.on('pointerdown', () => this.setPressed(true));
     this.startButton.on('pointerup', () => this.setPressed(false));
     this.startButton.on('pointerupoutside', () => this.setPressed(false));
@@ -108,7 +106,6 @@ export class LoadingScene extends Container {
   showStart(elapsedMs: number) {
     this.setProgress(1);
     this.readyAt ??= elapsedMs;
-    this.status.text = '光路就绪，等你出发';
     this.progress.visible = false;
     this.startButton.visible = true;
     this.startButton.eventMode = 'static';
@@ -121,7 +118,7 @@ export class LoadingScene extends Container {
     const bottom = 30;
     const scale = Math.min(width / WIDTH, Math.max(1, height - top - bottom) / CONTENT_HEIGHT);
     this.content.scale.set(scale);
-    this.content.position.set((width - WIDTH * scale) / 2, top + Math.max(0, height - top - bottom - CONTENT_HEIGHT * scale) / 2);
+    this.content.position.set((width - WIDTH * scale) / 2, top + Math.max(0, height - top - bottom - CONTENT_HEIGHT * scale) * .35);
     this.atmosphere.clear().ellipse(width * .43, height * .48, width * .95, height * .52).fill(this.wash);
     this.stars.clear();
     // Stable, sparse dust. No per-frame random allocation or background image.
@@ -136,12 +133,11 @@ export class LoadingScene extends Container {
     this.board.update(elapsedMs, this.reducedMotion);
     this.displayedProgress += (this.progressTarget - this.displayedProgress) * Math.min(1, deltaMs / 120);
     if (this.readyAt === null) {
-      this.status.text = `正在准备光路  ${Math.floor(this.displayedProgress * 100)}%`;
       this.progressFill.scale.x = this.displayedProgress;
     } else {
       const enter = this.reducedMotion ? 1 : easeOutCubic(clamp((elapsedMs - this.readyAt) / 320, 0, 1));
       this.startButton.alpha = enter;
-      this.startButton.y = 1028 + (1 - enter) * 14;
+      this.startButton.y = START_Y + (1 - enter) * 14;
       if (!this.pressed) this.buttonFace.y = 0;
     }
   }

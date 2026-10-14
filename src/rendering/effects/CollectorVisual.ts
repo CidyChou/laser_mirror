@@ -77,7 +77,10 @@ export class CollectorVisual extends Container {
 
   setTexture(texture:Texture){
     const available=texture!==Texture.EMPTY&&texture.width>1;
-    this.artwork.texture=texture;this.artwork.width=this.cell*.73;this.artwork.height=this.cell*.69;
+    // Anchor the crystal, so the elongated barrel rotates around the optical hub.
+    this.artwork.anchor.set(.35,.5);
+    this.artwork.texture=texture;this.artwork.width=this.cell*.73;
+    this.artwork.height=this.cell*.73*(texture===Texture.EMPTY?2/3:texture.height/texture.width);
     this.artwork.visible=available;
     this.body.visible=this.crystal.visible=this.nozzle.visible=!available;
   }

@@ -1,0 +1,60 @@
+{
+  "status": "passed",
+  "generator": "built-in image_gen",
+  "count": 3,
+  "exports": [
+    {
+      "file": "exports/01-taunt-1000x800.jpg",
+      "dimensions": [
+        1000,
+        800
+      ],
+      "bytes": 188392
+    },
+    {
+      "file": "exports/01-taunt-500x400.jpg",
+      "dimensions": [
+        500,
+        400
+      ],
+      "bytes": 93812
+    },
+    {
+      "file": "exports/02-dare-1000x800.jpg",
+      "dimensions": [
+        1000,
+        800
+      ],
+      "bytes": 179206
+    },
+    {
+      "file": "exports/02-dare-500x400.jpg",
+      "dimensions": [
+        500,
+        400
+      ],
+      "bytes": 100305
+    },
+    {
+      "file": "exports/03-help-1000x800.jpg",
+      "dimensions": [
+        1000,
+        800
+      ],
+      "bytes": 196582
+    },
+    {
+      "file": "exports/03-help-500x400.jpg",
+      "dimensions": [
+        500,
+        400
+      ],
+      "bytes": 98580
+    }
+  ],
+  "visualChecks": [
+    "Exact copy and game name inspected",
+    "Text dominates, no full board",
+    "Visible optical accents reflect rightward beam up at slash mirrors"
+  ]
+}

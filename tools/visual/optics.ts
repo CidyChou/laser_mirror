@@ -63,7 +63,7 @@ function event(e:GameEvent){
   if(e.type==='impact')view.impact(e.impact,clock);
   if(e.type==='shot-start')view.shotStart(session.state,clock);
   if(e.type==='laser-launch')view.laserLaunch(session.state,clock);
-  if(e.type==='rotate'){view.rotateItem(e.x,e.y,e.s,e.dir);view.mirrorRotateFeedback(e.x,e.y,clock);}
+  if(e.type==='rotate'){view.rotateItem(e.x,e.y,e.s,e.dir,clock);view.mirrorRotateFeedback(e.x,e.y,clock);}
 }
 function resize(){
   app.renderer.resize(stage.clientWidth,stage.clientHeight);

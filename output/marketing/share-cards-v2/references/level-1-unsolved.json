@@ -1,0 +1,119 @@
+{
+  "number": 1,
+  "level": {
+    "name": "第一束光",
+    "chapter": "光的方向",
+    "rows": 3,
+    "cols": 3,
+    "emitter": {
+      "side": "W",
+      "index": 1
+    },
+    "targets": [
+      {
+        "side": "N",
+        "index": 1
+      }
+    ],
+    "items": [
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "s": 0
+      }
+    ],
+    "hint": "先旋转镜子规划路线；确认后再发射。每次试射会消耗 1 次激光机会。",
+    "chapterNo": 1,
+    "shots": 5,
+    "stageKey": "level:1"
+  },
+  "geometry": {
+    "cell": 100,
+    "ox": 140,
+    "oy": 140,
+    "boardW": 300,
+    "boardH": 300,
+    "wall": 20
+  },
+  "trace": {
+    "switches": [],
+    "exits": [
+      {
+        "side": "S",
+        "index": 1
+      }
+    ],
+    "segments": [
+      {
+        "x1": 140,
+        "y1": 290,
+        "x2": 190,
+        "y2": 290,
+        "startDist": 0,
+        "endDist": 50,
+        "branch": 0,
+        "widthScale": 1
+      },
+      {
+        "x1": 190,
+        "y1": 290,
+        "x2": 290,
+        "y2": 290,
+        "startDist": 50,
+        "endDist": 150,
+        "branch": 0,
+        "widthScale": 1
+      },
+      {
+        "x1": 290,
+        "y1": 290,
+        "x2": 290,
+        "y2": 390,
+        "startDist": 184,
+        "endDist": 284,
+        "branch": 0,
+        "widthScale": 1
+      },
+      {
+        "x1": 290,
+        "y1": 390,
+        "x2": 290,
+        "y2": 440,
+        "startDist": 284,
+        "endDist": 334,
+        "branch": 0,
+        "widthScale": 1
+      }
+    ],
+    "impactEvents": [
+      {
+        "type": "mirror",
+        "x": 1,
+        "y": 1,
+        "px": 290,
+        "py": 290,
+        "at": 150,
+        "incomingDir": 0,
+        "outgoingDirs": [
+          1
+        ]
+      }
+    ],
+    "maxTravel": 334,
+    "combinerHits": {},
+    "combinerHitAt": {},
+    "combinerPulses": {},
+    "focusHits": {},
+    "doorStates": {},
+    "combinerOn": {},
+    "hits": [
+      false
+    ],
+    "focusOn": {}
+  },
+  "orientation": {
+    "0": "\\",
+    "1": "/"
+  }
+}

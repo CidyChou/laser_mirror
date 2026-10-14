@@ -8,6 +8,7 @@ import { CollectorVisual } from '../effects/CollectorVisual';
 import { mechanismIdentities, type MechanismIdentity } from '../mechanismIdentity';
 import { laserMsAtDistance, TIME_BOSS_SPEED_SCALE } from '@/gameplay/laserTiming';
 import type { MechanismAssetKey } from '../ui/assets';
+import { nowMs } from '@/core/clock';
 
 type ItemArt={key:MechanismAssetKey;sprite:Sprite;fallback:Container[];width:number;height:number;half?:0|1};
 type ItemNode={key:string;kind:LevelItem['type'];root:Container;motion:Container;art?:ItemArt[];angleCarrier?:Container;face?:Graphics;core?:Graphics;phase:number;lastLit?:boolean;lastOpen?:boolean;lastCharge?:number;pips?:Graphics;collector?:CollectorVisual;identity?:MechanismIdentity;counter?:Text;panels?:Container[];doorId?:string;badges?:{id:string;root:Container;check:Graphics}[]};
@@ -114,6 +115,7 @@ export class ObjectLayer extends Container{
     node.shell.scale.y=stretch;
   }
   private kicks=new Map<string,Kick>();
+  private splitterTurns=new Map<string,{from:number;to:number;start:number}>();
   private clickPool:ClickFx[]=[];
   private rotateHandler:(x:number,y:number)=>void=()=>{};
   private levelIndex=-1;
@@ -161,10 +163,11 @@ export class ObjectLayer extends Container{
   setRotateHandler(fn:(x:number,y:number)=>void){this.rotateHandler=fn;}
   setInputCharge(progress:number|null){this.inputCharge=progress;}
 
-  rotateItem(x:number,y:number,s:0|1,dir?:Direction){
+  rotateItem(x:number,y:number,s:0|1,dir?:Direction,now=nowMs()){
     const n=this.itemNodes.get(`${x},${y}`);
     if(!n?.angleCarrier) return;
-    if(n.kind==='combiner' && dir!==undefined) n.angleCarrier.rotation=dir*Math.PI/2;
+    if(n.kind==='splitter')this.splitterTurns.set(n.key,{from:n.angleCarrier.rotation,to:s===0?Math.PI/4:-Math.PI/4,start:now});
+    else if(n.kind==='combiner' && dir!==undefined) n.angleCarrier.rotation=dir*Math.PI/2;
     else n.angleCarrier.rotation=s===0?Math.PI/4:-Math.PI/4;
   }
 
@@ -183,7 +186,7 @@ export class ObjectLayer extends Container{
     this.portalIdentities=mechanismIdentities(state.items,'portal');
     this.signalLayer.removeChildren().forEach(c=>c.destroy({children:true}));this.signals=[];
     this.makeSignals(state,g);
-    this.portLayer.removeChildren().forEach(c=>c.destroy({children:true}));this.itemLayer.removeChildren().forEach(c=>c.destroy({children:true}));this.itemNodes.clear();this.portNodes=[];this.portals=[];this.kicks.clear();
+    this.portLayer.removeChildren().forEach(c=>c.destroy({children:true}));this.itemLayer.removeChildren().forEach(c=>c.destroy({children:true}));this.itemNodes.clear();this.portNodes=[];this.portals=[];this.kicks.clear();this.splitterTurns.clear();
     levelEmitters(state.level).forEach(port=>{const emitter=this.makePort(port,g,true);this.portNodes.push(emitter);this.portLayer.addChild(emitter.root);});
     state.targets.forEach((t,i)=>{const n=this.makePort(t,g,false,i,t.required);this.portNodes.push(n);this.portLayer.addChild(n.root);});
     for(const item of state.items){const n=this.makeItem(item,state,g);this.itemLayer.addChild(n.root);this.itemNodes.set(n.key,n);if((item.type==='mirror'||item.type==='splitter'||item.type==='combiner')&&!item.fixed){n.root.eventMode='static';n.root.cursor='pointer';n.root.hitArea=new Rectangle(-g.cell*.43,-g.cell*.43,g.cell*.86,g.cell*.86);n.root.on('pointertap',()=>this.rotateHandler(item.x,item.y));}}
@@ -193,7 +196,10 @@ export class ObjectLayer extends Container{
     state.items.forEach(item=>{
       const n=this.itemNodes.get(`${item.x},${item.y}`);if(!n)return;
       n.root.position.copyFrom(cellCenter(g,item.x,item.y));
-      if((item.type==='mirror'||item.type==='splitter')&&n.angleCarrier)n.angleCarrier.rotation=item.s===0?Math.PI/4:-Math.PI/4;
+      if((item.type==='mirror'||item.type==='splitter')&&n.angleCarrier){
+        const target=item.s===0?Math.PI/4:-Math.PI/4,turn=this.splitterTurns.get(n.key);
+        if(!turn||turn.to!==target){this.splitterTurns.delete(n.key);n.angleCarrier.rotation=target;}
+      }
       if(item.type==='combiner'&&n.angleCarrier)n.angleCarrier.rotation=item.dir*Math.PI/2;
       if(item.type==='switch'){const lit=state.activeSwitches.has(item.id);if(n.lastLit!==lit){n.lastLit=lit;this.drawSwitch(n,lit,g);}}
       if(item.type==='door'){
@@ -219,6 +225,11 @@ export class ObjectLayer extends Container{
     }
   }
   update(now:number,ambient=true){
+    for(const [key,turn] of this.splitterTurns){
+      const node=this.itemNodes.get(key),t=Math.max(0,Math.min(1,(now-turn.start)/160));
+      if(node?.angleCarrier)node.angleCarrier.rotation=turn.from+(turn.to-turn.from)*(1-Math.pow(1-t,3));
+      if(t===1||!node)this.splitterTurns.delete(key);
+    }
     this.ambientActive=ambient&&this.portals.length>0;
     for(const portal of this.portals){
       if(ambient)portal.flow.rotation=now*.00022+portal.phase;
@@ -304,7 +315,7 @@ export class ObjectLayer extends Container{
     for(const [key,k] of [...this.kicks]){const n=this.itemNodes.get(key);if(!n){this.kicks.delete(key);continue;}const t=(now-k.start)/280;if(t>=1){n.motion.scale.set(1);n.motion.position.set(0,0);n.motion.rotation=0;this.kicks.delete(key);continue;}const hit=Math.sin(t*Math.PI)*Math.exp(-t*1.55);n.motion.scale.set(1+hit*.12);n.motion.position.set(0,-hit*6);n.motion.rotation=hit*.028*Math.sin(now*.08);}
     for(const fx of this.clickPool){if(!fx.active)continue;const t=(now-fx.start)/300;if(t>=1){fx.active=false;fx.root.visible=false;continue;}const ease=1-Math.pow(1-t,3);fx.root.scale.set(.7+ease*.65);fx.root.alpha=1-t;fx.ring.scale.set(.75+ease*.85);fx.flash.rotation=t*.22;fx.flash.alpha=(1-t)*.62;}
   }
-  get active(){return this.ambientActive||this.signalActive||this.kicks.size>0||this.portals.some(p=>p.hitAt!==null||p.receiveAt!==null)||this.clickPool.some(x=>x.active);}
+  get active(){return this.ambientActive||this.signalActive||this.kicks.size>0||this.splitterTurns.size>0||this.portals.some(p=>p.hitAt!==null||p.receiveAt!==null)||this.clickPool.some(x=>x.active);}
 
   portalColor(pair:string){return this.portalIdentities.get(pair)?.color??Theme.purple;}
   focusColor(x?:number,y?:number){return this.itemNodes.get(`${x},${y}`)?.lastLit?Theme.green:Theme.gold;}
@@ -424,7 +435,11 @@ export class ObjectLayer extends Container{
       const art=this.itemArt(motion,'splitter',g.cell*.66,g.cell*.66,[gem]);
       const dir=new Container();dir.rotation=item.s===0?Math.PI/4:-Math.PI/4;
       const rail=new Graphics().moveTo(-g.cell*.23,0).lineTo(g.cell*.23,0)
-        .stroke({color:Theme.mirrorCore,width:Math.max(1.7,g.cell*.022),alpha:.92,cap:'round'});
+        .stroke({color:0x102634,width:Math.max(4.5,g.cell*.105),alpha:.98,cap:'round'})
+        .moveTo(-g.cell*.23,0).lineTo(g.cell*.23,0)
+        .stroke({color:0xd1f4ff,width:Math.max(2.8,g.cell*.055),cap:'round'})
+        .moveTo(-g.cell*.20,-g.cell*.012).lineTo(g.cell*.20,-g.cell*.012)
+        .stroke({color:0xffffff,width:Math.max(1,g.cell*.015),alpha:.92,cap:'round'});
       dir.addChild(rail);motion.addChild(dir);
       if(item.fixed)motion.addChild(this.lockMark(g.cell));
       return{key,kind:item.type,root,motion,art:[art],angleCarrier:dir,phase:0};
@@ -558,13 +573,18 @@ export class ObjectLayer extends Container{
     n.face.circle(0,0,r)
       .fill(this.finish(mix(color,Theme.white,lit?.12:.15),mix(color,Theme.boardBottom,.24)))
       .stroke({color:group,width:Math.max(1.5,c*.025),alpha:lit?1:.72});
-    // A power mark is a functional glyph, replacing the old bullseye.
     n.core.clear();
-    if(n.art?.[0]?.sprite.visible)this.light(n.core,0,0,c*.22,c*.22,group,lit?.46:.06);
-    n.core.arc(0,0,c*.092,-Math.PI*.25,Math.PI*1.25)
-      .stroke({color:lit?Theme.white:group,width:Math.max(2,c*.033),alpha:.95,cap:'round'});
-    n.core.moveTo(0,-c*.13).lineTo(0,-c*.01)
-      .stroke({color:lit?Theme.white:group,width:Math.max(2,c*.033),cap:'round'});
+    if(n.art?.[0]?.sprite.visible){
+      // The power mark is part of the material; only optical state is overlaid.
+      this.light(n.core,0,-c*.035,c*.22,c*.22,group,lit?.36:.025);
+      n.core.roundRect(-c*.07,c*.205,c*.14,c*.026,c*.012)
+        .fill({color:lit?Theme.green:group,alpha:lit?.95:.65});
+    }else{
+      n.core.arc(0,0,c*.092,-Math.PI*.25,Math.PI*1.25)
+        .stroke({color:lit?Theme.white:group,width:Math.max(2,c*.033),alpha:.95,cap:'round'});
+      n.core.moveTo(0,-c*.13).lineTo(0,-c*.01)
+        .stroke({color:lit?Theme.white:group,width:Math.max(2,c*.033),cap:'round'});
+    }
     if(lit)n.core.moveTo(c*.14,-c*.19).lineTo(c*.19,-c*.14).lineTo(c*.28,-c*.24)
       .stroke({color:Theme.green,width:Math.max(2,c*.03),cap:'round',join:'round'});
   }
