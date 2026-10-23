@@ -15,7 +15,11 @@ export class BaseMiniGamePlatform implements IPlatform{
     if(typeof global.cancelAnimationFrame!=='function'&&typeof canvas.cancelAnimationFrame==='function')global.cancelAnimationFrame=canvas.cancelAnimationFrame.bind(canvas);
     return canvas;
   }
-  createAudio(){return this.api.createInnerAudioContext?.()}
+  createAudio(){
+    // Device audio limits or an interrupted native audio service are optional
+    // capabilities. They must not abort GameApplication before its first frame.
+    try{return this.api.createInnerAudioContext?.()}catch{return undefined}
+  }
   onAudioActiveChange(handler:(active:boolean)=>void){
     let visible=true,interrupted=false;
     const sync=()=>handler(visible&&!interrupted);

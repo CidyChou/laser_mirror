@@ -3,6 +3,8 @@ import { spawn } from 'node:child_process';
 import { platform } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 
+import { fortifyWechatProject } from './wechat-fortify.mjs';
+
 const projectPath = resolve(process.env.WECHAT_DEVTOOLS_PROJECT || 'dist/wechat');
 const defaultCli = platform() === 'darwin'
   ? '/Applications/wechatwebdevtools.app/Contents/MacOS/cli'
@@ -16,6 +18,9 @@ const previewInfoOutput = resolve(process.env.WECHAT_PREVIEW_INFO || 'dist/wecha
 
 await access(join(projectPath, 'game.js'));
 await access(join(projectPath, 'project.config.json'));
+
+if (process.env.WECHAT_FORTIFY !== '0') await fortifyWechatProject(projectPath);
+else console.log('微信调试模式：跳过代码加固。');
 
 if (syncMode === '0' || syncMode.toLowerCase() === 'false') {
   console.log('WeChat DevTools sync skipped (WECHAT_DEVTOOLS_SYNC=0).');

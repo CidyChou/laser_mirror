@@ -1,10 +1,11 @@
 // Runs the packaged JS, not the browser entry. Workers deliberately have no
 // document/window or native canvas constructors exposed to the game.
 // This reproduces API boundaries, not WeChat's proprietary engine/drivers.
-async function check(forceWebGL1: boolean, missingImages: boolean, oldBundle = false) {
-  const [launcher, runtime] = await Promise.all([
+async function check(forceWebGL1: boolean, missingImages: boolean, oldBundle = false, profile = 'standard') {
+  const [launcher, runtime, compatibility] = await Promise.all([
     oldBundle ? Promise.resolve('require("./game-runtime.js")') : fetch('/dist/wechat/game.js').then(r => r.text()),
     fetch(oldBundle ? '/output/qa/wechat-startup/before-game.js' : '/dist/wechat/game-runtime.js').then(r => r.text()),
+    fetch('/dist/wechat/runtime-compat.js').then(r => r.text()),
   ]);
   const setup = `
     const NativeCanvas = OffscreenCanvas;
@@ -12,6 +13,7 @@ async function check(forceWebGL1: boolean, missingImages: boolean, oldBundle = f
     const baseUrl = ${JSON.stringify(location.origin)};
     const forceWebGL1 = ${forceWebGL1};
     const missingImages = ${missingImages};
+    const profile = ${JSON.stringify(profile)};
     globalThis.OffscreenCanvas = undefined;
     delete globalThis.WorkerGlobalScope;
     globalThis.performance = undefined;
@@ -30,6 +32,7 @@ async function check(forceWebGL1: boolean, missingImages: boolean, oldBundle = f
       const get = c.getContext.bind(c);
       c.getContext = (type, ...options) => {
         if(lockedType && type !== lockedType) return null;
+        if(profile === 'throws-webgl2' && type === 'webgl2') throw new Error('Native WebGL2 type unsupported');
         if(forceWebGL1 && type === 'webgl2') return null;
         const ctx = get(type, ...options);
         if(c === display && ctx && !backend) {
@@ -75,12 +78,30 @@ async function check(forceWebGL1: boolean, missingImages: boolean, oldBundle = f
       getSystemInfoSync: () => ({windowWidth: 390, windowHeight: 844, pixelRatio: 2}),
       getMenuButtonBoundingClientRect: () => ({bottom: 80}),
       getStorageSync: () => '', setStorageSync() {},
+      // A first-time player opening the shared level 57 must still be able
+      // to launch at their unlocked stage, without saved progress.
+      getLaunchOptionsSync: () => ({query: {stage: 'level:57'}}),
+      createInnerAudioContext: () => {
+        if(profile === 'audio-unavailable') throw new Error('Native audio capacity reached');
+      },
       onTouchStart: fn => touches.down = fn, onTouchEnd: fn => touches.up = fn,
       onTouchMove() {}, onTouchCancel() {},
       showModal: options => failures.push(options.content)
     };
     const code = ${JSON.stringify(runtime)};
-    function require(path) { if(path !== './game-runtime.js') throw Error(path); (0,eval)(code); }
+    const compat = ${JSON.stringify(compatibility)};
+    function require(path) {
+      if(path === './runtime-compat.js') { (0,eval)(compat); return; }
+      if(path !== './game-runtime.js') throw Error(path);
+      (0,eval)(code);
+    }
+    if(profile === 'legacy-js') {
+      globalThis.GameGlobal = globalThis;
+      delete Array.prototype.flatMap;
+      delete Object.entries;
+      delete Object.values;
+      delete globalThis.globalThis;
+    }
   `;
   const finish = `
     setTimeout(() => {
@@ -101,7 +122,7 @@ async function check(forceWebGL1: boolean, missingImages: boolean, oldBundle = f
       touches.down?.(nativeTouch); touches.up?.(nativeTouch);
     }, 1800);
     setTimeout(() => {
-      send({ done: true, forceWebGL1, missingImages, oldBundle: ${oldBundle}, backend,
+      send({ done: true, profile, forceWebGL1, missingImages, oldBundle: ${oldBundle}, backend,
         displayReplaced: pixiApp?.renderer.view.texture.source.resource !== display,
         displayAlpha: backend === '2d' ? display.getContext('2d').getImageData(0, 0, 1, 1).data[3] : undefined,
         draws, twoDFrames, startTap, phases, failures, warnings: warnings.slice(0, 3),
@@ -125,6 +146,9 @@ export async function runNativeBootChecks(includeOldBundle = false) {
   if(includeOldBundle) results.push(await check(false, false, true));
   for(const forceWebGL1 of [false, true]) {
     for(const missingImages of [false, true]) results.push(await check(forceWebGL1, missingImages));
+  }
+  for(const profile of ['legacy-js', 'throws-webgl2', 'audio-unavailable']) {
+    results.push(await check(false, false, false, profile));
   }
   for (const result of results.filter(result => !result.oldBundle)) {
     if (!result.done || result.failures?.length || result.displayReplaced

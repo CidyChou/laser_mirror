@@ -8,13 +8,16 @@ GAME_PORT ?= 8347
 WECHAT_DEVTOOLS_CLI ?= /Applications/wechatwebdevtools.app/Contents/MacOS/cli
 WECHAT_DEVTOOLS_PROJECT ?= $(CURDIR)/dist/wechat
 WECHAT_PREVIEW ?= 1
+WECHAT_FORTIFY ?= 1
+WECHAT_FORTIFY_SECRET ?=
+WECHAT_FORTIFY_TIMEOUT_MINUTES ?= 10
 
 .DEFAULT_GOAL := help
 
 GM_HOST ?= 0.0.0.0
 GM_PORT ?= 8350
 
-.PHONY: help install dev build wechat wechat-preview typecheck check clean up_106 gm
+.PHONY: help install dev build wechat wechat-debug wechat-fortify-init wechat-fortify wechat-preview typecheck check clean up_106 gm
 
 help: ## 显示全部 Make 命令和说明
 	@echo "Laser Mirror 开发命令"
@@ -45,17 +48,34 @@ dev: ## 启动游戏并允许局域网访问（默认端口 8347）
 build: ## 构建 Web 包到 dist/web
 	npm run build:web
 
-wechat: ## 构建微信包、同步开发者工具，并生成 iOS 预览二维码
+wechat: ## 构建微信包、自动加固，再同步开发者工具并生成预览二维码
 	npm run build:wechat
 	WECHAT_DEVTOOLS_CLI="$(WECHAT_DEVTOOLS_CLI)" \
 	WECHAT_DEVTOOLS_PROJECT="$(WECHAT_DEVTOOLS_PROJECT)" \
 	WECHAT_PREVIEW="$(WECHAT_PREVIEW)" \
+	WECHAT_FORTIFY="$(WECHAT_FORTIFY)" \
+	WECHAT_FORTIFY_SECRET="$(WECHAT_FORTIFY_SECRET)" \
+	WECHAT_FORTIFY_TIMEOUT_MINUTES="$(WECHAT_FORTIFY_TIMEOUT_MINUTES)" \
 	node tools/sync-wechat.mjs
 
-wechat-preview: ## 用当前 dist/wechat 包生成 iOS 预览二维码
+wechat-debug: override WECHAT_FORTIFY=0
+wechat-debug: wechat ## 构建未加固的微信调试包并预览
+
+wechat-fortify-init: ## 生成仓库外的加固密钥和待登记公钥（首次使用）
+	WECHAT_DEVTOOLS_PROJECT="$(WECHAT_DEVTOOLS_PROJECT)" WECHAT_FORTIFY_SECRET="$(WECHAT_FORTIFY_SECRET)" node tools/wechat-fortify.mjs --init
+
+wechat-fortify: ## 仅加固当前微信包
+	WECHAT_DEVTOOLS_PROJECT="$(WECHAT_DEVTOOLS_PROJECT)" \
+	WECHAT_FORTIFY_SECRET="$(WECHAT_FORTIFY_SECRET)" \
+	WECHAT_FORTIFY_TIMEOUT_MINUTES="$(WECHAT_FORTIFY_TIMEOUT_MINUTES)" node tools/wechat-fortify.mjs
+
+wechat-preview: ## 校验或完成当前微信包加固后生成预览二维码
 	WECHAT_DEVTOOLS_CLI="$(WECHAT_DEVTOOLS_CLI)" \
 	WECHAT_DEVTOOLS_PROJECT="$(WECHAT_DEVTOOLS_PROJECT)" \
 	WECHAT_PREVIEW=1 \
+	WECHAT_FORTIFY="$(WECHAT_FORTIFY)" \
+	WECHAT_FORTIFY_SECRET="$(WECHAT_FORTIFY_SECRET)" \
+	WECHAT_FORTIFY_TIMEOUT_MINUTES="$(WECHAT_FORTIFY_TIMEOUT_MINUTES)" \
 	node tools/sync-wechat.mjs
 
 typecheck: ## 检查 TypeScript 类型

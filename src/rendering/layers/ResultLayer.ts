@@ -6,12 +6,19 @@ import { drawCoinIcon, drawCrownIcon } from '../ui/icons';
 import { setUiFontSize, Theme, uiText } from '../theme';
 
 export type ResultKind = 'win' | 'lose';
+export interface ResultCopy {
+  title: string; subtitle: string; tip: string; primary: string;
+  secondary?: string; reward?: number; bonus?: string; recommend?: boolean; community?: boolean; levels?: boolean;
+}
 
 export class ResultLayer extends Container {
   readonly primary = new Button(464, 84, '下一关', 'primary');
   readonly preview = new Button(224, 60, '预览本关', 'secondary');
   readonly levels = new Button(224, 60, '选择关卡', 'secondary');
   readonly secondary = new Button(340, 64, '重新挑战', 'secondary');
+  readonly bonus = new Button(464, 64, '看视频 · 奖励翻倍', 'secondary');
+  readonly recommend = new Button(224, 60, '推荐游戏', 'secondary');
+  readonly community = new Button(224, 60, '攻略交流', 'secondary');
   private readonly dim = new Graphics();
   private readonly panel = new Container();
   private readonly panelGfx = new Graphics();
@@ -68,6 +75,9 @@ export class ResultLayer extends Container {
     this.preview.setLabelSize(22);
     this.levels.setLabelSize(22);
     this.secondary.setLabelSize(22);
+    this.bonus.setLabelSize(24);
+    this.recommend.setLabelSize(22);
+    this.community.setLabelSize(22);
     this.panel.addChild(
       this.panelGfx,
       this.rewardPanel,
@@ -84,6 +94,7 @@ export class ResultLayer extends Container {
       this.levels,
       this.primary,
       this.secondary,
+      this.bonus, this.recommend, this.community,
     );
     this.addChild(this.dim, this.panel);
   }
@@ -107,7 +118,7 @@ export class ResultLayer extends Container {
 
   get kindValue(): ResultKind { return this.kind; }
 
-  show(kind: ResultKind, copy: { title: string; subtitle: string; tip: string; primary: string; secondary?: string; reward?: number }, now: number) {
+  show(kind: ResultKind, copy: ResultCopy, now: number) {
     this.kind = kind;
     this.shownAt = now;
     this.entering = true;
@@ -119,9 +130,13 @@ export class ResultLayer extends Container {
     this.tip.text = copy.tip;
     this.primary.setText(copy.primary);
     this.secondary.setText(copy.secondary ?? '重新挑战');
-    this.secondary.visible = false;
+    this.secondary.visible = kind === 'lose' && !!copy.secondary;
+    this.bonus.visible = kind === 'win' && !!copy.bonus;
+    if (copy.bonus) this.bonus.setText(copy.bonus);
+    this.recommend.visible = !!copy.recommend;
+    this.community.visible = !!copy.community;
     this.preview.visible = kind === 'win';
-    this.levels.visible = kind === 'win';
+    this.levels.visible = kind === 'win' || !!copy.levels;
     const reward = Math.max(0, Math.floor(copy.reward ?? 0));
     this.rewardValue.text = `+${reward}`;
     const showReward = this.hasReward = kind === 'win' && reward > 0;
@@ -144,6 +159,13 @@ export class ResultLayer extends Container {
     this.entering = false;
     this.restoreRewardCoin();
   }
+
+  markBonusClaimed() {
+    this.bonus.setText('双倍奖励已领取');
+    this.bonus.setDisabled(true);
+  }
+
+  setRewardTotal(amount:number) { this.rewardValue.text=`+${Math.max(0,Math.floor(amount))}`; }
 
   hideRewardCoin() {
     this.rewardCoinRevealAt = null;
@@ -181,7 +203,10 @@ export class ResultLayer extends Container {
   private layout() {
     const win = this.kind === 'win';
     const rect = win ? UI_RECTS.resultWin : UI_RECTS.resultLose;
-    const h = win && !this.hasReward ? rect.h - 112 : rect.h;
+    const communitySpace = this.recommend.visible || this.community.visible ? 76 : 0;
+    const bonusSpace = this.bonus.visible ? 76 : 0;
+    const h = (win && !this.hasReward ? rect.h - 112 : rect.h) + bonusSpace + communitySpace
+      + (!win && this.secondary.visible ? 76 : 0) + (!win && this.levels.visible ? 76 : 0);
     const top = -h / 2;
     this.panel.position.set(rect.x + rect.w / 2, rect.y + rect.h / 2);
     this.drawPanel(rect.w, h);
@@ -189,17 +214,25 @@ export class ResultLayer extends Container {
     this.crownFallback.position.copyFrom(this.crown.position);
     this.title.position.set(0, top + (win ? 168 : 132));
     this.subtitle.position.set(0, top + (win ? 214 : 198));
-    this.tip.position.set(0, win ? top + 254 : 18);
+    this.tip.position.set(0, win ? top + 254 : top + 288);
     this.layoutReward(top + 344);
     if (win) {
       const rewardSpace = this.hasReward ? 112 : 0;
-      this.primary.position.set(-232, top + 308 + rewardSpace);
-      this.preview.position.set(-232, top + 402 + rewardSpace);
-      this.levels.position.set(8, top + 402 + rewardSpace);
+      this.bonus.position.set(-232, top + 308 + rewardSpace);
+      this.bonus.setDisabled(false);
+      this.primary.position.set(-232, top + 308 + rewardSpace + bonusSpace);
+      this.preview.position.set(-232, top + 402 + rewardSpace + bonusSpace);
+      this.levels.position.set(8, top + 402 + rewardSpace + bonusSpace);
+      this.recommend.position.set(this.community.visible ? -232 : -112, top + 478 + rewardSpace + bonusSpace);
+      this.community.position.set(this.recommend.visible ? 8 : -112, top + 478 + rewardSpace + bonusSpace);
     } else {
-      this.primary.position.set(-this.primary.widthPx / 2, h / 2 - 108);
+      const actionsTop = top + 404;
+      this.primary.position.set(-this.primary.widthPx / 2, actionsTop);
+      this.secondary.position.set(-this.secondary.widthPx / 2, actionsTop + 100);
+      const levelsY = actionsTop + 100 + (this.secondary.visible ? 76 : 0);
+      this.levels.position.set(-112, levelsY);
+      this.community.position.set(-112, levelsY + (this.levels.visible ? 76 : 0));
     }
-    this.secondary.position.set(-this.secondary.widthPx / 2, h / 2 - 58);
   }
 
   private layoutReward(y: number) {
@@ -226,7 +259,7 @@ export class ResultLayer extends Container {
       .fill(Theme.surface)
       .stroke({ color: Theme.surfaceLine, width: 1.5, alpha: .85 });
     if (this.kind === 'lose') {
-      this.panelGfx.roundRect(-210, -20, 420, 96, UI_TOKENS.radius.md)
+      this.panelGfx.roundRect(-210, y + 244, 420, 96, UI_TOKENS.radius.md)
         .fill(Theme.surfaceMuted)
         .stroke({ color: Theme.danger, width: 1, alpha: .28 });
     }
@@ -256,6 +289,9 @@ export class ResultLayer extends Container {
     this.preview.alpha = this.primary.alpha;
     this.levels.alpha = this.primary.alpha;
     this.secondary.alpha = this.primary.alpha;
+    this.bonus.alpha = this.primary.alpha;
+    this.recommend.alpha = this.primary.alpha;
+    this.community.alpha = this.primary.alpha;
     this.entering = entering < 1 || this.primary.alpha < 1;
     return this.entering;
   }

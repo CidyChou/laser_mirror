@@ -36,7 +36,7 @@ export default defineConfig(({ mode }): UserConfig => {
     build: {
       outDir: `dist/${mode}`,
       emptyOutDir: true,
-      target: 'es2019',
+      target: mode === 'wechat' ? 'es2017' : 'es2019',
       minify: true,
       sourcemap: false,
       lib: {

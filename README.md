@@ -23,7 +23,8 @@ make gm
 ## 构建
 
 ```bash
-make wechat
+make wechat        # 自动加固后同步、预览
+make wechat-debug  # 跳过加固，用于调试
 npm run build:web
 npm run build:wechat
 npm run build:douyin
@@ -31,7 +32,13 @@ npm run build:xhs
 npm run build:all
 ```
 
+首次加固需执行 `make wechat-fortify-init` 并在本游戏微信后台登记公钥；流程和密钥位置见 [微信代码加固](docs/WECHAT_FORTIFY.md)。
+
 `make wechat` 会把可导入微信开发者工具的小游戏目录写到 `dist/wechat`（`game.js`、`game.json`、资源）。小游戏构建产物分别位于 `dist/wechat`、`dist/douyin`、`dist/xhs`。平台 AppID、广告、登录、分享等业务能力统一在 `src/platform/` 接入，不进入玩法层。
+
+微信广告、游戏圈、普通推荐和游戏圈推荐统一在 `templates/wechat/operations.json` 配置。当前广告与圈子专属参数留空，可正常游玩；后续填入本游戏的 ID / openlink 后重新构建即可。位置、领奖规则和后台准备见 [微信广告与运营接入](docs/WECHAT_OPERATIONS.md)。`npm run verify:operations` 运行对应回归。
+
+选关页右上角显示金币，点击「＋」领取金币视频奖励，点击余额打开补给。金币买心、首通奖励与自然恢复的数值见 [金币与爱心](docs/ECONOMY.md)，`npm run verify:economy` 检查交易与模拟规划。
 
 ## 核心原则
 

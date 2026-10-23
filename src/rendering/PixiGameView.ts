@@ -11,7 +11,9 @@ import { HudLayer } from './layers/HudLayer';
 import { TimeSkillLayer } from './layers/TimeSkillLayer';
 import { ComboLayer } from './layers/ComboLayer';
 import { CoinLayer } from './layers/CoinLayer';
-import { ResultLayer, type ResultKind } from './layers/ResultLayer';
+import { ResultLayer, type ResultCopy, type ResultKind } from './layers/ResultLayer';
+import { SupportLayer, type SupportCopy } from './layers/SupportLayer';
+import type { NativeAdRect } from '@/platform/operations';
 import { SettingsLayer } from './layers/SettingsLayer';
 import { LevelSelectLayer } from './layers/LevelSelectLayer';
 import { PreviewPosterLayer, type PosterMeta } from './layers/PreviewPosterLayer';
@@ -26,6 +28,13 @@ import type { TutorialStep } from '@/gameplay/tutorial';
 import { TutorialLayer } from './layers/TutorialLayer';
 
 export type ViewHandlers = {
+  openHearts?:()=>void;
+  coinVideo?:()=>void;
+  openSupply?:()=>void;
+  openCommunity?:()=>void;
+  closeSupport?:()=>void;
+  resultBonus?:()=>void;
+  recommendGame?:()=>void;
   bulletTime?:()=>void;
   rotate:(x:number,y:number)=>void;
   firePressStart:()=>void;
@@ -58,6 +67,9 @@ export type ViewHandlers = {
 };
 
 export class PixiGameView{
+  readonly support = new SupportLayer();
+  private menuAdSize: { width: number; height: number } | null = null;
+  private viewportBounds = new Rectangle(0, 0, DESIGN_WIDTH, DESIGN_HEIGHT);
   private timeSkills=new TimeSkillLayer();
   readonly root=new Container();
   private readonly playfield=new Container();
@@ -73,7 +85,7 @@ export class PixiGameView{
     this.laser=new LaserEffect(renderer,gpuLaser);this.particles=new ParticleSystem(renderer);
     this.settings=new SettingsLayer(themeId);this.levelSelect=new LevelSelectLayer(levels);this.buildBackground();
     this.playfield.addChild(this.stageBg,this.board,this.objects,this.laser,this.particles.container,this.impacts,this.objects.captions,this.victoryWash,this.launchWash);
-    this.root.addChild(this.bg,this.playfield,this.hud,this.tutorial,this.timeSkills,this.combo,this.result,this.confetti,this.coins,this.poster,this.toastBg,this.toast,this.levelSelect,this.settings);
+    this.root.addChild(this.bg,this.playfield,this.hud,this.tutorial,this.timeSkills,this.combo,this.result,this.confetti,this.coins,this.poster,this.levelSelect,this.settings,this.support,this.toastBg,this.toast);
     this.toast.anchor.set(.5);this.toast.position.set(360,220);this.toast.visible=false;this.toastBg.visible=false;
   }
   private targetPorts:Port[]=[];
@@ -86,6 +98,15 @@ export class PixiGameView{
     this.launchWash.visible=false;this.launchWash.eventMode='none';
   }
   setHandlers(h:ViewHandlers){
+    this.hud.setHeartHandler(()=>h.openHearts?.());
+    this.levelSelect.wallet.body.on('pointertap',()=>h.openSupply?.());
+    this.levelSelect.wallet.plus.on('pointertap',event=>{event.stopPropagation();h.coinVideo?.();});
+    this.hud.supplyButton.on('pointertap',()=>h.openSupply?.());
+    this.hud.communityButton.on('pointertap',()=>h.openCommunity?.());
+    this.result.bonus.on('pointertap',()=>h.resultBonus?.());
+    this.result.recommend.on('pointertap',()=>h.recommendGame?.());
+    this.result.community.on('pointertap',()=>h.openCommunity?.());
+    this.support.closeButton.on('pointertap',()=>h.closeSupport?.());
     this.canSelectLevel=h.canSelectLevel;
     this.syncLevelNavigation();
     this.tutorial.nextButton.on('pointertap',()=>h.tutorialNext?.());
@@ -93,6 +114,7 @@ export class PixiGameView{
     this.tutorial.setTapHandler(()=>h.tutorialTap?.());
     this.tutorial.setPressHandlers(h.firePressStart,h.firePressEnd);
     this.settings.tutorialButton.on('pointertap',()=>h.replayTutorial?.());
+    this.settings.communityButton.on('pointertap',()=>h.openCommunity?.());
     this.timeSkills.bullet.on('pointertap',()=>h.bulletTime?.());
     this.objects.setRotateHandler(h.rotate);
     this.hud.fireButton.on('pointerdown',h.firePressStart);
@@ -148,6 +170,7 @@ export class PixiGameView{
     }
     if(key==='crown') this.result.setCrownTexture(texture);
     if(key==='coin'){
+      this.levelSelect.wallet.setCoinTexture(texture);
       this.result.setCoinTexture(texture);
       this.coins.setCoinTexture(texture);
     }
@@ -163,10 +186,36 @@ export class PixiGameView{
     this.syncTutorialVisibility();
   }
   private syncTutorialVisibility(){
-    this.tutorial.visible=this.tutorialAvailable&&!this.tutorialShotHidden&&!this.settings.visible&&!this.levelSelect.visible&&!this.result.visible&&!this.poster.visible;
+    this.tutorial.visible=this.tutorialAvailable&&!this.tutorialShotHidden&&!this.settings.visible&&!this.levelSelect.visible&&!this.result.visible&&!this.poster.visible&&!this.support.visible;
   }
   rotateItem(x:number,y:number,s:0|1,dir?:Direction,now?:number){this.objects.rotateItem(x,y,s,dir,now);}
-  hideOverlays(){this.result.hide();this.poster.hide();this.settings.hide();this.levelSelect.hide();this.combo.clear();this.confetti.clear();this.coins.hide();this.hud.setHeartsVisible(true);this.syncTutorialVisibility();}
+  hideOverlays(){this.support.hide();this.result.hide();this.poster.hide();this.settings.hide();this.levelSelect.hide();this.combo.clear();this.confetti.clear();this.coins.hide();this.hud.setHeartsVisible(true);this.syncTutorialVisibility();}
+  showSupport(copy: SupportCopy) { this.support.show(copy); this.syncTutorialVisibility(); }
+  setCoinBalance(coins:number) { this.levelSelect.wallet.setBalance(coins); }
+  hideSupport() { this.support.hide(); this.syncTutorialVisibility(); }
+  configureOperations(community: boolean, menuSize: { width: number; height: number } | null) {
+    this.hud.communityButton.visible = community;
+    this.setMenuAdSize(menuSize);
+  }
+  setMenuAdSize(size: { width: number; height: number } | null) {
+    if (size?.width === this.menuAdSize?.width && size?.height === this.menuAdSize?.height) return;
+    this.menuAdSize = size;
+    this.layoutMenuAd();
+  }
+  setInteractionBlocked(blocked: boolean) { this.root.interactiveChildren = !blocked; }
+  menuAdRect(): NativeAdRect | null {
+    if (!this.menuAdSize || !this.root.visible || !this.levelSelect.visible || this.settings.visible || this.support.visible || this.poster.visible) return null;
+    const { width, height } = this.menuAdSize;
+    const scale = this.root.scale.x, bounds = this.viewportBounds;
+    if (width > bounds.width * scale - 24 || height > 180) return null;
+    return { x: this.root.x + (bounds.x + bounds.width / 2) * scale - width / 2,
+      y: this.root.y + bounds.bottom * scale - height - 12, width, height };
+  }
+  private layoutMenuAd() {
+    const size = this.menuAdSize, scale = this.root.scale.x;
+    const fits = size && size.width <= this.viewportBounds.width * scale - 24 && size.height <= 180;
+    this.levelSelect.setFooterSpace(fits ? (size.height + 28) / scale : 0);
+  }
   showLevelSelectFromWin(currentIndex:number,completed:ReadonlySet<number>,allLevelsUnlocked=false,unlockedThrough=-1){
     this.result.hide();this.poster.hide();this.confetti.clear();this.coins.hide();this.hud.setHeartsVisible(true);
     this.levelSelect.show(currentIndex,completed,allLevelsUnlocked,unlockedThrough);this.syncTutorialVisibility();
@@ -205,6 +254,7 @@ export class PixiGameView{
   private captureBoardTexture(){
     const hide=[
       this.tutorial,
+      this.support,
       this.hud,this.combo,this.toast,this.toastBg,this.result,this.confetti,this.coins,
       this.levelSelect,this.settings,this.poster,this.victoryWash,this.launchWash,this.particles.container,this.impacts,
     ];
@@ -250,7 +300,7 @@ export class PixiGameView{
   setFireCharge(progress:number|null,now=0){this.inputCharge=progress;this.hud.setFireCharge(progress,now);this.objects.setInputCharge(progress);}
   closeSettings(){this.settings.hide();this.syncTutorialVisibility();}
   showLevelSelect(currentIndex:number,completed:ReadonlySet<number>,allLevelsUnlocked=false,unlockedThrough=-1){this.levelSelect.show(currentIndex,completed,allLevelsUnlocked,unlockedThrough);this.syncTutorialVisibility();}
-  showResult(kind:ResultKind, copy:{title:string;subtitle:string;tip:string;primary:string;secondary?:string;reward?:number}, now:number){this.result.show(kind,copy,now);this.syncTutorialVisibility();}
+  showResult(kind:ResultKind, copy:ResultCopy, now:number){this.result.show(kind,copy,now);this.syncTutorialVisibility();}
   startWinCoins(now:number, balance:number, reward:number){
     this.coins.show(now, balance);
     if(reward>0) this.coins.spawn(now, reward, () => this.result.rewardCoinPoint(),this.performance.quality);
@@ -373,10 +423,13 @@ export class PixiGameView{
     const rootY=Math.max(verticalSlack*.25,chromeAlignedY);
     this.root.position.set((viewW-DESIGN_WIDTH*scale)/2,rootY);
     const bounds=new Rectangle(-this.root.x/scale,-rootY/scale,viewW/scale,viewH/scale);
+    this.viewportBounds = bounds;
     this.bg.setViewport(bounds);
     this.levelSelect.setViewport(bounds);
     this.settings.setViewport(bounds);
     this.result.setViewport(bounds);
+    this.support.setViewport(bounds);
+    this.layoutMenuAd();
     this.poster.setViewport(bounds);
     this.tutorial.setViewport(bounds);
     const extra=0;

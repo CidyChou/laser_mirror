@@ -1,0 +1,31 @@
+{
+  "ads": {
+    "hearts": "",
+    "coins": "",
+    "hint": "",
+    "double": "",
+    "interstitial": "",
+    "menu": ""
+  },
+  "community": {
+    "gameClubOpenlink": "",
+    "helpOpenlink": "",
+    "circleRecommendationOpenlink": "",
+    "recommendationEnabled": true
+  },
+  "rewards": {
+    "coinsPerVideo": 60,
+    "coinsDailyLimit": 3,
+    "coinSupplyThreshold": 200,
+    "dailyBonusLimit": 8
+  },
+  "interstitial": {
+    "firstAfter": 3,
+    "every": 5,
+    "quietSeconds": 120
+  },
+  "menuTemplate": {
+    "width": 320,
+    "height": 112
+  }
+}

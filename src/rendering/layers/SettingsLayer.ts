@@ -15,7 +15,8 @@ export class SettingsLayer extends Container {
   readonly hapticsButton = new Button(500, 64, '震动反馈  ·  已开启', 'secondary');
   readonly levelSelectButton = new Button(500, 68, '选择关卡', 'secondary');
   readonly restartButton = new Button(500, 68, '重新开始当前关卡', 'primary');
-  readonly tutorialButton = new Button(500, 68, '重看本关引导', 'secondary');
+  readonly tutorialButton = new Button(242, 68, '重看本关引导', 'secondary');
+  readonly communityButton = new Button(242, 68, '攻略与交流', 'secondary');
   readonly clearHistoryButton = new Button(500, 68, '清理历史记录', 'danger');
   readonly confirmClearButton = new Button(224, 72, '确认清理', 'danger');
   readonly cancelClearButton = new Button(224, 72, '取消', 'secondary');
@@ -62,6 +63,7 @@ export class SettingsLayer extends Container {
     this.levelSelectButton.setLabelSize(22);
     this.restartButton.setLabelSize(24);
     this.tutorialButton.setLabelSize(22);
+    this.communityButton.setLabelSize(22);
     this.clearHistoryButton.setLabelSize(22);
     this.confirmClearButton.setLabelSize(23);
     this.cancelClearButton.setLabelSize(23);
@@ -76,7 +78,7 @@ export class SettingsLayer extends Container {
       this.appearanceLabel, ...this.themeCards,
       this.laserColorLabel, ...this.laserColorCards,
       this.audioLabel, this.musicButton, this.audioButton, this.hapticsButton,
-      this.actionLabel, this.levelSelectButton, this.restartButton, this.tutorialButton, this.clearHistoryButton, this.footer,
+      this.actionLabel, this.levelSelectButton, this.restartButton, this.tutorialButton, this.communityButton, this.clearHistoryButton, this.footer,
     );
     this.confirmLayer.visible = false;
     this.confirmLayer.eventMode = 'static';
@@ -187,6 +189,7 @@ export class SettingsLayer extends Container {
     this.levelSelectButton.position.set(rect.x + 40, rect.y + 680);
     this.restartButton.position.set(rect.x + 40, rect.y + 760);
     this.tutorialButton.position.set(rect.x + 40, rect.y + 840);
+    this.communityButton.position.set(rect.x + 298, rect.y + 840);
     this.clearHistoryButton.position.set(rect.x + 40, rect.y + 920);
     this.footer.position.set(DESIGN_WIDTH / 2, rect.y + 1070);
 

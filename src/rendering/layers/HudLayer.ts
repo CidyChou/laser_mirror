@@ -17,6 +17,8 @@ export class HudLayer extends Container {
   readonly levelButton = new Button(UI_RECTS.progress.w, UI_RECTS.progress.h, '', 'icon');
   readonly fireButton = new Button(UI_RECTS.fire.w, UI_RECTS.fire.h, '发射', 'fire');
   readonly guideButton = new Button(48, 46, '?', 'icon');
+  readonly supplyButton = new Button(132, 70, '补给提示', 'secondary');
+  readonly communityButton = new Button(132, 70, '攻略交流', 'secondary');
   readonly previousLevel = levelArrow(-1);
   readonly nextLevel = levelArrow(1);
   private readonly hearts = new Graphics();
@@ -50,6 +52,12 @@ export class HudLayer extends Container {
   setHeartTexture(texture: Texture) {
     this.heartIcon.texture = texture;
     if (this.lastHearts >= 0) this.drawHearts(this.lastHearts);
+  }
+
+  setHeartHandler(handler: () => void) {
+    this.hearts.eventMode = 'static';
+    this.hearts.cursor = 'pointer';
+    this.hearts.on('pointertap', handler);
   }
 
   setGearTexture(texture: Texture) {
@@ -90,6 +98,11 @@ export class HudLayer extends Container {
 
     this.fireButton.position.set(UI_RECTS.fire.x, UI_RECTS.fire.y);
     this.fireButton.setLabelSize(34);
+    this.supplyButton.position.set(574, 1068);
+    this.communityButton.position.set(14, 1068);
+    this.supplyButton.setLabelSize(19);
+    this.communityButton.setLabelSize(19);
+    this.communityButton.visible = false;
     this.hint.anchor.set(0.5, 0);
     this.hint.position.set(UI_RECTS.hint.x, UI_RECTS.hint.y);
 
@@ -107,7 +120,7 @@ export class HudLayer extends Container {
     this.statusDot.position.set(246,246);
     this.masthead.addChild(title,edition,brandRule,this.guideButton,this.statusDot,this.status);
     this.addChild(this.masthead);
-    this.addChild(this.settingsButton, this.levelButton, this.hearts, this.heartsCount, this.fireButton, this.hint);
+    this.addChild(this.settingsButton, this.levelButton, this.hearts, this.heartsCount, this.fireButton, this.hint, this.supplyButton, this.communityButton);
   }
 
   sync(state: GameState) {
@@ -128,6 +141,9 @@ export class HudLayer extends Container {
     this.fireButton.setDisabled((state.firing&&!state.timeSkill) || state.won);
     this.levelButton.setDisabled(state.firing);
     this.guideButton.setDisabled(state.firing);
+    this.supplyButton.setDisabled(state.firing || state.won);
+    this.communityButton.setDisabled(state.firing || state.won);
+    this.hearts.eventMode = state.firing || state.won ? 'none' : 'static';
     this.firing=state.firing;
     this.syncArrows();
     this.fireButton.setActive(state.firing);

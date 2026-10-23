@@ -6,6 +6,8 @@ import { firstIncompleteLevel, isLevelUnlocked } from '@/progression/levelProgre
 import { SettingsButton } from '../ui/SettingsButton';
 import { Theme, uiText } from '../theme';
 import { BackgroundLayer } from './BackgroundLayer';
+import { Button } from '../ui/Button';
+import { WalletButton } from '../ui/WalletButton';
 
 const CARD_X = 50;
 const CARD_W = 620;
@@ -16,10 +18,10 @@ const TILE_H = 84;
 const TILE_GAP_X = 12;
 const TILE_GAP_Y = 12;
 const TILE_COLUMNS = 4;
-const SCROLL_TOP = 198;
+const SCROLL_TOP = 214;
 const TITLE_Y = 82;
-const PROGRESS_Y = 136;
-const PROGRESS_TRACK_Y = 163;
+const PROGRESS_Y = 146;
+const PROGRESS_TRACK_Y = 176;
 const SETTINGS_Y = 56;
 const CONTENT_BOTTOM_PAD = 48;
 const DRAG_THRESHOLD = 10;
@@ -28,6 +30,9 @@ const GM_TAP_WINDOW_MS = 2500;
 
 export class LevelSelectLayer extends Container {
   readonly settingsButton = new SettingsButton(UI_RECTS.settings.w, UI_RECTS.settings.h);
+  readonly wallet = new WalletButton();
+  private footerSpace = 0;
+  private viewportBounds = new Rectangle(0, 0, DESIGN_WIDTH, DESIGN_HEIGHT);
   private readonly background = new BackgroundLayer();
   private readonly header = new Container();
   private readonly title = new Text({ text: '选择关卡', style: uiText({ fontSize: 44, fill: Theme.ink }) });
@@ -72,8 +77,9 @@ export class LevelSelectLayer extends Container {
     this.progressLabel.anchor.set(0.5);
     this.progressLabel.position.set(DESIGN_WIDTH / 2, PROGRESS_Y);
     this.settingsButton.position.set(UI_RECTS.settings.x, SETTINGS_Y);
-    this.progressTrack.roundRect(120, PROGRESS_TRACK_Y, 480, 10, 5).fill(Theme.surfaceMuted);
-    this.header.addChild(this.title, this.progressLabel, this.progressTrack, this.progressFill, this.settingsButton);
+    this.wallet.position.set(504, SETTINGS_Y);
+    this.progressTrack.roundRect(50, PROGRESS_TRACK_Y, 628, 10, 5).fill(Theme.surfaceMuted);
+    this.header.addChild(this.title, this.progressLabel, this.progressTrack, this.progressFill, this.settingsButton, this.wallet);
 
     const groups = new Map<number, Array<{ index: number; level: LevelDefinition }>>();
     levels.forEach((level, index) => {
@@ -127,11 +133,18 @@ export class LevelSelectLayer extends Container {
   }
 
   setViewport(bounds: Rectangle) {
+    this.viewportBounds = bounds;
     this.hitArea=bounds;
     this.background.setViewport(bounds);
-    this.viewportBottom=Math.max(DESIGN_HEIGHT,bounds.y+bounds.height);
+    this.viewportBottom=bounds.y+bounds.height-this.footerSpace;
     this.viewportHeight=Math.max(240,this.viewportBottom-this.viewportTop);
     this.layoutViewport();
+  }
+
+  setFooterSpace(height: number) {
+    if (this.footerSpace === height) return;
+    this.footerSpace = height;
+    this.setViewport(this.viewportBounds);
   }
 
   setTopOffset(offset: number) {
@@ -214,9 +227,9 @@ export class LevelSelectLayer extends Container {
     this.progressLabel.text = allLevelsUnlocked
       ? `GM 已开启 · 主线 ${normalDone}/${normalTotal} · 挑战 ${bossDone}/${bossTotal}`
       : `主线 ${normalDone}/${normalTotal} · 挑战 ${bossDone}/${bossTotal}  ·  ${nextCopy}`;
-    const fillW = total > 0 ? 480 * done / total : 0;
+    const fillW = total > 0 ? 628 * done / total : 0;
     this.progressFill.clear();
-    if (fillW > 0) this.progressFill.roundRect(120, PROGRESS_TRACK_Y, Math.max(10, fillW), 10, 5).fill(Theme.accent);
+    if (fillW > 0) this.progressFill.roundRect(50, PROGRESS_TRACK_Y, Math.max(10, fillW), 10, 5).fill(Theme.accent);
     for (const card of this.chapterCards) card.sync(currentIndex, completed, this.levels, allLevelsUnlocked, unlockedThrough);
   }
 

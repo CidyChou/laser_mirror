@@ -1,11 +1,22 @@
 import { BaseMiniGamePlatform } from '../minigame/BaseMiniGamePlatform';
 import type { ShareContent, ShareContentProvider } from '../IPlatform';
+import { WeChatActivity } from './WeChatActivity';
+import { WeChatAds } from './WeChatAds';
+import { WeChatCommunity } from './WeChatCommunity';
+import { WECHAT_OPERATIONS, type WeChatOperationsConfig } from './config';
 
 export class WeChatPlatform extends BaseMiniGamePlatform {
-  constructor(api:any=(globalThis as any).wx) {
+  private readonly activity = new WeChatActivity();
+  readonly ads: WeChatAds;
+  readonly community: WeChatCommunity;
+  constructor(api:any=(globalThis as any).wx,config:WeChatOperationsConfig=WECHAT_OPERATIONS) {
     if(!api)throw new Error('wx runtime not found');
     super('wechat',api);
+    this.ads = new WeChatAds(api, this.activity, config);
+    this.community = new WeChatCommunity(api, this.activity, config);
   }
+
+  onExternalActivityChange(handler:(active:boolean)=>void) { return this.activity.subscribe(handler); }
 
   configureShare(provider:ShareContentProvider):void {
     const actions=[

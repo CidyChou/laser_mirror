@@ -12,11 +12,13 @@ src/platform/
 └── xhs/
 ```
 
-平台差异只处理：Canvas、系统尺寸、DPR、存储、震动、请求、分享，以及未来的广告/登录。
+平台差异处理 Canvas、系统尺寸、DPR、存储、震动、请求、分享、广告与运营原生页面；玩法通过 `IPlatform` 使用这些能力。
 
 设置中的「分享给好友」在支持主动分享的平台显示。微信同时启用好友和朋友圈菜单，分享文案及 `stage` 参数使用当前关卡；从分享启动时沿用玩家的关卡解锁规则。每次分享从 `src/app/share.ts` 的 `SHARE_IMAGE_URLS` 中随机选取一张图片，好友分享和朋友圈预览使用同一张图；目前已配置三张分享图。
 
 ## 微信
+
+广告与运营配置位于 `templates/wechat/operations.json`，包含四种激励场景、低频通关插屏、选关页原生模板、游戏圈 / 求助帖与推荐。未填 ID 时保留金币买爱心和自然恢复。详见 [微信广告与运营接入](WECHAT_OPERATIONS.md)。
 
 ```bash
 make wechat
@@ -26,6 +28,7 @@ make wechat
 
 - `game.js`：独立启动器，捕获模块加载及初始化错误
 - `game-runtime.js`：Vite IIFE 游戏包
+- `runtime-compat.js`：引擎加载前的基础 API 兼容（仅补缺失项）
 - `build-info.json`：源码提交、未提交修改标记、构建时间、运行包 SHA256
 - `game.json` / `project.config.json`：小游戏工程配置（首次从 `templates/wechat/` 复制，之后保留本地 AppID）
 - `audio/`、`ui/`：运行所需资源

@@ -209,6 +209,20 @@ function patchGlContextForMiniGame() {
   if (proto.__laserMirrorPatched) return;
   proto.__laserMirrorPatched = true;
 
+  proto.createContext = function createMiniGameContext(preferWebGLVersion: number, options: any) {
+    // Browser getContext returns null for an unsupported context type. Native
+    // wrappers may throw instead, which must not skip the WebGL1 fallback.
+    let gl: any;
+    const contextTypes = preferWebGLVersion === 2
+      ? ['webgl2', 'webgl', 'experimental-webgl'] : ['webgl', 'experimental-webgl'];
+    for (const type of contextTypes) {
+      try { gl = this.canvas.getContext(type, options); } catch {}
+      if (gl) break;
+    }
+    if (!gl) throw new Error('Native canvas could not create a WebGL context');
+    this.initFromContext(gl);
+  };
+
   proto.initFromContext = function initFromContext(gl: any) {
     this.gl = gl;
     this.webGLVersion = isWebGL2Context(gl) ? 2 : 1;

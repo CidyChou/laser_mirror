@@ -5,7 +5,7 @@ import { join, resolve } from 'node:path';
 
 const outputDirectory = 'dist/wechat';
 const WECHAT_MAIN_PACK_LIMIT = 4 * 1024 * 1024;
-const configNames = ['game.json', 'project.config.json', 'project.private.config.json'];
+const configNames = ['game.json', 'project.config.json', 'project.private.config.json', 'code.fortify.config.json'];
 const copyOptions = {
   recursive: true,
   filter: (source) => !source.endsWith('.DS_Store') && !source.split(/[/\\]/).some((part) => part.startsWith('._')),
@@ -86,6 +86,7 @@ const buildInfo = {
 const launcher = (await readFile('templates/wechat/game.js', 'utf8'))
   .replace('__WECHAT_BUILD_INFO__', JSON.stringify(buildInfo));
 await writeFile(join(outputDirectory, 'game.js'), launcher);
+await cp('templates/wechat/runtime-compat.js', join(outputDirectory, 'runtime-compat.js'));
 await writeFile(join(outputDirectory, 'build-info.json'), JSON.stringify(buildInfo, null, 2) + '\n');
 
 await Promise.all([
@@ -102,7 +103,9 @@ for (const name of configNames) {
 const requiredFiles = [
   'game.js',
   'game-runtime.js',
+  'runtime-compat.js',
   'build-info.json',
+  'code.fortify.config.json',
   'game.json',
   'project.config.json',
   'audio/laser_fire.mp3',

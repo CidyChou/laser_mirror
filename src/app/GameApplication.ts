@@ -4,8 +4,15 @@ import { MusicManager } from '@/audio/MusicManager';
 import { StartupScreen } from './StartupScreen';
 import { GameConfig } from '@/config/GameConfig';
 import { nowMs } from '@/core/clock';
-import { loadCoins, saveCoins, winReward } from '@/economy/wallet';
-import { AD_HEART_REWARD, loadHearts, MAX_HEARTS, saveHearts } from '@/economy/hearts';
+import { firstClearReward, initializeCoins, saveCoins } from '@/economy/wallet';
+import { AD_HEART_REWARD, heartPurchase, heartRefillCost, loadHearts, MAX_HEARTS, nextHeartRecovery, recoverHearts, saveHearts } from '@/economy/hearts';
+import { bonusRemaining, COIN_AD_USAGE_KEY, consumeBonus, HINT_COIN_COST, recordFirstClear } from '@/economy/operations';
+import { ECONOMY } from '@/economy/config';
+import { mirrorHint, type MirrorHint } from '@/gameplay/hints';
+import { WECHAT_OPERATIONS } from '@/platform/wechat/config';
+import type { CommunityTarget, OperationContext, RewardPlacement } from '@/platform/operations';
+import type { ResultCopy } from '@/rendering/layers/ResultLayer';
+import type { SupportAction } from '@/rendering/layers/SupportLayer';
 import { GameSession } from '@/gameplay/GameSession';
 import { TutorialDirector } from '@/gameplay/tutorial';
 import { loadTutorialProgress, saveTutorialProgress } from '@/progression/tutorialProgress';
@@ -71,9 +78,20 @@ export class GameApplication {
   private coins=0;
   private timeProgress={usedFailureProtection:new Set<number>(),seenTutorials:new Set<string>()};
   private totalLevels=0;
-  private pendingResult:{kind:'win'|'lose';copy:{title:string;subtitle:string;tip:string;primary:string;secondary?:string;reward?:number};at:number}|null=null;
+  private pendingResult:{kind:'win'|'lose';copy:ResultCopy;at:number}|null=null;
   private unresize=()=>{};
   private unaudio=()=>{};
+  private unexternal=()=>{};
+  private unmenu=()=>{};
+  private operationBusy=false;
+  private externalActive=false;
+  private appVisible=true;
+  private operationGeneration=0;
+  private winRewardAmount=0;
+  private winBonusClaimed=false;
+  private winInterstitialDue=false;
+  private heartRecoveryTimer:ReturnType<typeof setTimeout>|null=null;
+  private supportScreen:'hearts'|'supply'|'community'|null=null;
   private readonly hapticGate=new HapticGate();
   private firePulseAt=0;
   private fireWatchdog:ReturnType<typeof setInterval>|0=0;
@@ -107,7 +125,7 @@ export class GameApplication {
     this.tutorial.enter(this.session.state);
     this.audio=new AudioManager(platform);
     this.music=new MusicManager(platform);
-    this.coins=loadCoins(platform);
+    this.coins=initializeCoins(platform,this.completedLevels.size>0);
     this.themeId=normalizeThemeId(this.platform.storage.get(THEME_STORAGE_KEY));
     this.laserColorId=normalizeLaserColorId(this.platform.storage.get(LASER_COLOR_STORAGE_KEY));
     setActiveLaserColor(this.laserColorId);
@@ -149,14 +167,26 @@ export class GameApplication {
     this.platform.attachCanvas(this.app.canvas,(this.app.renderer as any).events);
     this.app.stage.eventMode='static';
     this.app.stage.hitArea=this.app.screen;
-    this.app.stage.on('pointerdowncapture',()=>this.music.unlock());
+    this.app.stage.on('pointerdowncapture',()=>{this.platform.community?.onGameInteraction();this.music.unlock();});
     this.unaudio=this.platform.onAudioActiveChange?.(active=>{
-      this.music.setActive(active);
+      this.appVisible=active;
+      this.music.setActive(active&&!this.externalActive);
       if(!active)this.platform.cancelHaptics?.();
+      if(!active)this.clearHeartRecoveryTimer();
+      else if(this.view)this.refreshHeartRecovery();
+      this.syncNativeMenuAd();
     })??(()=>{});
+    this.unexternal=this.platform.onExternalActivityChange?.(active=>{
+      this.externalActive=active;
+      this.music.setActive(this.appVisible&&!active);
+      if(active)this.platform.cancelHaptics?.();
+      this.syncNativeMenuAd();
+    })??(()=>{});
+    this.unmenu=this.platform.ads?.onMenuChange?.(()=>{if(!this.destroyed){this.syncNativeMenuAd();this.wake();}})??(()=>{});
     if(!options.skipLoading){
       options.onBootPhase?.('loading-screen');
       this.loading=new StartupScreen(this.app,this.platform);
+      options.onBootPhase?.('first-frame');
       this.loading.scene.setProgress(.15);
       // Give the loading screen its own first paint before building the full game view.
       await new Promise<void>(resolve=>setTimeout(resolve,0));
@@ -188,6 +218,9 @@ export class GameApplication {
         },now);this.wake();
       }
       if(event.type==='level'){
+        this.supportScreen=null;
+        this.operationGeneration++;
+        this.winRewardAmount=0;this.winBonusClaimed=false;this.winInterstitialDue=false;
         this.cancelFireCharge();
         this.collectPendingCoins();this.pendingResult=null;this.paidVictory=false;this.view.hideOverlays();
         saveCurrentLevel(this.platform,state.levelIndex,this.levels);
@@ -243,6 +276,7 @@ export class GameApplication {
       }
       if(event.type==='shot-end'){
         this.clearFireWatchdog();
+        this.refreshHeartRecovery();
         if(!event.success && !event.aborted){
           saveHearts(this.platform,state.hearts);
           this.audio.play('shotFail');
@@ -257,18 +291,28 @@ export class GameApplication {
         if(newlyCompleted)saveCurrentLevel(this.platform,firstIncompleteLevel(this.totalLevels,this.completedLevels),this.levels);
         this.audio.play('win');
         this.view.victory(now,state);
-        const reward=this.paidVictory?0:winReward(rewardLevelIndex(state.level,state.levelIndex));
-        const copy={
+        const reward=this.paidVictory?0:firstClearReward(rewardLevelIndex(state.level,state.levelIndex),Boolean(state.level.timeBoss),newlyCompleted);
+        this.winRewardAmount=reward;
+        if(newlyCompleted&&this.platform.ads?.canInterstitial()){
+          const pacing=WECHAT_OPERATIONS.interstitial;
+          this.winInterstitialDue=recordFirstClear(this.platform,stageId(state.level,state.levelIndex),pacing.firstAfter,pacing.every);
+          this.platform.ads.preloadInterstitial();
+        }
+        const copy:ResultCopy={
           title:'通关成功',
           subtitle:stageCompletionLabel(state.level,state.levelIndex),
-          tip: state.comboCount>=2 ? `本次连击 ×${state.comboCount}` : '光路接通',
+          tip: !newlyCompleted?'已完成的关卡 · 重玩不重复发放金币':state.comboCount>=2 ? `本次连击 ×${state.comboCount}` : '首通奖励已到账',
           primary: state.levelIndex < this.totalLevels - 1 ? '下一关' : '再来一轮',
           reward,
+          ...(reward>0&&this.platform.ads?.canReward('double')&&this.bonusAvailable()?{bonus:'看视频 · 本关金币翻倍'}:{}),
+          recommend:this.platform.community?.canOpen('recommend')&&!this.platform.community.isRecommended(),
+          community:this.platform.community?.canOpen('club'),
         };
+        if(copy.bonus)this.platform.ads?.preloadRewards(['double']);
         if(reward){
           this.paidVictory=true;
           this.coins+=reward;
-          saveCoins(this.platform,this.coins);
+          this.persistCoins();
         }
         this.pendingResult={kind:'win',copy,at:now+(state.comboCount>=2?480:220)};
         this.vibrate('success');this.wake();
@@ -306,6 +350,7 @@ export class GameApplication {
           }
         }
         this.view.update(this.session.state,now);
+        this.syncNativeMenuAd();
         if(!logicActive&&!this.view.active&&!this.pendingResult){this.app.ticker.stop();this.renderOnce();}
       }catch(error){
         // Pixi does not schedule the next rAF if a ticker listener throws, which
@@ -339,6 +384,10 @@ export class GameApplication {
       this.wake();
     }
     options.onBootPhase?.('playing');
+    this.refreshHeartRecovery();
+    this.platform.ads?.preloadRewards(['hearts','coins']);
+    this.platform.ads?.preloadInterstitial();
+    this.syncNativeMenuAd();
   }
 
   private collectPendingCoins(){
@@ -360,6 +409,9 @@ export class GameApplication {
     this.view.sync(this.session.state);
     this.applyUiTextures();
     this.bindViewHandlers();
+    this.view.setCoinBalance(this.coins);
+    this.view.configureOperations(this.platform.kind==='wechat',this.platform.ads?.menuSize()??null);
+    this.view.setInteractionBlocked(this.operationBusy);
     this.syncTutorial();
     if(reopenLevels)this.view.showLevelSelect(this.session.state.levelIndex,this.completedLevels,this.allLevelsUnlocked,this.unlockedThrough);
     if(reopenSettings)this.view.showSettings(this.audioEnabled,this.hapticsEnabled,this.themeId,this.laserColorId,this.musicEnabled);
@@ -380,6 +432,13 @@ export class GameApplication {
   }
   private bindViewHandlers(){
     this.view.setHandlers({
+      openHearts:()=>this.showHeartRefill(nowMs()),
+      coinVideo:()=>{void this.claimCoinVideo();},
+      openSupply:()=>this.openSupply(),
+      openCommunity:()=>{if(this.view.result.visible&&!this.session.state.won&&this.platform.community?.canOpen('help'))void this.openCommunity('help');else this.openCommunityHub();},
+      closeSupport:()=>{this.supportScreen=null;this.view.hideSupport();this.audio.play('uiClick');this.wake();},
+      resultBonus:()=>{void this.claimWinBonus();},
+      recommendGame:()=>{void this.openCommunity('recommend');},
       bulletTime:()=>{if(!this.overlayLocked()){this.session.startBulletTime();this.wake();}},
       rotate:(x,y)=>this.rotate(x,y),
       firePressStart:()=>this.startFireCharge(),
@@ -423,7 +482,7 @@ export class GameApplication {
         Promise.resolve().then(()=>{this.createView(true,reopenLevels);this.wake();});
       },
       openLevels:()=>{
-        if(this.session.state.firing||this.view.result.visible||this.view.poster.visible)return;
+        if(this.session.state.firing||this.view.result.visible||this.view.poster.visible||this.view.support.visible)return;
         this.audio.play('uiClick');
         this.view.showLevelSelect(this.session.state.levelIndex,this.completedLevels,this.allLevelsUnlocked,this.unlockedThrough);
         this.wake();
@@ -444,24 +503,17 @@ export class GameApplication {
       resultPrimary:()=>{
         if(this.session.state.timeSkill?.tutorial){this.view.result.hide();this.session.confirmSkillTutorial();this.saveTimeProgress();this.wake();return;}
         this.collectPendingCoins();this.pendingResult=null;this.audio.play('uiClick');
-        if(this.view.result.kindValue==='win')this.session.next();
-        else if(this.session.state.hearts<=0){
-          this.session.restoreHearts(Math.min(MAX_HEARTS,this.session.state.hearts+AD_HEART_REWARD));
-          saveHearts(this.platform,this.session.state.hearts);
-          // Keep the player's current mirror setup when returning from the
-          // rewarded-ad flow. The failed shot has already been cleared by the
-          // session; reloading the level here would discard all their work.
-          this.view.hideOverlays();
-          this.view.showToast(`广告功能暂未接入 · 已增加 ${AD_HEART_REWARD} 颗爱心`,nowMs());
-        }else this.session.reset();
+        if(this.view.result.kindValue==='win'){void this.leaveWin(()=>this.session.next());return;}
+        else if(this.session.state.hearts<=0)this.showHeartRefill(nowMs());
+        else this.view.hideOverlays();
         this.wake();
       },
-      resultSecondary:()=>{this.collectPendingCoins();this.pendingResult=null;this.audio.play('uiClick');this.session.reset();this.wake();},
+      resultSecondary:()=>{this.showHeartRefill(nowMs());},
       resultPreview:()=>this.openWinPreview(),
       resultLevels:()=>{
         this.collectPendingCoins();this.pendingResult=null;this.audio.play('uiClick');
-        this.view.showLevelSelectFromWin(this.session.state.levelIndex,this.completedLevels,this.allLevelsUnlocked,this.unlockedThrough);
-        this.wake();
+        const open=()=>{this.view.showLevelSelectFromWin(this.session.state.levelIndex,this.completedLevels,this.allLevelsUnlocked,this.unlockedThrough);this.wake();};
+        if(this.session.state.won)void this.leaveWin(open);else open();
       },
       closePoster:()=>{this.audio.play('uiClick');this.view.poster.hide();this.wake();},
       savePoster:()=>{void this.saveWinPoster();},
@@ -547,7 +599,7 @@ export class GameApplication {
     if(this.view)this.view.setTutorial(this.tutorial.current,this.session.state,this.tutorial.progress);
   }
   private overlayLocked(){
-    return this.view.result.visible||this.view.settings.visible||this.view.levelSelect.visible||this.view.poster.visible;
+    return this.operationBusy||this.view.support.visible||this.view.result.visible||this.view.settings.visible||this.view.levelSelect.visible||this.view.poster.visible;
   }
   private openWinPreview(){
     if(this.view.poster.visible)return;
@@ -593,8 +645,9 @@ export class GameApplication {
     this.unlockedThrough=0;
     clearLevelProgress(this.platform);
     this.tutorial.clear();
-    this.coins=0;saveCoins(this.platform,0);
+    this.coins=0;this.persistCoins();
     this.session.restoreHearts(MAX_HEARTS);saveHearts(this.platform,MAX_HEARTS);
+    this.clearHeartRecoveryTimer();this.supportScreen=null;
     this.session.load(0);
     this.view.showLevelSelect(0,this.completedLevels,this.allLevelsUnlocked,this.unlockedThrough);
     this.vibrate('medium');this.wake();
@@ -610,12 +663,234 @@ export class GameApplication {
     this.wake();
   }
   private showHeartRefill(now:number){
-    this.view.showResult('lose',{
-      title:'爱心用完',
-      subtitle:`增加 ${AD_HEART_REWARD} 颗爱心`,
-      tip:'观看广告即可继续挑战\n广告功能暂未接入，本次可直接领取',
-      primary:`领取 ${AD_HEART_REWARD} 颗爱心`,
-    },now);
+    if(this.operationBusy||this.session.state.firing)return;
+    this.cancelFireCharge();this.refreshHeartRecovery();
+    this.supportScreen='hearts';this.renderHeartShop();this.wake();
+  }
+
+  private persistCoins(){saveCoins(this.platform,this.coins);this.view?.setCoinBalance(this.coins);}
+
+  private heartActions():SupportAction[]{
+    const state=this.session.state,missing=MAX_HEARTS-state.hearts;
+    if(missing<=0)return[];
+    const expected={state,hearts:state.hearts,coins:this.coins};
+    const cost=heartRefillCost(state.hearts);
+    const actions:SupportAction[]=[{label:`${cost} 金币 · 补满 ${missing} 颗爱心`,primary:this.coins>=cost,disabled:this.coins<cost,
+      run:()=>this.purchaseHearts('fill',expected)}];
+    const affordable=Math.min(missing-1,Math.floor(this.coins/ECONOMY.heartPrice));
+    if(this.coins<cost&&affordable>=2)actions.push({label:`${affordable*ECONOMY.heartPrice} 金币 · 增加 ${affordable} 颗爱心`,run:()=>this.purchaseHearts(affordable,expected)});
+    if(missing>1)actions.push({label:`${ECONOMY.heartPrice} 金币 · 增加 1 颗爱心`,disabled:this.coins<ECONOMY.heartPrice,
+      run:()=>this.purchaseHearts('one',expected)});
+    if(this.platform.ads?.canReward('hearts'))actions.push({label:'看视频 · 补满爱心',primary:this.coins<cost,run:()=>{void this.watchReward('hearts',()=>this.refillHearts(AD_HEART_REWARD));}});
+    return actions;
+  }
+
+  private renderHeartShop(){
+    const state=this.session.state,actions=this.heartActions();
+    if(this.platform.ads?.canReward('coins')&&this.coins<ECONOMY.heartPrice)actions.push({label:`看视频 · 领取 ${WECHAT_OPERATIONS.rewards.coinsPerVideo} 金币`,disabled:!!this.coinVideoReason(),run:()=>{void this.claimCoinVideo();}});
+    if(state.hearts>0)actions.push({label:'继续挑战',primary:true,run:()=>{this.supportScreen=null;this.view.hideSupport();this.wake();}});
+    if(this.platform.community?.canOpen('help'))actions.push({label:'卡关求助与攻略',run:()=>{void this.openCommunity('help');}});
+    actions.push({label:'返回选关',run:()=>{
+      this.supportScreen=null;this.view.hideSupport();this.view.showLevelSelectFromWin(state.levelIndex,this.completedLevels,this.allLevelsUnlocked,this.unlockedThrough);this.wake();
+    }});
+    this.view.showSupport({title:state.hearts<=0?'爱心用完':'爱心补给',
+      body:`金币 ${this.coins}  ·  爱心 ${state.hearts} / ${MAX_HEARTS}\n每 ${ECONOMY.heartRecoveryMs/60000} 分钟恢复 1 颗，离线也会恢复\n补充后保留当前镜面布局`,actions});
+    this.platform.ads?.preloadRewards(['hearts']);
+    this.wake();
+  }
+
+  private purchaseHearts(amount:'one'|'fill'|number,expected?:{state:GameSession['state'];hearts:number;coins:number}){
+    if(this.operationBusy||this.session.state.firing)return;
+    this.refreshHeartRecovery();
+    if(expected&&(expected.state!==this.session.state||expected.hearts!==this.session.state.hearts||expected.coins!==this.coins)){
+      if(this.supportScreen==='hearts')this.renderHeartShop();else this.openSupply();return;
+    }
+    const purchase=heartPurchase(this.coins,this.session.state.hearts,amount);
+    if(!purchase){this.view.showToast(this.session.state.hearts>=MAX_HEARTS?'爱心已满':'金币不足，通关或观看视频可补充金币',nowMs());this.wake();return;}
+    this.coins=purchase.coins;this.persistCoins();
+    this.session.restoreHearts(purchase.hearts);saveHearts(this.platform,purchase.hearts);
+    this.supportScreen=null;this.view.hideSupport();
+    this.view.showToast(`已购买 ${purchase.gained} 颗爱心 · 花费 ${purchase.cost} 金币`,nowMs());
+    this.scheduleHeartRecovery();this.audio.play('uiClick');this.wake();
+  }
+
+  private clearHeartRecoveryTimer(){
+    if(this.heartRecoveryTimer!==null)clearTimeout(this.heartRecoveryTimer);
+    this.heartRecoveryTimer=null;
+  }
+
+  private scheduleHeartRecovery(retryIn?:number){
+    this.clearHeartRecoveryTimer();
+    if(this.destroyed||!this.appVisible)return;
+    const next=nextHeartRecovery(this.platform);
+    if(next===null)return;
+    this.heartRecoveryTimer=setTimeout(()=>{
+      this.heartRecoveryTimer=null;
+      this.refreshHeartRecovery();
+      if(this.supportScreen==='hearts'&&this.view.support.visible&&!this.operationBusy)this.renderHeartShop();
+    },retryIn??Math.max(50,next-Date.now()));
+  }
+
+  private refreshHeartRecovery(){
+    if(this.session.state.firing||this.operationBusy){this.scheduleHeartRecovery(1000);return;}
+    const recovery=recoverHearts(this.platform,this.session.state.hearts);
+    if(recovery.hearts!==this.session.state.hearts){this.session.restoreHearts(recovery.hearts);if(this.view)this.wake();}
+    this.scheduleHeartRecovery();
+  }
+
+  private context():OperationContext{
+    const state=this.session.state;
+    return{stage:stageId(state.level,state.levelIndex),screen:this.view.result.visible?(state.won?'win':'lose'):this.view.levelSelect.visible?'menu':this.supportScreen==='hearts'?'hearts':'playing'};
+  }
+
+  private bonusAvailable(){return bonusRemaining(this.platform,WECHAT_OPERATIONS.rewards.dailyBonusLimit)>0;}
+
+  private refillHearts(amount:number){
+    const before=this.session.state.hearts;
+    this.session.restoreHearts(Math.min(MAX_HEARTS,before+amount));
+    saveHearts(this.platform,this.session.state.hearts);
+    this.supportScreen=null;
+    if(this.view.levelSelect.visible)this.view.hideSupport();else this.view.hideOverlays();
+    const granted=this.session.state.hearts-before;
+    this.view.showToast(`已补充 ${granted} 颗爱心`,nowMs());this.scheduleHeartRecovery();this.wake();
+    return granted;
+  }
+
+  private openSupply(){
+    if(this.operationBusy||this.session.state.firing||(this.session.state.won&&!this.view.levelSelect.visible))return;
+    this.cancelFireCharge();this.refreshHeartRecovery();this.supportScreen='supply';
+    const state=this.session.state,ads=this.platform.ads;
+    const hint=mirrorHint(state);
+    const actions:SupportAction[]=[];
+    if(state.hearts<MAX_HEARTS)actions.push({label:`爱心补给 · ${ECONOMY.heartPrice} 金币起`,run:()=>this.showHeartRefill(nowMs())});
+    if(ads?.canReward('coins'))actions.push({label:`看视频 · 领取 ${WECHAT_OPERATIONS.rewards.coinsPerVideo} 金币`,disabled:!!this.coinVideoReason(),run:()=>{void this.claimCoinVideo();}});
+    if(hint){
+      actions.push({label:`${HINT_COIN_COST} 金币 · 调整一处镜面`,disabled:this.coins<HINT_COIN_COST,run:()=>{
+        if(this.coins<HINT_COIN_COST)return;
+        this.coins-=HINT_COIN_COST;this.persistCoins();this.applyHint(hint);
+      }});
+      if(ads?.canReward('hint'))actions.push({label:'看视频 · 免费调整一处镜面',disabled:!this.bonusAvailable(),run:()=>{void this.watchReward('hint',()=>{this.applyHint(hint);return 1;});}});
+    }
+    actions.push({label:'查看玩法与攻略',run:()=>this.openCommunityHub(),primary:actions.length===0});
+    const bonusCount=ads?.canReward('coins')||ads?.canReward('hint')?`\n今日额外奖励剩余 ${bonusRemaining(this.platform,WECHAT_OPERATIONS.rewards.dailyBonusLimit)} 次`:'';
+    this.view.showSupport({title:'补给与提示',body:`金币 ${this.coins}  ·  爱心 ${state.hearts} / ${MAX_HEARTS}${bonusCount}\n${state.level.timeBoss?'章节挑战请根据光束变化及时调整镜面':hint?'提示会调整一处镜面，剩余光路由你完成':'光路准备好后，按住发射试一试'}`,actions});
+    ads?.preloadRewards(['hearts','coins','hint']);
+    this.audio.play('uiClick');this.wake();
+  }
+
+  private applyHint(hint:MirrorHint){
+    this.supportScreen=null;this.view.hideSupport();
+    // Finish the current teaching card before making a rewarded adjustment.
+    this.tutorial.skip();this.syncTutorial();
+    for(let turn=0;turn<hint.turns;turn++)this.session.rotateAt(hint.x,hint.y);
+    this.view.mirrorRotateFeedback(hint.x,hint.y,nowMs());
+    this.view.showToast(hint.text,nowMs());this.wake();
+  }
+
+  private async watchReward(placement:RewardPlacement,grant:()=>number){
+    const ads=this.platform.ads;
+    if(this.operationBusy||!ads?.canReward(placement))return;
+    if(placement!=='hearts'&&!this.bonusAvailable()){
+      this.view.showToast('今日额外奖励已领完，明天再来',nowMs());this.wake();return;
+    }
+    const state=this.session.state,generation=this.operationGeneration,context=this.context();
+    this.operationBusy=true;this.cancelFireCharge();this.collectPendingCoins();
+    this.view.setInteractionBlocked(true);this.view.showToast('正在准备视频…',nowMs());this.wake();
+    try{
+      const outcome=await ads.showReward(placement,context);
+      if(this.destroyed||state!==this.session.state||generation!==this.operationGeneration)return;
+      if(outcome==='rewarded'){
+        if(placement==='coins'&&this.coinVideoReason()){this.view.showToast(this.coinVideoReason()!,nowMs());return;}
+        if(placement!=='hearts'&&!consumeBonus(this.platform,WECHAT_OPERATIONS.rewards.dailyBonusLimit)){
+          this.view.showToast('今日额外奖励已领完',nowMs());return;
+        }
+        if(placement==='coins')consumeBonus(this.platform,WECHAT_OPERATIONS.rewards.coinsDailyLimit,Date.now(),COIN_AD_USAGE_KEY);
+        const amount=grant();ads.reportReward(placement,context,amount);
+      }else this.view.showToast(outcome==='cancelled'?'视频未看完，未领取奖励':outcome==='busy'?'请先关闭当前页面':'视频暂时不可用，请稍后重试',nowMs());
+    }catch{if(!this.destroyed)this.view.showToast('视频暂时不可用，请稍后重试',nowMs());}
+    finally{this.operationBusy=false;if(!this.destroyed){this.view.setInteractionBlocked(false);this.refreshHeartRecovery();this.wake();}}
+  }
+
+  private coinVideoReason():string|null{
+    if(this.coins>=WECHAT_OPERATIONS.rewards.coinSupplyThreshold)return'金币储备充足，先使用金币补给';
+    if(!this.bonusAvailable()||bonusRemaining(this.platform,WECHAT_OPERATIONS.rewards.coinsDailyLimit,Date.now(),COIN_AD_USAGE_KEY)<=0)return'今日金币补给已领完，明天再来';
+    if(!this.platform.ads?.canReward('coins'))return'金币视频暂未开放，首通关卡可获得金币';
+    return null;
+  }
+
+  private async claimCoinVideo(){
+    if(this.operationBusy||this.session.state.firing)return;
+    const reason=this.coinVideoReason();
+    if(reason){this.view.showToast(reason,nowMs());this.wake();return;}
+    await this.watchReward('coins',()=>{
+      const amount=WECHAT_OPERATIONS.rewards.coinsPerVideo;
+      this.coins+=amount;this.persistCoins();
+      if(this.supportScreen==='hearts'&&this.view.support.visible)this.renderHeartShop();else{this.supportScreen=null;this.view.hideSupport();}
+      this.view.showToast(`已获得 ${amount} 金币`,nowMs());return amount;
+    });
+  }
+
+  private async claimWinBonus(){
+    if(!this.session.state.won||!this.view.result.visible||this.winBonusClaimed||this.winRewardAmount<=0)return;
+    await this.watchReward('double',()=>{
+      this.winBonusClaimed=true;this.winInterstitialDue=false;
+      const amount=this.winRewardAmount;
+      this.coins+=amount;this.persistCoins();
+      this.view.result.markBonusClaimed();this.view.result.setRewardTotal(amount*2);
+      this.view.startWinCoins(nowMs(),this.coins-amount,amount);this.view.revealWinCoins();
+      this.view.showToast('已领取双倍金币',nowMs());return amount;
+    });
+  }
+
+  private async leaveWin(continueGame:()=>void){
+    if(this.operationBusy)return;
+    const state=this.session.state;
+    const due=this.winInterstitialDue&&!this.winBonusClaimed;
+    this.winInterstitialDue=false;
+    if(!due||!this.platform.ads){continueGame();return;}
+    this.operationBusy=true;this.view.setInteractionBlocked(true);
+    try{await this.platform.ads.showInterstitial(this.context());}
+    catch{/* No fill or SDK failures never block continuation. */}
+    finally{
+      this.operationBusy=false;
+      if(!this.destroyed){this.view.setInteractionBlocked(false);if(state===this.session.state)continueGame();this.wake();}
+    }
+  }
+
+  private openCommunityHub(){
+    if(this.operationBusy||this.session.state.firing)return;
+    this.cancelFireCharge();this.supportScreen='community';
+    const community=this.platform.community,actions:SupportAction[]=[];
+    for(const [target,label] of [['club','游戏圈 · 攻略交流'],['help','卡关求助与问题反馈'],['recommend','推荐给微信好友'],['circleRecommend','分享到游戏圈推荐']] as const){
+      if(community?.canOpen(target))actions.push({label:target==='recommend'&&community.isRecommended()?'已推荐 · 查看推荐':label,run:()=>{void this.openCommunity(target);}});
+    }
+    if(this.platform.canShare?.())actions.push({label:'分享当前关卡给好友',run:()=>{this.platform.shareAppMessage?.(this.createShareContent());}});
+    actions.push({label:'返回游戏',run:()=>{this.view.hideSupport();this.wake();}});
+    const clubReady=community?.canOpen('club');
+    this.view.showSupport({title:'攻略与交流',body:`${this.session.state.level.timeBoss?'章节挑战：发射后根据光束变化及时调整镜面':'旋转镜面，让光束到达所有接收器'}\n${clubReady?'卡关时可到游戏圈交流解题思路':'先规划路线，再按住发射；失败后可以继续调整'}`,actions});
+    this.audio.play('uiClick');this.wake();
+  }
+
+  private async openCommunity(target:CommunityTarget){
+    if(this.operationBusy||this.session.state.firing)return;
+    const community=this.platform.community;
+    if(!community?.canOpen(target))return;
+    // A failure-page help button goes directly to the configured help post.
+    if(target==='club'&&this.view.result.visible&&!this.session.state.won)target='help';
+    this.operationBusy=true;this.cancelFireCharge();this.view.setInteractionBlocked(true);
+    this.syncNativeMenuAd();
+    try{
+      const result=await community.open(target,this.context());
+      if(this.destroyed)return;
+      if(result!=='opened')this.view.showToast(result==='busy'?'请先关闭当前页面':'页面暂时无法打开，请稍后再试',nowMs());
+    }catch{if(!this.destroyed)this.view.showToast('页面暂时无法打开，请稍后再试',nowMs());}
+    finally{this.operationBusy=false;if(!this.destroyed){this.view.setInteractionBlocked(false);this.wake();}}
+  }
+
+  private syncNativeMenuAd(){
+    if(!this.view)return;
+    this.view.setMenuAdSize(this.platform.ads?.menuSize()??null);
+    this.platform.ads?.setMenuPlacement(!this.loading&&!this.destroyed&&this.appVisible&&!this.externalActive&&!this.operationBusy?this.view.menuAdRect():null);
   }
   private vibrate(type:HapticKind){
     if(!this.hapticsEnabled)return;
@@ -659,7 +934,8 @@ export class GameApplication {
     }
   }
   private renderOnce(){
+    this.syncNativeMenuAd();
     try{this.app.renderer.render(this.app.stage);}catch(error){console.warn('[game] render failed',error);}
   }
-  destroy(){this.destroyed=true;this.loading?.dispose();this.loading=null;this.pendingResult=null;this.cancelFireCharge();this.clearFireWatchdog();this.platform.cancelHaptics?.();this.unresize();this.unaudio();this.music.destroy();this.audio.destroy();this.view?.destroy();this.app.destroy(true);}
+  destroy(){this.destroyed=true;this.clearHeartRecoveryTimer();this.operationGeneration++;this.platform.community?.destroy();this.platform.ads?.destroy();this.loading?.dispose();this.loading=null;this.pendingResult=null;this.cancelFireCharge();this.clearFireWatchdog();this.platform.cancelHaptics?.();this.unresize();this.unaudio();this.unexternal();this.unmenu();this.music.destroy();this.audio.destroy();this.view?.destroy();this.app.destroy(true);}
 }

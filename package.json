@@ -19,6 +19,9 @@
     "verify:feedback": "npx tsx --tsconfig tsconfig.json scripts/verify-feedback.ts",
     "verify:unlocked-optics": "npx tsx --tsconfig tsconfig.json scripts/verify-unlocked-optics.ts",
     "verify:sharing": "npx tsx --tsconfig tsconfig.json scripts/verify-sharing.ts",
+    "verify:operations": "npx tsx --tsconfig tsconfig.json scripts/verify-operations.ts",
+    "verify:economy": "npx tsx --tsconfig tsconfig.json scripts/verify-economy.ts",
+    "generate:hints": "npx tsx --tsconfig tsconfig.json scripts/generate-hints.ts",
     "verify:music": "npx tsx --tsconfig tsconfig.json scripts/verify-music.ts",
     "verify:loading": "npx tsx --tsconfig tsconfig.json scripts/verify-loading-assets.ts",
     "verify:wechat-startup": "npx tsx --tsconfig tsconfig.json scripts/verify-wechat-startup.ts",
@@ -27,14 +30,16 @@
     "verify:time": "npx tsx --tsconfig tsconfig.json scripts/verify-time-core.ts && npx tsx --tsconfig tsconfig.json scripts/verify-time-bosses.ts && npx tsx --tsconfig tsconfig.json scripts/verify-campaign.ts",
     "typecheck": "tsc --noEmit",
     "gm": "vite --config tools/gm/vite.config.ts --host 0.0.0.0 --port 8350 --strictPort --open",
-    "verify:portals": "npx tsx --tsconfig tsconfig.json scripts/verify-portals.ts"
+    "verify:portals": "npx tsx --tsconfig tsconfig.json scripts/verify-portals.ts",
+    "verify:wechat-fortify": "node scripts/verify-wechat-fortify.mjs"
   },
   "dependencies": {
     "pixi.js": "8.19.0"
   },
   "devDependencies": {
+    "@types/node": "22.15.30",
+    "minigame-code-fortify-cli": "0.1.8",
     "typescript": "5.8.3",
-    "vite": "8.1.0",
-    "@types/node": "22.15.30"
+    "vite": "8.1.0"
   }
 }

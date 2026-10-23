@@ -1,3 +1,5 @@
+import type { GameAds, GameCommunity } from './operations';
+
 export type PlatformKind='web'|'wechat'|'douyin'|'xhs';
 export type HapticKind='light'|'medium'|'heavy'|'launch'|'success';
 export interface ViewportInfo { width:number;height:number;pixelRatio:number }
@@ -14,12 +16,15 @@ export interface ShareContent {
 export type ShareContentProvider=()=>ShareContent;
 export interface IPlatform {
   readonly kind:PlatformKind;
+  readonly ads?:GameAds;
+  readonly community?:GameCommunity;
   viewport():ViewportInfo;
   createCanvas?():any;
   createAudio?():any;
   attachCanvas(canvas:any,events?:any):void;
   onResize(handler:(v:ViewportInfo)=>void):()=>void;
   onAudioActiveChange?(handler:(active:boolean)=>void):()=>void;
+  onExternalActivityChange?(handler:(active:boolean)=>void):()=>void;
   /** Screen-pixel Y below the platform capsule / status bar. 0 if none. */
   safeTop():number;
   vibrate(type?:HapticKind):void;
@@ -31,3 +36,4 @@ export interface IPlatform {
   shareAppMessage?(content:ShareContent):void;
   getSharedStage?():string|null;
 }
+
