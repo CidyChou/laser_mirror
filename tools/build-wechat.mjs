@@ -1,5 +1,6 @@
-import { spawn } from 'node:child_process';
-import { access, cp, mkdir, readdir, readFile, stat, writeFile } from 'node:fs/promises';
+import { execFileSync, spawn } from 'node:child_process';
+import { createHash } from 'node:crypto';
+import { access, cp, mkdir, readdir, readFile, rename, stat, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 
 const outputDirectory = 'dist/wechat';
@@ -68,6 +69,25 @@ for (const name of configNames) {
 await run('npx', ['vite', 'build', '--mode', 'wechat']);
 await mkdir(outputDirectory, { recursive: true });
 
+// The launcher catches failures while evaluating the bundled engine as well
+// as asynchronous startup failures, and identifies the exact uploaded build.
+await rename(join(outputDirectory, 'game.js'), join(outputDirectory, 'game-runtime.js'));
+const runtime = await readFile(join(outputDirectory, 'game-runtime.js'));
+let commit = 'unknown';
+let dirty = true;
+try { commit = execFileSync('git', ['rev-parse', '--short', 'HEAD'], { encoding: 'utf8' }).trim(); } catch {}
+try { dirty = !!execFileSync('git', ['status', '--porcelain', '--untracked-files=no'], { encoding: 'utf8' }).trim(); } catch {}
+const buildInfo = {
+  commit,
+  dirty,
+  builtAt: new Date().toISOString(),
+  runtimeSha256: createHash('sha256').update(runtime).digest('hex'),
+};
+const launcher = (await readFile('templates/wechat/game.js', 'utf8'))
+  .replace('__WECHAT_BUILD_INFO__', JSON.stringify(buildInfo));
+await writeFile(join(outputDirectory, 'game.js'), launcher);
+await writeFile(join(outputDirectory, 'build-info.json'), JSON.stringify(buildInfo, null, 2) + '\n');
+
 await Promise.all([
   cp('public/audio', join(outputDirectory, 'audio'), copyOptions),
   cp('public/ui', join(outputDirectory, 'ui'), copyOptions),
@@ -81,6 +101,8 @@ for (const name of configNames) {
 
 const requiredFiles = [
   'game.js',
+  'game-runtime.js',
+  'build-info.json',
   'game.json',
   'project.config.json',
   'audio/laser_fire.mp3',
@@ -113,11 +135,13 @@ const [packageBytes, audioBytes, uiBytes, scriptBytes] = await Promise.all([
   directorySize(outputDirectory),
   directorySize(join(outputDirectory, 'audio')),
   directorySize(join(outputDirectory, 'ui')),
-  stat(join(outputDirectory, 'game.js')).then((info) => info.size),
+  Promise.all(['game.js', 'game-runtime.js'].map(name => stat(join(outputDirectory, name))))
+    .then(files => files.reduce((sum, info) => sum + info.size, 0)),
 ]);
 
 console.log('Built WeChat Mini Game package:');
 console.log(`  ${resolve(outputDirectory)}`);
+console.log(`  source ${buildInfo.commit} · runtime sha256 ${buildInfo.runtimeSha256.slice(0, 12)}`);
 console.log(`  audio ${formatMb(audioBytes)} · ui ${formatMb(uiBytes)} · game.js ${formatMb(scriptBytes)}`);
 console.log(`  total ${formatMb(packageBytes)} / ${formatMb(WECHAT_MAIN_PACK_LIMIT)} main-package limit`);
 console.log('  Open this directory in WeChat DevTools (compileType: game).');

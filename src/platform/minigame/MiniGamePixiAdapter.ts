@@ -38,10 +38,13 @@ export function installMiniGamePixiAdapter(api: MiniGameApi) {
 
   const adapter: any = {
     createCanvas: (width = 1, height = 1) => {
-      const canvas = api.createOffscreenCanvas?.({ type: '2d', width, height })
-        ?? api.createOffscreenCanvas?.({ width, height })
-        ?? (typeof global.OffscreenCanvas === 'function' ? new global.OffscreenCanvas(width, height) : null)
-        ?? api.createCanvas?.();
+      // Pixi uses this factory for BOTH its WebGL capability probe and 2D
+      // text/gradient textures. A native offscreen canvas created as type: '2d'
+      // cannot return WebGL, even when the phone supports it. wx.createCanvas
+      // chooses the context on first getContext(); after the display canvas,
+      // subsequent calls create offscreen canvases.
+      const canvas = api.createCanvas?.()
+        ?? (typeof global.OffscreenCanvas === 'function' ? new global.OffscreenCanvas(width, height) : null);
       if (!canvas) throw new Error('Platform canvas API is unavailable');
       canvas.width = width;
       canvas.height = height;

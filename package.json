@@ -21,6 +21,7 @@
     "verify:sharing": "npx tsx --tsconfig tsconfig.json scripts/verify-sharing.ts",
     "verify:music": "npx tsx --tsconfig tsconfig.json scripts/verify-music.ts",
     "verify:loading": "npx tsx --tsconfig tsconfig.json scripts/verify-loading-assets.ts",
+    "verify:wechat-startup": "npx tsx --tsconfig tsconfig.json scripts/verify-wechat-startup.ts",
     "verify:mechanisms": "npx tsx --tsconfig tsconfig.json scripts/verify-mechanisms.ts",
     "verify:tutorial": "npx tsx --tsconfig tsconfig.json scripts/verify-tutorial.ts",
     "verify:time": "npx tsx --tsconfig tsconfig.json scripts/verify-time-core.ts && npx tsx --tsconfig tsconfig.json scripts/verify-time-bosses.ts && npx tsx --tsconfig tsconfig.json scripts/verify-campaign.ts",

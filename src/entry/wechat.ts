@@ -4,8 +4,10 @@ import { installMiniGamePixiAdapter } from '@/platform/minigame/MiniGamePixiAdap
 import { WeChatPlatform } from '@/platform/wechat/WeChatPlatform';
 
 const api=(globalThis as any).wx;
+const boot=(globalThis as any).__laserMirrorBoot;
 
 function reportBootError(error:any){
+  if(boot){boot.fail(error);return;}
   const summary=[error?.name,error?.message].filter(Boolean).join(': ');
   const stack=String(error?.stack??'');
   let raw='';
@@ -18,9 +20,13 @@ function reportBootError(error:any){
 }
 
 try{
+  boot?.phase('adapter');
   installMiniGamePixiAdapter(api);
   const platform=new WeChatPlatform(api);
-  new GameApplication(platform).start(platform.createCanvas()).catch(reportBootError);
+  // Reserve the first (display) canvas before any engine capability probes.
+  const canvas=platform.createCanvas();
+  boot?.phase('application');
+  new GameApplication(platform).start(canvas,{onBootPhase:phase=>boot?.phase(phase)}).catch(reportBootError);
 }catch(error){
   reportBootError(error);
 }

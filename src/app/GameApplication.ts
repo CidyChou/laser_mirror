@@ -127,7 +127,8 @@ export class GameApplication {
     return createGameShareContent(level,levelIndex);
   }
 
-  async start(canvas?:any,options:{skipLoading?:boolean}={}){
+  async start(canvas?:any,options:{skipLoading?:boolean;onBootPhase?:(phase:string)=>void}={}){
+    options.onBootPhase?.('renderer');
     const v=this.platform.viewport();
     const touch=typeof navigator!=='undefined'&&(navigator.maxTouchPoints>0||/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent||''));
     this.perf.seedFromDevice({kind:this.platform.kind,touch,viewport:v});
@@ -138,7 +139,9 @@ export class GameApplication {
       width:v.width,height:v.height,canvas:targetCanvas,background:Theme.bg,
       // Prefer WebGL2 where the mini-game runtime exposes it; Pixi falls back
       // to WebGL1 automatically. Rendering features still target WebGL1.
-      preference:GameConfig.renderer.preference,preferWebGLVersion,
+      // Browser Canvas2D fallback assumes DOM canvas constructors. Native
+      // mini-game canvases must stay on the supported WebGL rendering path.
+      preference:this.platform.kind==='web'?GameConfig.renderer.preference:['webgl'],preferWebGLVersion,
       powerPreference:'high-performance',antialias:GameConfig.renderer.antialias,
       resolution:this.perf.renderResolution,autoDensity:this.platform.kind==='web',autoStart:false
     });
@@ -152,15 +155,18 @@ export class GameApplication {
       if(!active)this.platform.cancelHaptics?.();
     })??(()=>{});
     if(!options.skipLoading){
+      options.onBootPhase?.('loading-screen');
       this.loading=new StartupScreen(this.app,this.platform);
       this.loading.scene.setProgress(.15);
       // Give the loading screen its own first paint before building the full game view.
       await new Promise<void>(resolve=>setTimeout(resolve,0));
       if(this.destroyed)return;
     }
+    options.onBootPhase?.('game-view');
     this.createView(false,!this.sharedLaunch);
     this.loading?.scene.setProgress(.35);
 
+    options.onBootPhase?.('assets');
     const uiReady=loadUiAssets(this.platform.kind,ratio=>{
       if(this.destroyed)return;
       this.loading?.scene.setProgress(.35+ratio*.65);
@@ -323,6 +329,7 @@ export class GameApplication {
       const loading=this.loading;
       await uiReady;
       if(this.destroyed)return;
+      options.onBootPhase?.('ready');
       const started=await loading.waitForStart(()=>this.audio.play('uiClick'));
       if(!started||this.destroyed)return;
       this.view.root.visible=true;
@@ -331,6 +338,7 @@ export class GameApplication {
       this.loading=null;
       this.wake();
     }
+    options.onBootPhase?.('playing');
   }
 
   private collectPendingCoins(){
