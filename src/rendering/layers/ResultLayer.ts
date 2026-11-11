@@ -8,7 +8,7 @@ import { setUiFontSize, Theme, uiText } from '../theme';
 export type ResultKind = 'win' | 'lose';
 export interface ResultCopy {
   title: string; subtitle: string; tip: string; primary: string;
-  secondary?: string; reward?: number; bonus?: string; recommend?: boolean; community?: boolean; levels?: boolean;
+  secondary?: string; reward?: number; bonus?: string; recommend?: boolean; levels?: boolean;
 }
 
 export class ResultLayer extends Container {
@@ -18,7 +18,6 @@ export class ResultLayer extends Container {
   readonly secondary = new Button(340, 64, '重新挑战', 'secondary');
   readonly bonus = new Button(464, 64, '看视频 · 奖励翻倍', 'secondary');
   readonly recommend = new Button(224, 60, '推荐游戏', 'secondary');
-  readonly community = new Button(224, 60, '攻略交流', 'secondary');
   private readonly dim = new Graphics();
   private readonly panel = new Container();
   private readonly panelGfx = new Graphics();
@@ -77,7 +76,6 @@ export class ResultLayer extends Container {
     this.secondary.setLabelSize(22);
     this.bonus.setLabelSize(24);
     this.recommend.setLabelSize(22);
-    this.community.setLabelSize(22);
     this.panel.addChild(
       this.panelGfx,
       this.rewardPanel,
@@ -94,7 +92,7 @@ export class ResultLayer extends Container {
       this.levels,
       this.primary,
       this.secondary,
-      this.bonus, this.recommend, this.community,
+      this.bonus, this.recommend,
     );
     this.addChild(this.dim, this.panel);
   }
@@ -134,7 +132,6 @@ export class ResultLayer extends Container {
     this.bonus.visible = kind === 'win' && !!copy.bonus;
     if (copy.bonus) this.bonus.setText(copy.bonus);
     this.recommend.visible = !!copy.recommend;
-    this.community.visible = !!copy.community;
     this.preview.visible = kind === 'win';
     this.levels.visible = kind === 'win' || !!copy.levels;
     const reward = Math.max(0, Math.floor(copy.reward ?? 0));
@@ -203,9 +200,9 @@ export class ResultLayer extends Container {
   private layout() {
     const win = this.kind === 'win';
     const rect = win ? UI_RECTS.resultWin : UI_RECTS.resultLose;
-    const communitySpace = this.recommend.visible || this.community.visible ? 76 : 0;
+    const recommendSpace = this.recommend.visible ? 76 : 0;
     const bonusSpace = this.bonus.visible ? 76 : 0;
-    const h = (win && !this.hasReward ? rect.h - 112 : rect.h) + bonusSpace + communitySpace
+    const h = (win && !this.hasReward ? rect.h - 112 : rect.h) + bonusSpace + recommendSpace
       + (!win && this.secondary.visible ? 76 : 0) + (!win && this.levels.visible ? 76 : 0);
     const top = -h / 2;
     this.panel.position.set(rect.x + rect.w / 2, rect.y + rect.h / 2);
@@ -223,15 +220,13 @@ export class ResultLayer extends Container {
       this.primary.position.set(-232, top + 308 + rewardSpace + bonusSpace);
       this.preview.position.set(-232, top + 402 + rewardSpace + bonusSpace);
       this.levels.position.set(8, top + 402 + rewardSpace + bonusSpace);
-      this.recommend.position.set(this.community.visible ? -232 : -112, top + 478 + rewardSpace + bonusSpace);
-      this.community.position.set(this.recommend.visible ? 8 : -112, top + 478 + rewardSpace + bonusSpace);
+      this.recommend.position.set(-112, top + 478 + rewardSpace + bonusSpace);
     } else {
       const actionsTop = top + 404;
       this.primary.position.set(-this.primary.widthPx / 2, actionsTop);
       this.secondary.position.set(-this.secondary.widthPx / 2, actionsTop + 100);
       const levelsY = actionsTop + 100 + (this.secondary.visible ? 76 : 0);
       this.levels.position.set(-112, levelsY);
-      this.community.position.set(-112, levelsY + (this.levels.visible ? 76 : 0));
     }
   }
 
@@ -291,7 +286,6 @@ export class ResultLayer extends Container {
     this.secondary.alpha = this.primary.alpha;
     this.bonus.alpha = this.primary.alpha;
     this.recommend.alpha = this.primary.alpha;
-    this.community.alpha = this.primary.alpha;
     this.entering = entering < 1 || this.primary.alpha < 1;
     return this.entering;
   }

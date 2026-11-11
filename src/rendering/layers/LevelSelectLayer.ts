@@ -128,6 +128,10 @@ export class LevelSelectLayer extends Container {
     this.settingsButton.setTexture(texture);
   }
 
+  updateAmbient(now: number, quality: 'high' | 'medium' | 'low', reducedMotion: boolean) {
+    return this.background.updateAmbient(now, quality, reducedMotion);
+  }
+
   setBackgroundTexture(texture: Texture) {
     this.background.setTexture(texture);
   }

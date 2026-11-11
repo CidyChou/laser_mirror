@@ -79,7 +79,7 @@ Object.assign(platform, { ads: native.ads, community: native.community, onExtern
 const application = new GameApplication(platform);
 await application.start(undefined, { skipLoading: true });
 const game = application as any;
-function refresh() { game.view.configureOperations(true, native.ads.menuSize()); game.view.setCoinBalance(game.coins); game.wake(); report(); }
+function refresh() { game.view.configureOperations(native.ads.menuSize()); game.view.setCoinBalance(game.coins); game.wake(); report(); }
 function reset() { game.session.load(0); game.session.restoreHearts(5); saveHearts(platform, 5); game.tutorial.skip(); game.syncTutorial(); game.coins = 40; }
 function report() {
   if (!game?.view) return;
@@ -96,7 +96,7 @@ bind('win', () => {
   game.winInterstitialDue = true;
   game.view.showResult('win', { title: '通关成功', subtitle: '第 1 关已完成', tip: '首通奖励已到账', primary: '下一关', reward: winReward(0),
     bonus: native.ads.canReward('double') ? '看视频 · 本关金币翻倍' : undefined,
-    recommend: true, community: native.community.canOpen('club') }, performance.now() - 1000);
+    recommend: true }, performance.now() - 1000);
   native.ads.preloadRewards(['double']); native.ads.preloadInterstitial();
   game.view.startWinCoins(performance.now() - 1000, 40, winReward(0)); game.view.revealWinCoins();
 });

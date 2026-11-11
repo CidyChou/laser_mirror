@@ -1,7 +1,7 @@
 import type { IPlatform } from '@/platform/IPlatform';
 
-// The source is about -14 LUFS; this gain puts the background near -30 LUFS.
-export const MUSIC_VOLUME = .16;
+// The source is about -14 LUFS. 0.136 is 15% under the previous 0.16 gain, near -31 LUFS.
+export const MUSIC_VOLUME = .136;
 
 interface MusicPlayer {
   play(): void;

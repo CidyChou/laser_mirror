@@ -101,11 +101,8 @@ export class PixiGameView{
     this.hud.setHeartHandler(()=>h.openHearts?.());
     this.levelSelect.wallet.body.on('pointertap',()=>h.openSupply?.());
     this.levelSelect.wallet.plus.on('pointertap',event=>{event.stopPropagation();h.coinVideo?.();});
-    this.hud.supplyButton.on('pointertap',()=>h.openSupply?.());
-    this.hud.communityButton.on('pointertap',()=>h.openCommunity?.());
     this.result.bonus.on('pointertap',()=>h.resultBonus?.());
     this.result.recommend.on('pointertap',()=>h.recommendGame?.());
-    this.result.community.on('pointertap',()=>h.openCommunity?.());
     this.support.closeButton.on('pointertap',()=>h.closeSupport?.());
     this.canSelectLevel=h.canSelectLevel;
     this.syncLevelNavigation();
@@ -193,8 +190,7 @@ export class PixiGameView{
   showSupport(copy: SupportCopy) { this.support.show(copy); this.syncTutorialVisibility(); }
   setCoinBalance(coins:number) { this.levelSelect.wallet.setBalance(coins); }
   hideSupport() { this.support.hide(); this.syncTutorialVisibility(); }
-  configureOperations(community: boolean, menuSize: { width: number; height: number } | null) {
-    this.hud.communityButton.visible = community;
+  configureOperations(menuSize: { width: number; height: number } | null) {
     this.setMenuAdSize(menuSize);
   }
   setMenuAdSize(size: { width: number; height: number } | null) {
@@ -387,7 +383,13 @@ export class PixiGameView{
   victory(now:number,state:GameState){this.victoryUntil=now+900;this.confetti.start(now);const g=computeGeometry(state.level);const points=[...state.targets.map(t=>portPosition(g,t)),...state.items.filter(item=>item.type==='focus').map(item=>cellCenter(g,item.x,item.y))];this.impacts.triggerVictory(points,now);for(const p of points)this.particles.emit(p.x,p.y,Theme.green,Math.round(34*this.emitScale()),this.performance.particleBudget);}
   private clearRecoil(){this.recoil.clear();this.playfield.position.set(0,0);this.launchStartedAt=null;this.launchWash.visible=false;}
   showToast(text:string,now:number){this.toast.text=text;const pad=20,w=Math.max(180,this.toast.width+pad*2),y=230+this.hudOffset;this.toast.position.set(360,y+22);this.toastBg.clear().roundRect(360-w/2,y,w,40,20).fill({color:Theme.overlay,alpha:.96}).stroke({color:Theme.white,width:1,alpha:.10});this.toast.visible=true;this.toastBg.visible=true;this.toastUntil=now+1200;}
+  updateAmbient(now:number) {
+    const reduced = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    return this.levelSelect.visible ? this.levelSelect.updateAmbient(now,this.performance.quality,reduced)
+      : this.bg.updateAmbient(now,this.performance.quality,reduced);
+  }
   update(state:GameState,now:number){
+    this.updateAmbient(now);
     this.tutorialShotHidden=state.firing||state.won;
     this.syncTutorialVisibility();
     this.tutorial.update(now);

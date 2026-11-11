@@ -90,6 +90,7 @@ export class GameApplication {
   private winRewardAmount=0;
   private winBonusClaimed=false;
   private winInterstitialDue=false;
+  private ambientTimer:ReturnType<typeof setInterval>|null=null;
   private heartRecoveryTimer:ReturnType<typeof setTimeout>|null=null;
   private supportScreen:'hearts'|'supply'|'community'|null=null;
   private readonly hapticGate=new HapticGate();
@@ -174,13 +175,13 @@ export class GameApplication {
       if(!active)this.platform.cancelHaptics?.();
       if(!active)this.clearHeartRecoveryTimer();
       else if(this.view)this.refreshHeartRecovery();
-      this.syncNativeMenuAd();
+      this.syncNativeMenuAd();this.syncAmbientTimer();
     })??(()=>{});
     this.unexternal=this.platform.onExternalActivityChange?.(active=>{
       this.externalActive=active;
       this.music.setActive(this.appVisible&&!active);
       if(active)this.platform.cancelHaptics?.();
-      this.syncNativeMenuAd();
+      this.syncNativeMenuAd();this.syncAmbientTimer();
     })??(()=>{});
     this.unmenu=this.platform.ads?.onMenuChange?.(()=>{if(!this.destroyed){this.syncNativeMenuAd();this.wake();}})??(()=>{});
     if(!options.skipLoading){
@@ -306,7 +307,6 @@ export class GameApplication {
           reward,
           ...(reward>0&&this.platform.ads?.canReward('double')&&this.bonusAvailable()?{bonus:'看视频 · 本关金币翻倍'}:{}),
           recommend:this.platform.community?.canOpen('recommend')&&!this.platform.community.isRecommended(),
-          community:this.platform.community?.canOpen('club'),
         };
         if(copy.bonus)this.platform.ads?.preloadRewards(['double']);
         if(reward){
@@ -383,6 +383,7 @@ export class GameApplication {
       this.loading=null;
       this.wake();
     }
+    this.syncAmbientTimer();
     options.onBootPhase?.('playing');
     this.refreshHeartRecovery();
     this.platform.ads?.preloadRewards(['hearts','coins']);
@@ -410,7 +411,7 @@ export class GameApplication {
     this.applyUiTextures();
     this.bindViewHandlers();
     this.view.setCoinBalance(this.coins);
-    this.view.configureOperations(this.platform.kind==='wechat',this.platform.ads?.menuSize()??null);
+    this.view.configureOperations(this.platform.ads?.menuSize()??null);
     this.view.setInteractionBlocked(this.operationBusy);
     this.syncTutorial();
     if(reopenLevels)this.view.showLevelSelect(this.session.state.levelIndex,this.completedLevels,this.allLevelsUnlocked,this.unlockedThrough);
@@ -921,6 +922,15 @@ export class GameApplication {
     this.wake();
     this.renderOnce();
   }
+  private syncAmbientTimer(){
+    if(this.ambientTimer!==null)clearInterval(this.ambientTimer);
+    this.ambientTimer=null;
+    if(this.destroyed||!this.appVisible||this.externalActive||!this.view||this.loading)return;
+    this.ambientTimer=setInterval(()=>{
+      if(this.destroyed||!this.appVisible||this.externalActive||this.loading||this.app.ticker.started)return;
+      if(this.view.updateAmbient(nowMs()))this.renderOnce();
+    },33);
+  }
   private wake(){
     const ticker=this.app.ticker as any;
     if(!ticker.started){
@@ -937,5 +947,5 @@ export class GameApplication {
     this.syncNativeMenuAd();
     try{this.app.renderer.render(this.app.stage);}catch(error){console.warn('[game] render failed',error);}
   }
-  destroy(){this.destroyed=true;this.clearHeartRecoveryTimer();this.operationGeneration++;this.platform.community?.destroy();this.platform.ads?.destroy();this.loading?.dispose();this.loading=null;this.pendingResult=null;this.cancelFireCharge();this.clearFireWatchdog();this.platform.cancelHaptics?.();this.unresize();this.unaudio();this.unexternal();this.unmenu();this.music.destroy();this.audio.destroy();this.view?.destroy();this.app.destroy(true);}
+  destroy(){this.destroyed=true;this.syncAmbientTimer();this.clearHeartRecoveryTimer();this.operationGeneration++;this.platform.community?.destroy();this.platform.ads?.destroy();this.loading?.dispose();this.loading=null;this.pendingResult=null;this.cancelFireCharge();this.clearFireWatchdog();this.platform.cancelHaptics?.();this.unresize();this.unaudio();this.unexternal();this.unmenu();this.music.destroy();this.audio.destroy();this.view?.destroy();this.app.destroy(true);}
 }
