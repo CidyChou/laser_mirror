@@ -17,22 +17,6 @@
     #app{max-width:520px}
     canvas{display:block;touch-action:none;outline:none}
     canvas:focus-visible{outline:3px solid var(--focus);outline-offset:-3px}
-    @media (width > 600px){
-      body{isolation:isolate}
-      body::before{
-        content:"";
-        position:fixed;
-        inset:0;
-        pointer-events:none;
-        z-index:0;
-        background-color:var(--app-bg,#070d18);
-        background-image:url("./ui/space-background.jpg");
-        background-size:cover;
-        background-position:center;
-        background-repeat:no-repeat;
-      }
-      #app{position:relative;z-index:1}
-    }
   </style>
 </head>
 <body>
