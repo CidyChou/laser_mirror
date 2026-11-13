@@ -33,6 +33,7 @@ export class WebPlatform implements IPlatform{
     try {
       const url=new URL(window.location.href);
       for(const [key,value] of new URLSearchParams(content.query))url.searchParams.set(key,value);
+      url.searchParams.delete('embed');
       void navigator.share({title:content.title,text:content.title,url:url.href}).catch(()=>undefined);
     } catch {
       // A cancelled/restricted browser share leaves the current game in place.

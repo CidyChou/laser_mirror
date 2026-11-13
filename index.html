@@ -9,6 +9,7 @@
   <link rel="apple-touch-icon" href="./ui/app-icon.png" />
   <meta name="application-name" content="光线急转弯" />
   <title>光线急转弯</title>
+  <script>if(new URLSearchParams(window.location.search).get('embed')==='1')document.documentElement.classList.add('is-embed');</script>
   <style>
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
     :root{--app-bg:#070d18;--focus:#3ce9ef;color-scheme:dark}
@@ -17,6 +18,11 @@
     #app{max-width:520px}
     canvas{display:block;touch-action:none;outline:none}
     canvas:focus-visible{outline:3px solid var(--focus);outline-offset:-3px}
+    @media (width > 600px){
+      html.is-embed body{isolation:isolate}
+      html.is-embed body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background-color:var(--app-bg,#070d18);background-image:url("./ui/space-background.jpg");background-size:cover;background-position:center}
+      html.is-embed #app{position:relative;z-index:1}
+    }
   </style>
 </head>
 <body>
